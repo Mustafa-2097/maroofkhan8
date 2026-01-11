@@ -1,12 +1,14 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'language_selection/controller/language_controller.dart';
 import 'my_app.dart';
 import 'package:get/get.dart';
 
 void main() {
   /// Register services globally so they can be found anywhere
   configEasyLoading();
+  Get.put(LanguageController());
 
   runApp(
     DevicePreview(

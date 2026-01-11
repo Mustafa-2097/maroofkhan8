@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:maroofkhan8/onboarding/view/onboarding_screen.dart';
+import 'core/theme/theme.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -9,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(375, 812),
+      designSize: const Size(430, 932),
       minTextAdapt: true,
       builder: (context, child) {
         /// Override system text scaling globally
@@ -21,22 +23,10 @@ class MyApp extends StatelessWidget {
           child: GetMaterialApp(
             debugShowCheckedModeBanner: false,
             builder: EasyLoading.init(),
-            // theme: ThemeData.light().copyWith(
-            //   primaryColor: AppColors.primaryColor,
-            //   scaffoldBackgroundColor: AppColors.primaryColor,
-            //   appBarTheme: const AppBarTheme(
-            //     backgroundColor: Colors.transparent,
-            //     iconTheme: IconThemeData(color: AppColors.whiteColor),
-            //   ),
-            //   iconTheme: const IconThemeData(
-            //     color: AppColors.whiteColor,
-            //   ),
-            //   checkboxTheme: CheckboxThemeData(
-            //     shape: const CircleBorder(),
-            //     side: BorderSide(width: 1.5, color: AppColors.boxTextColor),
-            //   ),
-            // ),
-            //home: SplashScreen(),
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: ThemeMode.system,
+            home: OnboardingScreen(),
           ),
         );
       },

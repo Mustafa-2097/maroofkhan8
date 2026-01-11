@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:maroofkhan8/onboarding/view/widgets/onboarding_page.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import '../../../core/constant/app_colors.dart';
-import '../controllers/onboarding_controller.dart';
-import '../model/onboarding_data.dart';
+import '../controller/onboarding_controller.dart';
 
-class OnboardingScreen extends StatelessWidget {
+class OnboardingScreen extends GetView<OnboardingController> {
   OnboardingScreen({super.key});
-
   final controller = Get.put(OnboardingController());
 
   @override
@@ -18,88 +12,113 @@ class OnboardingScreen extends StatelessWidget {
     final sw = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: AppColors.primaryColor,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            /// ---------------- PageView ----------------
-            PageView.builder(
-              controller: controller.pageController,
-              itemCount: pages.length,
-              onPageChanged: controller.onPageChanged,
-              itemBuilder: (context, index) {
-                return OnboardingPage(data: pages[index]);
-              },
-            ),
+      body: PageView(
+        controller: controller.pageController,
+        onPageChanged: controller.onPageChanged,
+        children: [
+          /// First screen
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Assalamu’alaikum",
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  color: Color(0xFFEE7600).withValues(alpha: 0.8),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                "Welcome to AI Murshid",
+                style: Theme.of(context).textTheme.headlineLarge,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 32),
+              Image.asset(
+                'assets/images/onboarding01.png',
+                height: 355,
+              ),
+            ],
+          ),
 
-            /// ---------------- Skip Button ----------------
-            Positioned(
-              top: 20,
-              right: 20,
-              child: Obx(() {
-                final page = controller.currentPage.value;
-                return page < 2
-                    ? GestureDetector(
-                  onTap: controller.skip,
-                  child: Text(
-                    "Skip",
-                    style: GoogleFonts.plusJakartaSans(fontSize: 14.sp, fontWeight: FontWeight.w600, color: AppColors.whiteColor),
+          /// Second screen
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/onboarding02.png',
+                height: 100,
+              ),
+              SizedBox(height: 44.h),
+              Text(
+                "AI Murshid",
+                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                  color: Color(0xFFEE7600).withValues(alpha: 0.8),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 6.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal:50),
+                child: Text(
+                  "Your 24/7 AI Spiritual Guide Embodies wisdom of Sufi Awliya Powered by advanced AI",
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontSize: sw*0.037,
                   ),
-                )
-                    : const SizedBox.shrink();
-              }),
-            ),
-
-            /// ---------------- Page Indicator ----------------
-            Positioned(
-              bottom: kBottomNavigationBarHeight * 1.8,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Obx(() {
-                  /// This ensures reactive update
-                  final page = controller.currentPage.value;
-                  return SmoothPageIndicator(
-                    controller: controller.pageController,
-                    count: pages.length,
-                    effect: ExpandingDotsEffect(
-                      activeDotColor: AppColors.whiteColor,
-                      dotColor: AppColors.whiteColor.withOpacity(0.16),
-                      dotHeight: 10.h,
-                      dotWidth: 10.w,
-                      expansionFactor: 3,
-                    ),
-                  );
-                }),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              SizedBox(height: 22.h),
+              _FeatureChip(label: 'Real-time Chat'),
+              _FeatureChip(label: 'Quran & Sunnah'),
+              _FeatureChip(label: 'Spiritual Wisdom'),
+            ],
+          )
+        ],
+      ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.fromLTRB(24.w, 0, 24.w, 111.h),
+        child: SizedBox(
+          height: 48.h,
+          child: Obx(() => ElevatedButton(
+              onPressed: controller.onGetStarted,
+              child: Text(
+                controller.currentIndex.value == 0
+                    ? 'Continue'
+                    : 'Get Started',
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
-            /// ---------------- Next / Study Now Button ----------------
-            Positioned(
-              bottom: kBottomNavigationBarHeight / 2,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Obx(() {
-                  final isLast = controller.currentPage.value == pages.length - 1;
-                  return GestureDetector(
-                    onTap: controller.nextPage,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 28.w, vertical: 8.h),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Text(
-                        isLast ? "Study Now" : "Next",
-                        style: GoogleFonts.plusJakartaSans(fontSize: sw * 0.042, fontWeight: FontWeight.w600, color: AppColors.primaryColor),
-                      ),
-                    ),
-                  );
-                }),
-              ),
+class _FeatureChip extends StatelessWidget {
+  final String label;
+  const _FeatureChip({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 8.h),
+      child: SizedBox(
+        width: 180.w,
+        child: OutlinedButton(
+          style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
+            padding: MaterialStateProperty.all(
+              EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
             ),
-          ],
+            shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            ),
+          ),
+          onPressed: null,
+          child: Text(
+            label,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
         ),
       ),
     );
