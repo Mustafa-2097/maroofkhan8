@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:maroofkhan8/features/auth/signin_signup/view/signin_signup_page.dart';
 import 'package:maroofkhan8/onboarding/view/onboarding_screen.dart';
 import 'core/theme/theme.dart';
 
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: ThemeMode.system,
-            home: OnboardingScreen(),
+            home: SignInSignUpPage(),
           ),
         );
       },

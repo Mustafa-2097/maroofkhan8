@@ -8,7 +8,7 @@ class MyTextTheme {
   GoogleFonts.amiriTextTheme(
     const TextTheme(
       headlineLarge: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold),
-      headlineMedium: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
+      headlineMedium: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600, color: Color(0xFF8F3E19)),
       headlineSmall: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
 
       titleLarge: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w400),
@@ -31,7 +31,7 @@ class MyTextTheme {
   GoogleFonts.amiriTextTheme(
     const TextTheme(
       headlineLarge: TextStyle(fontSize: 32.0, fontWeight: FontWeight.bold),
-      headlineMedium: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w600),
+      headlineMedium: TextStyle(fontSize: 24.0, fontWeight: FontWeight.w600, color: Color(0xFFEE7600)),
       headlineSmall: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
 
       titleLarge: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),

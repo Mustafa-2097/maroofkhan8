@@ -8,9 +8,13 @@ class AppTheme {
     useMaterial3: true,
     brightness: Brightness.light,
     scaffoldBackgroundColor: Colors.white,
-    primaryColor: const Color(0xFF8B3E1F),
     textTheme: MyTextTheme.lightTextTheme,
     elevatedButtonTheme: MyElevatedButtonTheme.lightElevatedButtonTheme,
+    colorScheme: ColorScheme.light(
+      primary: const Color(0xFF8F3E19),
+      onPrimary: Colors.white,
+      surface: Colors.grey.shade300,
+    ),
   );
 
   /// Dark theme configuration
@@ -18,8 +22,13 @@ class AppTheme {
     useMaterial3: true,
     brightness: Brightness.dark,
     scaffoldBackgroundColor: const Color(0xFF121212),
-    primaryColor: const Color(0xFFD18B5A),
     textTheme: MyTextTheme.darkTextTheme,
     elevatedButtonTheme: MyElevatedButtonTheme.darkElevatedButtonTheme,
+    colorScheme: ColorScheme.dark(
+      primary: const Color(0xFFEE7600),
+      onPrimary: Colors.black,
+      surface: Color(0xFF494358),
+    ),
   );
 }
+

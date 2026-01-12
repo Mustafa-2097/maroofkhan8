@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import '../../features/auth/signin_signup/view/signin_signup_page.dart';
 
 class LanguageController extends GetxController {
   static LanguageController get instance => Get.find();
@@ -17,7 +18,6 @@ class LanguageController extends GetxController {
 
   void onGetStarted() {
     // Save language / navigate next
-    // Example:
-    // Get.offAll(() => const SignInScreen());
+    Get.offAll(() => SignInSignUpPage());
   }
 }
