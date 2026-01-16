@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../core/constant/app_colors.dart';
+import '../../forgot_password/view/forgot_password_page.dart';
 import '../controller/signin_signup_controller.dart';
 
 class SignInSignUpPage extends StatelessWidget {
@@ -91,7 +92,7 @@ class SignInSignUpPage extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () => Get.to(() => ForgotPasswordPage()),
                       child: const Text('Forgot password?'),
                     ),
                   ),
