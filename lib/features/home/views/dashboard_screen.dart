@@ -18,6 +18,7 @@ import '../../sufism/views/sufism_screen.dart' hide HeaderWithLines;
 import '../../zakat_calculator/views/zakat_calculator.dart';
 import '../awliya_allah/awliya_allah_list_screen.dart';
 import '../tasbih/tasbih_screen.dart';
+import 'custom_app_drawer.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -25,6 +26,7 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const CustomAppDrawer(),
       // Gradient Background
       body: Container(
         decoration: const BoxDecoration(
@@ -105,10 +107,13 @@ class HeaderSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Icon(
-                Icons.menu_rounded,
-                color: Color(0xFF3B2A50),
-                size: 26,
+              InkWell(
+                onTap: () => Scaffold.of(context).openDrawer(),
+                child: const Icon(
+                  Icons.menu_rounded,
+                  color: Color(0xFF3B2A50),
+                  size: 26,
+                ),
               ),
               const CircleAvatar(
                 radius: 18,
