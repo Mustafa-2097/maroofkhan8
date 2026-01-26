@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:maroofkhan8/language_selection/view/language_screen.dart';
-
 import '../../core/offline_storage/shared_pref.dart';
+import '../../language_selection/view/language_screen.dart';
 
 class OnboardingController extends GetxController {
   /// Page controller for PageView
@@ -34,7 +33,7 @@ class OnboardingController extends GetxController {
   /// Final navigation after onboarding
   Future<void> finishOnboarding() async {
     await SharedPreferencesHelper.setOnboardingCompleted();
-    Get.offAll(() => LanguageScreen());
+    Get.offAll(() =>  LanguageScreen());
   }
 
   @override

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:maroofkhan8/features/auth/forgot_password/controller/forgot_password_controller.dart';
 
+import '../controller/forgot_password_controller.dart';
 import 'otp_verification_page.dart';
 
 class ForgotPasswordPage extends StatelessWidget {

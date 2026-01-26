@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:maroofkhan8/features/auth/forgot_password/view/forgot_password_page.dart';
+
+import '../../../../bottom_nav_bar.dart';
 
 class SignInSignUpController extends GetxController {
   static SignInSignUpController get instance => Get.find();
@@ -27,7 +28,7 @@ class SignInSignUpController extends GetxController {
   /// Submit handler
   void submit() {
     if (isLogin.value) {
-      ///
+      Get.to(CustomBottomNavBar());
     } else {
       /// Handle sign up
     }
