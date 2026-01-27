@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import '../../../core/constant/app_colors.dart';
 
 class CustomAppDrawer extends StatelessWidget {
   final void Function()? onLogoutTap;
@@ -9,128 +8,147 @@ class CustomAppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //final sh = MediaQuery.of(context).size.height;
+    final sh = MediaQuery.of(context).size.height;
     final sw = MediaQuery.of(context).size.width;
 
     return Drawer(
+      width: sw * 0.8,
       backgroundColor: Colors.transparent,
-      child: SafeArea(
-        child: Container(
-          height: 400,
-          color: AppColors.boxTextColor,
-          padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: sw*0.076),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /// Personal Info Section
-              Text(
-                'personal_info'.tr,
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white70,
-                ),
+      elevation: 0,
+      child: Column(
+        children: [
+          Container(
+            height: sh * 0.8,
+            padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: sw*0.076),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(20.r),
+                bottomRight: Radius.circular(20.r),
               ),
-              SizedBox(height: 10.h),
-              _DrawerItem(
-                icon: Icons.person_outline,
-                label: 'Personal Data',
-                //onTap: () => Get.to(() => PersonalData()),
-              ),
-              _DrawerItem(
-                icon: Icons.star_border,
-                label: 'Bookmarks',
-                //onTap: () => Get.to(() => BookmarkScreen()),
-              ),
-              _DrawerItem(
-                icon: Icons.payment_outlined,
-                label: 'Notification',
-                //onTap: () => Get.to(() => NotificationPage()),
-              ),
-              _DrawerItem(
-                icon: Icons.payment_outlined,
-                label: 'Subscription',
-                //onTap: () => Get.to(() => SubscriptionPage()),
-              ),
-              _DrawerItem(
-                icon: Icons.payment_outlined,
-                label: 'Payment History',
-               // onTap: () => Get.to(() => PaymentHistoryPage()),
-              ),
-
-              SizedBox(height: 18.h),
-
-              /// General Section
-              Text(
-                'General',
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white70,
-                ),
-              ),
-              SizedBox(height: 10.h),
-              //LanguageDropdown(),
-              _DrawerItem(
-                icon: Icons.notifications_outlined,
-                label: 'Notification Setting',
-                //onTap: () => Get.to(() => NotificationSettingPage()),
-              ),
-
-              SizedBox(height: 18.h),
-
-              /// About Section
-              Text(
-                'about'.tr,
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white70,
-                ),
-              ),
-              SizedBox(height: 10.h),
-              _DrawerItem(
-                icon: Icons.contact_mail_outlined,
-                label: 'Contact Us',
-                //onTap: () => Get.to(() => ContactUsPage()),
-              ),
-              _DrawerItem(
-                icon: Icons.help_outline,
-                label: 'Support Center',
-                //onTap: () => Get.to(() => SupportCenterPage()),
-              ),
-              _DrawerItem(
-                icon: Icons.lock_outline,
-                label: 'Privacy & Policy',
-                //onTap: () => Get.to(() => TermsConditionsPage()),
-              ),
-
-              SizedBox(height: 18.h),
-
-              /// Logout Button
-              SizedBox(
-                child: OutlinedButton.icon(
-                  onPressed: () => showLogoutBottomSheet(context),
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: Color(0xFFDF1C41), width: 1.3),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-                    padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 6.h),
-                  ),
-                  icon: Icon(Icons.logout, color: Color(0xFFDF1C41), size: 22.r, fontWeight: FontWeight.bold),
-                  label: Text(
-                    'logout'.tr,
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.red,
+            ),
+            child: SafeArea(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    /// Personal Info Section
+                    Text(
+                      'personal_info'.tr,
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black87,
+                      ),
                     ),
-                  ),
+                    SizedBox(height: 10.h),
+                    _DrawerItem(
+                      icon: Icons.person_outline,
+                      label: 'Personal Data',
+                      //onTap: () => Get.to(() => PersonalData()),
+                    ),
+                    _DrawerItem(
+                      icon: Icons.star_border,
+                      label: 'Bookmarks',
+                      //onTap: () => Get.to(() => BookmarkScreen()),
+                    ),
+                    _DrawerItem(
+                      icon: Icons.notifications,
+                      label: 'Notification',
+                      //onTap: () => Get.to(() => NotificationPage()),
+                    ),
+                    _DrawerItem(
+                      icon: Icons.subscriptions_outlined,
+                      label: 'Subscription',
+                      //onTap: () => Get.to(() => SubscriptionPage()),
+                    ),
+                    _DrawerItem(
+                      icon: Icons.payment_outlined,
+                      label: 'Payment History',
+                     // onTap: () => Get.to(() => PaymentHistoryPage()),
+                    ),
+                
+                    SizedBox(height: 18.h),
+                
+                    /// General Section
+                    Text(
+                      'General',
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    SizedBox(height: 10.h),
+                    //LanguageDropdown(),
+                    _DrawerItem(
+                      icon: Icons.notifications_outlined,
+                      label: 'Notification Setting',
+                      //onTap: () => Get.to(() => NotificationSettingPage()),
+                    ),
+                    _DrawerItem(
+                      icon: Icons.language_outlined,
+                      label: 'Language',
+                      //onTap: () => Get.to(() => NotificationSettingPage()),
+                    ),
+
+                    SizedBox(height: 18.h),
+                
+                    /// About Section
+                    Text(
+                      'about'.tr,
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    SizedBox(height: 10.h),
+                    _DrawerItem(
+                      icon: Icons.contact_mail_outlined,
+                      label: 'Contact Us',
+                      //onTap: () => Get.to(() => ContactUsPage()),
+                    ),
+                    _DrawerItem(
+                      icon: Icons.help_outline,
+                      label: 'Support Center',
+                      //onTap: () => Get.to(() => SupportCenterPage()),
+                    ),
+                    _DrawerItem(
+                      icon: Icons.lock_outline,
+                      label: 'Privacy & Policy',
+                      //onTap: () => Get.to(() => TermsConditionsPage()),
+                    ),
+                
+                    SizedBox(height: 18.h),
+                
+                    /// Logout Button
+                    SizedBox(
+                      child: OutlinedButton.icon(
+                        onPressed: () => showLogoutBottomSheet(context),
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: Color(0xFFDF1C41), width: 1.3),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+                          padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 6.h),
+                        ),
+                        icon: Icon(Icons.logout, color: Color(0xFFDF1C41), size: 22.r, fontWeight: FontWeight.bold),
+                        label: Text(
+                          'logout'.tr,
+                          style: TextStyle(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 18.h)
+                  ],
                 ),
               ),
-              SizedBox(height: 18.h)
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -152,14 +170,14 @@ class _DrawerItem extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 6.h),
         child: Row(
           children: [
-            Icon(icon, size: 24.r, color: Colors.white),
+            Icon(icon, size: 24.r, color: Colors.black),
             SizedBox(width: 16.w),
             Text(
               label.tr,
               style: TextStyle(
                 fontSize: 18.sp,
                 fontWeight: FontWeight.w400,
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
           ],
@@ -196,7 +214,7 @@ void showLogoutBottomSheet(BuildContext context) {
               ),
               child: const Icon(
                 Icons.warning_amber_rounded,
-                color: Colors.white,
+                color: Colors.black,
                 size: 32,
               ),
             ),
@@ -207,7 +225,7 @@ void showLogoutBottomSheet(BuildContext context) {
             const Text(
               "LOGOUT",
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 1,
