@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 // Placeholder imports for navigation - keep or remove as needed
 import 'package:maroofkhan8/features/hadis/views/hadis_screen.dart';
+import 'package:maroofkhan8/features/profile/view/profile_screen.dart';
 import 'package:maroofkhan8/features/quran/views/quran_screen.dart';
 import '../../Islam_meditation/views/islam_meditation_screen.dart';
 import '../../ahle_bait/views/ahle_bait_screen.dart';
@@ -115,9 +116,12 @@ class HeaderSection extends StatelessWidget {
                   size: 26,
                 ),
               ),
-              const CircleAvatar(
-                radius: 18,
-                backgroundImage: AssetImage('assets/images/user_placeholder.png'),
+              InkWell(
+                onTap: () => Get.to(() => ProfileScreen()),
+                child: const CircleAvatar(
+                  radius: 18,
+                  backgroundImage: AssetImage('assets/images/user_placeholder.png'),
+                ),
               ),
             ],
           ),
