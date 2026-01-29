@@ -16,22 +16,23 @@ class SplashController extends GetxController {
     await Future.delayed(const Duration(seconds: 3));
 
     try {
-      final onboardingDone = await SharedPreferencesHelper.isOnboardingCompleted();
-
-      final rememberMe = await SharedPreferencesHelper.isRememberMe();
-      final token = await SharedPreferencesHelper.getToken();
-      final role = await SharedPreferencesHelper.getRole();
-
-      debugPrint('Onboarding Completed: $onboardingDone');
-      debugPrint('Token: $token');
-      debugPrint("Role: $role");
+      // final onboardingDone = await SharedPreferencesHelper.isOnboardingCompleted();
+      //
+      // final rememberMe = await SharedPreferencesHelper.isRememberMe();
+      // final token = await SharedPreferencesHelper.getToken();
+      // final role = await SharedPreferencesHelper.getRole();
+      //
+      // debugPrint('Onboarding Completed: $onboardingDone');
+      // debugPrint('Token: $token');
+      // debugPrint("Role: $role");
 
       /// Run navigation after frame renders
       Future.microtask(() {
-        if (!onboardingDone) {
-          // First time so Show Onboarding
-          Get.offAll(() => OnboardingScreen());
-        }
+        Get.offAll(() => OnboardingScreen());
+        // if (!onboardingDone) {
+        //   // First time so Show Onboarding
+        //   Get.offAll(() => OnboardingScreen());
+        // }
         // else if (!rememberMe || token == null || token.isEmpty) {
         //   // Onboarding done but no token so go to Login
         //   Get.offAll(() => SignInPage());

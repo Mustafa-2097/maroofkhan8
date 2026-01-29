@@ -29,7 +29,7 @@ class OnboardingScreen extends GetView<OnboardingController> {
               ),
               const SizedBox(height: 6),
               Text(
-                "Welcome to AI Murshid",
+                "Welcome to Digital Khanqah",
                 style: Theme.of(context).textTheme.headlineLarge,
                 textAlign: TextAlign.center,
               ),
@@ -37,6 +37,13 @@ class OnboardingScreen extends GetView<OnboardingController> {
               Image.asset(
                 'assets/images/onboarding01.png',
                 height: 355,
+              ),
+              Text(
+                "AI Murshid",
+                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                  color: Color(0xFFEE7600).withValues(alpha: 0.8),
+                ),
+                textAlign: TextAlign.center,
               ),
             ],
           ),
