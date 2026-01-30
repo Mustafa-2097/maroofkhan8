@@ -11,74 +11,57 @@ class AwliyaAllahListScreen extends StatelessWidget {
     const Color primaryBrown = Color(0xFF8D3C1F);
 
     return Scaffold(
-      body: Stack(
-        children: [
-          // 1. Background Image
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(
-                    'https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?q=80&w=1000&auto=format&fit=crop'), // Cloud/Sky background
-                fit: BoxFit.cover,
+      body: SafeArea(
+        child: Column(
+          children: [
+            SizedBox(height: 20),
+            // 1. Header Title
+            Text(
+              "Awliya Allah",
+              style: GoogleFonts.playfairDisplay(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFF2E2E2E),
               ),
             ),
-          ),
-          // Light overlay to make text readable
-          Container(color: Colors.white.withOpacity(0.4)),
-
-          SafeArea(
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                // 2. Header Title
-                Text(
-                  "Awliya Allah",
-                  style: GoogleFonts.playfairDisplay(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xFF2E2E2E),
+            SizedBox(height: 10),
+            // 2. Search Bar
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              child: Container(
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: const TextField(
+                  decoration: InputDecoration(
+                    hintText: "Search",
+                    hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 15),
+                    border: InputBorder.none,
                   ),
                 ),
-                const SizedBox(height: 20),
-                // 3. Search Bar
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.grey.shade300),
-                    ),
-                    child: const TextField(
-                      decoration: InputDecoration(
-                        hintText: "Search",
-                        hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 15),
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                // 4. Scrollable List
-                Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    itemCount: 10, // Number of items
-                    itemBuilder: (context, index) {
-                      return const AwliyaCard(
-                        title: "Shayidh Abdul Qadir\nJilani (RA)",
-                        subtitle: "Sufi Scholar + Baghdad",
-                        buttonColor: primaryBrown,
-                      );
-                    },
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ],
+            SizedBox(height: 20),
+            // 3. Scrollable List
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                itemCount: 10, // Number of items
+                itemBuilder: (context, index) {
+                  return const AwliyaCard(
+                    title: "Shayidh Abdul Qadir\nJilani (RA)",
+                    subtitle: "Sufi Scholar + Baghdad",
+                    buttonColor: primaryBrown,
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -116,9 +99,10 @@ class AwliyaCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.06),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+              color: Colors.black.withOpacity(0.15),
+              spreadRadius: 1,
+              blurRadius: 8,
+              offset: Offset(0, 3), // vertical shadow
             ),
           ],
         ),

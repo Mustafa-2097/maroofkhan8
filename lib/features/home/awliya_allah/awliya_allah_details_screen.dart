@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../core/constant/app_colors.dart';
+
 class AwliyaAllahDetailsScreen extends StatefulWidget {
   const AwliyaAllahDetailsScreen({super.key});
 
@@ -16,136 +18,96 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // 1. Background Image (Cloud/Sky texture)
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage('https://img.freepik.com/free-photo/abstract-cloudy-sky-background_23-2148821430.jpg'),
-                fit: BoxFit.cover,
-                opacity: 0.6,
-              ),
-            ),
-          ),
-
-          SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: [
-                  // 2. Back Button
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.5),
-                        border: Border.all(color: Colors.grey.shade400),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(Icons.chevron_left, color: Colors.grey, size: 20),
-                    ),
-                  ),
-
-                  // 3. Profile Image
-                  const SizedBox(height: 10),
-                  const Center(
-                    child: CircleAvatar(
-                      radius: 90,
-                      backgroundImage: NetworkImage('https://i.pinimg.com/736x/8e/9d/23/8e9d23315a6792345e6912389d5f75e7.jpg'),
-                    ),
-                  ),
-
-                  // 4. Names
-                  const SizedBox(height: 20),
-                  Text(
-                    "Zulfiqar Ahmad Naqsh-bandi",
-                    style: GoogleFonts.playfairDisplay(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFF2E2E2E),
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    "ذو الفقار أحمد النقشبندي",
-                    style: GoogleFonts.amiri(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-
-                  // 5. Tabs Row
-                  // 5. Tabs Row
-                  const SizedBox(height: 25),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        _tabButton("Biography", 0),
-                        _tabButton("Teachings", 1),
-                        _tabButton("Karamat", 2),
-                        _tabButton("Quotes", 3),
-                      ],
-                    ),
-                  ),
-
-
-                  // 6. Section Title
-                  const SizedBox(height: 25),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      _getTabTitle(),
-                      style: GoogleFonts.playfairDisplay(
-                        fontSize: 22,
-                        color: const Color(0xFF2E2E2E),
-                      ),
-                    ),
-                  ),
-
-                  // ... after Section Title ...
-                  const SizedBox(height: 15),
-
-                  _buildTabBody(),
-
-                  // 7. Info Card
-                  const SizedBox(height: 15),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(25),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            children: [
+              // 2. Back Button
+              InkWell(
+                onTap: () => Navigator.pop(context),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 10),
+                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(30),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
-                        )
-                      ],
+                      color: Colors.white.withOpacity(0.5),
+                      border: Border.all(color: Colors.grey.shade400),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Column(
-                      children: [
-                        _infoRow("Name :", "Zulfiqar Ahmad Naqshbandi"),
-                        _infoRow("Born :", "1 April 1953, Jhang,\nPakistan"),
-                        _infoRow("Passed away :", "14 December 2025"),
-                        _infoRow("Position :", "Islamic Scholar & Sufi Shaykh of\nthe Naqshbandi-Mujaddidi Order"),
-                        _infoRow("Institution :", "Jamia Mahad-ul-Faqeer Al-Islami"),
-                        _infoRow("Works :", "Over 100 books on spirituality, ethics,\nand Islam"),
-                        _infoRow("Known For :", "Spiritual purification, inner\nreform, ethical guidance"),
-                      ],
-                    ),
+                    child: const Icon(Icons.chevron_left, color: Colors.grey, size: 20),
                   ),
-                  const SizedBox(height: 40),
-                ],
+                ),
               ),
-            ),
+
+              // 3. Profile Image
+              const SizedBox(height: 10),
+              const Center(
+                child: CircleAvatar(
+                  radius: 90,
+                  backgroundImage: NetworkImage('https://i.pinimg.com/736x/8e/9d/23/8e9d23315a6792345e6912389d5f75e7.jpg'),
+                ),
+              ),
+
+              // 4. Names
+              const SizedBox(height: 20),
+              Text(
+                "Zulfiqar Ahmad Naqsh-bandi",
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF2E2E2E),
+                ),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                "ذو الفقار أحمد النقشبندي",
+                style: GoogleFonts.amiri(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+
+              // 5. Tabs Row
+              // 5. Tabs Row
+              const SizedBox(height: 25),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _tabButton("Biography", 0),
+                    _tabButton("Teachings", 1),
+                    _tabButton("Karamat", 2),
+                    _tabButton("Quotes", 3),
+                  ],
+                ),
+              ),
+
+
+              // 6. Section Title
+              const SizedBox(height: 25),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  _getTabTitle(),
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 22,
+                    color: const Color(0xFF2E2E2E),
+                  ),
+                ),
+              ),
+
+              // ... after Section Title ...
+              const SizedBox(height: 15),
+
+              _buildTabBody(),
+
+              const SizedBox(height: 40),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -178,7 +140,7 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
         return _biographyTab();
     }
   }
-
+  // 1. Biography TAB
   Widget _biographyTab() {
     return Container(
       width: double.infinity,
@@ -227,17 +189,21 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
           width: double.infinity,
           padding: const EdgeInsets.all(20),
           margin: const EdgeInsets.only(bottom: 20),
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(width: 1, color: Colors.grey.shade200),
+            borderRadius: BorderRadius.circular(20),
+          ),
           child: Column(
             children: [
               Text("Key Teachings & Guidance", style: GoogleFonts.playfairDisplay(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
-              const Text("1. Love & Service to Humanity\n2. Zikr & Contemplation\n3. Inner Purification (Tazkiya al-Nafs)", textAlign: TextAlign.center, style: TextStyle(fontSize: 12, height: 1.5)),
+              const Text("1. Love & Service to Humanity\n2. Zikr & Contemplation\n3. Inner Purification (Tazkiya al-Nafs)", textAlign: TextAlign.start, style: TextStyle(fontSize: 12, height: 1.5)),
               const SizedBox(height: 15),
               const CircleAvatar(
-                radius: 35,
+                radius: 40,
                 backgroundColor: Color(0xFFF5E6E0),
-                child: Text("Dargah\nVisuals", textAlign: TextAlign.center, style: TextStyle(fontSize: 10, color: Colors.brown)),
+                child: Text("Dargah\nVisuals", textAlign: TextAlign.center, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.brown)),
               )
             ],
           ),
@@ -274,6 +240,7 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
+        border: Border.all(width: 1, color: Colors.grey.shade200),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10)],
       ),

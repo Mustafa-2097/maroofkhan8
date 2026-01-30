@@ -134,25 +134,9 @@ class SignInSignUpPage extends StatelessWidget {
                         final theme = Theme.of(context);
                         final isDark = theme.brightness == Brightness.dark;
 
-                        return CircleAvatar(
-                          radius: 22,
-                          backgroundColor: theme.scaffoldBackgroundColor,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                width: 1,
-                                color: isDark ? Colors.white : Colors.grey.shade400,
-                              ),
-                            ),
-                            child: Center(
-                              child: Icon(
-                                Icons.g_mobiledata,
-                                size: 26,
-                                color: theme.colorScheme.onSurface,
-                              ),
-                            ),
-                          ),
+                        return Image.asset(
+                          'assets/images/google.png',
+                          height: 50,
                         );
                       },
                     ),

@@ -42,17 +42,11 @@ class PaymentHistory extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         // Stripe box
-                        Container(
-                          height: 52,
-                          width: 52,
-                          padding: EdgeInsets.all(8.r),
-                          decoration: BoxDecoration(
-                            color: Colors.black87,
-                            borderRadius: BorderRadius.circular(12.r),
-                          ),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
                           child: Image.asset(
                             "assets/images/stripe.png",
-                            fit: BoxFit.contain,
+                            fit: BoxFit.cover,
                           ),
                         ),
                         SizedBox(width: 10),
@@ -62,16 +56,16 @@ class PaymentHistory extends StatelessWidget {
                           children: [
                             Text(
                               "Transfer from Stripe",
-                              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: Colors.white),
+                              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w400, color: Colors.black87),
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 6),
                             Text(
                               "Transaction ID",
-                              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: Colors.grey),
+                              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: Colors.black45),
                             ),
                             Text(
                               "123456789",
-                              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: Colors.grey),
+                              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: Colors.black45),
                             ),
                           ],
                         ),
@@ -82,24 +76,24 @@ class PaymentHistory extends StatelessWidget {
                           children: [
                             Text(
                               "\$9.00",
-                              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Colors.white),
+                              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Colors.black54),
                             ),
                             SizedBox(height: 4),
                             Container(
                               padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(6),
-                                color: Colors.grey,
+                                color: Colors.green,
                               ),
                               child: Text(
                                 "Confirmed",
-                                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: Colors.black),
+                                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Colors.white),
                               ),
                             ),
                             SizedBox(height: 4),
                             Text(
                               "16 Sep 2026 11.21 AM",
-                              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: Colors.grey),
+                              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: Colors.black54),
                             ),
                           ],
                         ),
