@@ -93,7 +93,12 @@ class SignInSignUpPage extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () => Get.to(() => ForgotPasswordPage()),
-                      child: const Text('Forgot password?'),
+                      child: Text(
+                        'Forgot password?',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
                     ),
                   ),
 
@@ -107,8 +112,8 @@ class SignInSignUpPage extends StatelessWidget {
                     onPressed: controller.submit,
                     child: Text(
                       controller.isLogin.value
-                          ? 'Log in'
-                          : 'Sign Up',
+                       ? 'Log in'
+                       : 'Sign Up',
                     ),
                   ),
                 ),
@@ -121,6 +126,9 @@ class SignInSignUpPage extends StatelessWidget {
                     controller.isLogin.value
                         ? 'Other Login options'
                         : 'Or Register with',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
                   ),
                 ),
 
@@ -239,6 +247,7 @@ class _TextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return TextField(
       controller: controller,
       obscureText: obscure,
@@ -246,6 +255,19 @@ class _TextField extends StatelessWidget {
         hintText: hint,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: isDark ? AppColors.primaryColorDark : AppColors.primaryColorLight,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: isDark ? AppColors.primaryColorDark : AppColors.primaryColorLight,
+            width: 2,
+          ),
         ),
       ),
     );

@@ -11,13 +11,14 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         minimumSize: Size(double.infinity, 50.h),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24.r),
         ),
-        backgroundColor: AppColors.primaryColor,
+        backgroundColor: isDark ? AppColors.primaryColorDark : AppColors.primaryColorLight,
       ),
       onPressed: onPressed,
       child: Text(

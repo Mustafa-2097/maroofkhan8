@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
+import '../view/reset_password.dart';
+
 class VerificationCodeController extends GetxController {
   static VerificationCodeController get instance => Get.find();
 
@@ -21,7 +23,12 @@ class VerificationCodeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    email = Get.arguments["email"];
+    // Use the null-aware operator and provide a fallback to prevent crashing
+    if (Get.arguments != null && Get.arguments["email"] != null) {
+      email = Get.arguments["email"];
+    } else {
+      email = "Unknown"; // Or handle this error appropriately
+    }
     startTimer();
   }
 
@@ -56,6 +63,7 @@ class VerificationCodeController extends GetxController {
       return;
     }
 
+    Get.to(() => ResetPassword());
     //await AuthService.verifyOtpCode(email: email, code: otp.value);
   }
 

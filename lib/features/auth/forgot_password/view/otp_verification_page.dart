@@ -55,10 +55,9 @@ class OtpVerificationPage extends StatelessWidget {
                 width: double.infinity,
                 height: 48,
                 child: ElevatedButton(
-                  onPressed: () => Get.to(()=> OtpVerificationPage()),
-                  child: Text(
-                    'Verify',
-                  ),
+                  // CHANGE THIS: Call the controller method
+                  onPressed: () => controller.verifyOtp(),
+                  child: const Text('Verify'),
                 ),
               ),
 
@@ -79,6 +78,7 @@ class OtpBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return PinCodeTextField(
       appContext: context,
       length: 6,
@@ -91,9 +91,9 @@ class OtpBox extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
         fieldHeight: 50.h,
         fieldWidth: 50.w,
-        inactiveColor: Colors.white70,
-        activeColor: Colors.white,
-        selectedColor: Colors.white,
+        inactiveColor: isDark ? AppColors.primaryColorDark : AppColors.primaryColorLight,
+        activeColor: isDark ? AppColors.primaryColorDark : AppColors.primaryColorLight,
+        selectedColor: isDark ? AppColors.primaryColorDark : AppColors.primaryColorLight,
       ),
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       onChanged: onChanged,

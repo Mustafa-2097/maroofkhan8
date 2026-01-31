@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 import '../controller/forgot_password_controller.dart';
 import 'otp_verification_page.dart';
 
-class ForgotPasswordPage extends StatelessWidget {
-  ForgotPasswordPage({super.key});
+class ResetPassword extends StatelessWidget {
+  ResetPassword({super.key});
   final controller = Get.put(ForgotPasswordController());
 
   @override
@@ -22,7 +22,7 @@ class ForgotPasswordPage extends StatelessWidget {
               /// Title
               Center(
                 child: Text(
-                  'Forgot Password',
+                  'Create New Password',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     color: Theme.of(context).colorScheme.primary,
                   ),
@@ -33,7 +33,7 @@ class ForgotPasswordPage extends StatelessWidget {
 
               /// Subtitle
               Text(
-                'Don\'t worry! It occurs. Please enter the email address linked with your account.',
+                'Your new password must be different from previous used passwords.',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: Theme.of(context).disabledColor,
                 ),
@@ -56,35 +56,10 @@ class ForgotPasswordPage extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () => Get.to(()=> OtpVerificationPage()),
                   child: Text(
-                    'Send Code',
+                    'Reset Password',
                   ),
                 ),
               ),
-
-              const SizedBox(height: 24),
-
-              /// Social login
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Remember Password?',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                  SizedBox(width: 5),
-                  InkWell(
-                    onTap: () => Get.back(),
-                    child: Text(
-                      'Login',
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 16),
-
             ],
           ),
         ),
