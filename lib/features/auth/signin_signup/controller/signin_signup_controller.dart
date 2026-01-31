@@ -9,6 +9,12 @@ class SignInSignUpController extends GetxController {
   /// Determines whether Sign In or Sign Up UI is shown
   final isLogin = true.obs;
 
+  // Add these two variables
+  var isPasswordVisible = false.obs;
+  var isConfirmPasswordVisible = false.obs;
+  void togglePasswordVisibility() => isPasswordVisible.value = !isPasswordVisible.value;
+  void toggleConfirmPasswordVisibility() => isConfirmPasswordVisible.value = !isConfirmPasswordVisible.value;
+
   /// Controllers
   final emailController = TextEditingController();
   final passwordController = TextEditingController();

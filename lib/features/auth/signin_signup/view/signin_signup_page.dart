@@ -54,7 +54,7 @@ class SignInSignUpPage extends StatelessWidget {
                   _Label(text: 'Full Name *'),
                   _TextField(
                     controller: controller.nameController,
-                    hint: 'Your name',
+                    hint: 'Username',
                   ),
                   const SizedBox(height: 16),
                 ],
@@ -75,7 +75,16 @@ class SignInSignUpPage extends StatelessWidget {
                 _TextField(
                   controller: controller.passwordController,
                   hint: 'must be 6 characters',
-                  obscure: true,
+                  obscure: !controller.isPasswordVisible.value,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      controller.isPasswordVisible.value
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: Theme.of(context).disabledColor,
+                    ),
+                    onPressed: controller.togglePasswordVisibility,
+                  ),
                 ),
 
                 if (!controller.isLogin.value) ...[
@@ -84,7 +93,16 @@ class SignInSignUpPage extends StatelessWidget {
                   _TextField(
                     controller: controller.confirmPasswordController,
                     hint: 'repeat password',
-                    obscure: true,
+                    obscure: !controller.isConfirmPasswordVisible.value,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        controller.isConfirmPasswordVisible.value
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: Theme.of(context).disabledColor,
+                      ),
+                      onPressed: controller.toggleConfirmPasswordVisibility,
+                    ),
                   ),
                 ],
 
@@ -238,11 +256,13 @@ class _TextField extends StatelessWidget {
   final TextEditingController controller;
   final String hint;
   final bool obscure;
+  final Widget? suffixIcon;
 
   const _TextField({
     required this.controller,
     required this.hint,
     this.obscure = false,
+    this.suffixIcon,
   });
 
   @override
@@ -253,6 +273,7 @@ class _TextField extends StatelessWidget {
       obscureText: obscure,
       decoration: InputDecoration(
         hintText: hint,
+        suffixIcon: suffixIcon,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
         ),

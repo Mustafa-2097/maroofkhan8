@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:maroofkhan8/features/auth/forgot_password/controller/reset_password_controller.dart';
 
-import '../controller/forgot_password_controller.dart';
-import 'otp_verification_page.dart';
+import '../../../../core/constant/app_colors.dart';
 
 class ResetPassword extends StatelessWidget {
   ResetPassword({super.key});
-  final controller = Get.put(ForgotPasswordController());
+  final controller = Get.put(ResetPasswordController());
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +40,44 @@ class ResetPassword extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 32),
+              _Label(
+                text: 'Create a password *',
+              ),
+              Obx(() =>
+                _TextField(
+                  controller: controller.passwordController,
+                  hint: 'must be 6 characters',
+                  obscure: !controller.isPasswordVisible.value,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      controller.isPasswordVisible.value
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: Theme.of(context).disabledColor,
+                    ),
+                    onPressed: controller.togglePasswordVisibility,
+                  ),
+                ),
+              ),
 
-              _Label(text: 'Email *'),
-              _TextField(
-                controller: controller.emailController,
-                hint: 'example@gmail.com',
+              const SizedBox(height: 16),
+
+              _Label(text: 'Confirm password *'),
+              Obx(() =>
+                _TextField(
+                  controller: controller.confirmPasswordController,
+                  hint: 'repeat password',
+                  obscure: !controller.isConfirmPasswordVisible.value,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      controller.isConfirmPasswordVisible.value
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: Theme.of(context).disabledColor,
+                    ),
+                    onPressed: controller.toggleConfirmPasswordVisibility,
+                  ),
+                ),
               ),
 
               const SizedBox(height: 32),
@@ -54,7 +87,7 @@ class ResetPassword extends StatelessWidget {
                 width: double.infinity,
                 height: 48,
                 child: ElevatedButton(
-                  onPressed: () => Get.to(()=> OtpVerificationPage()),
+                  onPressed: () {},
                   child: Text(
                     'Reset Password',
                   ),
@@ -85,22 +118,39 @@ class _TextField extends StatelessWidget {
   final TextEditingController controller;
   final String hint;
   final bool obscure;
+  final Widget? suffixIcon;
 
   const _TextField({
     required this.controller,
     required this.hint,
     this.obscure = false,
+    this.suffixIcon,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return TextField(
       controller: controller,
       obscureText: obscure,
       decoration: InputDecoration(
         hintText: hint,
+        suffixIcon: suffixIcon,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: isDark ? AppColors.primaryColorDark : AppColors.primaryColorLight,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: isDark ? AppColors.primaryColorDark : AppColors.primaryColorLight,
+            width: 2,
+          ),
         ),
       ),
     );
