@@ -30,8 +30,11 @@ class ChatScreen extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.grey.shade300, width: 2),
                   ),
-                  child: const Center(
-                    child: Icon(Icons.mosque, color: Color(0xFFC5A059), size: 28),
+                  child: Center(
+                    child: Image.asset(
+                      'assets/images/onboarding02.png',
+                      height: 100,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -129,7 +132,7 @@ class ChatScreen extends StatelessWidget {
           ),
           // Bottom Input Area
           Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20, bottom: 30),
+            padding: const EdgeInsets.only(left: 20, right: 20, bottom: 120),
             child: Stack(
               alignment: Alignment.centerRight,
               clipBehavior: Clip.none,
