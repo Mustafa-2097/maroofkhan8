@@ -23,7 +23,7 @@ class OtpVerificationPage extends StatelessWidget {
               /// Title
               Center(
                 child: Text(
-                  'OTP VERIFICATION',
+                  'OTP Verification',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     color: Theme.of(context).colorScheme.primary,
                   ),

@@ -6,37 +6,42 @@ import '../../../../bottom_nav_bar.dart';
 class SignInSignUpController extends GetxController {
   static SignInSignUpController get instance => Get.find();
 
-  /// Determines whether Sign In or Sign Up UI is shown
-  final isLogin = true.obs;
+  // 1. Add Form Key and Error Tracker
+  final formKey = GlobalKey<FormState>();
+  var showErrors = false.obs;
 
-  // Add these two variables
+  final isLogin = true.obs;
   var isPasswordVisible = false.obs;
   var isConfirmPasswordVisible = false.obs;
+
   void togglePasswordVisibility() => isPasswordVisible.value = !isPasswordVisible.value;
   void toggleConfirmPasswordVisibility() => isConfirmPasswordVisible.value = !isConfirmPasswordVisible.value;
 
-  /// Controllers
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final nameController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
-  /// Switch to Sign In
   void showLogin() {
     isLogin.value = true;
+    showErrors.value = false; // Reset error state when switching
   }
 
-  /// Switch to Sign Up
   void showRegister() {
     isLogin.value = false;
+    showErrors.value = false; // Reset error state when switching
   }
 
-  /// Submit handler
   void submit() {
-    if (isLogin.value) {
-      Get.to(CustomBottomNavBar());
-    } else {
-      /// Handle sign up
+    // 2. Enable error visibility on button click
+    showErrors.value = true;
+
+    if (formKey.currentState!.validate()) {
+      if (isLogin.value) {
+        Get.to(const CustomBottomNavBar());
+      } else {
+        print("Sign Up Logic Here");
+      }
     }
   }
 

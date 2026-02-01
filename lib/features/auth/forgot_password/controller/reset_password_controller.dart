@@ -1,41 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:maroofkhan8/features/auth/forgot_password/view/password_changed.dart';
 
 class ResetPasswordController extends GetxController {
   static ResetPasswordController get instance => Get.find();
 
-  // Add these two variables
+  // Form Key for validation
+  final resetPasswordFormKey = GlobalKey<FormState>();
+
   var isPasswordVisible = false.obs;
   var isConfirmPasswordVisible = false.obs;
+
   void togglePasswordVisibility() => isPasswordVisible.value = !isPasswordVisible.value;
   void toggleConfirmPasswordVisibility() => isConfirmPasswordVisible.value = !isConfirmPasswordVisible.value;
 
-  /// Controllers
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
   void resetPassword() {
-    String pass = passwordController.text.trim();
-    String confirmPass = confirmPasswordController.text.trim();
-
-    if (pass.isEmpty || confirmPass.isEmpty) {
-      Get.snackbar("Error", "Please fill all fields", snackPosition: SnackPosition.BOTTOM);
+    // This triggers the "validator" functions in the TextFormFields
+    if (!resetPasswordFormKey.currentState!.validate()) {
       return;
     }
 
-    if (pass != confirmPass) {
-      Get.snackbar("Error", "Passwords do not match", snackPosition: SnackPosition.BOTTOM);
-      return;
-    }
-
-    if (pass.length < 6) {
-      Get.snackbar("Error", "Password must be at least 6 characters", snackPosition: SnackPosition.BOTTOM);
-      return;
-    }
-
-    // If successful:
-    print("Password reset successfully for code logic");
-    // Get.offAllNamed('/login');
+    // If validation passes, proceed with logic
+    print("Password reset successfully logic here");
+    Get.offAll(() => PasswordChange());
   }
 
   @override

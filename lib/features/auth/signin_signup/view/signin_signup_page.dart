@@ -15,161 +15,174 @@ class SignInSignUpPage extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
-          child: Obx(
-                () => Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 24),
+          child: Form(
+            key: controller.formKey,
+            child: Obx(
+                  () => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 24),
 
-                /// Title
-                Center(
-                  child: Text(
-                    controller.isLogin.value ? 'Login' : 'Sign Up',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
+                  /// Title
+                  Center(
+                    child: Text(
+                      controller.isLogin.value ? 'Login' : 'Sign Up',
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     ),
                   ),
-                ),
 
-                const SizedBox(height: 8),
+                  const SizedBox(height: 8),
 
-                /// Subtitle
-                Center(
-                  child: Text(
-                    'Log in or register to save your progress',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      color: Theme.of(context).disabledColor,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 24),
-
-                /// Toggle buttons
-                _AuthToggle(),
-
-                const SizedBox(height: 32),
-
-                if (!controller.isLogin.value) ...[
-                  _Label(text: 'Full Name *'),
-                  _TextField(
-                    controller: controller.nameController,
-                    hint: 'Username',
-                  ),
-                  const SizedBox(height: 16),
-                ],
-
-                _Label(text: 'Email *'),
-                _TextField(
-                  controller: controller.emailController,
-                  hint: 'example@gmail.com',
-                ),
-
-                const SizedBox(height: 16),
-
-                _Label(
-                  text: controller.isLogin.value
-                      ? 'Password'
-                      : 'Create a password *',
-                ),
-                _TextField(
-                  controller: controller.passwordController,
-                  hint: 'must be 6 characters',
-                  obscure: !controller.isPasswordVisible.value,
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      controller.isPasswordVisible.value
-                          ? Icons.visibility
-                          : Icons.visibility_off,
-                      color: Theme.of(context).disabledColor,
-                    ),
-                    onPressed: controller.togglePasswordVisibility,
-                  ),
-                ),
-
-                if (!controller.isLogin.value) ...[
-                  const SizedBox(height: 16),
-                  _Label(text: 'Confirm password *'),
-                  _TextField(
-                    controller: controller.confirmPasswordController,
-                    hint: 'repeat password',
-                    obscure: !controller.isConfirmPasswordVisible.value,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        controller.isConfirmPasswordVisible.value
-                            ? Icons.visibility
-                            : Icons.visibility_off,
+                  /// Subtitle
+                  Center(
+                    child: Text(
+                      'Log in or register to save your progress',
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         color: Theme.of(context).disabledColor,
                       ),
-                      onPressed: controller.toggleConfirmPasswordVisibility,
                     ),
                   ),
-                ],
 
-                if (controller.isLogin.value)
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () => Get.to(() => ForgotPasswordPage()),
-                      child: Text(
-                        'Forgot password?',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
+                  const SizedBox(height: 24),
+
+                  /// Toggle buttons
+                  _AuthToggle(),
+
+                  const SizedBox(height: 32),
+
+                  if (!controller.isLogin.value) ...[
+                    _Label(text: 'Full Name *'),
+                    _TextField(
+                      controller: controller.nameController,
+                      hint: 'Username',
+                      autovalidateMode: controller.showErrors.value ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
+                      validator: (value) => value == null || value.isEmpty ? "Name is required" : null,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+
+                  _Label(text: 'Email *'),
+                  _TextField(
+                    controller: controller.emailController,
+                    hint: 'example@gmail.com',
+                    autovalidateMode: controller.showErrors.value ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) return "Email is required";
+                      if (!GetUtils.isEmail(value)) return "Enter a valid email";
+                      return null;
+                    },
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  _Label(
+                    text: controller.isLogin.value
+                        ? 'Password'
+                        : 'Create a password *',
+                  ),
+                  _TextField(
+                    controller: controller.passwordController,
+                    hint: 'must be 6 characters',
+                    obscure: !controller.isPasswordVisible.value,
+                    autovalidateMode: controller.showErrors.value ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) return "Password is required";
+                      if (value.length < 6) return "Password must be at least 6 characters";
+                      return null;
+                    },
+                    suffixIcon: IconButton(
+                      icon: Icon(controller.isPasswordVisible.value ? Icons.visibility : Icons.visibility_off),
+                      onPressed: controller.togglePasswordVisibility,
+                    ),
+                  ),
+
+                  /// Confirm Password (Signup Only)
+                  if (!controller.isLogin.value) ...[
+                    const SizedBox(height: 16),
+                    _Label(text: 'Confirm password *'),
+                    _TextField(
+                      controller: controller.confirmPasswordController,
+                      hint: 'repeat password',
+                      obscure: !controller.isConfirmPasswordVisible.value,
+                      autovalidateMode: controller.showErrors.value ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
+                      validator: (value) {
+                        if (value != controller.passwordController.text) return "Passwords do not match";
+                        return null;
+                      },
+                      suffixIcon: IconButton(
+                        icon: Icon(controller.isConfirmPasswordVisible.value ? Icons.visibility : Icons.visibility_off),
+                        onPressed: controller.toggleConfirmPasswordVisibility,
+                      ),
+                    ),
+                  ],
+
+                  if (controller.isLogin.value)
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () => Get.to(() => ForgotPasswordPage()),
+                        child: Text(
+                          'Forgot password?',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                         ),
                       ),
                     ),
+
+                  const SizedBox(height: 24),
+
+                  /// Submit button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: ElevatedButton(
+                      onPressed: controller.submit,
+                      child: Text(
+                        controller.isLogin.value
+                         ? 'Log in'
+                         : 'Sign Up',
+                      ),
+                    ),
                   ),
 
-                const SizedBox(height: 24),
+                  const SizedBox(height: 24),
 
-                /// Submit button
-                SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: ElevatedButton(
-                    onPressed: controller.submit,
+                  /// Social login
+                  Center(
                     child: Text(
                       controller.isLogin.value
-                       ? 'Log in'
-                       : 'Sign Up',
+                          ? 'Other Login options'
+                          : 'Or Register with',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
                     ),
                   ),
-                ),
 
-                const SizedBox(height: 24),
+                  const SizedBox(height: 16),
 
-                /// Social login
-                Center(
-                  child: Text(
-                    controller.isLogin.value
-                        ? 'Other Login options'
-                        : 'Or Register with',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.error,
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Builder(
+                        builder: (context) {
+                          final theme = Theme.of(context);
+                          final isDark = theme.brightness == Brightness.dark;
+
+                          return Image.asset(
+                            'assets/images/google.png',
+                            height: 50,
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                ),
+                  )
 
-                const SizedBox(height: 16),
-
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Builder(
-                      builder: (context) {
-                        final theme = Theme.of(context);
-                        final isDark = theme.brightness == Brightness.dark;
-
-                        return Image.asset(
-                          'assets/images/google.png',
-                          height: 50,
-                        );
-                      },
-                    ),
-                  ),
-                )
-
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -257,26 +270,30 @@ class _TextField extends StatelessWidget {
   final String hint;
   final bool obscure;
   final Widget? suffixIcon;
+  final String? Function(String?)? validator;
+  final AutovalidateMode autovalidateMode; // Add this
 
   const _TextField({
     required this.controller,
     required this.hint,
     this.obscure = false,
     this.suffixIcon,
+    this.validator,
+    this.autovalidateMode = AutovalidateMode.disabled, // Default to disabled
   });
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return TextField(
+    return TextFormField( // Changed to TextFormField
       controller: controller,
       obscureText: obscure,
+      validator: validator,
+      autovalidateMode: autovalidateMode,
       decoration: InputDecoration(
         hintText: hint,
         suffixIcon: suffixIcon,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
@@ -289,6 +306,15 @@ class _TextField extends StatelessWidget {
             color: isDark ? AppColors.primaryColorDark : AppColors.primaryColorLight,
             width: 2,
           ),
+        ),
+        // Added error styling
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.red),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.red, width: 2),
         ),
       ),
     );
