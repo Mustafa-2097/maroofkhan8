@@ -57,7 +57,6 @@ class SignInSignUpPage extends StatelessWidget {
                     _TextField(
                       controller: controller.nameController,
                       hint: 'Username',
-                      autovalidateMode: controller.showErrors.value ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
                       validator: (value) => value == null || value.isEmpty ? "Name is required" : null,
                     ),
                     const SizedBox(height: 16),
@@ -67,7 +66,6 @@ class SignInSignUpPage extends StatelessWidget {
                   _TextField(
                     controller: controller.emailController,
                     hint: 'example@gmail.com',
-                    autovalidateMode: controller.showErrors.value ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
                     validator: (value) {
                       if (value == null || value.isEmpty) return "Email is required";
                       if (!GetUtils.isEmail(value)) return "Enter a valid email";
@@ -77,6 +75,7 @@ class SignInSignUpPage extends StatelessWidget {
 
                   const SizedBox(height: 16),
 
+                  ///
                   _Label(
                     text: controller.isLogin.value
                         ? 'Password'
@@ -86,14 +85,16 @@ class SignInSignUpPage extends StatelessWidget {
                     controller: controller.passwordController,
                     hint: 'must be 6 characters',
                     obscure: !controller.isPasswordVisible.value,
-                    autovalidateMode: controller.showErrors.value ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
                     validator: (value) {
                       if (value == null || value.isEmpty) return "Password is required";
                       if (value.length < 6) return "Password must be at least 6 characters";
                       return null;
                     },
                     suffixIcon: IconButton(
-                      icon: Icon(controller.isPasswordVisible.value ? Icons.visibility : Icons.visibility_off),
+                      icon: Icon(
+                        controller.isPasswordVisible.value ? Icons.visibility : Icons.visibility_off,
+                        color: Theme.of(context).disabledColor,
+                      ),
                       onPressed: controller.togglePasswordVisibility,
                     ),
                   ),
@@ -106,13 +107,16 @@ class SignInSignUpPage extends StatelessWidget {
                       controller: controller.confirmPasswordController,
                       hint: 'repeat password',
                       obscure: !controller.isConfirmPasswordVisible.value,
-                      autovalidateMode: controller.showErrors.value ? AutovalidateMode.onUserInteraction : AutovalidateMode.disabled,
                       validator: (value) {
+                        if (value == null || value.isEmpty) return 'Please confirm your password';
                         if (value != controller.passwordController.text) return "Passwords do not match";
                         return null;
                       },
                       suffixIcon: IconButton(
-                        icon: Icon(controller.isConfirmPasswordVisible.value ? Icons.visibility : Icons.visibility_off),
+                        icon: Icon(
+                          controller.isConfirmPasswordVisible.value ? Icons.visibility : Icons.visibility_off,
+                          color: Theme.of(context).disabledColor,
+                        ),
                         onPressed: controller.toggleConfirmPasswordVisibility,
                       ),
                     ),
@@ -134,7 +138,7 @@ class SignInSignUpPage extends StatelessWidget {
 
                   const SizedBox(height: 24),
 
-                  /// Submit button
+                  /// LogIn or SignUp button
                   SizedBox(
                     width: double.infinity,
                     height: 48,
@@ -164,6 +168,7 @@ class SignInSignUpPage extends StatelessWidget {
 
                   const SizedBox(height: 16),
 
+                  /// Google Logo
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -172,14 +177,22 @@ class SignInSignUpPage extends StatelessWidget {
                           final theme = Theme.of(context);
                           final isDark = theme.brightness == Brightness.dark;
 
-                          return Image.asset(
-                            'assets/images/google.png',
+                          return Container(
                             height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: isDark ? Colors.grey.shade400 : Colors.grey.shade300),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: Image.asset(
+                              'assets/images/google.png',
+                              height: 50,
+                            ),
                           );
                         },
                       ),
                     ),
-                  )
+                  ),
 
                 ],
               ),
@@ -200,7 +213,7 @@ class _AuthToggle extends GetView<SignInSignUpController> {
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Row(
+      child: Obx(() => Row( // Add Obx here so the button colors update
         children: [
           _ToggleButton(
             text: 'Sign in',
@@ -213,7 +226,7 @@ class _AuthToggle extends GetView<SignInSignUpController> {
             onTap: controller.showRegister,
           ),
         ],
-      ),
+      )),
     );
   }
 }
@@ -271,7 +284,6 @@ class _TextField extends StatelessWidget {
   final bool obscure;
   final Widget? suffixIcon;
   final String? Function(String?)? validator;
-  final AutovalidateMode autovalidateMode; // Add this
 
   const _TextField({
     required this.controller,
@@ -279,17 +291,15 @@ class _TextField extends StatelessWidget {
     this.obscure = false,
     this.suffixIcon,
     this.validator,
-    this.autovalidateMode = AutovalidateMode.disabled, // Default to disabled
   });
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return TextFormField( // Changed to TextFormField
+    return TextFormField(
       controller: controller,
       obscureText: obscure,
       validator: validator,
-      autovalidateMode: autovalidateMode,
       decoration: InputDecoration(
         hintText: hint,
         suffixIcon: suffixIcon,

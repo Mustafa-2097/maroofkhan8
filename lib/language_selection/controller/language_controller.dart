@@ -3,12 +3,12 @@ import '../../features/auth/signin_signup/view/signin_signup_page.dart';
 
 class LanguageController extends GetxController {
   static LanguageController get instance => Get.find();
-  final selectedLanguage = 'Arabic'.obs;
+  final selectedLanguage = 'English'.obs;
 
   final languages = [
+    'English',
     'Arabic',
     'Urdu',
-    'English',
     'Hindi',
   ];
 

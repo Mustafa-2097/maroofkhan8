@@ -39,12 +39,12 @@ class ResetPassword extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
 
+                /// Create a password
                 _Label(text: 'Create a password *'),
                 Obx(() => _TextField(
                   controller: controller.passwordController,
                   hint: 'must be 6 characters',
                   obscure: !controller.isPasswordVisible.value,
-                  // --- PASSWORD VALIDATOR ---
                   validator: (value) {
                     if (value == null || value.isEmpty) return 'Password is required';
                     if (value.length < 6) return 'Password must be at least 6 characters';
@@ -61,12 +61,12 @@ class ResetPassword extends StatelessWidget {
 
                 const SizedBox(height: 16),
 
+                /// Confirm password
                 _Label(text: 'Confirm password *'),
                 Obx(() => _TextField(
                   controller: controller.confirmPasswordController,
                   hint: 'repeat password',
                   obscure: !controller.isConfirmPasswordVisible.value,
-                  // --- CONFIRM PASSWORD VALIDATOR ---
                   validator: (value) {
                     if (value == null || value.isEmpty) return 'Please confirm your password';
                     if (value != controller.passwordController.text) return 'Passwords do not match';
@@ -83,6 +83,7 @@ class ResetPassword extends StatelessWidget {
 
                 const SizedBox(height: 32),
 
+                /// Reset Password button
                 SizedBox(
                   width: double.infinity,
                   height: 48,
@@ -118,14 +119,14 @@ class _TextField extends StatelessWidget {
   final String hint;
   final bool obscure;
   final Widget? suffixIcon;
-  final String? Function(String?)? validator; // Added validator property
+  final String? Function(String?)? validator;
 
   const _TextField({
     required this.controller,
     required this.hint,
     this.obscure = false,
     this.suffixIcon,
-    this.validator, // Initialize it
+    this.validator,
   });
 
   @override
