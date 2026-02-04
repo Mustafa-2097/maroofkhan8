@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:maroofkhan8/features/profile/view/widgets/profile_list.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -7,138 +6,102 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
         title: Text(
           "PROFILE",
-          style: theme.textTheme.headlineMedium?.copyWith(fontSize: 20.sp),
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.w), // Standard 24px padding
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(height: 10.h),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              const SizedBox(height: 24),
 
-                /// User Image
-                Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    CircleAvatar(
-                        radius: 50.r,
-                        backgroundColor: theme.colorScheme.surface,
-                        child: Icon(Icons.person, size: 55.r, color: theme.disabledColor)
-                    ),
-                    GestureDetector(
-                      onTap: () {},
-                      child: CircleAvatar(
-                        radius: 16.r,
-                        backgroundColor: theme.colorScheme.primary,
-                        child: Icon(Icons.camera_enhance_outlined, size: 16.r, color: Colors.white),
-                      ),
-                    ),
-                  ],
+              /// User Image
+              CircleAvatar(
+                radius: 50,
+                backgroundColor: isDark ? Color(0xFF494358) : Colors.grey.shade200,
+                child: Icon(
+                  Icons.person,
+                  size: 60,
+                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                 ),
-                SizedBox(height: 12.h),
+              ),
+              const SizedBox(height: 16),
 
-                /// Name + Username
-                Column(
+              /// Name + Username
+              Text(
+                "Maroof Khan",
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              Text(
+                "maroof@example.com",
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+
+              const SizedBox(height: 32),
+
+              /// Status box (Plan)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Theme.of(context).colorScheme.surface,
+                  border: Border.all(
+                    color: isDark ? Colors.white10 : Colors.black12,
+                  ),
+                ),
+                child: Column(
                   children: [
-                    Text(
-                      "Username",
-                      style: theme.textTheme.headlineSmall,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Your Plan Status", style: Theme.of(context).textTheme.titleMedium),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            "Upgrade",
+                            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary, fontWeight: FontWeight.bold),
+                          ),
+                        )
+                      ],
                     ),
-                    SizedBox(height: 4.h),
-                    Text(
-                      "user.example@gmail.com",
-                      style: theme.textTheme.bodyMedium?.copyWith(color: theme.disabledColor),
+                    const Divider(height: 24),
+                    Row(
+                      children: [
+                        Icon(Icons.auto_awesome, size: 20, color: Theme.of(context).colorScheme.primary),
+                        const SizedBox(width: 8),
+                        Text("Basic Plan", style: Theme.of(context).textTheme.bodyLarge),
+                        const Spacer(),
+                        Text("Expires: 12/2024", style: Theme.of(context).textTheme.labelMedium),
+                      ],
                     )
                   ],
                 ),
-                SizedBox(height: 24.h),
+              ),
 
-                /// Status box
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.all(16.r),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.r),
-                    color: isDark ? theme.colorScheme.surface : theme.colorScheme.primary.withOpacity(0.1),
-                    border: Border.all(color: theme.colorScheme.primary.withOpacity(0.2)),
-                  ),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "Your Plan Status",
-                              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                            ),
-                            const Spacer(),
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.r),
-                                color: theme.colorScheme.primary,
-                              ),
-                              child: Text(
-                                "Upgrade",
-                                style: theme.textTheme.labelLarge?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 12.h),
-                        Row(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(6.r),
-                                color: isDark ? theme.colorScheme.primary.withOpacity(0.5) : Colors.white,
-                                border: isDark ? null : Border.all(color: theme.colorScheme.primary),
-                              ),
-                              child: Text(
-                                "Basic",
-                                style: theme.textTheme.labelMedium?.copyWith(
-                                    color: isDark ? Colors.white : theme.colorScheme.primary,
-                                    fontWeight: FontWeight.bold
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 16.w),
-                            Text(
-                              "Plan expire: 12/12/2025",
-                              style: theme.textTheme.bodySmall?.copyWith(color: theme.disabledColor),
-                            ),
-                          ],
-                        ),
-                      ]
-                  ),
-                ),
-                SizedBox(height: 24.h),
+              const SizedBox(height: 24),
 
-                /// Personal Info section (The List)
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 10.h),
-                  decoration: BoxDecoration(
-                    color: theme.scaffoldBackgroundColor,
-                    borderRadius: BorderRadius.circular(20.r),
-                  ),
-                  child: const ProfileList(),
-                ),
-              ],
-            ),
+              /// Personal Info List
+              const ProfileList(),
+
+              const SizedBox(height: 40),
+            ],
           ),
         ),
       ),

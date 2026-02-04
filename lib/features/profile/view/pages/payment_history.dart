@@ -1,109 +1,141 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../controller/payment_history_controller.dart';
 
 class PaymentHistory extends StatelessWidget {
   const PaymentHistory({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(PaymentHistoryController());
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Get.back(),
+        ),
         title: Text(
           "PAYMENT HISTORY",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
         ),
+        centerTitle: true,
       ),
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-          child: SingleChildScrollView(
+        child: Obx(
+              () => ListView.separated(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            itemCount: controller.transactions.length,
+            separatorBuilder: (context, index) => const SizedBox(height: 16),
+            itemBuilder: (context, index) {
+              final tx = controller.transactions[index];
+              return _TransactionCard(tx: tx, isDark: isDark);
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TransactionCard extends StatelessWidget {
+  final Map<String, dynamic> tx;
+  final bool isDark;
+
+  const _TransactionCard({required this.tx, required this.isDark});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isDark ? Colors.white10 : Colors.black12,
+        ),
+      ),
+      child: Row(
+        children: [
+          /// Method Logo
+          Container(
+            height: 45,
+            width: 45,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: Colors.white, // Keep background white for logos like Stripe
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.asset(tx['logo'], fit: BoxFit.contain),
+            ),
+          ),
+          const SizedBox(width: 12),
+
+          /// Info Column
+          Expanded(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  height: 100,
-                  width: 390,
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.15),
-                        spreadRadius: 1,
-                        blurRadius: 8,
-                        offset: Offset(0, 3), // vertical shadow
-                      ),
-                    ],
+                Text(
+                  "Transfer via ${tx['method']}",
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
-                  child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // Stripe box
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.asset(
-                            "assets/images/stripe.png",
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        SizedBox(width: 10),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Transfer from Stripe",
-                              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w400, color: Colors.black87),
-                            ),
-                            SizedBox(height: 6),
-                            Text(
-                              "Transaction ID",
-                              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: Colors.black45),
-                            ),
-                            Text(
-                              "123456789",
-                              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: Colors.black45),
-                            ),
-                          ],
-                        ),
-                        const Spacer(),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              "\$9.00",
-                              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600, color: Colors.black54),
-                            ),
-                            SizedBox(height: 4),
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(6),
-                                color: Colors.green,
-                              ),
-                              child: Text(
-                                "Confirmed",
-                                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600, color: Colors.white),
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              "16 Sep 2026 11.21 AM",
-                              style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: Colors.black54),
-                            ),
-                          ],
-                        ),
-                      ]
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "ID: ${tx['id']}",
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    color: Theme.of(context).disabledColor,
+                  ),
+                ),
+                Text(
+                  tx['date'],
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: Theme.of(context).disabledColor,
                   ),
                 ),
               ],
             ),
           ),
-        ),
+
+          /// Amount and Status
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                tx['amount'],
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.primary, // Brand color for emphasis
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6),
+                  color: Colors.green.withOpacity(0.2), // Themed success color
+                ),
+                child: Text(
+                  tx['status'],
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: Colors.green,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
