@@ -12,9 +12,12 @@ class TermsConditions extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          "TERMS AND CONDITIONS",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+          "TERMS and CONDITIONS",
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
         ),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: Padding(
@@ -28,7 +31,11 @@ class TermsConditions extends StatelessWidget {
                   children: [
                     Text(
                       "Last updated: 21/12/2025",
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
                     ),
                     SizedBox(height: 16),
 
@@ -235,7 +242,11 @@ class SectionTitle extends StatelessWidget {
       padding: EdgeInsets.only(top: 12.r, bottom: 6.r),
       child: Text(
         text,
-        style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold, color: Colors.black),
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.w600,
+          fontSize: 18,
+          color: Theme.of(context).colorScheme.onSurface,
+        ),
       ),
     );
   }
@@ -249,7 +260,11 @@ class SectionText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: TextStyle(fontSize: 14.sp, height: 1.5, color: Colors.black45),
+      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+        fontWeight: FontWeight.w400,
+        height: 1.5,
+        color: Theme.of(context).colorScheme.onSurface,
+      ),
     );
   }
 }

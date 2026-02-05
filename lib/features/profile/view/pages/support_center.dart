@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../controller/support_controller.dart';
 
 class SupportCenter extends StatelessWidget {
@@ -10,77 +8,74 @@ class SupportCenter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Colors.white,
-      extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
           "SUPPORT CENTER",
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.w600,
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.bold,
           ),
         ),
-        iconTheme: IconThemeData(color: Colors.black),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 30.h),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: ListView.separated(
             itemCount: controller.faqList.length,
             separatorBuilder: (_, _) => Divider(
-              thickness: 1.3.w,
-              color: Colors.black12,
-              height: 40.h,
+              thickness: 1,
+              color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+              height: 40,
             ),
             itemBuilder: (context, index) {
               return Obx(() {
-                final isExpanded =
-                    controller.expandedIndex.value == index;
+                final isExpanded = controller.expandedIndex.value == index;
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     GestureDetector(
-                      onTap: () =>
-                          controller.toggleExpand(index),
+                      onTap: () => controller.toggleExpand(index),
                       child: Row(
-                        mainAxisAlignment:
-                        MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Flexible(
                             child: Text(
                               controller.faqList[index]["title"]!,
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 16.sp,
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.w600,
+                                fontSize: 18,
                                 color: isExpanded
-                                    ? Colors.black54
-                                    : Colors.black,
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Theme.of(context).colorScheme.onSurface,
                               ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           Icon(
                             isExpanded
                                 ? Icons.keyboard_arrow_up
                                 : Icons.keyboard_arrow_down,
-                            size: 28.r,
-                            color: Colors.black,
+                            size: 28,
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                         ],
                       ),
                     ),
                     if (isExpanded) ...[
-                      SizedBox(height: 10.h),
+                      const SizedBox(height: 16),
                       Text(
                         controller.faqList[index]["content"]!,
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 14.sp,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.w400,
                           height: 1.5,
-                          color: Colors.black87,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ],

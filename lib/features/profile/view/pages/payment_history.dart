@@ -70,7 +70,7 @@ class _TransactionCard extends StatelessWidget {
             width: 45,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              color: Colors.white, // Keep background white for logos like Stripe
+              color: Colors.white,
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8),
@@ -93,15 +93,11 @@ class _TransactionCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   "ID: ${tx['id']}",
-                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    color: Theme.of(context).disabledColor,
-                  ),
+                  style: Theme.of(context).textTheme.labelMedium,
                 ),
                 Text(
                   tx['date'],
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: Theme.of(context).disabledColor,
-                  ),
+                  style: Theme.of(context).textTheme.labelSmall,
                 ),
               ],
             ),
@@ -114,7 +110,7 @@ class _TransactionCard extends StatelessWidget {
               Text(
                 tx['amount'],
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.primary, // Brand color for emphasis
+                  color: Theme.of(context).colorScheme.primary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -123,7 +119,7 @@ class _TransactionCard extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
-                  color: Colors.green.withOpacity(0.2), // Themed success color
+                  color: Colors.green.withOpacity(0.2),
                 ),
                 child: Text(
                   tx['status'],

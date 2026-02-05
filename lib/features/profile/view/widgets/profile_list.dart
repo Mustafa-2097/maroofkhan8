@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:maroofkhan8/features/profile/view/pages/change_password.dart';
 import 'package:maroofkhan8/features/profile/view/pages/contact_us.dart';
 import 'package:maroofkhan8/features/profile/view/pages/payment_history.dart';
 import 'package:maroofkhan8/features/profile/view/pages/personal_data.dart';
@@ -60,8 +61,8 @@ class ProfileList extends StatelessWidget {
           //LanguageDropdown(),
           _DrawerItem(
             icon: Icons.notifications_outlined,
-            label: 'Notification Setting',
-            //onTap: () => Get.to(() => NotificationSettingPage()),
+            label: 'Change Password',
+            onTap: () => Get.to(() => ChangePassword()),
           ),
           _DrawerItem(
             icon: Icons.language_outlined,
@@ -103,123 +104,163 @@ class ProfileList extends StatelessWidget {
 
   void _showLogoutBottomSheet(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).colorScheme.primary;
 
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      isScrollControlled: true,
+      isScrollControlled: true, // Allows full height control
+      isDismissible: true, // Allows swipe down to dismiss
+      enableDrag: true, // Allows dragging the bottom sheet
       builder: (_) {
-        return Container(
-          padding: EdgeInsets.all(24.r),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.background,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(24.r),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              /// WARNING ICON
-              Container(
-                height: 64.h,
-                width: 64.w,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFF5A5A),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.warning_amber_rounded,
-                  color: Colors.white,
-                  size: 32.r,
+        return DraggableScrollableSheet(
+          initialChildSize: 0.4, // Initial height (40% of screen)
+          minChildSize: 0.4, // Minimum height when swiping down
+          maxChildSize: 0.6, // Maximum height when swiping up
+          builder: (context, scrollController) {
+            return Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: isDark
+                    ? Theme.of(context).colorScheme.surface
+                    : Colors.white,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(24),
                 ),
               ),
-
-              SizedBox(height: 20.h),
-
-              /// TITLE
-              Text(
-                "LOGOUT".tr,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 1,
-                ),
-              ),
-
-              SizedBox(height: 12.h),
-
-              /// DESCRIPTION
-              Text(
-                "Are you sure you want to log out? "
-                    "You will need to sign in again to access your account.".tr,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).disabledColor,
-                  height: 1.4,
-                ),
-              ),
-
-              SizedBox(height: 28.h),
-
-              /// BUTTONS
-              Row(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  /// LOGOUT
-                  Expanded(
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Color(0xFFFF5A5A)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 14.h),
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                        // TODO: handle logout
-                      },
-                      child: Text(
-                        "Logout".tr,
-                        style: TextStyle(
-                          color: const Color(0xFFFF5A5A),
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16.sp,
-                        ),
-                      ),
+                  // Draggable handle indicator
+                  Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: 20),
+                    decoration: BoxDecoration(
+                      color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
+                      borderRadius: BorderRadius.circular(2),
                     ),
                   ),
 
-                  SizedBox(width: 16.w),
-
-                  /// CANCEL
-                  Expanded(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: isDark
-                            ? Colors.grey.shade800
-                            : Colors.grey.shade200,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 14.h),
-                      ),
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(
-                        "Cancel".tr,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16.sp,
-                        ),
-                      ),
+                  /// WARNING ICON
+                  Container(
+                    height: 60,
+                    width: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.red.shade500,
+                      shape: BoxShape.circle,
                     ),
+                    child: Icon(
+                      Icons.warning_amber_rounded,
+                      color: Colors.white,
+                      size: 36,
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  /// TITLE
+                  Text(
+                    "LOGOUT",
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1,
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  /// DESCRIPTION
+                  Text(
+                    "Are you sure you want to log out? "
+                        "You will need to sign in again to access your account.",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                    ),
+                  ),
+
+                  const SizedBox(height: 32),
+
+                  /// BUTTONS - Wrap in Container to prevent swiping issues
+                  Container(
+                    constraints: const BoxConstraints(
+                      minHeight: 56, // Minimum button height
+                    ),
+                    child: Row(
+                      children: [
+                        /// CANCEL
+                        Expanded(
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(
+                                color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
+                                width: 1.5,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              backgroundColor: isDark
+                                  ? Colors.grey.shade900.withOpacity(0.3)
+                                  : Colors.transparent,
+                            ),
+                            onPressed: () => Navigator.pop(context),
+                            child: Text(
+                              "Cancel",
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                color: isDark ? Colors.white : Colors.black87,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(width: 16),
+
+                        /// LOGOUT
+                        Expanded(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red.shade500,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              elevation: 0,
+                              shadowColor: Colors.transparent,
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              // TODO: handle logout logic
+                            },
+                            child: Text(
+                              "Logout",
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // Safe area spacer for devices with notches
+                  SizedBox(
+                    height: MediaQuery.of(context).viewInsets.bottom > 0
+                        ? MediaQuery.of(context).viewInsets.bottom
+                        : 0,
                   ),
                 ],
               ),
-
-              SizedBox(height: 30.h),
-            ],
-          ),
+            );
+          },
         );
       },
     );

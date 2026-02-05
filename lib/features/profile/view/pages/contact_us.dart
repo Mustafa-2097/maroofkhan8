@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:maroofkhan8/core/constant/app_colors.dart';
 import '../../controller/contact_us_controller.dart';
 
 class ContactUs extends StatelessWidget {
@@ -11,70 +11,84 @@ class ContactUs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Colors.white,
-      extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: const BackButton(color: Colors.black),
-        title: const Text(
-          "SUPPORT CENTER",
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.w600,
+        title: Text(
+          "CONTACT US",
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.bold,
           ),
         ),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 30.h),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: SingleChildScrollView(
             child: Form(
               key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 8),
 
                   /// FULL NAME
-                  InputField(
+                  _Label(text: "Full Name"),
+                  _TextField(
                     controller: controller.nameController,
-                    suffixIcon:
-                    const Icon(Icons.lock_outline, color: Colors.black45),
                     hint: "User Name",
+                    suffixIcon: Icon(
+                      Icons.lock_outline,
+                      color: isDark ? Colors.white70 : Colors.black45,
+                    ),
                     enabled: false,
                   ),
-                  SizedBox(height: 15.h),
+                  const SizedBox(height: 16),
 
                   /// EMAIL
-                  InputField(
+                  _Label(text: "Email"),
+                  _TextField(
                     controller: controller.emailController,
-                    suffixIcon:
-                    const Icon(Icons.lock_outline, color: Colors.black45),
                     hint: "user@gmail.com",
+                    suffixIcon: Icon(
+                      Icons.lock_outline,
+                      color: isDark ? Colors.white70 : Colors.black45,
+                    ),
                     enabled: false,
                   ),
-                  SizedBox(height: 15.h),
+                  const SizedBox(height: 16),
 
                   /// MESSAGE BOX
-                  InputField(
+                  _Label(text: "Message *"),
+                  _TextField(
                     controller: controller.messageController,
-                    hint: "Write your message...",
+                    hint: "Write your message here...",
                     maxLines: 6,
-                    contentPadding: EdgeInsets.all(16.w),
-                    validator: (v) =>
-                        controller.validateMessage(v!.trim()),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Message is required";
+                      }
+                      if (value.length < 10) {
+                        return "Message must be at least 10 characters";
+                      }
+                      return null;
+                    },
                   ),
-
-                  SizedBox(height: 40.h),
+                  const SizedBox(height: 40),
 
                   /// SEND BUTTON
                   SizedBox(
                     width: double.infinity,
-                    height: 48,
+                    height: 50,
                     child: ElevatedButton(
-                      onPressed: () {},
-                      child: Text("Send"),
+                      onPressed: () => controller.contactChange(_formKey),
+                      child: Text(
+                        "Send Message",
+                      ),
                     ),
                   ),
                 ],
@@ -87,53 +101,105 @@ class ContactUs extends StatelessWidget {
   }
 }
 
-class InputField extends StatelessWidget {
+class _Label extends StatelessWidget {
+  final String text;
+  const _Label({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Text(
+        text,
+        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+}
+
+class _TextField extends StatelessWidget {
   final TextEditingController controller;
   final String hint;
-  final bool obscureText;
+  final bool obscure;
   final Widget? suffixIcon;
-  final Function(String)? onChanged;
-  final String? Function(String?)? validator;
   final bool enabled;
   final int maxLines;
-  final EdgeInsetsGeometry? contentPadding;
+  final String? Function(String?)? validator;
 
-  const InputField({
-    super.key,
+  const _TextField({
     required this.controller,
     required this.hint,
-    this.obscureText = false,
+    this.obscure = false,
     this.suffixIcon,
-    this.onChanged,
-    this.validator,
     this.enabled = true,
     this.maxLines = 1,
-    this.contentPadding,
+    this.validator,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return TextFormField(
       controller: controller,
-      obscureText: obscureText,
-      onChanged: onChanged,
-      validator: validator,
+      obscureText: obscure,
       enabled: enabled,
       maxLines: maxLines,
-      style: const TextStyle(color: Colors.black),
+      validator: validator,
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+        color: enabled
+            ? Theme.of(context).colorScheme.onSurface
+            : Theme.of(context).disabledColor,
+      ),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: const TextStyle(color: Colors.black45),
-        filled: true,
-        fillColor:
-        enabled ? Colors.grey.shade100 : Colors.grey.shade200,
-        contentPadding: contentPadding ??
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(24),
-          borderSide: BorderSide.none,
+        hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+          color: Theme.of(context).disabledColor,
         ),
         suffixIcon: suffixIcon,
+        filled: true,
+        fillColor: enabled
+            ? (isDark ? Colors.grey.shade900.withOpacity(0.5) : Colors.grey.shade50)
+            : (isDark ? Colors.grey.shade800 : Colors.grey.shade200),
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: maxLines > 1 ? 16 : 14,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: isDark ? Colors.grey.shade700 : Colors.grey.shade400,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: isDark ? Colors.grey.shade700 : Colors.grey.shade400,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: Theme.of(context).colorScheme.primary,
+            width: 2,
+          ),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: isDark ? Colors.grey.shade700 : Colors.grey.shade400,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.red),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.red, width: 2),
+        ),
       ),
     );
   }
