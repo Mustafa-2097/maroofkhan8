@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-
-// Placeholder imports for navigation - keep or remove as needed
 import 'package:maroofkhan8/features/hadis/views/hadis_screen.dart';
 import 'package:maroofkhan8/features/profile/view/profile_screen.dart';
 import 'package:maroofkhan8/features/quran/views/quran_screen.dart';
@@ -26,18 +24,31 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final backgroundColor = Theme.of(context).colorScheme.background;
+
     return Scaffold(
       drawer: const CustomAppDrawer(),
-      // Gradient Background
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
+        decoration: BoxDecoration(
+          gradient: isDark
+              ? LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFFC4B8EB), // Top Lilac
-              Color(0xFFD6D1F5), // Mid
-              Color(0xFFEBE6F8), // Bottom Light
+              backgroundColor.withOpacity(0.95),
+              backgroundColor,
+              backgroundColor,
+            ],
+          )
+              : LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.grey.shade50,
+              Colors.grey.shade100,
+              Colors.white,
             ],
           ),
         ),
@@ -48,34 +59,38 @@ class DashboardScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 HeaderSection(),
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
                 HeroSection(),
+                const SizedBox(height: 30),
 
                 // 1. Your Journey Section
-                const SectionHeader(title: "Your Journey"),
+                SectionHeader(title: "Your Journey"),
                 const SizedBox(height: 15),
                 const YourJourneyRow(),
 
-                const SizedBox(height: 25),
+                const SizedBox(height: 30),
 
                 // 2. Quick Start Section
-                const SectionHeader(title: "Quick Start"),
+                SectionHeader(title: "Quick Start"),
                 const SizedBox(height: 15),
                 const QuickStartGrid(),
 
-                const SizedBox(height: 25),
+                const SizedBox(height: 30),
 
                 // 3. Explore more Section
                 Row(
                   children: [
-                    const Icon(Icons.explore_outlined, color: Color(0xFF8B4513), size: 24), // Brownish compass
+                    Icon(
+                      Icons.explore_outlined,
+                      color: primaryColor,
+                      size: 24,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       "Explore more",
-                      style: GoogleFonts.playfairDisplay(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w500, // Slightly thinner than bold
-                        color: const Color(0xFF3B2A50),
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: isDark ? Colors.white : Colors.black87,
                       ),
                     ),
                   ],
@@ -93,100 +108,102 @@ class DashboardScreen extends StatelessWidget {
   }
 }
 
-
 class HeaderSection extends StatelessWidget {
   const HeaderSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          /// Top Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              InkWell(
-                onTap: () => Scaffold.of(context).openDrawer(),
-                child: const Icon(
-                  Icons.menu_rounded,
-                  color: Color(0xFF3B2A50),
-                  size: 26,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        /// Top Row
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            InkWell(
+              onTap: () => Scaffold.of(context).openDrawer(),
+              child: Icon(
+                Icons.menu_rounded,
+                color: primaryColor,
+                size: 26,
+              ),
+            ),
+            InkWell(
+              onTap: () => Get.to(() => const ProfileScreen()),
+              child: CircleAvatar(
+                radius: 18,
+                backgroundColor: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+                child: Icon(
+                  Icons.person,
+                  color: isDark ? Colors.grey.shade300 : Colors.grey.shade600,
                 ),
               ),
-              InkWell(
-                onTap: () => Get.to(() => ProfileScreen()),
-                child: const CircleAvatar(
-                  radius: 18,
-                  backgroundImage: AssetImage('assets/images/user_placeholder.png'),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 10),
+
+        /// Greeting
+        Text(
+          "Assalamu Alaikum",
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+            color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+            fontSize: 18.sp,
+          ),
+        ),
+
+        const SizedBox(height: 4),
+
+        /// Main message
+        Text(
+          "May your heart find peace today",
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+            color: isDark ? Colors.white : Colors.black87,
+            height: 1.3,
+          ),
+        ),
+
+        const SizedBox(height: 10),
+
+        /// Search bar
+        Container(
+          height: 46,
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          decoration: BoxDecoration(
+            color: isDark ? Colors.grey.shade900 : Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
+              width: 1,
+            ),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.search,
+                color: Theme.of(context).disabledColor,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: "Search Quran, Duas, Names…",
+                    border: InputBorder.none,
+                    hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).disabledColor,
+                    ),
+                  ),
                 ),
               ),
             ],
           ),
-
-          const SizedBox(height: 10),
-
-          /// Greeting
-          Text(
-            "Assalamu Alaikum",
-            style: GoogleFonts.playfairDisplay(
-              fontSize: 18,
-              color: const Color(0xFF6D5A8E),
-            ),
-          ),
-
-          const SizedBox(height: 4),
-
-          /// Main message
-          Text(
-            "May your heart find peace today",
-            style: GoogleFonts.lato(
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              color: const Color(0xFF3B2A50),
-              height: 1.3,
-            ),
-          ),
-
-          const SizedBox(height: 10),
-
-          /// Search bar
-          Container(
-            height: 46,
-            padding: const EdgeInsets.symmetric(horizontal: 14),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(14),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.search, color: Colors.grey),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: TextField(
-                    decoration: TextDecoration.none is InputDecoration
-                        ? const InputDecoration()
-                        : const InputDecoration(
-                      hintText: "Search Quran, Duas, Names…",
-                      border: InputBorder.none,
-                      hintStyle: TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -199,11 +216,9 @@ class HeroSection extends StatefulWidget {
 }
 
 class _HeroSectionState extends State<HeroSection> {
-  // Controller to handle page snapping
   final PageController _pageController = PageController(viewportFraction: 0.92);
   int _currentIndex = 0;
 
-  // Mock Data for the Slider
   final List<Map<String, dynamic>> _slides = [
     {
       "title": "Daily Story",
@@ -239,11 +254,13 @@ class _HeroSectionState extends State<HeroSection> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
     return Column(
       children: [
-        // 1. The Slider
         SizedBox(
-          height: 260, // Height of the card area
+          height: 260,
           child: PageView.builder(
             controller: _pageController,
             itemCount: _slides.length,
@@ -253,14 +270,13 @@ class _HeroSectionState extends State<HeroSection> {
               });
             },
             itemBuilder: (context, index) {
-              return _buildSlideCard(_slides[index]);
+              return _buildSlideCard(_slides[index], isDark, primaryColor);
             },
           ),
         ),
 
         const SizedBox(height: 10),
 
-        // 2. The Dot Indicators
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(_slides.length, (index) {
@@ -270,7 +286,7 @@ class _HeroSectionState extends State<HeroSection> {
               width: _currentIndex == index ? 20 : 8,
               height: 8,
               decoration: BoxDecoration(
-                color: _currentIndex == index ? const Color(0xFF7B66FF) : Colors.grey.shade400,
+                color: _currentIndex == index ? primaryColor : Colors.grey.shade400,
                 borderRadius: BorderRadius.circular(4),
               ),
             );
@@ -280,34 +296,34 @@ class _HeroSectionState extends State<HeroSection> {
     );
   }
 
-  Widget _buildSlideCard(Map<String, dynamic> data) {
+  Widget _buildSlideCard(Map<String, dynamic> data, bool isDark, Color primaryColor) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 5), // Spacing between cards
+      margin: EdgeInsets.only(right: 8),
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         image: DecorationImage(
           image: NetworkImage(data['image']),
           fit: BoxFit.cover,
         ),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 10,
-              offset: const Offset(0, 5)
+            color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
           ),
         ],
       ),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.amber.withOpacity(0.5), width: 2),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: primaryColor.withOpacity(0.5), width: 1.5),
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
               Colors.black.withOpacity(0.2),
-              Colors.black.withOpacity(0.7)
+              Colors.black.withOpacity(0.7),
             ],
           ),
         ),
@@ -320,25 +336,29 @@ class _HeroSectionState extends State<HeroSection> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(0.6),
-                    borderRadius: BorderRadius.circular(5)
+                  color: primaryColor.withOpacity(0.8),
+                  borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
-                    data['title'],
-                    style: const TextStyle(color: Colors.white, fontSize: 10)
+                  data['title'],
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ),
 
             // Icons (Top Right)
-            const Align(
+            Align(
               alignment: Alignment.topRight,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.bookmark_border, color: Colors.white),
-                  SizedBox(width: 10),
-                  Icon(Icons.download_outlined, color: Colors.white),
+                  Icon(Icons.bookmark_border, color: Colors.white.withOpacity(0.8)),
+                  const SizedBox(width: 10),
+                  Icon(Icons.download_outlined, color: Colors.white.withOpacity(0.8)),
                 ],
               ),
             ),
@@ -349,27 +369,37 @@ class _HeroSectionState extends State<HeroSection> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                      data['nameEn'],
-                      style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)
+                    data['nameEn'],
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Text(
-                      data['nameAr'],
-                      style: const TextStyle(color: Colors.white70, fontSize: 14)
+                    data['nameAr'],
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 14,
+                    ),
                   ),
                   const SizedBox(height: 20),
                   Text(
                     data['quoteEn'],
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                        color: Colors.amber,
-                        fontSize: 20, // Slightly adjusted for multi-line safety
-                        fontWeight: FontWeight.bold
+                      color: Colors.amber,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 10),
                   Text(
-                      data['quoteAr'],
-                      style: const TextStyle(color: Colors.white70, fontSize: 16)
+                    data['quoteAr'],
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 16,
+                    ),
                   ),
                 ],
               ),
@@ -384,30 +414,34 @@ class _HeroSectionState extends State<HeroSection> {
                   LinearProgressIndicator(
                     value: data['progress'],
                     backgroundColor: Colors.white.withOpacity(0.3),
-                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                    valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                    borderRadius: BorderRadius.circular(4),
                   ),
                   const SizedBox(height: 10),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(20)
+                      color: primaryColor.withOpacity(0.4),
+                      borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.access_time, color: Colors.white, size: 14),
+                        Icon(Icons.access_time, color: Colors.white, size: 14),
                         const SizedBox(width: 5),
                         Text(
-                            data['time'],
-                            style: const TextStyle(color: Colors.white, fontSize: 12)
+                          data['time'],
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
                         ),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -421,11 +455,13 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Text(
       title,
-      style: GoogleFonts.playfairDisplay(
-        fontSize: 22,
-        color: const Color(0xFF3B2A50),
+      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+        fontWeight: FontWeight.w600,
+        color: isDark ? Colors.white : Colors.black87,
       ),
     );
   }
@@ -436,16 +472,19 @@ class YourJourneyRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Card 1: 5 Day Streak (Purple)
         Expanded(
           child: _JourneyCard(
             topText: "5",
             bottomText: "Day\nStreak",
-            color: const Color(0xFFDCD6FF), // Light Purple
+            color: isDark ? primaryColor.withOpacity(0.15) : const Color(0xFFDCD6FF),
             icon: Icons.local_fire_department,
+            isDark: isDark,
           ),
         ),
         const SizedBox(width: 8),
@@ -455,8 +494,9 @@ class YourJourneyRow extends StatelessWidget {
           child: _JourneyCard(
             topText: "1",
             bottomText: "Surah",
-            color: const Color(0xFFFFD6CA), // Peach
+            color: isDark ? Colors.orange.withOpacity(0.15) : const Color(0xFFFFD6CA),
             icon: Icons.menu_book,
+            isDark: isDark,
           ),
         ),
         const SizedBox(width: 8),
@@ -466,8 +506,9 @@ class YourJourneyRow extends StatelessWidget {
           child: _JourneyCard(
             topText: "2h 15\nmin",
             bottomText: "Surah",
-            color: const Color(0xFFE6F5D8), // Light Green
+            color: isDark ? Colors.green.withOpacity(0.15) : const Color(0xFFE6F5D8),
             icon: Icons.schedule,
+            isDark: isDark,
           ),
         ),
         const SizedBox(width: 8),
@@ -477,9 +518,10 @@ class YourJourneyRow extends StatelessWidget {
           child: _JourneyCard(
             topText: "8",
             bottomText: "Saved",
-            color: const Color(0xFFE94E77), // Dark Pink
+            color: isDark ? Colors.pink.withOpacity(0.15) : const Color(0xFFE94E77),
             icon: Icons.bookmark_border,
             isPinkCard: true,
+            isDark: isDark,
           ),
         ),
       ],
@@ -493,6 +535,7 @@ class _JourneyCard extends StatelessWidget {
   final Color color;
   final IconData icon;
   final bool isPinkCard;
+  final bool isDark;
 
   const _JourneyCard({
     required this.topText,
@@ -500,48 +543,49 @@ class _JourneyCard extends StatelessWidget {
     required this.color,
     required this.icon,
     this.isPinkCard = false,
+    required this.isDark,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100, // ↓ reduced
       padding: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 6,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isDark ? Colors.grey.shade700 : Colors.transparent,
+          width: 1,
+        ),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircleAvatar(
             radius: 14,
-            backgroundColor: Colors.white,
-            child: Icon(icon, size: 16, color: Colors.black87),
+            backgroundColor: isDark ? Colors.grey.shade800 : Colors.white,
+            child: Icon(
+              icon,
+              size: 18,
+              color: isDark ? Colors.white : Colors.black87,
+            ),
           ),
           const SizedBox(height: 6),
           Text(
             topText,
-            style: GoogleFonts.lato(
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
               fontWeight: FontWeight.bold,
-              fontSize: 10,
+              color: isDark ? Colors.white : Colors.black87,
             ),
           ),
           const SizedBox(height: 2),
           Text(
             bottomText,
             textAlign: TextAlign.center,
-            style: GoogleFonts.lato(
-              fontSize: 11,
-              height: 1.1,
-              color: Colors.black54,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white : Colors.black87,
             ),
           ),
         ],
@@ -555,6 +599,9 @@ class QuickStartGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
     return GridView.count(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -564,35 +611,72 @@ class QuickStartGrid extends StatelessWidget {
       crossAxisSpacing: 8,
       children: [
         GestureDetector(
-            onTap: (){
-              Get.to(AwliyaAllahListScreen());
-            },
-            child: _GridCard(title: "Awliya\nAllah", icon: Icons.nightlight_round, color: const Color(0xFFE6F5D8))),
+          onTap: () {
+            Get.to(() => AwliyaAllahListScreen());
+          },
+          child: _GridCard(
+            title: "Awliya\nAllah",
+            icon: Icons.nightlight_round,
+            color: isDark ? Colors.green.withOpacity(0.15) : const Color(0xFFE6F5D8),
+            isDark: isDark,
+          ),
+        ),
         GestureDetector(
-            onTap: (){
-              Get.to(QuranScreen());
-            },
-            child: _GridCard(title: "Quran", icon: Icons.menu_book, color: const Color(0xFFDCD6FF))),
+          onTap: () {
+            Get.to(() => QuranScreen());
+          },
+          child: _GridCard(
+            title: "Quran",
+            icon: Icons.menu_book,
+            color: isDark ? primaryColor.withOpacity(0.15) : const Color(0xFFDCD6FF),
+            isDark: isDark,
+          ),
+        ),
         GestureDetector(
-            onTap: (){
-              Get.to(HadithScreen());
-            },
-            child: _GridCard(title: "Hadith", icon: Icons.book, color: const Color(0xFFFFD6CA))),
+          onTap: () {
+            Get.to(() => HadithScreen());
+          },
+          child: _GridCard(
+            title: "Hadith",
+            icon: Icons.book,
+            color: isDark ? Colors.orange.withOpacity(0.15) : const Color(0xFFFFD6CA),
+            isDark: isDark,
+          ),
+        ),
         GestureDetector(
-            onTap: (){
-              Get.to(SufismHomeScreen());
-            },
-            child: _GridCard(title: "Sufism", icon: Icons.mosque, color: const Color(0xFFE94E77), isPinkCard: true)),
+          onTap: () {
+            Get.to(() => SufismHomeScreen());
+          },
+          child: _GridCard(
+            title: "Sufism",
+            icon: Icons.mosque,
+            color: isDark ? Colors.pink.withOpacity(0.15) : const Color(0xFFE94E77),
+            isPinkCard: true,
+            isDark: isDark,
+          ),
+        ),
         GestureDetector(
-            onTap: (){
-              Get.to(TasbihListScreen());
-            },
-            child: _GridCard(title: "Tasbih", icon: Icons.search, color: const Color(0xFFFFE0CA))),
+          onTap: () {
+            Get.to(() => TasbihListScreen());
+          },
+          child: _GridCard(
+            title: "Tasbih",
+            icon: Icons.search,
+            color: isDark ? Colors.amber.withOpacity(0.15) : const Color(0xFFFFE0CA),
+            isDark: isDark,
+          ),
+        ),
         GestureDetector(
-            onTap: (){
-              Get.to(NamesOfAllahScreen());
-            },
-            child: _GridCard(title: "99\nNames", icon: Icons.verified_outlined, color: const Color(0xFFE0D9FA))),
+          onTap: () {
+            Get.to(() => NamesOfAllahScreen());
+          },
+          child: _GridCard(
+            title: "99\nNames",
+            icon: Icons.verified_outlined,
+            color: isDark ? primaryColor.withOpacity(0.1) : const Color(0xFFE0D9FA),
+            isDark: isDark,
+          ),
+        ),
       ],
     );
   }
@@ -603,69 +687,133 @@ class ExploreMoreGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
     return GridView.count(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       crossAxisCount: 4,
-      childAspectRatio: 0.85, // ↓ less tall
+      childAspectRatio: 0.85,
       mainAxisSpacing: 8,
       crossAxisSpacing: 8,
       children: [
         // Row 1
         GestureDetector(
-            onTap: (){
-              Get.to(SahabaListScreen());
-            },
-            child: _GridCard(title: "Sahaba", icon: Icons.groups, color: const Color(0xFFFFD6CA), fontSize: 11)),
+          onTap: () {
+            Get.to(() => SahabaListScreen());
+          },
+          child: _GridCard(
+            title: "Sahaba",
+            icon: Icons.groups,
+            color: isDark ? Colors.orange.withOpacity(0.15) : const Color(0xFFFFD6CA),
+            isDark: isDark,
+          ),
+        ),
         GestureDetector(
-            onTap: (){
-              // Get.to(AwliyaAllahListScreen());
-            },
-            child: _GridCard(title: "Quaranic\nStories", icon: Icons.auto_stories, color: const Color(0xFFDCD6FF), fontSize: 10)), // Note: "Quaranic" spelling in image
+          onTap: () {},
+          child: _GridCard(
+            title: "Quranic\nStories",
+            icon: Icons.auto_stories,
+            color: isDark ? primaryColor.withOpacity(0.15) : const Color(0xFFDCD6FF),
+            isDark: isDark,
+          ),
+        ),
         GestureDetector(
-            onTap: (){
-              Get.to(AhleBaitListScreen());
-            },
-            child: _GridCard(title: "Ahle Bait", icon: Icons.diversity_3, color: const Color(0xFFE6F5D8), fontSize: 11)),
+          onTap: () {
+            Get.to(() => AhleBaitListScreen());
+          },
+          child: _GridCard(
+            title: "Ahle Bait",
+            icon: Icons.diversity_3,
+            color: isDark ? Colors.green.withOpacity(0.15) : const Color(0xFFE6F5D8),
+            isDark: isDark,
+          ),
+        ),
         GestureDetector(
-            onTap: (){
-              Get.to(IslamicBooksListScreen());
-            },
-            child: _GridCard(title: "Islamic\nBooks", icon: Icons.diversity_2, color: const Color(0xFFE94E77), isPinkCard: true, fontSize: 10)),
+          onTap: () {
+            Get.to(() => IslamicBooksListScreen());
+          },
+          child: _GridCard(
+            title: "Islamic\nBooks",
+            icon: Icons.diversity_2,
+            color: isDark ? Colors.pink.withOpacity(0.15) : const Color(0xFFE94E77),
+            isPinkCard: true,
+            isDark: isDark,
+          ),
+        ),
 
         // Row 2
         GestureDetector(
-            onTap: (){
-              Get.to(PrayerTrackerScreen());
-            },
-            child: _GridCard(title: "-Islamic\ncalandar", icon: Icons.calendar_month_outlined, color: const Color(0xFFE6F5D8), fontSize: 10)), // Note: Hyphen and "calandar" spelling
-        GestureDetector(
-          onTap: (){
-            Get.to(ZakatCalculator());
+          onTap: () {
+            Get.to(() => PrayerTrackerScreen());
           },
-            child: _GridCard(title: "Zakat\nCalculator", icon: Icons.savings_outlined, color: const Color(0xFFE94E77), isPinkCard: true, textColor: Colors.white, fontSize: 10)),
+          child: _GridCard(
+            title: "Islamic\nCalendar",
+            icon: Icons.calendar_month_outlined,
+            color: isDark ? Colors.green.withOpacity(0.15) : const Color(0xFFE6F5D8),
+            isDark: isDark,
+          ),
+        ),
         GestureDetector(
-            onTap: (){
-              Get.to(SalawatListScreen());
-            },
-            child: _GridCard(title: "Salawat", icon: Icons.handshake_outlined, color: const Color(0xFFFFD6CA), fontSize: 11)),
+          onTap: () {
+            Get.to(() => ZakatCalculator());
+          },
+          child: _GridCard(
+            title: "Zakat\nCalculator",
+            icon: Icons.savings_outlined,
+            color: isDark ? Colors.pink.withOpacity(0.15) : const Color(0xFFE94E77),
+            isPinkCard: true,
+            textColor: isDark ? Colors.white : Colors.white,
+            isDark: isDark,
+          ),
+        ),
         GestureDetector(
-            onTap: (){
-              Get.to(PrayerTrackerScreenn());
-            },
-            child: _GridCard(title: "Prayer\ntracker", icon: Icons.gps_fixed, color: const Color(0xFFE0D9FA), fontSize: 10)),
+          onTap: () {
+            Get.to(() => SalawatListScreen());
+          },
+          child: _GridCard(
+            title: "Salawat",
+            icon: Icons.handshake_outlined,
+            color: isDark ? Colors.orange.withOpacity(0.15) : const Color(0xFFFFD6CA),
+            isDark: isDark,
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Get.to(() => PrayerTrackerScreen());
+          },
+          child: _GridCard(
+            title: "Prayer\nTracker",
+            icon: Icons.gps_fixed,
+            color: isDark ? primaryColor.withOpacity(0.1) : const Color(0xFFE0D9FA),
+            isDark: isDark,
+          ),
+        ),
 
-        // Row 3 (Partial)
+        // Row 3
         GestureDetector(
-            onTap: (){
-              Get.to(IslaahApp());
-            },
-            child: _GridCard(title: "Islaah &\nMeditation", icon: Icons.self_improvement, color: const Color(0xFFE0D9FA), fontSize: 9)),
+          onTap: () {
+            Get.to(() => IslaahApp());
+          },
+          child: _GridCard(
+            title: "Islaah &\nMeditation",
+            icon: Icons.self_improvement,
+            color: isDark ? primaryColor.withOpacity(0.1) : const Color(0xFFE0D9FA),
+            isDark: isDark,
+          ),
+        ),
         GestureDetector(
-            onTap: (){
-              Get.to(DuaApp());
-            },
-            child: _GridCard(title: "Dua", icon: Icons.front_hand, color: const Color(0xFFFFD6CA), fontSize: 11)),
+          onTap: () {
+            Get.to(() => DuaApp());
+          },
+          child: _GridCard(
+            title: "Dua",
+            icon: Icons.front_hand,
+            color: isDark ? Colors.orange.withOpacity(0.15) : const Color(0xFFFFD6CA),
+            isDark: isDark,
+          ),
+        ),
       ],
     );
   }
@@ -677,7 +825,7 @@ class _GridCard extends StatelessWidget {
   final Color color;
   final bool isPinkCard;
   final Color? textColor;
-  final double fontSize;
+  final bool isDark;
 
   const _GridCard({
     required this.title,
@@ -685,7 +833,7 @@ class _GridCard extends StatelessWidget {
     required this.color,
     this.isPinkCard = false,
     this.textColor,
-    this.fontSize = 10,
+    required this.isDark,
   });
 
   @override
@@ -694,31 +842,31 @@ class _GridCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 5,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isDark ? Colors.grey.shade700 : Colors.transparent,
+          width: 1,
+        ),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircleAvatar(
-            radius: 16, // ↓ smaller
-            backgroundColor: Colors.white,
-            child: Icon(icon, size: 18, color: Colors.black87),
+            radius: 16,
+            backgroundColor: isDark ? Colors.grey.shade800 : Colors.white,
+            child: Icon(
+              icon,
+              size: 18,
+              color: isDark ? Colors.white : Colors.black87,
+            ),
           ),
           const SizedBox(height: 6),
           Text(
             title,
             textAlign: TextAlign.center,
-            style: GoogleFonts.lato(
-              fontSize: fontSize,
-              fontWeight: FontWeight.w600,
-              color: textColor ?? Colors.black87,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white : Colors.black87,
             ),
           ),
         ],
