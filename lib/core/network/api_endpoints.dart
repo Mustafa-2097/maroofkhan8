@@ -2,6 +2,9 @@ class ApiEndpoints {
   /// Base URL
   static const String baseUrl = 'https://anniet.smtsigma.com/api/v1';
 
+  /// AI CHAT
+  static const String aiExplanationGeneral = "http://204.197.173.4:8060/api/ai-murshid/ai-explanation";
+
   /// Auth
   static const String register = '$baseUrl/auth/register';
   static const String verifySigUupOtp = '$baseUrl/auth/verify-otp';

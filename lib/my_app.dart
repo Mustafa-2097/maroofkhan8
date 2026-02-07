@@ -3,6 +3,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:maroofkhan8/splash/view/splash_screen.dart';
+import 'bottom_nav_bar.dart';
 import 'core/theme/theme.dart';
 import 'onboarding/view/onboarding_screen.dart';
 
@@ -27,7 +28,8 @@ class MyApp extends StatelessWidget {
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: ThemeMode.system,
-            home: SplashScreen(),
+            // home: SplashScreen(),
+            home: CustomBottomNavBar(),
           ),
         );
       },
