@@ -71,21 +71,22 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
 
   Widget _tabButton(String label, int index, {IconData? icon}) {
     bool isSelected = _selectedTab == index;
+    var isDark = Theme.of(context).brightness == Brightness.dark;
     return Expanded(
       child: GestureDetector(
         onTap: () => setState(() => _selectedTab = index),
         child: Container(
           height: 38,
           decoration: BoxDecoration(
-            color: isSelected ? (index == 2 ? kPrimaryBrown : kDarkBlack) : Colors.white,
+            color: isSelected ? kPrimaryBrown : isDark ? Colors.white : Colors.black,
             borderRadius: BorderRadius.circular(20),
             border: isSelected ? null : Border.all(color: Colors.grey.shade200),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (icon != null) ...[Icon(icon, size: 14, color: isSelected ? Colors.white : Colors.black), const SizedBox(width: 5)],
-              Text(label, style: TextStyle(color: isSelected ? Colors.white : Colors.black, fontSize: 12, fontWeight: FontWeight.bold)),
+              if (icon != null) ...[Icon(icon, size: 16, color: isSelected ? Colors.white : isDark ? Colors.black : Colors.white), const SizedBox(width: 5)],
+              Text(label, style: TextStyle(color: isSelected ? Colors.white : isDark ? Colors.black : Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
             ],
           ),
         ),

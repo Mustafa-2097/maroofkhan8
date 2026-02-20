@@ -25,7 +25,7 @@ class ProfileScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             children: [
-              const SizedBox(height: 24),
+              const SizedBox(height: 10),
 
               /// User Image
               CircleAvatar(
@@ -49,7 +49,7 @@ class ProfileScreen extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
 
-              const SizedBox(height: 32),
+              const SizedBox(height: 22),
 
               /// Status box (Plan)
               Container(

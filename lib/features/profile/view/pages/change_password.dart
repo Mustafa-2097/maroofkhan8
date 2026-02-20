@@ -30,7 +30,7 @@ class ChangePassword extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 44),
+                SizedBox(height: 20),
                 Center(
                   child: Text(
                     'Create New Password',
@@ -44,7 +44,7 @@ class ChangePassword extends StatelessWidget {
                 Text(
                   'Your new password must be different from previous used passwords.',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: Theme.of(context).disabledColor,
+                    color: Theme.of(context).disabledColor.withOpacity(0.6),
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -94,13 +94,13 @@ class ChangePassword extends StatelessWidget {
 
                 const SizedBox(height: 32),
 
-                /// Reset Password button
+                /// Change Password button
                 SizedBox(
                   width: double.infinity,
                   height: 48,
                   child: ElevatedButton(
                     onPressed: () => controller.resetPassword(), // Call the method
-                    child: const Text('Reset Password'),
+                    child: const Text('Change Password'),
                   ),
                 ),
               ],

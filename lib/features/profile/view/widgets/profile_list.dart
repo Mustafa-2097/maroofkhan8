@@ -58,7 +58,6 @@ class ProfileList extends StatelessWidget {
 
           /// General Section
           _SectionHeader(title: 'General'),
-          //LanguageDropdown(),
           _DrawerItem(
             icon: Icons.notifications_outlined,
             label: 'Change Password',
@@ -341,33 +340,29 @@ class _LogoutButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Professional red colors for light/dark modes
+    final logoutRed = isDark
+        ? const Color(0xFFE57373) // Softer, desaturated red for Dark Mode
+        : const Color(0xFFDF1C41); // Your original brand red for Light Mode
+
     return SizedBox(
       child: OutlinedButton.icon(
         onPressed: onPressed,
+        icon: Icon(Icons.logout, color: logoutRed),
+        label: Text(
+          "Logout",
+          style: TextStyle(color: logoutRed, fontWeight: FontWeight.bold),
+        ),
         style: OutlinedButton.styleFrom(
-          side: BorderSide(
-            color: const Color(0xFFDF1C41),
-            width: 1.3.w,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.r),
-          ),
+          side: BorderSide(color: logoutRed),
           padding: EdgeInsets.symmetric(
             horizontal: 22.w,
             vertical: 6.h,
           ),
-        ),
-        icon: Icon(
-          Icons.logout,
-          color: const Color(0xFFDF1C41),
-          size: 22.r,
-        ),
-        label: Text(
-          'logout'.tr,
-          style: TextStyle(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w600,
-            color: const Color(0xFFDF1C41),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
           ),
         ),
       ),
