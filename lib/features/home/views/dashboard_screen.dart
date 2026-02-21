@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:maroofkhan8/features/hadis/views/hadis_screen.dart';
 import 'package:maroofkhan8/features/profile/view/profile_screen.dart';
 import 'package:maroofkhan8/features/quran/views/quran_screen.dart';
+import '../../../core/constant/app_colors.dart';
 import '../../Islam_meditation/views/islam_meditation_screen.dart';
 import '../../ahle_bait/views/ahle_bait_screen.dart';
 import '../../allah_names/views/allah_names.dart' hide HeaderWithLines;
@@ -25,7 +26,6 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primaryColor = Theme.of(context).colorScheme.primary;
     final backgroundColor = Theme.of(context).colorScheme.background;
 
     return Scaffold(
@@ -75,30 +75,7 @@ class DashboardScreen extends StatelessWidget {
                 const SizedBox(height: 15),
                 const QuickStartGrid(),
 
-                const SizedBox(height: 30),
-
-                // 3. Explore more Section
-                Row(
-                  children: [
-                    Icon(
-                      Icons.explore_outlined,
-                      color: primaryColor,
-                      size: 24,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      "Explore more",
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: isDark ? Colors.white : Colors.black87,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 15),
-                const ExploreMoreGrid(),
-
-                const SizedBox(height: 30),
+                const SizedBox(height: 40),
               ],
             ),
           ),
@@ -131,6 +108,29 @@ class HeaderSection extends StatelessWidget {
                 size: 26,
               ),
             ),
+            // Logo Circle
+            Row(
+              children: [
+                Container(
+                  height: 35,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.grey.shade300, width: 2),
+                  ),
+                  child: Center(
+                    child: Image.asset(
+                      'assets/images/onboarding02.png',
+                      height: 100,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                Text(
+                  "Digital Khanqah",
+                  style: Theme.of(context).textTheme.headlineSmall
+                ),
+              ],
+            ),
             InkWell(
               onTap: () => Get.to(() => const ProfileScreen()),
               child: CircleAvatar(
@@ -145,19 +145,17 @@ class HeaderSection extends StatelessWidget {
           ],
         ),
 
-        const SizedBox(height: 10),
+        const SizedBox(height: 20),
 
         /// Greeting
         Text(
           "Assalamu Alaikum",
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-            fontSize: 18.sp,
+            color: Theme.of(context).disabledColor.withValues(alpha: 0.6),
+            fontSize: 20.sp,
+            height: 0.9,
           ),
         ),
-
-        const SizedBox(height: 4),
-
         /// Main message
         Text(
           "May your heart find peace today",
@@ -168,19 +166,16 @@ class HeaderSection extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 10),
+        const SizedBox(height: 13),
 
         /// Search bar
         Container(
-          height: 46,
-          padding: const EdgeInsets.symmetric(horizontal: 14),
+          height: 45,
+          padding: const EdgeInsets.symmetric(horizontal: 15),
           decoration: BoxDecoration(
-            color: isDark ? Colors.grey.shade900 : Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
-              width: 1,
-            ),
+            color: isDark ? kDarkBlack : Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: AppColors.stroke),
           ),
           child: Row(
             children: [
@@ -193,10 +188,8 @@ class HeaderSection extends StatelessWidget {
                 child: TextField(
                   decoration: InputDecoration(
                     hintText: "Search Quran, Duas, Names…",
+                    hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
                     border: InputBorder.none,
-                    hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).disabledColor,
-                    ),
                   ),
                 ),
               ),
@@ -606,21 +599,10 @@ class QuickStartGrid extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       crossAxisCount: 4,
-      childAspectRatio: 0.85,
-      mainAxisSpacing: 8,
-      crossAxisSpacing: 8,
+      childAspectRatio: 0.90,
+      mainAxisSpacing: 12,
+      crossAxisSpacing: 4,
       children: [
-        GestureDetector(
-          onTap: () {
-            Get.to(() => AwliyaAllahListScreen());
-          },
-          child: _GridCard(
-            title: "Awliya\nAllah",
-            icon: Icons.nightlight_round,
-            color: isDark ? Colors.green.withOpacity(0.15) : const Color(0xFFE6F5D8),
-            isDark: isDark,
-          ),
-        ),
         GestureDetector(
           onTap: () {
             Get.to(() => QuranScreen());
@@ -645,35 +627,65 @@ class QuickStartGrid extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            Get.to(() => SufismHomeScreen());
+            Get.to(() => DuaApp());
           },
           child: _GridCard(
-            title: "Sufism",
-            icon: Icons.mosque,
+            title: "Dua",
+            icon: Icons.front_hand,
+            color: isDark ? Colors.orange.withOpacity(0.15) : const Color(0xFFFFD6CA),
+            isDark: isDark,
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Get.to(() => PrayerTrackerScreen());
+          },
+          child: _GridCard(
+            title: "Prayer\nTracker",
+            icon: Icons.gps_fixed,
+            color: isDark ? primaryColor.withOpacity(0.1) : const Color(0xFFE0D9FA),
+            isDark: isDark,
+          ),
+        ),
+        GestureDetector(
+          onTap: () {},
+          child: _GridCard(
+            title: "Islamic\nStories",
+            icon: Icons.auto_stories,
+            color: isDark ? primaryColor.withOpacity(0.15) : const Color(0xFFDCD6FF),
+            isDark: isDark,
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Get.to(() => ZakatCalculator());
+          },
+          child: _GridCard(
+            title: "Zakat\nCalculator",
+            icon: Icons.savings_outlined,
             color: isDark ? Colors.pink.withOpacity(0.15) : const Color(0xFFE94E77),
             isPinkCard: true,
+            textColor: isDark ? Colors.white : Colors.white,
             isDark: isDark,
           ),
         ),
         GestureDetector(
           onTap: () {
-            Get.to(() => TasbihListScreen());
+            Get.to(() => PrayerTrackerScreen());
           },
           child: _GridCard(
-            title: "Tasbih",
-            icon: Icons.search,
-            color: isDark ? Colors.amber.withOpacity(0.15) : const Color(0xFFFFE0CA),
+            title: "Islamic\nCalendar",
+            icon: Icons.calendar_month_outlined,
+            color: isDark ? Colors.green.withOpacity(0.15) : const Color(0xFFE6F5D8),
             isDark: isDark,
           ),
         ),
         GestureDetector(
-          onTap: () {
-            Get.to(() => NamesOfAllahScreen());
-          },
+          onTap: () {},
           child: _GridCard(
-            title: "99\nNames",
-            icon: Icons.verified_outlined,
-            color: isDark ? primaryColor.withOpacity(0.1) : const Color(0xFFE0D9FA),
+            title: "Audio",
+            icon: Icons.audiotrack,
+            color: isDark ? primaryColor.withOpacity(0.15) : const Color(0xFFDCD6FF),
             isDark: isDark,
           ),
         ),
@@ -694,31 +706,10 @@ class ExploreMoreGrid extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       crossAxisCount: 4,
-      childAspectRatio: 0.85,
-      mainAxisSpacing: 8,
-      crossAxisSpacing: 8,
+      childAspectRatio: 0.90,
+      mainAxisSpacing: 12,
+      crossAxisSpacing: 4,
       children: [
-        // Row 1
-        GestureDetector(
-          onTap: () {
-            Get.to(() => SahabaListScreen());
-          },
-          child: _GridCard(
-            title: "Sahaba",
-            icon: Icons.groups,
-            color: isDark ? Colors.orange.withOpacity(0.15) : const Color(0xFFFFD6CA),
-            isDark: isDark,
-          ),
-        ),
-        GestureDetector(
-          onTap: () {},
-          child: _GridCard(
-            title: "Quranic\nStories",
-            icon: Icons.auto_stories,
-            color: isDark ? primaryColor.withOpacity(0.15) : const Color(0xFFDCD6FF),
-            isDark: isDark,
-          ),
-        ),
         GestureDetector(
           onTap: () {
             Get.to(() => AhleBaitListScreen());
@@ -732,39 +723,57 @@ class ExploreMoreGrid extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            Get.to(() => IslamicBooksListScreen());
+            Get.to(() => AwliyaAllahListScreen());
           },
           child: _GridCard(
-            title: "Islamic\nBooks",
-            icon: Icons.diversity_2,
-            color: isDark ? Colors.pink.withOpacity(0.15) : const Color(0xFFE94E77),
-            isPinkCard: true,
-            isDark: isDark,
-          ),
-        ),
-
-        // Row 2
-        GestureDetector(
-          onTap: () {
-            Get.to(() => PrayerTrackerScreen());
-          },
-          child: _GridCard(
-            title: "Islamic\nCalendar",
-            icon: Icons.calendar_month_outlined,
+            title: "Awliya\nAllah",
+            icon: Icons.nightlight_round,
             color: isDark ? Colors.green.withOpacity(0.15) : const Color(0xFFE6F5D8),
             isDark: isDark,
           ),
         ),
         GestureDetector(
           onTap: () {
-            Get.to(() => ZakatCalculator());
+            Get.to(() => SahabaListScreen());
           },
           child: _GridCard(
-            title: "Zakat\nCalculator",
-            icon: Icons.savings_outlined,
+            title: "Sahaba",
+            icon: Icons.groups,
+            color: isDark ? Colors.orange.withOpacity(0.15) : const Color(0xFFFFD6CA),
+            isDark: isDark,
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Get.to(() => SufismHomeScreen());
+          },
+          child: _GridCard(
+            title: "Dhikr",
+            icon: Icons.search,
             color: isDark ? Colors.pink.withOpacity(0.15) : const Color(0xFFE94E77),
             isPinkCard: true,
-            textColor: isDark ? Colors.white : Colors.white,
+            isDark: isDark,
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Get.to(() => NamesOfAllahScreen());
+          },
+          child: _GridCard(
+            title: "99\nNames",
+            icon: Icons.verified_outlined,
+            color: isDark ? primaryColor.withOpacity(0.1) : const Color(0xFFE0D9FA),
+            isDark: isDark,
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Get.to(() => IslaahApp());
+          },
+          child: _GridCard(
+            title: "Islaah &\nMeditation",
+            icon: Icons.self_improvement,
+            color: isDark ? primaryColor.withOpacity(0.1) : const Color(0xFFE0D9FA),
             isDark: isDark,
           ),
         ),
@@ -781,36 +790,13 @@ class ExploreMoreGrid extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            Get.to(() => PrayerTrackerScreen());
+            Get.to(() => IslamicBooksListScreen());
           },
           child: _GridCard(
-            title: "Prayer\nTracker",
-            icon: Icons.gps_fixed,
-            color: isDark ? primaryColor.withOpacity(0.1) : const Color(0xFFE0D9FA),
-            isDark: isDark,
-          ),
-        ),
-
-        // Row 3
-        GestureDetector(
-          onTap: () {
-            Get.to(() => IslaahApp());
-          },
-          child: _GridCard(
-            title: "Islaah &\nMeditation",
-            icon: Icons.self_improvement,
-            color: isDark ? primaryColor.withOpacity(0.1) : const Color(0xFFE0D9FA),
-            isDark: isDark,
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            Get.to(() => DuaApp());
-          },
-          child: _GridCard(
-            title: "Dua",
-            icon: Icons.front_hand,
-            color: isDark ? Colors.orange.withOpacity(0.15) : const Color(0xFFFFD6CA),
+            title: "Islamic\nBooks",
+            icon: Icons.diversity_2,
+            color: isDark ? Colors.pink.withOpacity(0.15) : const Color(0xFFE94E77),
+            isPinkCard: true,
             isDark: isDark,
           ),
         ),

@@ -26,7 +26,7 @@ class _UserNavBarState extends State<CustomBottomNavBar> {
     ChatScreen(),
     QuranScreen(),
     HadithScreen(),
-    PrayerHomeScreen(),
+    SufismHomeScreen(),
   ];
 
   void changeIndex(int index) {
@@ -105,8 +105,8 @@ class _UserNavBarState extends State<CustomBottomNavBar> {
                     index: 3,
                   ),
                   _buildNavItem(
-                    icon: Icons.mosque_outlined,
-                    label: "Prayer",
+                    icon: Icons.man_outlined,
+                    label: "Sufism",
                     index: 4,
                   ),
                 ],

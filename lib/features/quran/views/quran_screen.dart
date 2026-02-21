@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:maroofkhan8/core/constant/app_colors.dart';
 
 import '../../ai_murshid/views/ai_murshid_screen.dart';
 
@@ -17,13 +18,10 @@ class QuranScreen extends StatefulWidget {
 }
 
 class _MainContainerState extends State<QuranScreen> {
-  int _bottomNavIndex = 3; // Quran is active
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: const QuranTabsScreen(),
-
     );
   }
 }
@@ -123,7 +121,7 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12),
+            padding: const EdgeInsets.symmetric(vertical: 8),
             child: Row(
               children: [
                 HexagonBadge(number: num),
@@ -134,15 +132,15 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
                     children: [
                       Text(title, style: GoogleFonts.playfairDisplay(fontSize: 16, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 2),
-                      Text(sub, style: const TextStyle(fontSize: 10, color: kLightGrey)),
+                      Text(sub, style: const TextStyle(fontSize: 14, color: Color(0xFF6F8DA1), fontWeight: FontWeight.w400)),
                     ],
                   ),
                 ),
-                if (time != null) Text(time, style: const TextStyle(fontSize: 9, color: kLightGrey)),
+                if (time != null) Text(time, style: const TextStyle(fontSize: 12, color: Color(0xFF6F8DA1))),
               ],
             ),
           ),
-          const Divider(height: 1, color: Color(0xFFF1F1F1)),
+          const Divider(height: 1, color: AppColors.stroke),
         ],
       ),
     );
@@ -162,6 +160,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -185,7 +184,10 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                 ],
               ),
             ),
-            const Text("Read  •  Listen  •  Understand", style: TextStyle(fontSize: 11, color: Colors.black54)),
+            Text(
+              "Read  •  Listen  •  Understand",
+              style: TextStyle(fontSize: 12, color: isDark ? AppColors.whiteColor : Colors.black87),
+            ),
             const SizedBox(height: 15),
             // Detail Tabs
             Padding(
@@ -213,6 +215,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
 
   Widget _detailTab(String label, int index) {
     bool isSelected = _activeDetailTab == index;
+    var isDark = Theme.of(context).brightness == Brightness.dark;
     return Expanded(
       child: GestureDetector(
         onTap: () {
@@ -231,53 +234,49 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
           height: 35,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: isSelected ? (index == 1 ? kPrimaryBrown : kDarkBlack) : Colors.white,
-            borderRadius: BorderRadius.circular(10),
+            color: isSelected ? kPrimaryBrown : isDark ? Colors.white : Colors.black,
+            borderRadius: BorderRadius.circular(20),
+            border: isSelected ? null : Border.all(color: Colors.grey.shade200),
           ),
-          child: Text(
-              label,
-              style: TextStyle(
-                  color: isSelected ? Colors.white : Colors.black,
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold
-              )
-          ),
+          child: Text(label, style: TextStyle(color: isSelected ? Colors.white : isDark ? Colors.black : Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
         ),
       ),
     );
   }
 
   Widget _buildSurahReader() {
+    var isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       children: [
         // Audio Player Simulation
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text("02:25", style: TextStyle(fontSize: 10, color: kLightGrey)),
-                  Text("10:25", style: TextStyle(fontSize: 10, color: kLightGrey)),
-                ],
-              ),
-              SliderTheme(
-                data: SliderTheme.of(context).copyWith(trackHeight: 2, thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 4)),
-                child: Slider(value: 0.3, onChanged: (v) {}, activeColor: kPrimaryBrown, inactiveColor: Colors.grey.shade300),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(Icons.skip_previous, color: kDarkBlack),
-                  SizedBox(width: 20),
-                  Icon(Icons.play_circle_filled, size: 40, color: kDarkBlack),
-                  SizedBox(width: 20),
-                  Icon(Icons.skip_next, color: kDarkBlack),
-                ],
-              ),
-            ],
-          ),
+        Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("02:25", style: TextStyle(fontSize: 12, color: isDark ? AppColors.whiteColor : Colors.black87)),
+                SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    trackHeight: 2,
+                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 4),
+                    overlayShape: SliderComponentShape.noOverlay,
+                  ),
+                  child: Slider(value: 0.3, onChanged: (v) {}, activeColor: kPrimaryBrown, inactiveColor: Colors.grey.shade300),
+                ),
+                Text("10:25", style: TextStyle(fontSize: 12, color: isDark ? AppColors.whiteColor : Colors.black87)),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.skip_previous, color: isDark ? AppColors.whiteColor : Colors.black87),
+                SizedBox(width: 20),
+                Icon(Icons.play_circle_filled, size: 40, color: isDark ? AppColors.whiteColor : Colors.black87),
+                SizedBox(width: 20),
+                Icon(Icons.skip_next, color: isDark ? AppColors.whiteColor : Colors.black87),
+              ],
+            ),
+          ],
         ),
         const SizedBox(height: 10),
         Expanded(
@@ -360,7 +359,6 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
 }
 
 // --- HELPER WIDGETS ---
-
 class HeaderDecoration extends StatelessWidget {
   final String title;
   const HeaderDecoration({super.key, required this.title});
@@ -390,6 +388,7 @@ class SearchAndBookmark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
@@ -399,12 +398,16 @@ class SearchAndBookmark extends StatelessWidget {
               height: 45,
               padding: const EdgeInsets.symmetric(horizontal: 15),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? kDarkBlack : Colors.white,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.grey.shade200),
+                border: Border.all(color: AppColors.stroke),
               ),
               child: const TextField(
-                decoration: InputDecoration(hintText: 'Search', hintStyle: TextStyle(color: Colors.grey, fontSize: 14), border: InputBorder.none),
+                decoration: InputDecoration(
+                  hintText: 'Search',
+                  hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+                  border: InputBorder.none,
+                ),
               ),
             ),
           ),
@@ -412,8 +415,12 @@ class SearchAndBookmark extends StatelessWidget {
           Container(
             height: 45,
             width: 45,
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), border: Border.all(color: Colors.grey.shade200)),
-            child: const Icon(Icons.bookmark_outline, color: Colors.grey, size: 20),
+            decoration: BoxDecoration(
+              color: isDark ? kDarkBlack : Colors.white,
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(color: AppColors.stroke),
+            ),
+            child: Icon(Icons.bookmark_outline, color: AppColors.stroke, size: 20),
           ),
         ],
       ),
