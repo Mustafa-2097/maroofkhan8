@@ -8,9 +8,11 @@ import '../../../core/constant/app_colors.dart';
 import '../../Islam_meditation/views/islam_meditation_screen.dart';
 import '../../ahle_bait/views/ahle_bait_screen.dart';
 import '../../allah_names/views/allah_names.dart' hide HeaderWithLines;
+import '../../audio/views/audio_screen.dart';
 import '../../dua/views/dua_screen.dart';
 import '../../islamic_books/views/islamic_books_screen.dart';
 import '../../islamic_calander/views/islamic_calander.dart';
+import '../../islamic_stories/views/islamic_stories.dart';
 import '../../prayer_tracker/views/prayer_tracker_screen.dart';
 import '../../sahaba/views/sahaba_screen.dart';
 import '../../salawat/views/salawat_screen.dart';
@@ -601,7 +603,7 @@ class QuickStartGrid extends StatelessWidget {
       crossAxisCount: 4,
       childAspectRatio: 0.90,
       mainAxisSpacing: 12,
-      crossAxisSpacing: 4,
+      crossAxisSpacing: 8,
       children: [
         GestureDetector(
           onTap: () {
@@ -627,7 +629,7 @@ class QuickStartGrid extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            Get.to(() => DuaApp());
+            Get.to(() => DuaListScreen());
           },
           child: _GridCard(
             title: "Dua",
@@ -648,7 +650,9 @@ class QuickStartGrid extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            Get.to(() => IslamicStoriesScreen());
+          },
           child: _GridCard(
             title: "Islamic\nStories",
             icon: Icons.auto_stories,
@@ -671,132 +675,12 @@ class QuickStartGrid extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            Get.to(() => PrayerTrackerScreen());
+            Get.to(() => AudioScreen());
           },
-          child: _GridCard(
-            title: "Islamic\nCalendar",
-            icon: Icons.calendar_month_outlined,
-            color: isDark ? Colors.green.withOpacity(0.15) : const Color(0xFFE6F5D8),
-            isDark: isDark,
-          ),
-        ),
-        GestureDetector(
-          onTap: () {},
           child: _GridCard(
             title: "Audio",
             icon: Icons.audiotrack,
             color: isDark ? primaryColor.withOpacity(0.15) : const Color(0xFFDCD6FF),
-            isDark: isDark,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class ExploreMoreGrid extends StatelessWidget {
-  const ExploreMoreGrid({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primaryColor = Theme.of(context).colorScheme.primary;
-
-    return GridView.count(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 4,
-      childAspectRatio: 0.90,
-      mainAxisSpacing: 12,
-      crossAxisSpacing: 4,
-      children: [
-        GestureDetector(
-          onTap: () {
-            Get.to(() => AhleBaitListScreen());
-          },
-          child: _GridCard(
-            title: "Ahle Bait",
-            icon: Icons.diversity_3,
-            color: isDark ? Colors.green.withOpacity(0.15) : const Color(0xFFE6F5D8),
-            isDark: isDark,
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            Get.to(() => AwliyaAllahListScreen());
-          },
-          child: _GridCard(
-            title: "Awliya\nAllah",
-            icon: Icons.nightlight_round,
-            color: isDark ? Colors.green.withOpacity(0.15) : const Color(0xFFE6F5D8),
-            isDark: isDark,
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            Get.to(() => SahabaListScreen());
-          },
-          child: _GridCard(
-            title: "Sahaba",
-            icon: Icons.groups,
-            color: isDark ? Colors.orange.withOpacity(0.15) : const Color(0xFFFFD6CA),
-            isDark: isDark,
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            Get.to(() => SufismHomeScreen());
-          },
-          child: _GridCard(
-            title: "Dhikr",
-            icon: Icons.search,
-            color: isDark ? Colors.pink.withOpacity(0.15) : const Color(0xFFE94E77),
-            isPinkCard: true,
-            isDark: isDark,
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            Get.to(() => NamesOfAllahScreen());
-          },
-          child: _GridCard(
-            title: "99\nNames",
-            icon: Icons.verified_outlined,
-            color: isDark ? primaryColor.withOpacity(0.1) : const Color(0xFFE0D9FA),
-            isDark: isDark,
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            Get.to(() => IslaahApp());
-          },
-          child: _GridCard(
-            title: "Islaah &\nMeditation",
-            icon: Icons.self_improvement,
-            color: isDark ? primaryColor.withOpacity(0.1) : const Color(0xFFE0D9FA),
-            isDark: isDark,
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            Get.to(() => SalawatListScreen());
-          },
-          child: _GridCard(
-            title: "Salawat",
-            icon: Icons.handshake_outlined,
-            color: isDark ? Colors.orange.withOpacity(0.15) : const Color(0xFFFFD6CA),
-            isDark: isDark,
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            Get.to(() => IslamicBooksListScreen());
-          },
-          child: _GridCard(
-            title: "Islamic\nBooks",
-            icon: Icons.diversity_2,
-            color: isDark ? Colors.pink.withOpacity(0.15) : const Color(0xFFE94E77),
-            isPinkCard: true,
             isDark: isDark,
           ),
         ),
@@ -846,7 +730,7 @@ class _GridCard extends StatelessWidget {
               color: isDark ? Colors.white : Colors.black87,
             ),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 2),
           Text(
             title,
             textAlign: TextAlign.center,

@@ -1,22 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class DuaApp extends StatelessWidget {
-  const DuaApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFFF9F9F9),
-        primaryColor: const Color(0xFF8D4B33), // The specific brown
-      ),
-      home: const DuaListScreen(),
-    );
-  }
-}
-
 // --- Common UI Constants ---
 const Color kBrown = Color(0xFF8D4B33);
 const Color kBlack = Color(0xFF1E1E1E);

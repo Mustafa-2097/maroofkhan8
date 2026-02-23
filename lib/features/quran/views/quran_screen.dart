@@ -186,7 +186,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
             ),
             Text(
               "Read  •  Listen  •  Understand",
-              style: TextStyle(fontSize: 12, color: isDark ? AppColors.whiteColor : Colors.black87),
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: isDark ? AppColors.whiteColor : Colors.black87),
             ),
             const SizedBox(height: 15),
             // Detail Tabs
@@ -254,7 +254,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("02:25", style: TextStyle(fontSize: 12, color: isDark ? AppColors.whiteColor : Colors.black87)),
+                Text("02:25", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: isDark ? AppColors.whiteColor : Colors.black87)),
                 SliderTheme(
                   data: SliderTheme.of(context).copyWith(
                     trackHeight: 2,
@@ -263,7 +263,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                   ),
                   child: Slider(value: 0.3, onChanged: (v) {}, activeColor: kPrimaryBrown, inactiveColor: Colors.grey.shade300),
                 ),
-                Text("10:25", style: TextStyle(fontSize: 12, color: isDark ? AppColors.whiteColor : Colors.black87)),
+                Text("10:25", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: isDark ? AppColors.whiteColor : Colors.black87)),
               ],
             ),
             Row(
@@ -303,9 +303,9 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
               children: const [Icon(Icons.menu_book, size: 16, color: kPrimaryBrown), SizedBox(width: 8), Text("Verse 1:", style: TextStyle(fontWeight: FontWeight.bold))],
             ),
             const SizedBox(height: 10),
-            const Text(
+            Text(
               "These are muqatta'at — disconnected letters. Scholars say their precise meaning is known only to Allah. They draw attention to the miraculous nature of the Qur'an, which is composed of familiar Arabic letters yet cannot be matched by human speech.",
-              style: TextStyle(fontSize: 12, height: 1.5, color: Colors.black87),
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],
         ),
