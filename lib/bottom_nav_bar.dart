@@ -6,6 +6,7 @@ import 'features/hadis/views/hadis_screen.dart';
 import 'features/home/views/dashboard_screen.dart';
 import 'features/prayer/views/prayer_screen.dart';
 import 'features/quran/views/quran_screen.dart';
+import 'features/sufism/views/sufism_screen.dart';
 
 class CustomBottomNavBar extends StatefulWidget {
   const CustomBottomNavBar({super.key});

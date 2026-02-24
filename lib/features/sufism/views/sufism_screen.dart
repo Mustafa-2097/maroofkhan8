@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../../core/constant/app_colors.dart';
+import '../../../core/constant/widgets/header.dart';
+import '../../Islam_meditation/views/islam_meditation_screen.dart';
+import '../../ahle_bait/views/ahle_bait_screen.dart';
+import '../../allah_names/views/allah_names.dart';
+import '../../home/awliya_allah/awliya_allah_list_screen.dart';
+import '../../islamic_books/views/islamic_books_screen.dart';
+import '../../sahaba/views/sahaba_screen.dart';
+import '../../salawat/views/salawat_screen.dart';
 
 // --- CONSTANTS & THEME ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
 const Color kTextDark = Color(0xFF2E2E2E);
 const Color kTextGrey = Color(0xFF757575);
 const Color kBackground = Color(0xFFFDFDFD);
-
-void main() {
-  runApp(const MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: SufismHomeScreen(),
-  ));
-}
 
 // ==========================================
 // SCREEN 1: SUFISM HOME
@@ -22,20 +26,19 @@ class SufismHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).colorScheme.primary;
     return Scaffold(
-      backgroundColor: kBackground,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header
-              const Center(child: HeaderWithLines(title: "Sufism")),
-              const Center(
+              const HeaderSection(title: "Sufism"),
+              Center(
                 child: Text(
                   "Daily Wisdom & Meditation",
-                  style: TextStyle(color: kTextGrey, fontSize: 12),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: isDark ? AppColors.whiteColor : Colors.black87),
                 ),
               ),
               const SizedBox(height: 20),
@@ -81,6 +84,29 @@ class SufismHomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
+              const SizedBox(height: 25),
+
+              // 3. Explore more Section
+              Row(
+                children: [
+                  Icon(
+                    Icons.explore_outlined,
+                    color: primaryColor,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    "Explore",
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: isDark ? Colors.white : Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 15),
+              const ExploreMoreGrid(),
+
               const SizedBox(height: 25),
 
               // Guided Meditation List
@@ -544,13 +570,14 @@ class CustomSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Color(0xFF1E120D) : Colors.white,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: AppColors.stroke),
       ),
       child: const TextField(
         decoration: InputDecoration(
@@ -560,6 +587,174 @@ class CustomSearchBar extends StatelessWidget {
           border: InputBorder.none,
           contentPadding: EdgeInsets.only(top: 8),
         ),
+      ),
+    );
+  }
+}
+
+class ExploreMoreGrid extends StatelessWidget {
+  const ExploreMoreGrid({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
+    return GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 4,
+      childAspectRatio: 0.90,
+      mainAxisSpacing: 12,
+      crossAxisSpacing: 8,
+      children: [
+        GestureDetector(
+          onTap: () {
+            Get.to(() => AhleBaitListScreen());
+          },
+          child: _GridCard(
+            title: "Ahle Bait",
+            icon: Icons.diversity_3,
+            color: isDark ? Colors.green.withOpacity(0.15) : const Color(0xFFE6F5D8),
+            isDark: isDark,
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Get.to(() => AwliyaAllahListScreen());
+          },
+          child: _GridCard(
+            title: "Awliya\nAllah",
+            icon: Icons.nightlight_round,
+            color: isDark ? primaryColor.withOpacity(0.1) : const Color(0xFFE0D9FA),
+            isDark: isDark,
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Get.to(() => SahabaListScreen());
+          },
+          child: _GridCard(
+            title: "Sahaba",
+            icon: Icons.groups,
+            color: isDark ? Colors.orange.withOpacity(0.15) : const Color(0xFFFFD6CA),
+            isDark: isDark,
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Get.to(() => SufismHomeScreen());
+          },
+          child: _GridCard(
+            title: "Dhikr",
+            icon: Icons.search,
+            color: isDark ? Colors.pink.withOpacity(0.15) : const Color(0xFFE94E77),
+            isPinkCard: true,
+            isDark: isDark,
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Get.to(() => NamesOfAllahScreen());
+          },
+          child: _GridCard(
+            title: "99\nNames",
+            icon: Icons.verified_outlined,
+            color: isDark ? Colors.green.withOpacity(0.15) : const Color(0xFFE6F5D8),
+            isDark: isDark,
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Get.to(() => IslaahApp());
+          },
+          child: _GridCard(
+            title: "Islaah &\nMeditation",
+            icon: Icons.self_improvement,
+            color: isDark ? primaryColor.withOpacity(0.1) : const Color(0xFFE0D9FA),
+            isDark: isDark,
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Get.to(() => SalawatListScreen());
+          },
+          child: _GridCard(
+            title: "Salawat",
+            icon: Icons.handshake_outlined,
+            color: isDark ? Colors.orange.withOpacity(0.15) : const Color(0xFFFFD6CA),
+            isDark: isDark,
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Get.to(() => IslamicBooksListScreen());
+          },
+          child: _GridCard(
+            title: "Islamic\nBooks",
+            icon: Icons.diversity_2,
+            color: isDark ? Colors.pink.withOpacity(0.15) : const Color(0xFFE94E77),
+            isPinkCard: true,
+            isDark: isDark,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+
+class _GridCard extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final Color color;
+  final bool isPinkCard;
+  final Color? textColor;
+  final bool isDark;
+
+  const _GridCard({
+    required this.title,
+    required this.icon,
+    required this.color,
+    this.isPinkCard = false,
+    this.textColor,
+    required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isDark ? Colors.grey.shade700 : Colors.transparent,
+          width: 1,
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircleAvatar(
+            radius: 16,
+            backgroundColor: isDark ? Colors.grey.shade800 : Colors.white,
+            child: Icon(
+              icon,
+              size: 18,
+              color: isDark ? Colors.white : Colors.black87,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white : Colors.black87,
+            ),
+          ),
+        ],
       ),
     );
   }

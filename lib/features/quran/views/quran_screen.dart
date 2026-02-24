@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/core/constant/app_colors.dart';
 
+import '../../../core/constant/widgets/header.dart';
 import '../../ai_murshid/views/ai_murshid_screen.dart';
 
 // --- CONSTANTS ---
@@ -43,7 +44,7 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
       child: Column(
         children: [
           const SizedBox(height: 10),
-          const HeaderDecoration(title: "Al Quran"),
+          const HeaderSection(title: "Al Quran"),
           const SizedBox(height: 15),
           const SearchAndBookmark(),
           const SizedBox(height: 15),
@@ -179,7 +180,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                         onPressed: () => Navigator.pop(context),
                         visualDensity: VisualDensity.compact),
                   ),
-                  const HeaderDecoration(title: "Al Baqarah"),
+                  const HeaderSection(title: "Al Baqarah"),
                   const Align(alignment: Alignment.centerRight, child: Text("1", style: TextStyle(fontWeight: FontWeight.bold))),
                 ],
               ),
@@ -359,30 +360,6 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
 }
 
 // --- HELPER WIDGETS ---
-class HeaderDecoration extends StatelessWidget {
-  final String title;
-  const HeaderDecoration({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(width: 60, height: 1, color: Colors.grey.shade300),
-        const SizedBox(width: 10),
-        const Icon(Icons.circle, size: 4, color: kPrimaryBrown),
-        const SizedBox(width: 10),
-        Text(title, style: GoogleFonts.playfairDisplay(fontSize: 18, fontWeight: FontWeight.bold)),
-        const SizedBox(width: 10),
-        const Icon(Icons.circle, size: 4, color: kPrimaryBrown),
-        const SizedBox(width: 10),
-        Container(width: 60, height: 1, color: Colors.grey.shade300),
-      ],
-    );
-  }
-}
-
 class SearchAndBookmark extends StatelessWidget {
   const SearchAndBookmark({super.key});
 
