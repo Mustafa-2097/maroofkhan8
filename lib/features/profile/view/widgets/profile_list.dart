@@ -6,6 +6,8 @@ import 'package:maroofkhan8/features/profile/view/pages/contact_us.dart';
 import 'package:maroofkhan8/features/profile/view/pages/payment_history.dart';
 import 'package:maroofkhan8/features/profile/view/pages/personal_data.dart';
 import 'package:maroofkhan8/features/profile/view/pages/save.dart';
+import 'package:maroofkhan8/features/profile/view/pages/subscription/view/PremiumSubscriptionPage.dart';
+import 'package:maroofkhan8/features/profile/view/pages/subscription/view/subscription_screen.dart';
 import 'package:maroofkhan8/features/profile/view/pages/support_center.dart';
 import 'package:maroofkhan8/features/profile/view/pages/terms_conditions.dart';
 
@@ -28,25 +30,30 @@ class ProfileList extends StatelessWidget {
           _DrawerItem(
             icon: Icons.star_border,
             label: 'Save',
-            onTap: () => Get.to(() => NamesListScreen(
-              pageTitle: "Save",
-              repository: SaveRepository(),
-              useHeartIcon: false,
-            )),
+            onTap: () => Get.to(
+              () => NamesListScreen(
+                pageTitle: "Save",
+                repository: SaveRepository(),
+                useHeartIcon: false,
+              ),
+            ),
           ),
           _DrawerItem(
             icon: Icons.star_border,
             label: 'Favourite',
-            onTap: () => Get.to(() => NamesListScreen(
-              pageTitle: "Favourite",
-              repository: FavoriteRepository(),
-              useHeartIcon: true,
-            )),
+            onTap: () => Get.to(
+              () => NamesListScreen(
+                pageTitle: "Favourite",
+                repository: FavoriteRepository(),
+                useHeartIcon: true,
+              ),
+            ),
           ),
           _DrawerItem(
             icon: Icons.subscriptions_outlined,
             label: 'Subscription',
-            //onTap: () => Get.to(() => SubscriptionPage()),
+            onTap: () => Get.to(() => SubscriptionPage()),
+            //onTap: () => Get.to(() => PremiumSubscriptionPage()),
           ),
           _DrawerItem(
             icon: Icons.payment_outlined,
@@ -92,10 +99,8 @@ class ProfileList extends StatelessWidget {
           SizedBox(height: 18.h),
 
           /// Logout Button
-          _LogoutButton(
-            onPressed: () => _showLogoutBottomSheet(context),
-          ),
-          SizedBox(height: 18.h)
+          _LogoutButton(onPressed: () => _showLogoutBottomSheet(context)),
+          SizedBox(height: 18.h),
         ],
       ),
     );
@@ -136,7 +141,9 @@ class ProfileList extends StatelessWidget {
                     height: 4,
                     margin: const EdgeInsets.only(bottom: 20),
                     decoration: BoxDecoration(
-                      color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
+                      color: isDark
+                          ? Colors.grey.shade600
+                          : Colors.grey.shade400,
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -172,10 +179,12 @@ class ProfileList extends StatelessWidget {
                   /// DESCRIPTION
                   Text(
                     "Are you sure you want to log out? "
-                        "You will need to sign in again to access your account.",
+                    "You will need to sign in again to access your account.",
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withOpacity(0.7),
                     ),
                   ),
 
@@ -193,7 +202,9 @@ class ProfileList extends StatelessWidget {
                           child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
                               side: BorderSide(
-                                color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
+                                color: isDark
+                                    ? Colors.grey.shade600
+                                    : Colors.grey.shade400,
                                 width: 1.5,
                               ),
                               shape: RoundedRectangleBorder(
@@ -207,11 +218,14 @@ class ProfileList extends StatelessWidget {
                             onPressed: () => Navigator.pop(context),
                             child: Text(
                               "Cancel",
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                color: isDark ? Colors.white : Colors.black87,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
+                              style: Theme.of(context).textTheme.bodyLarge
+                                  ?.copyWith(
+                                    color: isDark
+                                        ? Colors.white
+                                        : Colors.black87,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                             ),
                           ),
                         ),
@@ -237,10 +251,11 @@ class ProfileList extends StatelessWidget {
                             },
                             child: Text(
                               "Logout",
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                              ),
+                              style: Theme.of(context).textTheme.bodyLarge
+                                  ?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                             ),
                           ),
                         ),
@@ -278,9 +293,9 @@ class _SectionHeader extends StatelessWidget {
       children: [
         Text(
           title,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w400,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w400),
         ),
         SizedBox(height: 10.h),
       ],
@@ -293,11 +308,7 @@ class _DrawerItem extends StatelessWidget {
   final String label;
   final void Function()? onTap;
 
-  const _DrawerItem({
-    required this.icon,
-    required this.label,
-    this.onTap,
-  });
+  const _DrawerItem({required this.icon, required this.label, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -316,9 +327,9 @@ class _DrawerItem extends StatelessWidget {
             SizedBox(width: 16.w),
             Text(
               label.tr,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.w400,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w400),
             ),
             const Spacer(),
             Icon(
@@ -357,13 +368,8 @@ class _LogoutButton extends StatelessWidget {
         ),
         style: OutlinedButton.styleFrom(
           side: BorderSide(color: logoutRed),
-          padding: EdgeInsets.symmetric(
-            horizontal: 22.w,
-            vertical: 6.h,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 6.h),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
     );

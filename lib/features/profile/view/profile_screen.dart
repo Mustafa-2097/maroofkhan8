@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:maroofkhan8/features/profile/view/pages/subscription/view/PremiumSubscriptionPage.dart';
 import 'package:maroofkhan8/features/profile/view/widgets/profile_list.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -15,9 +18,9 @@ class ProfileScreen extends StatelessWidget {
         centerTitle: true,
         title: Text(
           "PROFILE",
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
         ),
       ),
       body: SafeArea(
@@ -30,7 +33,9 @@ class ProfileScreen extends StatelessWidget {
               /// User Image
               CircleAvatar(
                 radius: 50,
-                backgroundColor: isDark ? Color(0xFF494358) : Colors.grey.shade200,
+                backgroundColor: isDark
+                    ? Color(0xFF494358)
+                    : Colors.grey.shade200,
                 child: Icon(
                   Icons.person,
                   size: 60,
@@ -67,30 +72,52 @@ class ProfileScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Your Plan Status", style: Theme.of(context).textTheme.titleMedium),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.primary,
-                            borderRadius: BorderRadius.circular(8),
+                        Text(
+                          "Your Plan Status",
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        InkWell(
+                          onTap: () => Get.to(() => PremiumSubscriptionPagee()),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              "Upgrade",
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                          child: Text(
-                            "Upgrade",
-                            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary, fontWeight: FontWeight.bold),
-                          ),
-                        )
+                        ),
                       ],
                     ),
                     const Divider(height: 24),
                     Row(
                       children: [
-                        Icon(Icons.auto_awesome, size: 20, color: Theme.of(context).colorScheme.primary),
+                        Icon(
+                          Icons.auto_awesome,
+                          size: 20,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                         const SizedBox(width: 8),
-                        Text("Basic Plan", style: Theme.of(context).textTheme.bodyLarge),
+                        Text(
+                          "Basic Plan",
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
                         const Spacer(),
-                        Text("Expires: 12/2024", style: Theme.of(context).textTheme.labelMedium),
+                        Text(
+                          "Expires: 12/2024",
+                          style: Theme.of(context).textTheme.labelMedium,
+                        ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),

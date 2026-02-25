@@ -17,14 +17,14 @@ class AppColors {
 
   /// Select Language - Login - Forgot password -----> Pages BG Layer
   static const Color gradient01 = Color(0xCCA7997D);
-  static const Color gradient02= Color(0xCC919185);
+  static const Color gradient02 = Color(0xCC919185);
 
   /// Main BG Layer
   static const Color bg01 = Color(0xFF7B7361);
   static const Color bg02 = Color(0xFF6F6F66);
 
-
-
   static const Color buttonTextColor = Color(0xFF008706);
   static const Color buttonColor = Color(0xFF328736);
+
+  static const Color primaryColor = primaryColorDark;
 }
