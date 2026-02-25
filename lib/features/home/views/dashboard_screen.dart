@@ -19,7 +19,7 @@ import '../../salawat/views/salawat_screen.dart';
 import '../../sufism/views/sufism_screen.dart' hide HeaderWithLines;
 import '../../zakat_calculator/views/zakat_calculator.dart';
 import '../awliya_allah/awliya_allah_list_screen.dart';
-import '../tasbih/tasbih_screen.dart';
+import '../dhikr/tasbih_screen.dart';
 import 'custom_app_drawer.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -36,23 +36,23 @@ class DashboardScreen extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: isDark
               ? LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              backgroundColor.withOpacity(0.95),
-              backgroundColor,
-              backgroundColor,
-            ],
-          )
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    backgroundColor.withOpacity(0.95),
+                    backgroundColor,
+                    backgroundColor,
+                  ],
+                )
               : LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.grey.shade50,
-              Colors.grey.shade100,
-              Colors.white,
-            ],
-          ),
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.grey.shade50,
+                    Colors.grey.shade100,
+                    Colors.white,
+                  ],
+                ),
         ),
         child: SafeArea(
           child: SingleChildScrollView(
@@ -104,11 +104,7 @@ class HeaderSection extends StatelessWidget {
           children: [
             InkWell(
               onTap: () => Scaffold.of(context).openDrawer(),
-              child: Icon(
-                Icons.menu_rounded,
-                color: primaryColor,
-                size: 26,
-              ),
+              child: Icon(Icons.menu_rounded, color: primaryColor, size: 26),
             ),
             // Logo Circle
             Row(
@@ -129,7 +125,7 @@ class HeaderSection extends StatelessWidget {
                 SizedBox(width: 10),
                 Text(
                   "Digital Khanqah",
-                  style: Theme.of(context).textTheme.headlineSmall
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ],
             ),
@@ -137,7 +133,9 @@ class HeaderSection extends StatelessWidget {
               onTap: () => Get.to(() => const ProfileScreen()),
               child: CircleAvatar(
                 radius: 18,
-                backgroundColor: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+                backgroundColor: isDark
+                    ? Colors.grey.shade800
+                    : Colors.grey.shade300,
                 child: Icon(
                   Icons.person,
                   color: isDark ? Colors.grey.shade300 : Colors.grey.shade600,
@@ -158,6 +156,7 @@ class HeaderSection extends StatelessWidget {
             height: 0.9,
           ),
         ),
+
         /// Main message
         Text(
           "May your heart find peace today",
@@ -181,10 +180,7 @@ class HeaderSection extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(
-                Icons.search,
-                color: Theme.of(context).disabledColor,
-              ),
+              Icon(Icons.search, color: Theme.of(context).disabledColor),
               const SizedBox(width: 8),
               Expanded(
                 child: TextField(
@@ -221,7 +217,8 @@ class _HeroSectionState extends State<HeroSection> {
       "nameAr": "شيخ عبدالقادر جيلاني",
       "quoteEn": "He who knows self\nknows his Lord.",
       "quoteAr": "من عرف نفسه فقد عرف ربه",
-      "image": "https://img.freepik.com/free-vector/islamic-pattern-background-luxury-green-gold_1017-30814.jpg",
+      "image":
+          "https://img.freepik.com/free-vector/islamic-pattern-background-luxury-green-gold_1017-30814.jpg",
       "progress": 0.3,
       "time": "58 sec",
     },
@@ -231,7 +228,8 @@ class _HeroSectionState extends State<HeroSection> {
       "nameAr": "جلال الدين الرومي",
       "quoteEn": "What you seek is\nseeking you.",
       "quoteAr": "ما تبحث عنه يبحث عنك",
-      "image": "https://img.freepik.com/free-vector/gradient-islamic-new-year-background_23-2148967924.jpg",
+      "image":
+          "https://img.freepik.com/free-vector/gradient-islamic-new-year-background_23-2148967924.jpg",
       "progress": 0.7,
       "time": "1 min 20 sec",
     },
@@ -239,9 +237,11 @@ class _HeroSectionState extends State<HeroSection> {
       "title": "Hadith of the Day",
       "nameEn": "Imam Ali (AS)",
       "nameAr": "الإمام علي",
-      "quoteEn": "Patience is of two kinds: patience over what pains you, and patience against what you covet.",
+      "quoteEn":
+          "Patience is of two kinds: patience over what pains you, and patience against what you covet.",
       "quoteAr": "الصبر صبران: صبر على ما تكره وصبر عما تحب",
-      "image": "https://img.freepik.com/free-vector/golden-islamic-pattern-dark-background_1017-31354.jpg",
+      "image":
+          "https://img.freepik.com/free-vector/golden-islamic-pattern-dark-background_1017-31354.jpg",
       "progress": 0.1,
       "time": "45 sec",
     },
@@ -281,7 +281,9 @@ class _HeroSectionState extends State<HeroSection> {
               width: _currentIndex == index ? 20 : 8,
               height: 8,
               decoration: BoxDecoration(
-                color: _currentIndex == index ? primaryColor : Colors.grey.shade400,
+                color: _currentIndex == index
+                    ? primaryColor
+                    : Colors.grey.shade400,
                 borderRadius: BorderRadius.circular(4),
               ),
             );
@@ -291,7 +293,11 @@ class _HeroSectionState extends State<HeroSection> {
     );
   }
 
-  Widget _buildSlideCard(Map<String, dynamic> data, bool isDark, Color primaryColor) {
+  Widget _buildSlideCard(
+    Map<String, dynamic> data,
+    bool isDark,
+    Color primaryColor,
+  ) {
     return Container(
       margin: EdgeInsets.only(right: 8),
       width: double.infinity,
@@ -329,7 +335,10 @@ class _HeroSectionState extends State<HeroSection> {
             Align(
               alignment: Alignment.topLeft,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
                 decoration: BoxDecoration(
                   color: primaryColor.withOpacity(0.8),
                   borderRadius: BorderRadius.circular(6),
@@ -351,9 +360,15 @@ class _HeroSectionState extends State<HeroSection> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.bookmark_border, color: Colors.white.withOpacity(0.8)),
+                  Icon(
+                    Icons.bookmark_border,
+                    color: Colors.white.withOpacity(0.8),
+                  ),
                   const SizedBox(width: 10),
-                  Icon(Icons.download_outlined, color: Colors.white.withOpacity(0.8)),
+                  Icon(
+                    Icons.download_outlined,
+                    color: Colors.white.withOpacity(0.8),
+                  ),
                 ],
               ),
             ),
@@ -373,10 +388,7 @@ class _HeroSectionState extends State<HeroSection> {
                   ),
                   Text(
                     data['nameAr'],
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 14,
-                    ),
+                    style: const TextStyle(color: Colors.white70, fontSize: 14),
                   ),
                   const SizedBox(height: 20),
                   Text(
@@ -391,10 +403,7 @@ class _HeroSectionState extends State<HeroSection> {
                   const SizedBox(height: 10),
                   Text(
                     data['quoteAr'],
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 16,
-                    ),
+                    style: const TextStyle(color: Colors.white70, fontSize: 16),
                   ),
                 ],
               ),
@@ -414,7 +423,10 @@ class _HeroSectionState extends State<HeroSection> {
                   ),
                   const SizedBox(height: 10),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
                     decoration: BoxDecoration(
                       color: primaryColor.withOpacity(0.4),
                       borderRadius: BorderRadius.circular(20),
@@ -477,7 +489,9 @@ class YourJourneyRow extends StatelessWidget {
           child: _JourneyCard(
             topText: "5",
             bottomText: "Day\nStreak",
-            color: isDark ? primaryColor.withOpacity(0.15) : const Color(0xFFDCD6FF),
+            color: isDark
+                ? primaryColor.withOpacity(0.15)
+                : const Color(0xFFDCD6FF),
             icon: Icons.local_fire_department,
             isDark: isDark,
           ),
@@ -489,7 +503,9 @@ class YourJourneyRow extends StatelessWidget {
           child: _JourneyCard(
             topText: "1",
             bottomText: "Surah",
-            color: isDark ? Colors.orange.withOpacity(0.15) : const Color(0xFFFFD6CA),
+            color: isDark
+                ? Colors.orange.withOpacity(0.15)
+                : const Color(0xFFFFD6CA),
             icon: Icons.menu_book,
             isDark: isDark,
           ),
@@ -501,7 +517,9 @@ class YourJourneyRow extends StatelessWidget {
           child: _JourneyCard(
             topText: "2h 15\nmin",
             bottomText: "Surah",
-            color: isDark ? Colors.green.withOpacity(0.15) : const Color(0xFFE6F5D8),
+            color: isDark
+                ? Colors.green.withOpacity(0.15)
+                : const Color(0xFFE6F5D8),
             icon: Icons.schedule,
             isDark: isDark,
           ),
@@ -513,7 +531,9 @@ class YourJourneyRow extends StatelessWidget {
           child: _JourneyCard(
             topText: "8",
             bottomText: "Saved",
-            color: isDark ? Colors.pink.withOpacity(0.15) : const Color(0xFFE94E77),
+            color: isDark
+                ? Colors.pink.withOpacity(0.15)
+                : const Color(0xFFE94E77),
             icon: Icons.bookmark_border,
             isPinkCard: true,
             isDark: isDark,
@@ -612,7 +632,9 @@ class QuickStartGrid extends StatelessWidget {
           child: _GridCard(
             title: "Quran",
             icon: Icons.menu_book,
-            color: isDark ? primaryColor.withOpacity(0.15) : const Color(0xFFDCD6FF),
+            color: isDark
+                ? primaryColor.withOpacity(0.15)
+                : const Color(0xFFDCD6FF),
             isDark: isDark,
           ),
         ),
@@ -623,7 +645,9 @@ class QuickStartGrid extends StatelessWidget {
           child: _GridCard(
             title: "Hadith",
             icon: Icons.book,
-            color: isDark ? Colors.orange.withOpacity(0.15) : const Color(0xFFFFD6CA),
+            color: isDark
+                ? Colors.orange.withOpacity(0.15)
+                : const Color(0xFFFFD6CA),
             isDark: isDark,
           ),
         ),
@@ -634,7 +658,9 @@ class QuickStartGrid extends StatelessWidget {
           child: _GridCard(
             title: "Dua",
             icon: Icons.front_hand,
-            color: isDark ? Colors.orange.withOpacity(0.15) : const Color(0xFFFFD6CA),
+            color: isDark
+                ? Colors.orange.withOpacity(0.15)
+                : const Color(0xFFFFD6CA),
             isDark: isDark,
           ),
         ),
@@ -645,7 +671,9 @@ class QuickStartGrid extends StatelessWidget {
           child: _GridCard(
             title: "Prayer\nTracker",
             icon: Icons.gps_fixed,
-            color: isDark ? primaryColor.withOpacity(0.1) : const Color(0xFFE0D9FA),
+            color: isDark
+                ? primaryColor.withOpacity(0.1)
+                : const Color(0xFFE0D9FA),
             isDark: isDark,
           ),
         ),
@@ -656,7 +684,9 @@ class QuickStartGrid extends StatelessWidget {
           child: _GridCard(
             title: "Islamic\nStories",
             icon: Icons.auto_stories,
-            color: isDark ? primaryColor.withOpacity(0.15) : const Color(0xFFDCD6FF),
+            color: isDark
+                ? primaryColor.withOpacity(0.15)
+                : const Color(0xFFDCD6FF),
             isDark: isDark,
           ),
         ),
@@ -667,7 +697,9 @@ class QuickStartGrid extends StatelessWidget {
           child: _GridCard(
             title: "Zakat\nCalculator",
             icon: Icons.savings_outlined,
-            color: isDark ? Colors.pink.withOpacity(0.15) : const Color(0xFFE94E77),
+            color: isDark
+                ? Colors.pink.withOpacity(0.15)
+                : const Color(0xFFE94E77),
             isPinkCard: true,
             textColor: isDark ? Colors.white : Colors.white,
             isDark: isDark,
@@ -680,7 +712,9 @@ class QuickStartGrid extends StatelessWidget {
           child: _GridCard(
             title: "Audio",
             icon: Icons.audiotrack,
-            color: isDark ? primaryColor.withOpacity(0.15) : const Color(0xFFDCD6FF),
+            color: isDark
+                ? primaryColor.withOpacity(0.15)
+                : const Color(0xFFDCD6FF),
             isDark: isDark,
           ),
         ),
