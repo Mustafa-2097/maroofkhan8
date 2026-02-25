@@ -3,15 +3,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:maroofkhan8/core/constant/app_colors.dart';
 
-class PremiumSubscriptionPagee extends StatelessWidget {
-  const PremiumSubscriptionPagee({super.key});
+class PremiumSubscriptionPage extends StatelessWidget {
+  const PremiumSubscriptionPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+
     const Color primaryBrown = AppColors.primaryColorLight;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FB),
+      backgroundColor: const Color(0xFFF8F9FB), 
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,

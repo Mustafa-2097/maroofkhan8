@@ -77,7 +77,7 @@ class ProfileScreen extends StatelessWidget {
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         InkWell(
-                          onTap: () => Get.to(() => PremiumSubscriptionPagee()),
+                          onTap: () => Get.to(() => PremiumSubscriptionPage()),
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,
