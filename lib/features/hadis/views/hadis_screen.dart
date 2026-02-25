@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:maroofkhan8/core/constant/widgets/header.dart';
 
 import 'hadith_book_details_screen.dart';
 
@@ -19,14 +20,20 @@ class _HadithScreenState extends State<HadithScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: HeaderSection(title: "Al Hadith"),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: SafeArea(
         child: Column(
           children: [
             const SizedBox(height: 10),
-            // 1. Custom Decorated Header
-            const HeaderDecoration(),
-
-            const SizedBox(height: 15),
 
             // 2. Search & Bookmark Row
             Padding(
@@ -45,7 +52,10 @@ class _HadithScreenState extends State<HadithScreen> {
                       child: const TextField(
                         decoration: InputDecoration(
                           hintText: 'Search',
-                          hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+                          hintStyle: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14,
+                          ),
                           border: InputBorder.none,
                         ),
                       ),
@@ -60,7 +70,10 @@ class _HadithScreenState extends State<HadithScreen> {
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(color: Colors.grey.shade200),
                     ),
-                    child: Icon(Icons.bookmark_outline, color: Colors.grey.shade300),
+                    child: Icon(
+                      Icons.bookmark_outline,
+                      color: Colors.grey.shade300,
+                    ),
                   ),
                 ],
               ),
@@ -86,7 +99,9 @@ class _HadithScreenState extends State<HadithScreen> {
 
             // 4. Content List
             Expanded(
-              child: _selectedIndex == 0 ? _buildBookList() : _buildHadithList(),
+              child: _selectedIndex == 0
+                  ? _buildBookList()
+                  : _buildHadithList(),
             ),
           ],
         ),
@@ -101,7 +116,7 @@ class _HadithScreenState extends State<HadithScreen> {
       "Sahih Muslim",
       "Sunan Abu Dawood",
       "Jami' at-Tirmidhi",
-      "Sunan an-Nasa'i"
+      "Sunan an-Nasa'i",
     ];
 
     return ListView.builder(
@@ -109,7 +124,7 @@ class _HadithScreenState extends State<HadithScreen> {
       itemCount: books.length,
       itemBuilder: (context, index) {
         return GestureDetector(
-          onTap: (){
+          onTap: () {
             Get.to(HadithBookDetailsScreen());
           },
           child: Container(
@@ -118,7 +133,13 @@ class _HadithScreenState extends State<HadithScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
-              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 4))],
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.03),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
             child: Row(
               children: [
@@ -130,20 +151,34 @@ class _HadithScreenState extends State<HadithScreen> {
                     color: Colors.green.shade900,
                     borderRadius: BorderRadius.circular(4),
                   ),
-                  child: const Icon(Icons.menu_book, color: Colors.amber, size: 20),
+                  child: const Icon(
+                    Icons.menu_book,
+                    color: Colors.amber,
+                    size: 20,
+                  ),
                 ),
                 const SizedBox(width: 15),
                 Expanded(
                   child: Text(
                     books[index],
-                    style: GoogleFonts.playfairDisplay(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 Container(
                   padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(color: primaryBrown, borderRadius: BorderRadius.circular(8)),
-                  child: const Icon(Icons.arrow_forward, color: Colors.white, size: 18),
-                )
+                  decoration: BoxDecoration(
+                    color: primaryBrown,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.arrow_forward,
+                    color: Colors.white,
+                    size: 18,
+                  ),
+                ),
               ],
             ),
           ),
@@ -164,7 +199,13 @@ class _HadithScreenState extends State<HadithScreen> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 4))],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.03),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,31 +215,54 @@ class _HadithScreenState extends State<HadithScreen> {
                 child: Text(
                   "إن الله لا ينظر إلى صوركم وأموالكم، ولكن ينظر إلى قلوبكم وأعمالكم",
                   textAlign: TextAlign.right,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, height: 1.5),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    height: 1.5,
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
               const Text(
                 '"Allah looks not at your appearance or wealth, but at your hearts and actions."',
-                style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic, color: Colors.black87),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontStyle: FontStyle.italic,
+                  color: Colors.black87,
+                ),
               ),
               const SizedBox(height: 10),
               Align(
                 alignment: Alignment.bottomRight,
-                child: Text("— Sahih Muslim", style: TextStyle(color: primaryBrown, fontSize: 12, fontWeight: FontWeight.bold)),
+                child: Text(
+                  "— Sahih Muslim",
+                  style: TextStyle(
+                    color: primaryBrown,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
               const Divider(height: 30),
               Row(
                 children: [
-                  const Icon(Icons.favorite_border, size: 18, color: Colors.grey),
+                  const Icon(
+                    Icons.favorite_border,
+                    size: 18,
+                    color: Colors.grey,
+                  ),
                   const SizedBox(width: 15),
-                  const Icon(Icons.share_outlined, size: 18, color: Colors.grey),
+                  const Icon(
+                    Icons.share_outlined,
+                    size: 18,
+                    color: Colors.grey,
+                  ),
                   const Spacer(),
                   _iconLabel(Icons.volume_up_outlined, "Listen"),
                   const SizedBox(width: 15),
                   _iconLabel(Icons.visibility_outlined, "Full View"),
                 ],
-              )
+              ),
             ],
           ),
         );
@@ -224,14 +288,23 @@ class _HadithScreenState extends State<HadithScreen> {
         child: Container(
           height: 38,
           decoration: BoxDecoration(
-            color: isSelected ? (index == 2 ? primaryBrown : darkBlack) : Colors.white,
+            color: isSelected
+                ? (index == 2 ? primaryBrown : darkBlack)
+                : Colors.white,
             borderRadius: BorderRadius.circular(20),
             border: isSelected ? null : Border.all(color: Colors.grey.shade200),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (icon != null) ...[Icon(icon, size: 14, color: isSelected ? Colors.white : Colors.black), const SizedBox(width: 5)],
+              if (icon != null) ...[
+                Icon(
+                  icon,
+                  size: 14,
+                  color: isSelected ? Colors.white : Colors.black,
+                ),
+                const SizedBox(width: 5),
+              ],
               Text(
                 text,
                 style: TextStyle(
@@ -264,7 +337,11 @@ class HeaderDecoration extends StatelessWidget {
           const SizedBox(width: 10),
           Text(
             "Hadith",
-            style: GoogleFonts.playfairDisplay(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+            style: GoogleFonts.playfairDisplay(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
           ),
           const SizedBox(width: 10),
           const Icon(Icons.circle, size: 4, color: brown),

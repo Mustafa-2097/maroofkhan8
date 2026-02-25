@@ -19,7 +19,7 @@ import '../../salawat/views/salawat_screen.dart';
 import '../../sufism/views/sufism_screen.dart' hide HeaderWithLines;
 import '../../zakat_calculator/views/zakat_calculator.dart';
 import '../awliya_allah/awliya_allah_list_screen.dart';
-import '../dhikr/tasbih_screen.dart';
+import '../dhikr/dhikr_screen.dart';
 import 'custom_app_drawer.dart';
 
 class DashboardScreen extends StatelessWidget {

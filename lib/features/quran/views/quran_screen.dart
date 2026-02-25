@@ -22,6 +22,16 @@ class _MainContainerState extends State<QuranScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: HeaderSection(title: "Al Quran"),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: const QuranTabsScreen(),
     );
   }
@@ -43,8 +53,8 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
     return SafeArea(
       child: Column(
         children: [
-          const SizedBox(height: 10),
-          const HeaderSection(title: "Al Quran"),
+          // const SizedBox(height: 10),
+          // const HeaderSection(title: "Al Quran"),
           const SizedBox(height: 15),
           const SearchAndBookmark(),
           const SizedBox(height: 15),
@@ -77,15 +87,41 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
         child: Container(
           height: 38,
           decoration: BoxDecoration(
-            color: isSelected ? kPrimaryBrown : isDark ? Colors.white : Colors.black,
+            color: isSelected
+                ? kPrimaryBrown
+                : isDark
+                ? Colors.white
+                : Colors.black,
             borderRadius: BorderRadius.circular(20),
             border: isSelected ? null : Border.all(color: Colors.grey.shade200),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (icon != null) ...[Icon(icon, size: 16, color: isSelected ? Colors.white : isDark ? Colors.black : Colors.white), const SizedBox(width: 5)],
-              Text(label, style: TextStyle(color: isSelected ? Colors.white : isDark ? Colors.black : Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+              if (icon != null) ...[
+                Icon(
+                  icon,
+                  size: 16,
+                  color: isSelected
+                      ? Colors.white
+                      : isDark
+                      ? Colors.black
+                      : Colors.white,
+                ),
+                const SizedBox(width: 5),
+              ],
+              Text(
+                label,
+                style: TextStyle(
+                  color: isSelected
+                      ? Colors.white
+                      : isDark
+                      ? Colors.black
+                      : Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ],
           ),
         ),
@@ -99,26 +135,40 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
         return ListView.builder(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           itemCount: 8,
-          itemBuilder: (context, i) => _listTile("${i + 1}", "Para - ${i + 1}", "286 Ayah", null),
+          itemBuilder: (context, i) =>
+              _listTile("${i + 1}", "Para - ${i + 1}", "286 Ayah", null),
         );
       case 2: // Last Read
         return ListView.builder(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           itemCount: 8,
-          itemBuilder: (context, i) => _listTile("${i + 1}", "Alif Laam Meem", "The Beginning of the Qur'an", "10 minutes ago"),
+          itemBuilder: (context, i) => _listTile(
+            "${i + 1}",
+            "Alif Laam Meem",
+            "The Beginning of the Qur'an",
+            "10 minutes ago",
+          ),
         );
       default: // Surah List
         return ListView.builder(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           itemCount: 8,
-          itemBuilder: (context, i) => _listTile("${i + 1}", i == 0 ? "Al Baqarah" : "Al Imran", "The Family of Imran  | 286 Ayah  |  Makki Surah", null),
+          itemBuilder: (context, i) => _listTile(
+            "${i + 1}",
+            i == 0 ? "Al Baqarah" : "Al Imran",
+            "The Family of Imran  | 286 Ayah  |  Makki Surah",
+            null,
+          ),
         );
     }
   }
 
   Widget _listTile(String num, String title, String sub, String? time) {
     return GestureDetector(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const QuranDetailsScreen())),
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const QuranDetailsScreen()),
+      ),
       child: Column(
         children: [
           Padding(
@@ -131,13 +181,33 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(title, style: GoogleFonts.playfairDisplay(fontSize: 16, fontWeight: FontWeight.bold)),
+                      Text(
+                        title,
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       const SizedBox(height: 2),
-                      Text(sub, style: const TextStyle(fontSize: 14, color: Color(0xFF6F8DA1), fontWeight: FontWeight.w400)),
+                      Text(
+                        sub,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF6F8DA1),
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
                     ],
                   ),
                 ),
-                if (time != null) Text(time, style: const TextStyle(fontSize: 12, color: Color(0xFF6F8DA1))),
+                if (time != null)
+                  Text(
+                    time,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF6F8DA1),
+                    ),
+                  ),
               ],
             ),
           ),
@@ -176,18 +246,29 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: IconButton(
-                        icon: const Icon(Icons.chevron_left, color: Colors.grey),
-                        onPressed: () => Navigator.pop(context),
-                        visualDensity: VisualDensity.compact),
+                      icon: const Icon(Icons.chevron_left, color: Colors.grey),
+                      onPressed: () => Navigator.pop(context),
+                      visualDensity: VisualDensity.compact,
+                    ),
                   ),
                   const HeaderSection(title: "Al Baqarah"),
-                  const Align(alignment: Alignment.centerRight, child: Text("1", style: TextStyle(fontWeight: FontWeight.bold))),
+                  const Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      "1",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ],
               ),
             ),
             Text(
               "Read  •  Listen  •  Understand",
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: isDark ? AppColors.whiteColor : Colors.black87),
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: isDark ? AppColors.whiteColor : Colors.black87,
+              ),
             ),
             const SizedBox(height: 15),
             // Detail Tabs
@@ -205,14 +286,15 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
             ),
             const SizedBox(height: 20),
             Expanded(
-              child: _activeDetailTab == 0 ? _buildSurahReader() : _buildTafsirReader(),
+              child: _activeDetailTab == 0
+                  ? _buildSurahReader()
+                  : _buildTafsirReader(),
             ),
           ],
         ),
       ),
     );
   }
-
 
   Widget _detailTab(String label, int index) {
     bool isSelected = _activeDetailTab == index;
@@ -235,11 +317,26 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
           height: 35,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: isSelected ? kPrimaryBrown : isDark ? Colors.white : Colors.black,
+            color: isSelected
+                ? kPrimaryBrown
+                : isDark
+                ? Colors.white
+                : Colors.black,
             borderRadius: BorderRadius.circular(20),
             border: isSelected ? null : Border.all(color: Colors.grey.shade200),
           ),
-          child: Text(label, style: TextStyle(color: isSelected ? Colors.white : isDark ? Colors.black : Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: isSelected
+                  ? Colors.white
+                  : isDark
+                  ? Colors.black
+                  : Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ),
       ),
     );
@@ -255,26 +352,57 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("02:25", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: isDark ? AppColors.whiteColor : Colors.black87)),
+                Text(
+                  "02:25",
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: isDark ? AppColors.whiteColor : Colors.black87,
+                  ),
+                ),
                 SliderTheme(
                   data: SliderTheme.of(context).copyWith(
                     trackHeight: 2,
-                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 4),
+                    thumbShape: const RoundSliderThumbShape(
+                      enabledThumbRadius: 4,
+                    ),
                     overlayShape: SliderComponentShape.noOverlay,
                   ),
-                  child: Slider(value: 0.3, onChanged: (v) {}, activeColor: kPrimaryBrown, inactiveColor: Colors.grey.shade300),
+                  child: Slider(
+                    value: 0.3,
+                    onChanged: (v) {},
+                    activeColor: kPrimaryBrown,
+                    inactiveColor: Colors.grey.shade300,
+                  ),
                 ),
-                Text("10:25", style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: isDark ? AppColors.whiteColor : Colors.black87)),
+                Text(
+                  "10:25",
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: isDark ? AppColors.whiteColor : Colors.black87,
+                  ),
+                ),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.skip_previous, color: isDark ? AppColors.whiteColor : Colors.black87),
+                Icon(
+                  Icons.skip_previous,
+                  color: isDark ? AppColors.whiteColor : Colors.black87,
+                ),
                 SizedBox(width: 20),
-                Icon(Icons.play_circle_filled, size: 40, color: isDark ? AppColors.whiteColor : Colors.black87),
+                Icon(
+                  Icons.play_circle_filled,
+                  size: 40,
+                  color: isDark ? AppColors.whiteColor : Colors.black87,
+                ),
                 SizedBox(width: 20),
-                Icon(Icons.skip_next, color: isDark ? AppColors.whiteColor : Colors.black87),
+                Icon(
+                  Icons.skip_next,
+                  color: isDark ? AppColors.whiteColor : Colors.black87,
+                ),
               ],
             ),
           ],
@@ -301,7 +429,11 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              children: const [Icon(Icons.menu_book, size: 16, color: kPrimaryBrown), SizedBox(width: 8), Text("Verse 1:", style: TextStyle(fontWeight: FontWeight.bold))],
+              children: const [
+                Icon(Icons.menu_book, size: 16, color: kPrimaryBrown),
+                SizedBox(width: 8),
+                Text("Verse 1:", style: TextStyle(fontWeight: FontWeight.bold)),
+              ],
             ),
             const SizedBox(height: 10),
             Text(
@@ -329,24 +461,55 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                   children: [
                     const Align(
                       alignment: Alignment.centerRight,
-                      child: Text("ذَٰلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى لِّلْمُتَّقِينَ",
-                          textAlign: TextAlign.right, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, height: 1.8)),
+                      child: Text(
+                        "ذَٰلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى لِّلْمُتَّقِينَ",
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          height: 1.8,
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 10),
-                    const Text("Zaalikal kitaabu laa raiba feeh, hudal lil-muttaqeen", style: TextStyle(fontSize: 11, fontStyle: FontStyle.italic, color: kLightGrey)),
+                    const Text(
+                      "Zaalikal kitaabu laa raiba feeh, hudal lil-muttaqeen",
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontStyle: FontStyle.italic,
+                        color: kLightGrey,
+                      ),
+                    ),
                     const SizedBox(height: 8),
-                    const Text("This is the Book about which there is no doubt, a guidance for the righteous.", style: TextStyle(fontSize: 12, color: Colors.black87)),
+                    const Text(
+                      "This is the Book about which there is no doubt, a guidance for the righteous.",
+                      style: TextStyle(fontSize: 12, color: Colors.black87),
+                    ),
                   ],
                 ),
               ),
               const SizedBox(width: 15),
               Column(
                 children: [
-                  Text("$index", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(
+                    "$index",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
                   const SizedBox(height: 5),
-                  const Icon(Icons.share_outlined, size: 16, color: Colors.grey),
+                  const Icon(
+                    Icons.share_outlined,
+                    size: 16,
+                    color: Colors.grey,
+                  ),
                   const SizedBox(height: 5),
-                  const Icon(Icons.play_circle_outline, size: 16, color: Colors.grey),
+                  const Icon(
+                    Icons.play_circle_outline,
+                    size: 16,
+                    color: Colors.grey,
+                  ),
                 ],
               ),
             ],
@@ -397,7 +560,11 @@ class SearchAndBookmark extends StatelessWidget {
               borderRadius: BorderRadius.circular(30),
               border: Border.all(color: AppColors.stroke),
             ),
-            child: Icon(Icons.bookmark_outline, color: AppColors.stroke, size: 20),
+            child: Icon(
+              Icons.bookmark_outline,
+              color: AppColors.stroke,
+              size: 20,
+            ),
           ),
         ],
       ),
@@ -418,7 +585,14 @@ class HexagonBadge extends StatelessWidget {
           clipper: _HexagonClipper(),
           child: Container(width: 38, height: 38, color: kPrimaryBrown),
         ),
-        Text(number, style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+        Text(
+          number,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ],
     );
   }

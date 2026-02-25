@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:maroofkhan8/features/home/dhikr/tasbih_screen.dart';
+import 'package:maroofkhan8/features/home/dhikr/dhikr_screen.dart';
 
 import '../../../core/constant/app_colors.dart';
 import '../../../core/constant/widgets/header.dart';
