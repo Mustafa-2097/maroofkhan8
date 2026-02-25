@@ -29,12 +29,19 @@ class PrayerTrackerScreenn extends StatelessWidget {
               // 1. Top Date Pill
               Center(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 25,
+                    vertical: 10,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(30),
                     boxShadow: [
-                      BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 2)),
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
+                      ),
                     ],
                   ),
                   child: Text(
@@ -50,9 +57,22 @@ class PrayerTrackerScreenn extends StatelessWidget {
               const SizedBox(height: 25),
 
               // 2. Main Header
-              Text("Asr Prayer", style: GoogleFonts.playfairDisplay(fontSize: 24, fontWeight: FontWeight.bold, color: kTextDark)),
+              Text(
+                "Asr Prayer",
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: kTextDark,
+                ),
+              ),
               const SizedBox(height: 5),
-              Text("Next:Magrib in 00:38", style: GoogleFonts.playfairDisplay(fontSize: 18, color: kTextDark)),
+              Text(
+                "Next:Magrib in 00:38",
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 18,
+                  color: kTextDark,
+                ),
+              ),
               const SizedBox(height: 20),
 
               // 3. Prayer Times Card
@@ -103,13 +123,22 @@ class PrayerTimesCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Today's Prayer Time", style: GoogleFonts.playfairDisplay(fontSize: 13, fontWeight: FontWeight.bold)),
+              Text(
+                "Today's Prayer Time",
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const Row(
                 children: [
-                  Text("Weekly View", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                  Text(
+                    "Weekly View",
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                  ),
                   Icon(Icons.chevron_right, size: 16),
                 ],
-              )
+              ),
             ],
           ),
           const Divider(height: 25, color: Color(0xFFEEEEEE)),
@@ -124,21 +153,40 @@ class PrayerTimesCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: kPrimaryBrown,
               borderRadius: BorderRadius.circular(8),
-              boxShadow: [BoxShadow(color: kPrimaryBrown.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 4))],
+              boxShadow: [
+                BoxShadow(
+                  color: kPrimaryBrown.withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("Asr", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
+                const Text(
+                  "Asr",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
+                ),
                 RichText(
                   text: const TextSpan(
                     style: TextStyle(color: Colors.white, fontSize: 13),
                     children: [
-                      TextSpan(text: "4:45pm ", style: TextStyle(fontWeight: FontWeight.bold)),
-                      TextSpan(text: "Jama'ah 5:00 pm", style: TextStyle(fontSize: 11)),
+                      TextSpan(
+                        text: "4:45pm ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      TextSpan(
+                        text: "Jama'ah 5:00 pm",
+                        style: TextStyle(fontSize: 11),
+                      ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -157,7 +205,14 @@ class PrayerTimesCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(name, style: const TextStyle(fontSize: 13, color: kTextDark)),
-          Text(time, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: kTextDark)),
+          Text(
+            time,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: kTextDark,
+            ),
+          ),
         ],
       ),
     );
@@ -175,7 +230,13 @@ class RakahGuideCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text("Rak'ah Guide", style: GoogleFonts.playfairDisplay(fontSize: 13, fontWeight: FontWeight.bold)),
+          Text(
+            "Rak'ah Guide",
+            style: GoogleFonts.playfairDisplay(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           Container(
             padding: const EdgeInsets.only(bottom: 2),
             decoration: const BoxDecoration(
@@ -201,15 +262,33 @@ class DuasReflectionCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Duas & Reflection", style: GoogleFonts.playfairDisplay(fontSize: 13, fontWeight: FontWeight.bold)),
+          Text(
+            "Duas & Reflection",
+            style: GoogleFonts.playfairDisplay(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const Divider(height: 25, color: Color(0xFFEEEEEE)),
           Row(
             children: [
-              Expanded(child: _brownButton("Dua Before Salah", showArrow: true, fullWidth: true)),
+              Expanded(
+                child: _brownButton(
+                  "Dua Before Salah",
+                  showArrow: true,
+                  fullWidth: true,
+                ),
+              ),
               const SizedBox(width: 15),
-              Expanded(child: _brownButton("Dua After Salah", showArrow: true, fullWidth: true)),
+              Expanded(
+                child: _brownButton(
+                  "Dua After Salah",
+                  showArrow: true,
+                  fullWidth: true,
+                ),
+              ),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -229,23 +308,39 @@ class SpecialRamadanCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Special in Ramadan", style: GoogleFonts.playfairDisplay(fontSize: 13, fontWeight: FontWeight.bold)),
+              Text(
+                "Special in Ramadan",
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               Row(
                 children: const [
                   Text("Special Month", style: TextStyle(fontSize: 12)),
                   Icon(Icons.keyboard_arrow_down, size: 16),
                 ],
-              )
+              ),
             ],
           ),
           const SizedBox(height: 20),
           Row(
             children: [
-              Expanded(child: _iconPillButton(Icons.mosque_outlined, "Dua For Ramadan")),
+              Expanded(
+                child: _iconPillButton(
+                  Icons.mosque_outlined,
+                  "Dua For Ramadan",
+                ),
+              ),
               const SizedBox(width: 15),
-              Expanded(child: _iconPillButton(Icons.dark_mode_outlined, "Track Fasting")),
+              Expanded(
+                child: _iconPillButton(
+                  Icons.dark_mode_outlined,
+                  "Track Fasting",
+                ),
+              ),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -258,17 +353,25 @@ class SpecialRamadanCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(30),
         border: Border.all(color: Colors.grey.shade200),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 5)],
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 5),
+        ],
       ),
       child: Row(
         children: [
           CircleAvatar(
-              radius: 12,
-              backgroundColor: kPrimaryBrown,
-              child: Icon(icon, size: 14, color: Colors.white)
+            radius: 12,
+            backgroundColor: kPrimaryBrown,
+            child: Icon(icon, size: 14, color: Colors.white),
           ),
           const SizedBox(width: 8),
-          Expanded(child: Text(label, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis)),
+          Expanded(
+            child: Text(
+              label,
+              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
           const Icon(Icons.chevron_right, size: 16, color: Colors.black),
         ],
       ),
@@ -292,16 +395,23 @@ class RamadanCountdownCard extends StatelessWidget {
               Text(
                 "24 Ramadan 1446 AH = 24 December 2025\nAD",
                 textAlign: TextAlign.center,
-                style: GoogleFonts.playfairDisplay(fontSize: 14, fontWeight: FontWeight.bold),
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const Align(
                 alignment: Alignment.centerRight,
                 child: CircleAvatar(
-                    radius: 12,
-                    backgroundColor: kPrimaryBrown,
-                    child: Icon(Icons.chevron_right, color: Colors.white, size: 16)
+                  radius: 12,
+                  backgroundColor: kPrimaryBrown,
+                  child: Icon(
+                    Icons.chevron_right,
+                    color: Colors.white,
+                    size: 16,
+                  ),
                 ),
-              )
+              ),
             ],
           ),
           const SizedBox(height: 30),
@@ -325,33 +435,52 @@ class RamadanCountdownCard extends StatelessWidget {
                 isGradient: true,
               ),
             ],
-          )
+          ),
         ],
       ),
     );
   }
 
-  Widget _circleInfo(Color color, IconData icon, String title, String time, String sub, {bool isGradient = false}) {
+  Widget _circleInfo(
+    Color color,
+    IconData icon,
+    String title,
+    String time,
+    String sub, {
+    bool isGradient = false,
+  }) {
     return Container(
       width: 135,
       height: 135,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: isGradient ? null : color,
-        gradient: isGradient ? const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [kOrangeCircleStart, kOrangeCircleEnd]
-        ) : null,
+        gradient: isGradient
+            ? const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [kOrangeCircleStart, kOrangeCircleEnd],
+              )
+            : null,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(icon, color: Colors.white, size: 18),
           const SizedBox(height: 5),
-          Text(title, style: const TextStyle(color: Colors.white70, fontSize: 11)),
+          Text(
+            title,
+            style: const TextStyle(color: Colors.white70, fontSize: 11),
+          ),
           const SizedBox(height: 2),
-          Text(time, style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold)),
+          Text(
+            time,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: 5),
           Container(height: 1, width: 80, color: Colors.white30),
           const SizedBox(height: 5),
@@ -373,12 +502,22 @@ class AyahOfDayCard extends StatelessWidget {
       decoration: _cardDecoration(),
       child: Column(
         children: [
-          Text("Ayah of the day", style: GoogleFonts.playfairDisplay(fontSize: 14, fontWeight: FontWeight.bold)),
+          Text(
+            "Ayah of the day",
+            style: GoogleFonts.playfairDisplay(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const Divider(height: 30, color: Color(0xFFEEEEEE)),
           Text(
             "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا ﴿٥﴾\nإِنَّ مَعَ الْعُسْرِ يُسْرًا ﴿٦﴾",
             textAlign: TextAlign.center,
-            style: GoogleFonts.amiri(fontSize: 20, fontWeight: FontWeight.bold, height: 1.5),
+            style: GoogleFonts.amiri(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              height: 1.5,
+            ),
           ),
           const SizedBox(height: 15),
           Text(
@@ -387,7 +526,10 @@ class AyahOfDayCard extends StatelessWidget {
             style: GoogleFonts.playfairDisplay(fontSize: 15, color: kTextDark),
           ),
           const SizedBox(height: 15),
-          const Text("— Surah Ash-Sharh (94:5–6)", style: TextStyle(fontSize: 12, color: kTextGrey)),
+          const Text(
+            "— Surah Ash-Sharh (94:5–6)",
+            style: TextStyle(fontSize: 12, color: kTextGrey),
+          ),
         ],
       ),
     );
@@ -401,22 +543,42 @@ BoxDecoration _cardDecoration() {
     color: kCardColor,
     borderRadius: BorderRadius.circular(20),
     boxShadow: [
-      BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 10, offset: const Offset(0, 4)),
+      BoxShadow(
+        color: Colors.black.withOpacity(0.04),
+        blurRadius: 10,
+        offset: const Offset(0, 4),
+      ),
     ],
   );
 }
 
-Widget _brownButton(String text, {bool showArrow = false, bool fullWidth = false}) {
+Widget _brownButton(
+  String text, {
+  bool showArrow = false,
+  bool fullWidth = false,
+}) {
   return Container(
-    padding: EdgeInsets.symmetric(horizontal: fullWidth ? 15 : 20, vertical: 12),
+    padding: EdgeInsets.symmetric(
+      horizontal: fullWidth ? 15 : 20,
+      vertical: 12,
+    ),
     decoration: BoxDecoration(
       color: kPrimaryBrown,
       borderRadius: BorderRadius.circular(30),
     ),
     child: Row(
-      mainAxisAlignment: fullWidth ? MainAxisAlignment.spaceBetween : MainAxisAlignment.center,
+      mainAxisAlignment: fullWidth
+          ? MainAxisAlignment.spaceBetween
+          : MainAxisAlignment.center,
       children: [
-        Text(text, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
+        Text(
+          text,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         if (showArrow)
           const Icon(Icons.chevron_right, color: Colors.white, size: 16),
       ],

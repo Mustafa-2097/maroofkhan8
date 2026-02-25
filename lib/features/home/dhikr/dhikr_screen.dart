@@ -48,8 +48,9 @@ class DhikrListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFF8F9FE),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Color.fromARGB(255, 255, 255, 255),
         elevation: 0,
         title: Text(
           "Dhikr",
@@ -68,7 +69,7 @@ class DhikrListScreen extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => DhikrCounterScreen(data: tasbihs[index]),
+                builder: (_) => DhikrCounterScreen(initialIndex: index),
               ),
             ),
             child: Container(
@@ -105,7 +106,7 @@ class DhikrListScreen extends StatelessWidget {
                     bottom: 0,
                     right: 0,
                     child: Icon(
-                      Icons.play_circle_outline,
+                      Icons.arrow_circle_right_outlined,
                       color: primaryBrown,
                       size: 20,
                     ),
@@ -122,8 +123,8 @@ class DhikrListScreen extends StatelessWidget {
 
 // --- SCREEN 2: TASBIH COUNTER ---
 class DhikrCounterScreen extends StatefulWidget {
-  final DhikrData data;
-  const DhikrCounterScreen({super.key, required this.data});
+  final int initialIndex;
+  const DhikrCounterScreen({super.key, required this.initialIndex});
 
   @override
   State<DhikrCounterScreen> createState() => _DhikrCounterScreenState();
@@ -131,11 +132,35 @@ class DhikrCounterScreen extends StatefulWidget {
 
 class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
   int count = 0;
+  late int currentIndex;
   final int target = 33;
 
   @override
+  void initState() {
+    super.initState();
+    currentIndex = widget.initialIndex;
+  }
+
+  void _nextDhikr() {
+    setState(() {
+      currentIndex = (currentIndex + 1) % tasbihs.length;
+      count = 0;
+    });
+  }
+
+  void _previousDhikr() {
+    setState(() {
+      currentIndex = (currentIndex - 1 + tasbihs.length) % tasbihs.length;
+      count = 0;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final data = tasbihs[currentIndex];
+
     return Scaffold(
+      backgroundColor: Color(0xFFF8F9FE),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -172,26 +197,31 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.arrow_left, color: primaryBrown),
+                  IconButton(
+                    onPressed: _previousDhikr,
+                    icon: const Icon(Icons.arrow_drop_up, color: primaryBrown),
+                  ),
                   Expanded(
                     child: Column(
                       children: [
                         Text(
-                          widget.data.arabic,
+                          data.arabic,
+                          textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          widget.data.transliteration,
+                          data.transliteration,
+                          textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 12,
                             color: Colors.grey,
                           ),
                         ),
                         Text(
-                          "Meaning : ${widget.data.meaning}",
+                          "Meaning : ${data.meaning}",
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 12,
@@ -201,13 +231,19 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
                       ],
                     ),
                   ),
-                  const Icon(Icons.arrow_right, color: primaryBrown),
+                  IconButton(
+                    onPressed: _nextDhikr,
+                    icon: const Icon(
+                      Icons.arrow_drop_down,
+                      color: primaryBrown,
+                    ),
+                  ),
                 ],
               ),
             ),
             const SizedBox(height: 30),
             // Counter Section
-            Expanded(
+            Container(
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(30),
@@ -216,6 +252,7 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -229,8 +266,7 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
                         _pillButton("Listen", Icons.volume_up_outlined),
                       ],
                     ),
-                    const Spacer(),
-                    // Circular Counter
+                    SizedBox(height: 50),
                     Stack(
                       alignment: Alignment.center,
                       children: [
@@ -275,7 +311,7 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
                         ),
                       ],
                     ),
-                    const Spacer(),
+                    SizedBox(height: 50),
                     // Tap Button
                     SizedBox(
                       width: double.infinity,
@@ -310,19 +346,25 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        width: 120,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          color: const Color.fromARGB(255, 255, 255, 255),
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(color: Colors.grey),
           boxShadow: [
             BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 5),
           ],
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               label,
-              style: const TextStyle(fontSize: 11, color: Colors.black87),
+              style: const TextStyle(
+                fontSize: 11,
+                color: Color.fromARGB(221, 0, 0, 0),
+              ),
             ),
             const SizedBox(width: 5),
             Icon(icon, size: 14, color: Colors.grey),
