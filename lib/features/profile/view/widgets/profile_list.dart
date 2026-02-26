@@ -13,9 +13,45 @@ import 'package:maroofkhan8/features/profile/view/pages/support_center.dart';
 import 'package:maroofkhan8/features/profile/view/pages/terms_conditions.dart';
 import 'package:maroofkhan8/splash/view/splash_screen.dart';
 
-class ProfileList extends StatelessWidget {
+class ProfileList extends StatefulWidget {
   const ProfileList({super.key});
 
+  @override
+  State<ProfileList> createState() => _ProfileListState();
+}
+
+class _ProfileListState extends State<ProfileList> {
+  String selectedLanguage = 'en';
+  late bool isDark;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    isDark = Theme.of(context).brightness == Brightness.dark;
+  }
+
+  final Map<String, String> languageMap = {
+    'en': 'English (US)',
+    'bn': 'Bangla',
+    'hi': 'हिंदी',
+    'es': 'Español',
+    'fr': 'Français',
+    'ar': 'العربية',
+  };
+  void _changeLanguage(String? value) {
+    if (value != null) {
+      setState(() {
+        selectedLanguage = value;
+      });
+      // TODO: Apply language change using GetX
+      _applyLanguage(value);
+    }
+  }
+
+  void _applyLanguage(String languageCode) {
+    Locale locale = Locale(languageCode);
+    Get.updateLocale(locale);
+  }
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -63,10 +99,32 @@ class ProfileList extends StatelessWidget {
             onTap: () => Get.to(() => const PaymentHistory()),
           ),
 
+
+          _DrawerItem(
+            icon: Icons.dark_mode_outlined,
+            label: 'Dark Theme',
+            subtitle: 'Switch to a dark color scheme',
+            trailing: Switch(
+              value: isDark,
+              activeColor: Colors.orange,
+              onChanged: (value) {
+                setState(() {
+                  isDark = value; // This moves the toggle instantly
+                });
+
+                // Tell GetX to change the theme
+                Get.changeThemeMode(
+                  value ? ThemeMode.dark : ThemeMode.light,
+                );
+              },
+            ),
+          ),
+
           SizedBox(height: 18.h),
 
           /// General Section
           _SectionHeader(title: 'General'),
+          Divider(color: Colors.grey.shade400,),
           _DrawerItem(
             icon: Icons.notifications_outlined,
             label: 'Change Password',
@@ -75,13 +133,30 @@ class ProfileList extends StatelessWidget {
           _DrawerItem(
             icon: Icons.language_outlined,
             label: 'Language',
-            //onTap: () => Get.to(() => NotificationSettingPage()),
+            trailing: DropdownButton<String>(
+              value: selectedLanguage,
+              underline: const SizedBox(),
+              items: languageMap.entries.map((entry) {
+                return DropdownMenuItem<String>(
+                  value: entry.key,
+                  child: Text(entry.value),
+                );
+              }).toList(),
+              onChanged: _changeLanguage,
+            ),
           ),
+          // _DrawerItem(
+          //   icon: Icons.language_outlined,
+          //   label: 'Language',
+          //   //onTap: () => Get.to(() => NotificationSettingPage()),
+          // ),
 
           SizedBox(height: 18.h),
 
+
           /// About Section
           _SectionHeader(title: 'about'.tr),
+          Divider(color: Colors.grey.shade400,),
           _DrawerItem(
             icon: Icons.contact_mail_outlined,
             label: 'Contact Us',
@@ -300,20 +375,27 @@ class _SectionHeader extends StatelessWidget {
           title,
           style: Theme.of(
             context,
-          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w400),
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
         ),
         SizedBox(height: 10.h),
       ],
     );
   }
 }
-
 class _DrawerItem extends StatelessWidget {
   final IconData icon;
   final String label;
+  final String? subtitle; // Added subtitle support
   final void Function()? onTap;
+  final Widget? trailing;
 
-  const _DrawerItem({required this.icon, required this.label, this.onTap});
+  const _DrawerItem({
+    required this.icon,
+    required this.label,
+    this.subtitle, // Initialize it
+    this.onTap,
+    this.trailing,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -321,33 +403,94 @@ class _DrawerItem extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(8.r),
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 6.h),
+        padding: EdgeInsets.symmetric(vertical: 8.h), // Adjusted padding
         child: Row(
           children: [
             Icon(
               icon,
               size: 24.r,
-              color: Theme.of(context).colorScheme.onBackground,
+              color: Theme.of(context).iconTheme.color,
             ),
             SizedBox(width: 16.w),
-            Text(
-              label.tr,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w400),
+            // Expanded column to handle title and subtitle
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label.tr,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  if (subtitle != null) ...[
+                    SizedBox(height: 2.h),
+                    Text(
+                      subtitle!.tr,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
             ),
-            const Spacer(),
-            Icon(
-              Icons.chevron_right,
-              size: 24.r,
-              color: Theme.of(context).disabledColor,
-            ),
+            if (trailing != null)
+              trailing!
+            else
+              Icon(
+                Icons.chevron_right,
+                size: 24.r,
+                color: Theme.of(context).disabledColor,
+              ),
           ],
         ),
       ),
     );
   }
 }
+
+// class _DrawerItem extends StatelessWidget {
+//   final IconData icon;
+//   final String label;
+//   final void Function()? onTap;
+//   final Widget? trailing;
+//
+//   const _DrawerItem({required this.icon, required this.label, this.onTap,this.trailing});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return InkWell(
+//       onTap: onTap,
+//       borderRadius: BorderRadius.circular(8.r),
+//       child: Padding(
+//         padding: EdgeInsets.symmetric(vertical: 6.h),
+//         child: Row(
+//           children: [
+//             Icon(
+//               icon,
+//               size: 24.r,
+//               color: Theme.of(context).colorScheme.onBackground,
+//             ),
+//             SizedBox(width: 16.w),
+//             Text(
+//               label.tr,
+//               style: Theme.of(
+//                 context,
+//               ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w400),
+//             ),
+//             const Spacer(),
+//             Icon(
+//               Icons.chevron_right,
+//               size: 24.r,
+//               color: Theme.of(context).disabledColor,
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class _LogoutButton extends StatelessWidget {
   final VoidCallback onPressed;
