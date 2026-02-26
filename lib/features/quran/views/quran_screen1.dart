@@ -135,82 +135,45 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
   Widget _buildTabContent() {
     switch (_selectedTab) {
       case 1: // Juz List
+        return ListView.builder(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          itemCount: 8,
+          itemBuilder: (context, i) =>
+              _listTile("${i + 1}", "Para - ${i + 1}", "286 Ayah", null),
+        );
+      case 2: // Last Read
+        return ListView.builder(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          itemCount: 8,
+          itemBuilder: (context, i) => _listTile(
+            "${i + 1}",
+            "Alif Laam Meem",
+            "The Beginning of the Qur'an",
+            "10 minutes ago",
+          ),
+        );
+      default: // Surah List
         return Obx(() {
-          if (controller.isJuzLoading.value) {
-            return const Center(child: CircularProgressIndicator());
+          if (controller.isLoading.value) {
+            return const Center(
+              child: CircularProgressIndicator(color: kPrimaryBrown),
+            );
           }
-          if (controller.juzList.isEmpty) {
-            return const Center(child: Text("No Juz found"));
+          if (controller.surahList.isEmpty) {
+            return const Center(child: Text("No Surahs found"));
           }
           return ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            itemCount: controller.juzList.length,
+            itemCount: controller.surahList.length,
             itemBuilder: (context, i) {
-              final juz = controller.juzList[i];
+              final surah = controller.surahList[i];
               return _listTile(
-                "${juz.number ?? 0}",
-                "Para - ${juz.number ?? 0}",
-                "Juz ${juz.number ?? 0}",
+                "${surah.id}",
+                surah.name,
+                "${surah.translatedName}  |  ${surah.versesCount} Ayah  |  ${surah.revelationPlace} Surah",
                 null,
               );
             },
-          );
-        });
-      case 2: // Last Read
-        return Obx(() {
-          if (controller.isLastReadLoading.value) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (controller.lastReadList.isEmpty) {
-            return const Center(child: Text("No items found"));
-          }
-          return ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            itemCount: controller.lastReadList.length,
-            itemBuilder: (context, i) {
-              final lastRead = controller.lastReadList[i];
-              final chapter = lastRead.chapter;
-              return _listTile(
-                "${chapter?.chapterNumber ?? i + 1}",
-                chapter?.name ?? "Unknown",
-                "Verse ${lastRead.verse ?? 1}",
-                null, // You can add relative time if available
-              );
-            },
-          );
-        });
-      default: // Surah List
-        return Obx(() {
-          // We show a small indicator if loading, but still show current data (which could be dummy data)
-          return Stack(
-            children: [
-              ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                itemCount: controller.surahList.length,
-                itemBuilder: (context, i) {
-                  final surah = controller.surahList[i];
-                  return _listTile(
-                    "${surah.id}",
-                    surah.name,
-                    "${surah.translatedName}  | ${surah.versesCount} Ayah  |  ${surah.revelationPlace.toLowerCase().capitalizeFirst} Surah",
-                    null,
-                  );
-                },
-              ),
-              if (controller.isLoading.value)
-                const Positioned(
-                  top: 10,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                  ),
-                ),
-            ],
           );
         });
     }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:get/get.dart';
+import '../controller/dua_controller.dart';
+import '../model/dua_model.dart';
 
 // --- Common UI Constants ---
 const Color kBrown = Color(0xFF8D4B33);
@@ -98,8 +101,12 @@ class DuaCard extends StatelessWidget {
               color: kBrown,
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.chevron_right, color: Colors.white, size: 20),
-          )
+            child: const Icon(
+              Icons.chevron_right,
+              color: Colors.white,
+              size: 20,
+            ),
+          ),
         ],
       ),
     );
@@ -113,6 +120,7 @@ class DuaListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final DuaController controller = Get.put(DuaController());
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -127,29 +135,36 @@ class DuaListScreen extends StatelessWidget {
         children: [
           const FilterChipRow(activeIndex: 0),
           Expanded(
-            child: ListView(
-              children: [
-                GestureDetector(
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (c) => const DuaDetailScreen())),
-                  child: const DuaCard(
-                    arabic: "اَللّٰهُمَّ بِكَ اَصْبَحْنَا وَبِكَ اَمْسَيْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوْتُ",
-                    title: "Morning Dua",
-                  ),
-                ),
-                const DuaCard(
-                  arabic: "اَللّٰهُمَّ بِكَ اَصْبَحْنَا وَبِكَ اَمْسَيْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوْتُ",
-                  title: "Evening Dua",
-                ),
-                const DuaCard(
-                  arabic: "بِسْمِ اللّٰهِ",
-                  title: "Before Eating",
-                ),
-                const DuaCard(
-                  arabic: "اَلْحَمْدُ لِلّٰهِ الَّذِيْ اَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مِنَ الْمُسْلِمِيْنَ",
-                  title: "After Eating",
-                ),
-              ],
-            ),
+            child: Obx(() {
+              if (controller.isLoading.value) {
+                return const Center(
+                  child: CircularProgressIndicator(color: kBrown),
+                );
+              }
+
+              if (controller.duaList.isEmpty) {
+                return const Center(child: Text("No Duas found"));
+              }
+
+              return ListView.builder(
+                itemCount: controller.duaList.length,
+                itemBuilder: (context, index) {
+                  final dua = controller.duaList[index];
+                  return GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (c) => DuaDetailScreen(dua: dua),
+                      ),
+                    ),
+                    child: DuaCard(
+                      arabic: dua.nameArabic ?? "",
+                      title: dua.name ?? "",
+                    ),
+                  );
+                },
+              );
+            }),
           ),
         ],
       ),
@@ -158,7 +173,8 @@ class DuaListScreen extends StatelessWidget {
 }
 
 class DuaDetailScreen extends StatelessWidget {
-  const DuaDetailScreen({super.key});
+  final DuaData dua;
+  const DuaDetailScreen({super.key, required this.dua});
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +186,10 @@ class DuaDetailScreen extends StatelessWidget {
           icon: const Icon(Icons.chevron_left, color: Colors.black54),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text("Duas", style: GoogleFonts.ebGaramond(color: Colors.black, fontSize: 18)),
+        title: Text(
+          "Duas",
+          style: GoogleFonts.ebGaramond(color: Colors.black, fontSize: 18),
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -193,24 +212,40 @@ class DuaDetailScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(15),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10)],
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.03),
+                    blurRadius: 10,
+                  ),
+                ],
               ),
               child: Column(
                 children: [
                   const Align(
                     alignment: Alignment.topRight,
-                    child: Icon(Icons.favorite_border, color: Colors.grey, size: 20),
+                    child: Icon(
+                      Icons.favorite_border,
+                      color: Colors.grey,
+                      size: 20,
+                    ),
                   ),
                   Text(
-                    "اَلْحَمْدُ لِلّٰهِ الَّذِيْ اَطْعَمَنِيْ هٰذَا وَرَزَقَنِيْهِ مِنْ غَيْرِ حَوْلٍ مِّنِّيْ وَلَا قُوَّةٍ",
+                    dua.nameArabic ?? "",
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.amiri(fontSize: 22, fontWeight: FontWeight.bold),
+                    style: GoogleFonts.amiri(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 15),
                   Text(
-                    "Al-hamdu lillāhil-ladhī at'amanī hādhā wa razaqanīhi min ghayri hawlin minnī wa lā quwwah.",
+                    dua.translation ?? "",
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.ebGaramond(fontSize: 14, fontStyle: FontStyle.italic, color: Colors.black54),
+                    style: GoogleFonts.ebGaramond(
+                      fontSize: 14,
+                      fontStyle: FontStyle.italic,
+                      color: Colors.black54,
+                    ),
                   ),
                 ],
               ),
@@ -245,15 +280,22 @@ class DuaDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Meaning:", style: GoogleFonts.ebGaramond(color: kBrown, fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text(
+                    "Meaning:",
+                    style: GoogleFonts.ebGaramond(
+                      color: kBrown,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
                   const SizedBox(height: 8),
                   Text(
-                    "O Allah, send blessings upon Muhammad and the family of Muhammad as You sent blessings upon Ibrahim and his family. Indeed, You are Praiseworthy and Glorious.",
+                    dua.description ?? "",
                     style: GoogleFonts.ebGaramond(fontSize: 14, height: 1.4),
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -268,7 +310,10 @@ class DuaDetailScreen extends StatelessWidget {
         color: active ? kBrown : kBlack,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Text(text, style: GoogleFonts.ebGaramond(color: Colors.white, fontSize: 12)),
+      child: Text(
+        text,
+        style: GoogleFonts.ebGaramond(color: Colors.white, fontSize: 12),
+      ),
     );
   }
 

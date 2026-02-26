@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 import '../../../../core/network/api_Service.dart';
 import '../../../../core/network/api_endpoints.dart';
+import '../../../../core/offline_storage/shared_pref.dart';
 import '../controller/signin_signup_controller.dart';
 
 class SignupOtpController extends GetxController {
@@ -72,6 +73,12 @@ class SignupOtpController extends GetxController {
         ApiEndpoints.verifySignUpOtp,
         body: body,
       );
+
+      if (response['data'] != null && response['data']['accessToken'] != null) {
+        await SharedPreferencesHelper.saveToken(
+          response['data']['accessToken'],
+        );
+      }
 
       EasyLoading.dismiss();
 
