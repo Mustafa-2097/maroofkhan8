@@ -37,7 +37,12 @@ class ApiEndpoints {
 
   /// News
   static const String news = '$baseUrl/news?category=sports';
+
   /// Quran
   static const String Surah = '$baseUrl/quran/chapters';
-}
+  static const String Juz = '$baseUrl/quran/juzs?series=1';
+  static const String lastRead = '$baseUrl/quran/last-read';
 
+  /// Duas
+  static const String duas = '$baseUrl/duas';
+}

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../../../../core/network/api_Service.dart';
 import '../../../../core/network/api_endpoints.dart';
+import '../../../../core/offline_storage/shared_pref.dart';
 import '../../../../bottom_nav_bar.dart';
 import '../view/signup_otp_verification_page.dart';
 
@@ -84,6 +85,9 @@ class SignInSignUpController extends GetxController {
       };
 
       final response = await ApiService.post(ApiEndpoints.login, body: body);
+      debugPrint("****************************************");
+      debugPrint("DEBUG: Login Response: $response");
+      debugPrint("****************************************");
 
       EasyLoading.dismiss();
 
@@ -94,6 +98,12 @@ class SignInSignUpController extends GetxController {
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
+
+      if (response['data'] != null && response['data']['accessToken'] != null) {
+        await SharedPreferencesHelper.saveToken(
+          response['data']['accessToken'],
+        );
+      }
 
       Get.offAll(() => const CustomBottomNavBar());
     } catch (e) {
