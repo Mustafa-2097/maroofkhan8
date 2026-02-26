@@ -1,7 +1,8 @@
 class ApiEndpoints {
   /// Base URL
   static const String baseUrl = 'http://206.162.244.189:5001/api/v1';
-  static const String aiExplanationGeneral = "http://204.197.173.4:8060/api/ai-murshid/ai-explanation";
+  static const String aiExplanationGeneral =
+      "http://204.197.173.4:8060/api/ai-murshid/ai-explanation";
 
   /// Auth
   static const String register = '$baseUrl/auth/register';
@@ -9,8 +10,7 @@ class ApiEndpoints {
   static const String resendOtp = '$baseUrl/auth/resend-otp';
   static const String login = '$baseUrl/auth/login';
   static const String logout = '$baseUrl/auth/logout';
-  static const String Surah = '$baseUrl/quran/chapters';
-
+  static const String changePassword = '$baseUrl/auth/change-password';
 
   /// Forgot Password
   static const String sendResetOtp = '$baseUrl/auth/send-otp/password-reset';
@@ -23,7 +23,6 @@ class ApiEndpoints {
   /// Users Profile
   static const String userProfile = '$baseUrl/users/profile';
   static const String updateProfile = '$baseUrl/users/profile';
-  static const String changePassword = '$baseUrl/users/change-password';
 
   /// Live
   static const String liveScores = '$baseUrl/sports/livescore/Soccer';
@@ -38,4 +37,7 @@ class ApiEndpoints {
 
   /// News
   static const String news = '$baseUrl/news?category=sports';
+  /// Quran
+  static const String Surah = '$baseUrl/quran/chapters';
 }
+
