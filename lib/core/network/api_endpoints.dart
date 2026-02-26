@@ -9,6 +9,8 @@ class ApiEndpoints {
   static const String resendOtp = '$baseUrl/auth/resend-otp';
   static const String login = '$baseUrl/auth/login';
   static const String logout = '$baseUrl/auth/logout';
+  static const String Surah = '$baseUrl/quran/chapters';
+
 
   /// Forgot Password
   static const String sendResetOtp = '$baseUrl/auth/send-otp/password-reset';
