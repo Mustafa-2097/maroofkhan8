@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/network/api_Service.dart';
+import '../../../../core/network/api_endpoints.dart';
 import '../view/reset_password.dart';
 
 class VerificationCodeController extends GetxController {
@@ -63,8 +66,33 @@ class VerificationCodeController extends GetxController {
       return;
     }
 
-    Get.to(() => ResetPassword());
-    //await AuthService.verifyOtpCode(email: email, code: otp.value);
+    EasyLoading.show(status: 'Verifying...');
+
+    try {
+      final body = {"email": email, "otp": otp.value};
+
+      final response = await ApiService.post(
+        ApiEndpoints.verifyResetOtp,
+        body: body,
+      );
+
+      EasyLoading.dismiss();
+
+      Get.to(
+        () => ResetPassword(),
+        arguments: {"email": email, "otp": otp.value},
+      );
+
+      Get.snackbar(
+        'Success',
+        response['message'] ?? 'OTP verified successfully',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    } catch (e) {
+      EasyLoading.dismiss();
+    }
   }
 
   /// Resend OTP
@@ -73,12 +101,28 @@ class VerificationCodeController extends GetxController {
 
     EasyLoading.show(status: "Sending new code...");
 
-    await Future.delayed(const Duration(seconds: 2));
+    try {
+      final body = {"email": email};
 
-    EasyLoading.dismiss();
-    //EasyLoading.showSuccess("New code sent");
+      final response = await ApiService.post(
+        ApiEndpoints.forgotPassword,
+        body: body,
+      );
 
-    startTimer();
+      EasyLoading.dismiss();
+
+      Get.snackbar(
+        'Success',
+        response['message'] ?? 'New code sent',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+
+      startTimer();
+    } catch (e) {
+      EasyLoading.dismiss();
+    }
   }
 
   @override

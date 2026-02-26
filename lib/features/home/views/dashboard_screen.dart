@@ -130,7 +130,7 @@ class HeaderSection extends StatelessWidget {
               ],
             ),
             InkWell(
-              onTap: () => Get.to(() => const ProfileScreen()),
+              onTap: () => Get.to(() => ProfileScreen()),
               child: CircleAvatar(
                 radius: 18,
                 backgroundColor: isDark

@@ -44,9 +44,7 @@ class OtpVerificationPage extends StatelessWidget {
               const SizedBox(height: 32),
 
               /// OTP Code Input
-              OtpBox(
-                onChanged: (value) => controller.otp.value = value,
-              ),
+              OtpBox(onChanged: (value) => controller.otp.value = value),
 
               const SizedBox(height: 32),
 
@@ -63,6 +61,37 @@ class OtpVerificationPage extends StatelessWidget {
 
               const SizedBox(height: 24),
 
+              /// Resend code
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Didn't receive code? ",
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    Obx(
+                      () => GestureDetector(
+                        onTap: controller.canResend.value
+                            ? () => controller.resendOtp()
+                            : null,
+                        child: Text(
+                          controller.canResend.value
+                              ? "Resend"
+                              : "Resend in ${controller.secondsRemaining.value}s",
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: controller.canResend.value
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Theme.of(context).disabledColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
@@ -70,7 +99,6 @@ class OtpVerificationPage extends StatelessWidget {
     );
   }
 }
-
 
 class OtpBox extends StatelessWidget {
   final Function(String)? onChanged;
@@ -91,9 +119,15 @@ class OtpBox extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
         fieldHeight: 50.h,
         fieldWidth: 50.w,
-        inactiveColor: isDark ? AppColors.primaryColorDark : AppColors.primaryColorLight,
-        activeColor: isDark ? AppColors.primaryColorDark : AppColors.primaryColorLight,
-        selectedColor: isDark ? AppColors.primaryColorDark : AppColors.primaryColorLight,
+        inactiveColor: isDark
+            ? AppColors.primaryColorDark
+            : AppColors.primaryColorLight,
+        activeColor: isDark
+            ? AppColors.primaryColorDark
+            : AppColors.primaryColorLight,
+        selectedColor: isDark
+            ? AppColors.primaryColorDark
+            : AppColors.primaryColorLight,
       ),
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       onChanged: onChanged,
