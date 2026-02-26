@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import '../../../../core/network/api_Service.dart';
+import '../../../../core/network/api_endpoints.dart';
 import '../../../../bottom_nav_bar.dart';
+import '../view/signup_otp_verification_page.dart';
 
 class SignInSignUpController extends GetxController {
   static SignInSignUpController get instance => Get.find();
@@ -16,9 +20,12 @@ class SignInSignUpController extends GetxController {
   final passwordController = TextEditingController();
   final nameController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  final phoneController = TextEditingController();
 
-  void togglePasswordVisibility() => isPasswordVisible.value = !isPasswordVisible.value;
-  void toggleConfirmPasswordVisibility() => isConfirmPasswordVisible.value = !isConfirmPasswordVisible.value;
+  void togglePasswordVisibility() =>
+      isPasswordVisible.value = !isPasswordVisible.value;
+  void toggleConfirmPasswordVisibility() =>
+      isConfirmPasswordVisible.value = !isConfirmPasswordVisible.value;
 
   // --- FIX STARTS HERE ---
 
@@ -48,6 +55,7 @@ class SignInSignUpController extends GetxController {
     // Optional: If you want to clear EVERYTHING (including email/name) when switching:
     // emailController.clear();
     // nameController.clear();
+    // phoneController.clear();
 
     // Reset visibility icons to hidden
     isPasswordVisible.value = false;
@@ -56,14 +64,71 @@ class SignInSignUpController extends GetxController {
 
   // --- FIX ENDS HERE ---
 
-  void submit() {
+  void submit() async {
     showErrors.value = true;
     if (formKey.currentState!.validate()) {
       if (isLogin.value) {
-        Get.to(() => const CustomBottomNavBar());
+        await _loginUser();
       } else {
-        print("Sign Up Logic: ${nameController.text}, ${emailController.text}");
+        await _registerUser();
       }
+    }
+  }
+
+  Future<void> _loginUser() async {
+    EasyLoading.show(status: 'Logging in...');
+    try {
+      final body = {
+        "email": emailController.text.trim(),
+        "password": passwordController.text,
+      };
+
+      final response = await ApiService.post(ApiEndpoints.login, body: body);
+
+      EasyLoading.dismiss();
+
+      Get.snackbar(
+        'Success',
+        response['message'] ?? 'Login successful',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+
+      Get.offAll(() => const CustomBottomNavBar());
+    } catch (e) {
+      EasyLoading.dismiss();
+    }
+  }
+
+  Future<void> _registerUser() async {
+    EasyLoading.show(status: 'Registering...');
+    try {
+      final body = {
+        "name": nameController.text.trim(),
+        "email": emailController.text.trim(),
+        "phone": phoneController.text.trim(),
+        "password": passwordController.text,
+      };
+
+      final response = await ApiService.post(ApiEndpoints.register, body: body);
+
+      EasyLoading.dismiss();
+
+      Get.snackbar(
+        'Success',
+        response['message'] ?? 'OTP Sent to your Email',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+
+      Get.to(
+        () => SignupOtpVerificationPage(),
+        arguments: {'email': emailController.text.trim()},
+      );
+    } catch (e) {
+      EasyLoading.dismiss();
     }
   }
 
@@ -73,6 +138,7 @@ class SignInSignUpController extends GetxController {
     passwordController.dispose();
     nameController.dispose();
     confirmPasswordController.dispose();
+    phoneController.dispose();
     super.onClose();
   }
 }
