@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:get/get.dart';
 import 'package:maroofkhan8/features/profile/view/pages/subscription/view/PremiumSubscriptionPage.dart';
 import 'package:maroofkhan8/features/profile/view/widgets/profile_list.dart';
+import '../controller/profile_controller.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  ProfileScreen({super.key});
+
+  final controller = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class ProfileScreen extends StatelessWidget {
               CircleAvatar(
                 radius: 50,
                 backgroundColor: isDark
-                    ? Color(0xFF494358)
+                    ? const Color(0xFF494358)
                     : Colors.grey.shade200,
                 child: Icon(
                   Icons.person,
@@ -45,13 +47,17 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: 16),
 
               /// Name + Username
-              Text(
-                "Maroof Khan",
-                style: Theme.of(context).textTheme.headlineMedium,
+              Obx(
+                () => Text(
+                  controller.name.value,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
               ),
-              Text(
-                "maroof@example.com",
-                style: Theme.of(context).textTheme.bodyMedium,
+              Obx(
+                () => Text(
+                  controller.email.value,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
               ),
 
               const SizedBox(height: 22),

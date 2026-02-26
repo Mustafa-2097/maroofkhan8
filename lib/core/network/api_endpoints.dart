@@ -13,6 +13,7 @@ class ApiEndpoints {
   static const String changePassword = '$baseUrl/auth/change-password';
 
   /// Forgot Password
+  static const String forgotPassword = '$baseUrl/auth/forgot-password';
   static const String sendResetOtp = '$baseUrl/auth/send-otp/password-reset';
   static const String verifyResetOtp =
       '$baseUrl/auth/verify-otp/password-reset';
@@ -21,6 +22,7 @@ class ApiEndpoints {
   static const String resetPassword = '$baseUrl/auth/reset-password';
 
   /// Users Profile
+  static const String getMe = '$baseUrl/me';
   static const String userProfile = '$baseUrl/users/profile';
   static const String updateProfile = '$baseUrl/users/profile';
 
