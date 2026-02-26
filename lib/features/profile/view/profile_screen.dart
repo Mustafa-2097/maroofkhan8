@@ -107,16 +107,38 @@ class ProfileScreen extends StatelessWidget {
                     const Divider(height: 24),
                     Row(
                       children: [
-                        Icon(
-                          Icons.auto_awesome,
-                          size: 20,
-                          color: Theme.of(context).colorScheme.primary,
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.auto_awesome,
+                                size: 20,
+                                color:Colors.white,
+                               // color: Theme.of(context).colorScheme.onPrimary,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                "Basic Plan",
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+
+                              ),
+
+                            ],
+                          ),
+
                         ),
-                        const SizedBox(width: 8),
-                        Text(
-                          "Basic Plan",
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
+
                         const Spacer(),
                         Text(
                           "Expires: 12/2024",
