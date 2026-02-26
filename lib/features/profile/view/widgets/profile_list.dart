@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:maroofkhan8/features/auth/signin_signup/view/signin_signup_page.dart';
 import 'package:maroofkhan8/features/profile/view/pages/change_password.dart';
 import 'package:maroofkhan8/features/profile/view/pages/contact_us.dart';
 import 'package:maroofkhan8/features/profile/view/pages/payment_history.dart';
@@ -249,7 +250,7 @@ class ProfileList extends StatelessWidget {
                             onPressed: () {
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (_) =>  SplashScreen()),
+                                MaterialPageRoute(builder: (_) =>  SignInSignUpPage()),
                               );
                               // TODO: handle logout logic
                             },
