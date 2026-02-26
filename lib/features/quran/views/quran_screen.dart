@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/core/constant/app_colors.dart';
+import 'package:get/get.dart';
+import '../controller/quran_controller.dart';
 
 import '../../../core/constant/widgets/header.dart';
 import '../../ai_murshid/views/ai_murshid_screen.dart';
@@ -46,6 +48,7 @@ class QuranTabsScreen extends StatefulWidget {
 }
 
 class _QuranTabsScreenState extends State<QuranTabsScreen> {
+  final QuranController controller = Get.put(QuranController());
   int _selectedTab = 0; // 0: Surah, 1: Juz, 2: Last Read
 
   @override
@@ -150,16 +153,29 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
           ),
         );
       default: // Surah List
-        return ListView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          itemCount: 8,
-          itemBuilder: (context, i) => _listTile(
-            "${i + 1}",
-            i == 0 ? "Al Baqarah" : "Al Imran",
-            "The Family of Imran  | 286 Ayah  |  Makki Surah",
-            null,
-          ),
-        );
+        return Obx(() {
+          if (controller.isLoading.value) {
+            return const Center(
+              child: CircularProgressIndicator(color: kPrimaryBrown),
+            );
+          }
+          if (controller.surahList.isEmpty) {
+            return const Center(child: Text("No Surahs found"));
+          }
+          return ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            itemCount: controller.surahList.length,
+            itemBuilder: (context, i) {
+              final surah = controller.surahList[i];
+              return _listTile(
+                "${surah.id}",
+                surah.name,
+                "${surah.translatedName}  |  ${surah.versesCount} Ayah  |  ${surah.revelationPlace} Surah",
+                null,
+              );
+            },
+          );
+        });
     }
   }
 
