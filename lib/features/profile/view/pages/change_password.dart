@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:maroofkhan8/features/auth/forgot_password/controller/reset_password_controller.dart';
-
-import '../../../../core/constant/app_colors.dart';
+import '../../controller/change_password_controller.dart';
 
 class ChangePassword extends StatelessWidget {
   ChangePassword({super.key});
-  final controller = Get.put(ResetPasswordController());
+
+  final controller = Get.put(ChangePasswordController());
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Get.back(),
+        ),
         title: Text(
           "Change Password",
           style: Theme.of(
@@ -22,99 +28,109 @@ class ChangePassword extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
           child: Form(
             key: controller.resetPasswordFormKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 20),
-                Center(
-                  child: Text(
-                    'Create New Password',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                /// Subtitle
                 Text(
-                  'Your new password must be different from previous used passwords.',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    color: Theme.of(context).disabledColor.withOpacity(0.6),
-                  ),
-                  textAlign: TextAlign.center,
+                  "Old Password",
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
                 ),
-                const SizedBox(height: 32),
-
-                /// Create a password
-                _Label(text: 'Create a password *'),
+                SizedBox(height: 8.h),
+                Obx(
+                  () => _TextField(
+                    controller: controller.oldPasswordController,
+                    hintText: "Enter your old password",
+                    isDark: isDark,
+                    isPassword: true,
+                    obscureText: !controller.isOldPasswordVisible.value,
+                    toggleVisibility: controller.toggleOldPasswordVisibility,
+                    validator: (value) {
+                      if (value == null || value.isEmpty)
+                        return "Old Password is required";
+                      if (value.length < 6)
+                        return "Password must be at least 6 characters";
+                      return null;
+                    },
+                  ),
+                ),
+                SizedBox(height: 20.h),
+                Text(
+                  "New Password",
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                SizedBox(height: 8.h),
                 Obx(
                   () => _TextField(
                     controller: controller.passwordController,
-                    hint: 'must be 6 characters',
-                    obscure: !controller.isPasswordVisible.value,
+                    hintText: "Enter your new password",
+                    isDark: isDark,
+                    isPassword: true,
+                    obscureText: !controller.isNewPasswordVisible.value,
+                    toggleVisibility: controller.toggleNewPasswordVisibility,
                     validator: (value) {
                       if (value == null || value.isEmpty)
-                        return 'Password is required';
+                        return "New password is required";
                       if (value.length < 6)
-                        return 'Password must be at least 6 characters';
+                        return "Password must be at least 6 characters";
                       return null;
                     },
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        controller.isPasswordVisible.value
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: Theme.of(context).disabledColor,
-                      ),
-                      onPressed: controller.togglePasswordVisibility,
-                    ),
                   ),
                 ),
-
-                const SizedBox(height: 16),
-
-                /// Confirm password
-                _Label(text: 'Confirm password *'),
+                SizedBox(height: 20.h),
+                Text(
+                  "Confirm Password",
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                SizedBox(height: 8.h),
                 Obx(
                   () => _TextField(
                     controller: controller.confirmPasswordController,
-                    hint: 'repeat password',
-                    obscure: !controller.isConfirmPasswordVisible.value,
+                    hintText: "Confirm your new password",
+                    isDark: isDark,
+                    isPassword: true,
+                    obscureText: !controller.isConfirmPasswordVisible.value,
+                    toggleVisibility:
+                        controller.toggleConfirmPasswordVisibility,
                     validator: (value) {
                       if (value == null || value.isEmpty)
-                        return 'Please confirm your password';
+                        return "Confirm password is required";
                       if (value != controller.passwordController.text)
-                        return 'Passwords do not match';
+                        return "Passwords do not match";
                       return null;
                     },
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        controller.isConfirmPasswordVisible.value
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: Theme.of(context).disabledColor,
-                      ),
-                      onPressed: controller.toggleConfirmPasswordVisibility,
-                    ),
                   ),
                 ),
-
-                const SizedBox(height: 32),
-
-                /// Change Password button
+                SizedBox(height: 48.h),
                 SizedBox(
                   width: double.infinity,
-                  height: 48,
                   child: ElevatedButton(
-                    onPressed: () =>
-                        controller.resetPassword(), // Call the method
-                    child: const Text('Change Password'),
+                    onPressed: () => controller.changePassword(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(vertical: 16.h),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                    ),
+                    child: Text(
+                      "Change Password",
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -126,71 +142,76 @@ class ChangePassword extends StatelessWidget {
   }
 }
 
-class _Label extends StatelessWidget {
-  final String text;
-  const _Label({required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: Text(text),
-    );
-  }
-}
-
 class _TextField extends StatelessWidget {
   final TextEditingController controller;
-  final String hint;
-  final bool obscure;
-  final Widget? suffixIcon;
+  final String hintText;
+  final bool isDark;
+  final bool isPassword;
+  final bool obscureText;
+  final VoidCallback? toggleVisibility;
   final String? Function(String?)? validator;
 
   const _TextField({
     required this.controller,
-    required this.hint,
-    this.obscure = false,
-    this.suffixIcon,
+    required this.hintText,
+    required this.isDark,
+    this.isPassword = false,
+    this.obscureText = false,
+    this.toggleVisibility,
     this.validator,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return TextFormField(
       controller: controller,
-      obscureText: obscure,
+      obscureText: obscureText,
       validator: validator,
+      style: TextStyle(color: isDark ? Colors.white : Colors.black),
       decoration: InputDecoration(
-        hintText: hint,
-        suffixIcon: suffixIcon,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+        hintText: hintText,
+        hintStyle: TextStyle(
+          color: isDark ? Colors.white38 : Colors.black38,
+          fontSize: 14.sp,
+        ),
+        filled: true,
+        fillColor: isDark
+            ? Colors.white.withOpacity(0.05)
+            : Colors.black.withOpacity(0.03),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide(
-            color: isDark
-                ? AppColors.primaryColorDark
-                : AppColors.primaryColorLight,
+            color: isDark ? Colors.white10 : Colors.black12,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.r),
+          borderSide: BorderSide(
+            color: isDark ? Colors.white10 : Colors.black12,
           ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12.r),
           borderSide: BorderSide(
-            color: isDark
-                ? AppColors.primaryColorDark
-                : AppColors.primaryColorLight,
-            width: 2,
+            color: Theme.of(context).colorScheme.primary,
+            width: 1.5,
           ),
         ),
-        // Error styling
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12.r),
           borderSide: const BorderSide(color: Colors.red),
         ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Colors.red, width: 2),
-        ),
+        suffixIcon: isPassword
+            ? IconButton(
+                icon: Icon(
+                  obscureText ? Icons.visibility_off : Icons.visibility,
+                  size: 20.r,
+                  color: isDark ? Colors.white60 : Colors.black54,
+                ),
+                onPressed: toggleVisibility,
+              )
+            : null,
       ),
     );
   }

@@ -1,11 +1,42 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:get/get.dart';
+import '../offline_storage/shared_pref.dart';
 
 class ApiService {
   static const Duration timeout = Duration(seconds: 30);
+
+  /// Helper to get default headers with Auth token
+  static Future<Map<String, String>> _getHeaders(
+    Map<String, String>? extraHeaders,
+  ) async {
+    final token = await SharedPreferencesHelper.getToken();
+    final Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+
+    if (token != null && token.isNotEmpty) {
+      if (kDebugMode) print('ApiService: Token found, length: ${token.length}');
+
+      final bearerToken = '$token';
+
+      // We send both to be safe, though standard is 'Authorization'
+      headers['Authorization'] = bearerToken;
+      headers['authorization'] = bearerToken;
+    } else {
+      if (kDebugMode) print('ApiService: NO TOKEN FOUND in SharedPreferences');
+    }
+
+    if (extraHeaders != null) {
+      headers.addAll(extraHeaders);
+    }
+    return headers;
+  }
 
   /// POST REQUEST
   static Future<Map<String, dynamic>> post(
@@ -14,13 +45,20 @@ class ApiService {
     Map<String, dynamic>? body,
   }) async {
     try {
+      final finalHeaders = await _getHeaders(headers);
+
+      debugPrint('🚨🚨🚨 API POST REQUEST START 🚨🚨🚨');
+      debugPrint('URL: $url');
+      debugPrint('HEADERS: $finalHeaders');
+      debugPrint('BODY: ${jsonEncode(body)}');
+
       final response = await http
-          .post(
-            Uri.parse(url),
-            headers: headers ?? {'Content-Type': 'application/json'},
-            body: jsonEncode(body),
-          )
+          .post(Uri.parse(url), headers: finalHeaders, body: jsonEncode(body))
           .timeout(timeout);
+
+      debugPrint('🟢🟢🟢 API RESPONSE 🟢🟢🟢');
+      debugPrint('STATUS: ${response.statusCode}');
+      debugPrint('BODY: ${response.body}');
 
       final decoded = jsonDecode(response.body);
 
@@ -42,8 +80,20 @@ class ApiService {
     Map<String, dynamic>? queryParameters,
   }) async {
     try {
+      final finalHeaders = await _getHeaders(headers);
       final uri = Uri.parse(url).replace(queryParameters: queryParameters);
-      final response = await http.get(uri, headers: headers).timeout(timeout);
+
+      debugPrint('🚨🚨🚨 API GET REQUEST START 🚨🚨🚨');
+      debugPrint('URL: $uri');
+      debugPrint('HEADERS: $finalHeaders');
+
+      final response = await http
+          .get(uri, headers: finalHeaders)
+          .timeout(timeout);
+
+      debugPrint('🟢🟢🟢 API RESPONSE 🟢🟢🟢');
+      debugPrint('STATUS: ${response.statusCode}');
+      debugPrint('BODY: ${response.body}');
 
       final decoded = jsonDecode(response.body);
 
@@ -65,13 +115,20 @@ class ApiService {
     Map<String, dynamic>? body,
   }) async {
     try {
+      final finalHeaders = await _getHeaders(headers);
+
+      debugPrint('🚨🚨🚨 API PUT REQUEST START 🚨🚨🚨');
+      debugPrint('URL: $url');
+      debugPrint('HEADERS: $finalHeaders');
+      debugPrint('BODY: ${jsonEncode(body)}');
+
       final response = await http
-          .put(
-            Uri.parse(url),
-            headers: headers ?? {'Content-Type': 'application/json'},
-            body: jsonEncode(body),
-          )
+          .put(Uri.parse(url), headers: finalHeaders, body: jsonEncode(body))
           .timeout(timeout);
+
+      debugPrint('🟢🟢🟢 API RESPONSE 🟢🟢🟢');
+      debugPrint('STATUS: ${response.statusCode}');
+      debugPrint('BODY: ${response.body}');
 
       final decoded = jsonDecode(response.body);
 
@@ -86,20 +143,27 @@ class ApiService {
     }
   }
 
-  /// PATCH REQUEST (JSON body)
+  /// PATCH REQUEST
   static Future<Map<String, dynamic>> patch(
     String url, {
     Map<String, String>? headers,
     Map<String, dynamic>? body,
   }) async {
     try {
+      final finalHeaders = await _getHeaders(headers);
+
+      debugPrint('🚨🚨🚨 API PATCH REQUEST START 🚨🚨🚨');
+      debugPrint('URL: $url');
+      debugPrint('HEADERS: $finalHeaders');
+      debugPrint('BODY: ${jsonEncode(body)}');
+
       final response = await http
-          .patch(
-            Uri.parse(url),
-            headers: headers ?? {'Content-Type': 'application/json'},
-            body: jsonEncode(body),
-          )
+          .patch(Uri.parse(url), headers: finalHeaders, body: jsonEncode(body))
           .timeout(timeout);
+
+      debugPrint('🟢🟢🟢 API RESPONSE 🟢🟢🟢');
+      debugPrint('STATUS: ${response.statusCode}');
+      debugPrint('BODY: ${response.body}');
 
       final decoded = jsonDecode(response.body);
 
@@ -114,7 +178,7 @@ class ApiService {
     }
   }
 
-  /// PATCH MULTIPART REQUEST (for file uploads like profile image)
+  /// PATCH MULTIPART REQUEST
   static Future<Map<String, dynamic>> patchMultipart(
     String url, {
     required Map<String, String> headers,
@@ -125,7 +189,12 @@ class ApiService {
     try {
       final request = http.MultipartRequest('PATCH', Uri.parse(url));
 
-      // Do NOT set Content-Type manually — http sets it with the correct boundary
+      final token = await SharedPreferencesHelper.getToken();
+      if (token != null && token.isNotEmpty) {
+        request.headers['Authorization'] = 'Bearer $token';
+        request.headers['authorization'] = 'Bearer $token';
+      }
+
       headers.forEach((key, value) {
         if (key.toLowerCase() != 'content-type') {
           request.headers[key] = value;
@@ -151,6 +220,10 @@ class ApiService {
       final response = await http.Response.fromStream(streamedResponse);
       final decoded = jsonDecode(response.body);
 
+      debugPrint('🟢🟢🟢 API MULTIPART RESPONSE 🟢🟢🟢');
+      debugPrint('STATUS: ${response.statusCode}');
+      debugPrint('BODY: ${response.body}');
+
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return decoded;
       } else {
@@ -162,7 +235,6 @@ class ApiService {
     }
   }
 
-  /// Returns correct http_parser MediaType
   static MediaType _getMimeType(String path) {
     final ext = path.split('.').last.toLowerCase();
     switch (ext) {
@@ -178,16 +250,12 @@ class ApiService {
     }
   }
 
-  /// Converts raw exceptions into user-friendly strings
   static String _friendlyError(Object e) {
     final msg = e.toString();
-    if (msg.contains('TimeoutException')) {
-      return 'Request timed out. Please try again.';
-    }
+    if (msg.contains('TimeoutException')) return 'Request timed out.';
     if (msg.contains('SocketException')) return 'No internet connection.';
-    if (msg.contains('FormatException')) return 'Unexpected server response.';
-    // If it's already a clean API message string, return it directly
+    if (msg.contains('FormatException')) return 'Server response error.';
     if (!msg.contains('Exception:') && !msg.contains('Error:')) return msg;
-    return 'Something went wrong. Please try again.';
+    return 'Something went wrong.';
   }
 }
