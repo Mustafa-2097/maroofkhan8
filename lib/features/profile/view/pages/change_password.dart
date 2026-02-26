@@ -16,9 +16,9 @@ class ChangePassword extends StatelessWidget {
         elevation: 0,
         title: Text(
           "Change Password",
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -40,6 +40,7 @@ class ChangePassword extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
+
                 /// Subtitle
                 Text(
                   'Your new password must be different from previous used passwords.',
@@ -52,45 +53,57 @@ class ChangePassword extends StatelessWidget {
 
                 /// Create a password
                 _Label(text: 'Create a password *'),
-                Obx(() => _TextField(
-                  controller: controller.passwordController,
-                  hint: 'must be 6 characters',
-                  obscure: !controller.isPasswordVisible.value,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) return 'Password is required';
-                    if (value.length < 6) return 'Password must be at least 6 characters';
-                    return null;
-                  },
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      controller.isPasswordVisible.value ? Icons.visibility : Icons.visibility_off,
-                      color: Theme.of(context).disabledColor,
+                Obx(
+                  () => _TextField(
+                    controller: controller.passwordController,
+                    hint: 'must be 6 characters',
+                    obscure: !controller.isPasswordVisible.value,
+                    validator: (value) {
+                      if (value == null || value.isEmpty)
+                        return 'Password is required';
+                      if (value.length < 6)
+                        return 'Password must be at least 6 characters';
+                      return null;
+                    },
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        controller.isPasswordVisible.value
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: Theme.of(context).disabledColor,
+                      ),
+                      onPressed: controller.togglePasswordVisibility,
                     ),
-                    onPressed: controller.togglePasswordVisibility,
                   ),
-                )),
+                ),
 
                 const SizedBox(height: 16),
 
                 /// Confirm password
                 _Label(text: 'Confirm password *'),
-                Obx(() => _TextField(
-                  controller: controller.confirmPasswordController,
-                  hint: 'repeat password',
-                  obscure: !controller.isConfirmPasswordVisible.value,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) return 'Please confirm your password';
-                    if (value != controller.passwordController.text) return 'Passwords do not match';
-                    return null;
-                  },
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      controller.isConfirmPasswordVisible.value ? Icons.visibility : Icons.visibility_off,
-                      color: Theme.of(context).disabledColor,
+                Obx(
+                  () => _TextField(
+                    controller: controller.confirmPasswordController,
+                    hint: 'repeat password',
+                    obscure: !controller.isConfirmPasswordVisible.value,
+                    validator: (value) {
+                      if (value == null || value.isEmpty)
+                        return 'Please confirm your password';
+                      if (value != controller.passwordController.text)
+                        return 'Passwords do not match';
+                      return null;
+                    },
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        controller.isConfirmPasswordVisible.value
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: Theme.of(context).disabledColor,
+                      ),
+                      onPressed: controller.toggleConfirmPasswordVisibility,
                     ),
-                    onPressed: controller.toggleConfirmPasswordVisibility,
                   ),
-                )),
+                ),
 
                 const SizedBox(height: 32),
 
@@ -99,7 +112,8 @@ class ChangePassword extends StatelessWidget {
                   width: double.infinity,
                   height: 48,
                   child: ElevatedButton(
-                    onPressed: () => controller.resetPassword(), // Call the method
+                    onPressed: () =>
+                        controller.resetPassword(), // Call the method
                     child: const Text('Change Password'),
                   ),
                 ),
@@ -154,13 +168,17 @@ class _TextField extends StatelessWidget {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
-            color: isDark ? AppColors.primaryColorDark : AppColors.primaryColorLight,
+            color: isDark
+                ? AppColors.primaryColorDark
+                : AppColors.primaryColorLight,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
-            color: isDark ? AppColors.primaryColorDark : AppColors.primaryColorLight,
+            color: isDark
+                ? AppColors.primaryColorDark
+                : AppColors.primaryColorLight,
             width: 2,
           ),
         ),

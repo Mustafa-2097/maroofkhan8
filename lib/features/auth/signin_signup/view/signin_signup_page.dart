@@ -18,7 +18,7 @@ class SignInSignUpPage extends StatelessWidget {
           child: Form(
             key: controller.formKey,
             child: Obx(
-                  () => Column(
+              () => Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 24),
@@ -27,9 +27,10 @@ class SignInSignUpPage extends StatelessWidget {
                   Center(
                     child: Text(
                       controller.isLogin.value ? 'Login' : 'Sign Up',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                     ),
                   ),
 
@@ -39,9 +40,8 @@ class SignInSignUpPage extends StatelessWidget {
                   Center(
                     child: Text(
                       'Log in or register to save your progress',
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        color: Theme.of(context).disabledColor,
-                      ),
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(color: Theme.of(context).disabledColor),
                     ),
                   ),
 
@@ -56,8 +56,10 @@ class SignInSignUpPage extends StatelessWidget {
                     _Label(text: 'Full Name *'),
                     _TextField(
                       controller: controller.nameController,
-                      hint: 'Username',
-                      validator: (value) => value == null || value.isEmpty ? "Name is required" : null,
+                      hint: 'Your Name',
+                      validator: (value) => value == null || value.isEmpty
+                          ? "Name is required"
+                          : null,
                     ),
                     const SizedBox(height: 16),
                   ],
@@ -67,13 +69,27 @@ class SignInSignUpPage extends StatelessWidget {
                     controller: controller.emailController,
                     hint: 'example@gmail.com',
                     validator: (value) {
-                      if (value == null || value.isEmpty) return "Email is required";
-                      if (!GetUtils.isEmail(value)) return "Enter a valid email";
+                      if (value == null || value.isEmpty)
+                        return "Email is required";
+                      if (!GetUtils.isEmail(value))
+                        return "Enter a valid email";
                       return null;
                     },
                   ),
 
                   const SizedBox(height: 16),
+
+                  if (!controller.isLogin.value) ...[
+                    _Label(text: 'Phone Number *'),
+                    _TextField(
+                      controller: controller.phoneController,
+                      hint: 'Your Phone Number',
+                      validator: (value) => value == null || value.isEmpty
+                          ? "Phone number is required"
+                          : null,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
 
                   ///
                   _Label(
@@ -86,13 +102,17 @@ class SignInSignUpPage extends StatelessWidget {
                     hint: 'must be 6 characters',
                     obscure: !controller.isPasswordVisible.value,
                     validator: (value) {
-                      if (value == null || value.isEmpty) return "Password is required";
-                      if (value.length < 6) return "Password must be at least 6 characters";
+                      if (value == null || value.isEmpty)
+                        return "Password is required";
+                      if (value.length < 6)
+                        return "Password must be at least 6 characters";
                       return null;
                     },
                     suffixIcon: IconButton(
                       icon: Icon(
-                        controller.isPasswordVisible.value ? Icons.visibility : Icons.visibility_off,
+                        controller.isPasswordVisible.value
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                         color: Theme.of(context).disabledColor,
                       ),
                       onPressed: controller.togglePasswordVisibility,
@@ -108,13 +128,17 @@ class SignInSignUpPage extends StatelessWidget {
                       hint: 'repeat password',
                       obscure: !controller.isConfirmPasswordVisible.value,
                       validator: (value) {
-                        if (value == null || value.isEmpty) return 'Please confirm your password';
-                        if (value != controller.passwordController.text) return "Passwords do not match";
+                        if (value == null || value.isEmpty)
+                          return 'Please confirm your password';
+                        if (value != controller.passwordController.text)
+                          return "Passwords do not match";
                         return null;
                       },
                       suffixIcon: IconButton(
                         icon: Icon(
-                          controller.isConfirmPasswordVisible.value ? Icons.visibility : Icons.visibility_off,
+                          controller.isConfirmPasswordVisible.value
+                              ? Icons.visibility
+                              : Icons.visibility_off,
                           color: Theme.of(context).disabledColor,
                         ),
                         onPressed: controller.toggleConfirmPasswordVisibility,
@@ -129,9 +153,10 @@ class SignInSignUpPage extends StatelessWidget {
                         onPressed: () => Get.to(() => ForgotPasswordPage()),
                         child: Text(
                           'Forgot password?',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
                         ),
                       ),
                     ),
@@ -145,9 +170,7 @@ class SignInSignUpPage extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: controller.submit,
                       child: Text(
-                        controller.isLogin.value
-                         ? 'Log in'
-                         : 'Sign Up',
+                        controller.isLogin.value ? 'Log in' : 'Sign Up',
                       ),
                     ),
                   ),
@@ -181,7 +204,12 @@ class SignInSignUpPage extends StatelessWidget {
                             height: 50,
                             width: 50,
                             decoration: BoxDecoration(
-                              border: Border.all(width: 1, color: isDark ? Colors.grey.shade400 : Colors.grey.shade300),
+                              border: Border.all(
+                                width: 1,
+                                color: isDark
+                                    ? Colors.grey.shade400
+                                    : Colors.grey.shade300,
+                              ),
                               borderRadius: BorderRadius.circular(30),
                             ),
                             child: Image.asset(
@@ -193,7 +221,6 @@ class SignInSignUpPage extends StatelessWidget {
                       ),
                     ),
                   ),
-
                 ],
               ),
             ),
@@ -213,20 +240,23 @@ class _AuthToggle extends GetView<SignInSignUpController> {
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Obx(() => Row( // Add Obx here so the button colors update
-        children: [
-          _ToggleButton(
-            text: 'Sign in',
-            selected: controller.isLogin.value,
-            onTap: controller.showLogin,
-          ),
-          _ToggleButton(
-            text: 'Register',
-            selected: !controller.isLogin.value,
-            onTap: controller.showRegister,
-          ),
-        ],
-      )),
+      child: Obx(
+        () => Row(
+          // Add Obx here so the button colors update
+          children: [
+            _ToggleButton(
+              text: 'Sign in',
+              selected: controller.isLogin.value,
+              onTap: controller.showLogin,
+            ),
+            _ToggleButton(
+              text: 'Register',
+              selected: !controller.isLogin.value,
+              onTap: controller.showRegister,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -252,13 +282,12 @@ class _ToggleButton extends StatelessWidget {
           margin: EdgeInsets.only(left: 6, right: 6),
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: selected ? Theme.of(context).scaffoldBackgroundColor : Colors.transparent, // Colors.white : Colors.transparent
+            color: selected
+                ? Theme.of(context).scaffoldBackgroundColor
+                : Colors.transparent, // Colors.white : Colors.transparent
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Text(
-            text,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          child: Text(text, style: Theme.of(context).textTheme.titleLarge),
         ),
       ),
     );
@@ -307,13 +336,17 @@ class _TextField extends StatelessWidget {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
-            color: isDark ? AppColors.primaryColorDark : AppColors.primaryColorLight,
+            color: isDark
+                ? AppColors.primaryColorDark
+                : AppColors.primaryColorLight,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
-            color: isDark ? AppColors.primaryColorDark : AppColors.primaryColorLight,
+            color: isDark
+                ? AppColors.primaryColorDark
+                : AppColors.primaryColorLight,
             width: 2,
           ),
         ),
