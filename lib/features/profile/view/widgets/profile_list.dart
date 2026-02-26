@@ -10,6 +10,7 @@ import 'package:maroofkhan8/features/profile/view/pages/subscription/view/Premiu
 import 'package:maroofkhan8/features/profile/view/pages/subscription/view/subscription_screen.dart';
 import 'package:maroofkhan8/features/profile/view/pages/support_center.dart';
 import 'package:maroofkhan8/features/profile/view/pages/terms_conditions.dart';
+import 'package:maroofkhan8/splash/view/splash_screen.dart';
 
 class ProfileList extends StatelessWidget {
   const ProfileList({super.key});
@@ -246,7 +247,10 @@ class ProfileList extends StatelessWidget {
                               shadowColor: Colors.transparent,
                             ),
                             onPressed: () {
-                              Navigator.pop(context);
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (_) =>  SplashScreen()),
+                              );
                               // TODO: handle logout logic
                             },
                             child: Text(
