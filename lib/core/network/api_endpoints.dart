@@ -47,4 +47,7 @@ class ApiEndpoints {
 
   /// Duas
   static const String duas = '$baseUrl/duas';
+
+  /// Hadith
+  static const String hadithBooks = '$baseUrl/hadith/books';
 }

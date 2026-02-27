@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
 
+import '../controller/hadith_controller.dart';
 import 'hadith_book_details_screen.dart';
 
 class HadithScreen extends StatefulWidget {
@@ -13,6 +14,7 @@ class HadithScreen extends StatefulWidget {
 }
 
 class _HadithScreenState extends State<HadithScreen> {
+  final controller = Get.put(HadithController());
   int _selectedIndex = 0;
   final Color primaryBrown = const Color(0xFF8D3C1F);
   final Color darkBlack = const Color(0xFF1E120D);
@@ -111,101 +113,102 @@ class _HadithScreenState extends State<HadithScreen> {
 
   // Book List for Screen 1
   Widget _buildBookList() {
-    final List<String> books = [
-      "Sahih al-Bukhari",
-      "Sahih Muslim",
-      "Sunan Abu Dawood",
-      "Jami' at-Tirmidhi",
-      "Sunan an-Nasa'i",
-    ];
-
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      itemCount: books.length,
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: () {
-            Get.to(HadithBookDetailsScreen());
-          },
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 15),
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.03),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      if (controller.hadithBooks.isEmpty) {
+        return const Center(child: Text("No Books Available"));
+      }
+      return ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        itemCount: controller.hadithBooks.length,
+        itemBuilder: (context, index) {
+          final book = controller.hadithBooks[index];
+          return GestureDetector(
+            onTap: () {
+              Get.to(HadithBookDetailsScreen());
+            },
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 15),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.03),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  // Book Image Placeholder
+                  Container(
+                    width: 45,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade900,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: const Icon(
+                      Icons.menu_book,
+                      color: Colors.amber,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 15),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          book.name,
+                          style: GoogleFonts.playfairDisplay(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          "Chapters - ${book.chapters}",
+                          style: GoogleFonts.playfairDisplay(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFFA6A6A6),
+                          ),
+                        ),
+                        Text(
+                          "Hadith - ${book.hadiths}",
+                          style: GoogleFonts.playfairDisplay(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFFA6A6A6),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: primaryBrown,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.arrow_forward,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            child: Row(
-              children: [
-                // Dummy Book Image
-                Container(
-                  width: 45,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: Colors.green.shade900,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: const Icon(
-                    Icons.menu_book,
-                    color: Colors.amber,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 15),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        books[index],
-                        style: GoogleFonts.playfairDisplay(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        "Chapters - 99",
-                        style: GoogleFonts.playfairDisplay(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFFA6A6A6),
-                        ),
-                      ),
-                      Text(
-                        "Hadith - 7276",
-                        style: GoogleFonts.playfairDisplay(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFFA6A6A6),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: primaryBrown,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(
-                    Icons.arrow_forward,
-                    color: Colors.white,
-                    size: 18,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
+          );
+        },
+      );
+    });
   }
 
   // Hadith Detail List for Screen 2 & 3
