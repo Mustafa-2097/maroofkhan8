@@ -1,11 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:maroofkhan8/features/hadis/controller/hadith_controller.dart';
+import 'package:maroofkhan8/features/hadis/models/hadith.dart';
 
 import 'hadish_tafsir_details_screen.dart';
 
-class HadithListDetailsScreen extends StatelessWidget {
-  const HadithListDetailsScreen({super.key});
+class HadithListDetailsScreen extends StatefulWidget {
+  final String slug;
+  final String chapterNum;
+  final String bookName;
+
+  const HadithListDetailsScreen({
+    super.key,
+    required this.slug,
+    required this.chapterNum,
+    required this.bookName,
+  });
+
+  @override
+  State<HadithListDetailsScreen> createState() =>
+      _HadithListDetailsScreenState();
+}
+
+class _HadithListDetailsScreenState extends State<HadithListDetailsScreen> {
+  final controller = HadithController.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    controller.fetchHadithList(widget.slug, widget.chapterNum);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,20 +55,23 @@ class HadithListDetailsScreen extends StatelessWidget {
                       thickness: 0.5,
                     ),
                   ),
-                  RichText(
-                    text: TextSpan(
-                      style: GoogleFonts.playfairDisplay(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                      children: const [
-                        TextSpan(text: "Sahih al-Bukhari-"),
-                        TextSpan(
-                          text: "(Volume-1)",
-                          style: TextStyle(color: primaryBrown),
+                  Flexible(
+                    child: RichText(
+                      overflow: TextOverflow.ellipsis,
+                      text: TextSpan(
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
                         ),
-                      ],
+                        children: [
+                          TextSpan(text: "${widget.bookName}-"),
+                          TextSpan(
+                            text: "(Chapter-${widget.chapterNum})",
+                            style: const TextStyle(color: primaryBrown),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   const Expanded(
@@ -97,30 +125,25 @@ class HadithListDetailsScreen extends StatelessWidget {
 
             // 3. Scrollable Hadith List
             Expanded(
-              child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                children: const [
-                  HadithCard(
-                    // arabic: "إنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ",
-                    english: "“Actions are judged by intentions...”",
-                    hadithNumber: 1,
-                  ),
-                  HadithCard(
-                    // arabic:
-                    //     "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الْآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ",
-                    english:
-                        "“Whoever believes in Allah and the Last Day should speak good or remain silent.”",
-                    hadithNumber: 2,
-                  ),
-                  HadithCard(
-                    // arabic:
-                    //    "الرَّاحِمُونَ يَرْحَمُهُمُ الرَّحْمَنُ، ارْحَمُوا مَنْ فِي الْأَرْضِ يَرْحَمْكُمْ مَنْ فِي السَّمَاءِ",
-                    english:
-                        "“The merciful are shown mercy by the Most Merciful. Be merciful to those on earth, and the One above the heavens will have mercy upon you.”",
-                    hadithNumber: 3,
-                  ),
-                ],
-              ),
+              child: Obx(() {
+                if (controller.isHadithLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (controller.hadithList.isEmpty) {
+                  return const Center(child: Text("No Hadiths Available"));
+                }
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  itemCount: controller.hadithList.length,
+                  itemBuilder: (context, index) {
+                    final hadith = controller.hadithList[index];
+                    return HadithCard(
+                      hadith: hadith,
+                      bookName: widget.bookName,
+                    );
+                  },
+                );
+              }),
             ),
           ],
         ),
@@ -129,13 +152,16 @@ class HadithListDetailsScreen extends StatelessWidget {
   }
 
   Widget _backButton() {
-    return Container(
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(6),
+    return GestureDetector(
+      onTap: () => Get.back(),
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey.shade300),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: const Icon(Icons.chevron_left, color: Colors.grey, size: 20),
       ),
-      child: const Icon(Icons.chevron_left, color: Colors.grey, size: 20),
     );
   }
 
@@ -154,16 +180,10 @@ class HadithListDetailsScreen extends StatelessWidget {
 }
 
 class HadithCard extends StatelessWidget {
-  // final String arabic;
-  final String english;
-  final int hadithNumber;
+  final Hadith hadith;
+  final String bookName;
 
-  const HadithCard({
-    super.key,
-    //  required this.arabic,
-    required this.english,
-    required this.hadithNumber,
-  });
+  const HadithCard({super.key, required this.hadith, required this.bookName});
 
   @override
   Widget build(BuildContext context) {
@@ -182,30 +202,30 @@ class HadithCard extends StatelessWidget {
         ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Text(
-          //   arabic,
-          //   textAlign: TextAlign.center,
-          //   style: const TextStyle(
-          //     fontSize: 18,
-          //     fontWeight: FontWeight.bold,
-          //     height: 1.5,
-          //     color: Color(0xFF2E2E2E),
-          //   ),
-          // ),
-          // const SizedBox(height: 12),
+          if (hadith.heading.isNotEmpty) ...[
+            Text(
+              hadith.heading,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF8D3C1F),
+              ),
+            ),
+            const SizedBox(height: 10),
+          ],
           Text(
-            english,
-            textAlign: TextAlign.center,
+            hadith.hadith,
             style: const TextStyle(
-              fontSize: 16,
-              color: Colors.black87,
-              fontWeight: FontWeight.w400,
+              fontSize: 14,
+              height: 1.5,
+              color: Color(0xFF2E2E2E),
             ),
           ),
           const SizedBox(height: 15),
           Text(
-            "Sahih al-Bukhari -  Volume 1 • Hadith $hadithNumber",
+            "$bookName • Hadith ${hadith.number}",
             style: const TextStyle(fontSize: 11, color: Colors.grey),
           ),
           const Divider(height: 30, color: Color(0xFFEEEEEE)),

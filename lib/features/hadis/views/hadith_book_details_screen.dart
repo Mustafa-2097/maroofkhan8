@@ -64,7 +64,11 @@ class _HadithBookDetailsScreenState extends State<HadithBookDetailsScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => HadithListDetailsScreen(),
+                            builder: (_) => HadithListDetailsScreen(
+                              slug: widget.book.id,
+                              chapterNum: chapter.number,
+                              bookName: widget.book.name,
+                            ),
                           ),
                         );
                       },

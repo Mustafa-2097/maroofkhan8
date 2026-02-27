@@ -3,6 +3,7 @@ import '../../../core/network/api_Service.dart';
 import '../../../core/network/api_endpoints.dart';
 import '../models/hadith_book.dart';
 import '../models/hadith_chapter.dart';
+import '../models/hadith.dart';
 
 class HadithController extends GetxController {
   static HadithController get instance => Get.find();
@@ -12,6 +13,9 @@ class HadithController extends GetxController {
 
   var isChaptersLoading = false.obs;
   var chapters = <HadithChapter>[].obs;
+
+  var isHadithLoading = false.obs;
+  var hadithList = <Hadith>[].obs;
 
   @override
   void onInit() {
@@ -47,10 +51,26 @@ class HadithController extends GetxController {
             .map((json) => HadithChapter.fromJson(json))
             .toList();
       }
+    } finally {
+      isChaptersLoading.value = false;
+    }
+  }
+
+  Future<void> fetchHadithList(String slug, String chapterNum) async {
+    isHadithLoading.value = true;
+    hadithList.clear();
+    try {
+      final response = await ApiService.get(
+        ApiEndpoints.hadithList(slug, chapterNum),
+      );
+      if (response['success'] == true) {
+        final List<dynamic> data = response['data'];
+        hadithList.value = data.map((json) => Hadith.fromJson(json)).toList();
+      }
     } catch (e) {
       // Error is handled in ApiService
     } finally {
-      isChaptersLoading.value = false;
+      isHadithLoading.value = false;
     }
   }
 }
