@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/features/home/awliya_allah/awliya_allah_details_screen.dart';
+import 'controllers/awliya_allah_controller.dart';
+import 'models/awliya_allah_model.dart';
 
 class AwliyaAllahListScreen extends StatelessWidget {
   const AwliyaAllahListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Custom brown color from the design
+    final controller = Get.put(AwliyaAllahController());
     const Color primaryBrown = Color(0xFF8D3C1F);
 
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // 1. Header Title
             Text(
               "Awliya Allah",
@@ -24,7 +27,7 @@ class AwliyaAllahListScreen extends StatelessWidget {
                 color: const Color(0xFF2E2E2E),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             // 2. Search Bar
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -45,20 +48,30 @@ class AwliyaAllahListScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // 3. Scrollable List
             Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                itemCount: 10, // Number of items
-                itemBuilder: (context, index) {
-                  return const AwliyaCard(
-                    title: "Shayidh Abdul Qadir\nJilani (RA)",
-                    subtitle: "Sufi Scholar + Baghdad",
-                    buttonColor: primaryBrown,
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: primaryBrown),
                   );
-                },
-              ),
+                }
+                if (controller.awliyaList.isEmpty) {
+                  return const Center(child: Text("No records found"));
+                }
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 20,
+                  ),
+                  itemCount: controller.awliyaList.length,
+                  itemBuilder: (context, index) {
+                    final item = controller.awliyaList[index];
+                    return AwliyaCard(awliya: item, buttonColor: primaryBrown);
+                  },
+                );
+              }),
             ),
           ],
         ),
@@ -68,14 +81,12 @@ class AwliyaAllahListScreen extends StatelessWidget {
 }
 
 class AwliyaCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
+  final AwliyaAllah awliya;
   final Color buttonColor;
 
   const AwliyaCard({
     super.key,
-    required this.title,
-    required this.subtitle,
+    required this.awliya,
     required this.buttonColor,
   });
 
@@ -84,12 +95,7 @@ class AwliyaCard extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(15),
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => AwliyaAllahDetailsScreen(),
-          ),
-        );
+        Get.to(() => AwliyaAllahDetailsScreen(awliya: awliya));
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 15),
@@ -99,20 +105,24 @@ class AwliyaCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.15),
+              color: Colors.black.withValues(alpha: 0.15),
               spreadRadius: 1,
               blurRadius: 8,
-              offset: Offset(0, 3), // vertical shadow
+              offset: const Offset(0, 3), // vertical shadow
             ),
           ],
         ),
         child: Row(
           children: [
-            const CircleAvatar(
+            CircleAvatar(
               radius: 35,
-              backgroundImage: NetworkImage(
-                'https://i.pinimg.com/736x/8e/9d/23/8e9d23315a6792345e6912389d5f75e7.jpg',
-              ),
+              backgroundImage: awliya.image.isNotEmpty
+                  ? NetworkImage(awliya.image)
+                  : null,
+              backgroundColor: Colors.grey.shade200,
+              child: awliya.image.isEmpty
+                  ? const Icon(Icons.person, size: 35, color: Colors.grey)
+                  : null,
             ),
             const SizedBox(width: 15),
             Expanded(
@@ -120,7 +130,7 @@ class AwliyaCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    awliya.name,
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -129,7 +139,7 @@ class AwliyaCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    subtitle,
+                    awliya.title,
                     style: const TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                 ],
@@ -142,10 +152,7 @@ class AwliyaCard extends StatelessWidget {
                 color: buttonColor,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(
-                Icons.arrow_forward,
-                color: Colors.white,
-              ),
+              child: const Icon(Icons.arrow_forward, color: Colors.white),
             ),
           ],
         ),

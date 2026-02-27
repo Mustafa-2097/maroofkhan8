@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../controller/ahle_bait_controller.dart';
+import '../model/ahle_bait_model.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -15,13 +18,13 @@ class AhleBaitListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(AhleBaitController());
+
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        // The image shows no app bar title, but system status bar.
-        // We leave this empty or handle safe area.
         toolbarHeight: 0,
       ),
       body: SafeArea(
@@ -31,15 +34,30 @@ class AhleBaitListScreen extends StatelessWidget {
             children: [
               const SizedBox(height: 10),
               // Header Text
-              Text("أهل البيت (Ahle Bait)", style: GoogleFonts.amiri(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black)),
+              Text(
+                "أهل البيت (Ahle Bait)",
+                style: GoogleFonts.amiri(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
               const SizedBox(height: 5),
               RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
-                  style: GoogleFonts.playfairDisplay(fontSize: 14, color: Colors.black87),
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 14,
+                    color: Colors.black87,
+                  ),
                   children: [
-                    const TextSpan(text: "refers to the household and family members of "),
-                    TextSpan(text: "أهل البيت", style: GoogleFonts.amiri(fontWeight: FontWeight.bold)),
+                    const TextSpan(
+                      text: "refers to the household and family members of ",
+                    ),
+                    TextSpan(
+                      text: "أهل البيت",
+                      style: GoogleFonts.amiri(fontWeight: FontWeight.bold),
+                    ),
                     const TextSpan(text: "\nProphet Muhammad"),
                   ],
                 ),
@@ -68,40 +86,28 @@ class AhleBaitListScreen extends StatelessWidget {
 
               // List Items
               Expanded(
-                child: ListView(
-                  children: [
-                    _ahleBaitCard(
-                      context,
-                      "Ali ibn Abi Talib",
-                      "Cousin & son-in-law of Prophet\nFourth Caliph",
-                      "https://i.pinimg.com/564x/cf/f3/f1/cff3f15c7e39a0468945325793086381.jpg",
-                    ),
-                    _ahleBaitCard(
-                      context,
-                      "Hasan ibn Ali",
-                      "Grandson of Prophet peace\nadvocate",
-                      "https://i.pinimg.com/564x/24/c9/22/24c92250106634710156d95958288593.jpg",
-                    ),
-                    _ahleBaitCard(
-                      context,
-                      "Husayn ibn Ali",
-                      "Grandson of Prophet martyr of\nKarbala",
-                      "https://i.pinimg.com/564x/d9/15/84/d9158498877569752943391740924976.jpg",
-                    ),
-                    _ahleBaitCard(
-                      context,
-                      "Muhsin ibn Ali",
-                      "Son of Ali & Fatimah (in some\nnarrations",
-                      "https://i.pinimg.com/564x/78/33/c4/7833c46114a873832349072973167909.jpg",
-                    ),
-                    _ahleBaitCard(
-                      context,
-                      "Fatimah bint Muhammad",
-                      "Daughter of Prophet mother of\nHasan & Husayn",
-                      "https://i.pinimg.com/564x/72/06/00/720600a943890288863266943632204c.jpg",
-                    ),
-                  ],
-                ),
+                child: Obx(() {
+                  if (controller.isLoading.value) {
+                    return const Center(
+                      child: CircularProgressIndicator(color: kPrimaryBrown),
+                    );
+                  }
+                  if (controller.ahlalbaytList.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        "No records found",
+                        style: TextStyle(color: kTextGrey),
+                      ),
+                    );
+                  }
+                  return ListView.builder(
+                    itemCount: controller.ahlalbaytList.length,
+                    itemBuilder: (context, index) {
+                      final item = controller.ahlalbaytList[index];
+                      return _ahleBaitCard(context, item);
+                    },
+                  );
+                }),
               ),
             ],
           ),
@@ -110,10 +116,10 @@ class AhleBaitListScreen extends StatelessWidget {
     );
   }
 
-  Widget _ahleBaitCard(BuildContext context, String name, String desc, String img) {
+  Widget _ahleBaitCard(BuildContext context, AhleBait item) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => const AhleBaitDetailScreen()));
+        Get.to(() => AhleBaitDetailScreen(item: item));
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 15),
@@ -121,27 +127,60 @@ class AhleBaitListScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(15),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 2))],
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
           children: [
-            CircleAvatar(radius: 28, backgroundImage: NetworkImage(img)),
+            CircleAvatar(
+              radius: 28,
+              backgroundImage: item.image.isNotEmpty
+                  ? NetworkImage(item.image)
+                  : null,
+              backgroundColor: Colors.grey.shade200,
+              child: item.image.isEmpty
+                  ? const Icon(Icons.person, color: Colors.grey)
+                  : null,
+            ),
             const SizedBox(width: 15),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(name, style: GoogleFonts.playfairDisplay(fontSize: 16, fontWeight: FontWeight.bold)),
+                  Text(
+                    item.name,
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   const SizedBox(height: 4),
-                  Text(desc, style: const TextStyle(fontSize: 11, color: kTextGrey), maxLines: 2),
+                  Text(
+                    item.relation,
+                    style: const TextStyle(fontSize: 11, color: kTextGrey),
+                    maxLines: 2,
+                  ),
                 ],
               ),
             ),
             Container(
-              height: 30, width: 30,
-              decoration: BoxDecoration(color: kPrimaryBrown, borderRadius: BorderRadius.circular(8)),
-              child: const Icon(Icons.arrow_forward, color: Colors.white, size: 16),
-            )
+              height: 30,
+              width: 30,
+              decoration: BoxDecoration(
+                color: kPrimaryBrown,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.arrow_forward,
+                color: Colors.white,
+                size: 16,
+              ),
+            ),
           ],
         ),
       ),
@@ -153,7 +192,8 @@ class AhleBaitListScreen extends StatelessWidget {
 // SCREEN 2 & 3: DETAIL SCREEN (Tabs)
 // ==========================================
 class AhleBaitDetailScreen extends StatefulWidget {
-  const AhleBaitDetailScreen({super.key});
+  final AhleBait item;
+  const AhleBaitDetailScreen({super.key, required this.item});
 
   @override
   State<AhleBaitDetailScreen> createState() => _AhleBaitDetailScreenState();
@@ -178,22 +218,50 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
                   onTap: () => Navigator.pop(context),
                   child: Container(
                     padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300), borderRadius: BorderRadius.circular(8)),
-                    child: const Icon(Icons.chevron_left, color: Colors.grey, size: 20),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.chevron_left,
+                      color: Colors.grey,
+                      size: 20,
+                    ),
                   ),
                 ),
               ),
 
               // Profile Header
               const SizedBox(height: 10),
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 50,
-                backgroundImage: NetworkImage("https://i.pinimg.com/564x/cf/f3/f1/cff3f15c7e39a0468945325793086381.jpg"),
+                backgroundImage: widget.item.image.isNotEmpty
+                    ? NetworkImage(widget.item.image)
+                    : null,
+                backgroundColor: Colors.grey.shade200,
+                child: widget.item.image.isEmpty
+                    ? const Icon(Icons.person, size: 50, color: Colors.grey)
+                    : null,
               ),
               const SizedBox(height: 15),
-              Text("Ali ibn Abi Talib", style: GoogleFonts.playfairDisplay(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text(
+                widget.item.name,
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 5),
-              Text("علي بن أبي طالب", style: GoogleFonts.amiri(fontSize: 18, color: Colors.black87, fontWeight: FontWeight.bold)),
+              Text(
+                widget
+                    .item
+                    .name, // Using name as fallback for Arabic if not available in API
+                style: GoogleFonts.amiri(
+                  fontSize: 18,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 20),
 
               // Custom Tab Bar
@@ -229,7 +297,14 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
           color: isActive ? kPrimaryBrown : kDarkButton,
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Text(text, style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+        child: Text(
+          text,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }
@@ -239,24 +314,31 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Biography", style: GoogleFonts.playfairDisplay(fontSize: 18, fontWeight: FontWeight.w600)),
+        Text(
+          "Biography",
+          style: GoogleFonts.playfairDisplay(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         const SizedBox(height: 15),
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+              ),
+            ],
           ),
           child: Column(
             children: [
-              _bioRow("Name :", "Abdullah ibn Abi Quhafah."),
-              _bioRow("Born :", "Born in 573 CE in\nMecca, Arabia."),
-              _bioRow("Died :", "Died in 634 CE in Medina, aged 63"),
-              _bioRow("Position :", "First Caliph of Islam (632–634 CE)"),
-              _bioRow("Institution :", "Islamic Leadership"),
-              _bioRow("Works :", "Leadership as First Caliph"),
-              _bioRow("Known For :", "Closest Companion of Prophet ﷺ –\nunwavering\nsupport throughout Prophet's mission"),
+              _bioRow("Name :", widget.item.name),
+              _bioRow("Relation :", widget.item.relation),
+              _bioRow("Biography :", "Biography information is coming soon..."),
             ],
           ),
         ),
@@ -272,10 +354,20 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
         children: [
           SizedBox(
             width: 80,
-            child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+            child: Text(
+              label,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+            ),
           ),
           Expanded(
-            child: Text(value, style: const TextStyle(fontSize: 12, color: Colors.black87, height: 1.4)),
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.black87,
+                height: 1.4,
+              ),
+            ),
           ),
         ],
       ),
@@ -293,15 +385,31 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(15),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+              ),
+            ],
           ),
           child: Column(
             children: [
-              const Align(alignment: Alignment.topRight, child: Icon(Icons.bookmark_border, size: 20, color: Colors.grey)),
+              const Align(
+                alignment: Alignment.topRight,
+                child: Icon(
+                  Icons.bookmark_border,
+                  size: 20,
+                  color: Colors.grey,
+                ),
+              ),
               Text(
-                "Ali ibn Abi Talib (رضي الله عنه) was born in 600 CE in Makkah. He was the cousin of Prophet Muhammad ﷺ and was raised in the Prophet's household from a young age. Ali grew up witnessing the Prophet's honesty, character, and worship.",
+                "Full story for ${widget.item.name} is coming soon. This section will feature detailed narrations about their life and contributions to Islam.",
                 textAlign: TextAlign.center,
-                style: GoogleFonts.playfairDisplay(fontSize: 14, color: Colors.black87, height: 1.6),
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 14,
+                  color: Colors.black87,
+                  height: 1.6,
+                ),
               ),
               const SizedBox(height: 10),
             ],
@@ -315,8 +423,14 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: const [
-                Text("02:25", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-                Text("10:25", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                Text(
+                  "00:00",
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  "00:00",
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                ),
               ],
             ),
             SliderTheme(
@@ -328,7 +442,7 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
                 thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 4),
                 overlayShape: SliderComponentShape.noOverlay,
               ),
-              child: Slider(value: 0.25, onChanged: (v) {}),
+              child: Slider(value: 0.0, onChanged: (v) {}),
             ),
           ],
         ),
@@ -352,7 +466,7 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 15),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: kPrimaryBrown.withOpacity(0.5)),
+            border: Border.all(color: kPrimaryBrown.withValues(alpha: 0.5)),
             color: Colors.white,
           ),
           child: Row(
@@ -379,7 +493,14 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
       children: [
         Icon(icon, size: 20, color: isActive ? kPrimaryBrown : Colors.black),
         const SizedBox(height: 4),
-        Text(label, style: TextStyle(fontSize: 9, color: isActive ? kPrimaryBrown : Colors.black, fontWeight: FontWeight.bold)),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 9,
+            color: isActive ? kPrimaryBrown : Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ],
     );
   }

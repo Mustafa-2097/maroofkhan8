@@ -159,166 +159,193 @@ class IslamicStoriesScreen extends StatelessWidget {
 // ==========================================
 // SCREEN 2: SALAWAT DETAIL / PLAYER
 // ==========================================
-class IslamicStoriesDetailScreen extends StatelessWidget {
+class IslamicStoriesDetailScreen extends StatefulWidget {
   final IslamicStory story;
   const IslamicStoriesDetailScreen({super.key, required this.story});
+
+  @override
+  State<IslamicStoriesDetailScreen> createState() =>
+      _IslamicStoriesDetailScreenState();
+}
+
+class _IslamicStoriesDetailScreenState
+    extends State<IslamicStoriesDetailScreen> {
+  final controller = IslamicStoriesController.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    controller.fetchStoryDetails(widget.story.id);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBackground,
       appBar: _buildAppBar(context),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
+      body: Obx(() {
+        if (controller.isDetailLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-            // Title Banner
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.03),
-                    blurRadius: 5,
+        final detail = controller.storyDetail.value;
+        if (detail == null) {
+          return const Center(child: Text("Failed to load story details."));
+        }
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+
+              // Title Banner
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 15,
+                  horizontal: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.03),
+                      blurRadius: 5,
+                    ),
+                  ],
+                ),
+                child: Text(
+                  detail.title,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
                   ),
-                ],
-              ),
-              child: Text(
-                story.title,
-                textAlign: TextAlign.center,
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-            // Main Content Card
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
-                    blurRadius: 10,
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  const Align(
-                    alignment: Alignment.topRight,
-                    child: Icon(
-                      Icons.favorite_border,
-                      size: 20,
-                      color: Colors.grey,
+              // Main Content Card
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 10,
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    "Allah created Adam and taught him the names of all things. He then commanded the angels to prostrate to Adam as a sign of honor. All obeyed except Iblis, who refused out of arrogance."
-                    "Adam and his wife were placed in Jannah, with one command: not to approach a specific tree. Iblis deceived them, and they ate from it. Realizing their mistake, Adam and his wife repented sincerely."
-                    "Allah forgave them and sent them to the earth, promising guidance for those who follow His commands.",
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: kTextDark,
-                      height: 1.5,
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    const Align(
+                      alignment: Alignment.topRight,
+                      child: Icon(
+                        Icons.favorite_border,
+                        size: 20,
+                        color: Colors.grey,
+                      ),
                     ),
-                    textAlign: TextAlign.justify,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 25),
-
-            // Action Buttons
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(30),
-                border: Border.all(color: kPrimaryBrown.withOpacity(0.5)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _ActionButton(
-                    icon: Icons.headset,
-                    label: "Listen",
-                    isActive: true,
-                  ),
-
-                  _ActionButton(
-                    icon: Icons.auto_awesome,
-                    label: "AI Explanation",
-                    isActive: false,
-                  ),
-
-                  _ActionButton(
-                    icon: Icons.share_outlined,
-                    label: "Share",
-                    isActive: false,
-                  ),
-
-                  _ActionButton(
-                    icon: Icons.copy,
-                    label: "Copy",
-                    isActive: false,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            // Meaning Card
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
-                    blurRadius: 10,
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Simple Explanation:",
-                    style: GoogleFonts.playfairDisplay(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: kPrimaryBrown,
+                    const SizedBox(height: 10),
+                    Text(
+                      detail.description,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: kTextDark,
+                        height: 1.5,
+                      ),
+                      textAlign: TextAlign.justify,
                     ),
-                  ),
-                  const SizedBox(height: 5),
-                  const Text(
-                    "This Hadith teaches that intention is the foundation of all actions in Islam.",
-                    style: TextStyle(
-                      fontSize: 14,
-                      height: 1.4,
-                      color: kTextDark,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 30),
-          ],
-        ),
-      ),
+              const SizedBox(height: 25),
+
+              // Action Buttons
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(color: kPrimaryBrown.withOpacity(0.5)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _ActionButton(
+                      icon: Icons.headset,
+                      label: "Listen",
+                      isActive: true,
+                    ),
+                    _ActionButton(
+                      icon: Icons.auto_awesome,
+                      label: "AI Explanation",
+                      isActive: false,
+                    ),
+                    _ActionButton(
+                      icon: Icons.share_outlined,
+                      label: "Share",
+                      isActive: false,
+                    ),
+                    _ActionButton(
+                      icon: Icons.copy,
+                      label: "Copy",
+                      isActive: false,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Meaning Card
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Simple Explanation:",
+                      style: GoogleFonts.playfairDisplay(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: kPrimaryBrown,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    const Text(
+                      "This story teaches us about faith and values in Islam.",
+                      style: TextStyle(
+                        fontSize: 14,
+                        height: 1.4,
+                        color: kTextDark,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 30),
+            ],
+          ),
+        );
+      }),
     );
   }
 }

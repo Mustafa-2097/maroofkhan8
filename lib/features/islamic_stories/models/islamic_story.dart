@@ -3,12 +3,14 @@ class IslamicStory {
   final String image;
   final String title;
   final String subtitle;
+  final String description;
 
   IslamicStory({
     required this.id,
     required this.image,
     required this.title,
     required this.subtitle,
+    required this.description,
   });
 
   factory IslamicStory.fromJson(Map<String, dynamic> json) {
@@ -17,6 +19,7 @@ class IslamicStory {
       image: json['image'] ?? '',
       title: json['title'] ?? '',
       subtitle: json['subtitle'] ?? '',
+      description: json['description'] ?? '',
     );
   }
 }

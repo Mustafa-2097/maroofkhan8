@@ -11,35 +11,42 @@ const Color kBlack = Color(0xFF1E1E1E);
 // --- Reusable Widgets ---
 
 class FilterChipRow extends StatelessWidget {
-  final int activeIndex;
-  const FilterChipRow({super.key, required this.activeIndex});
+  const FilterChipRow({super.key});
 
   @override
   Widget build(BuildContext context) {
-    List<String> labels = ["All Duas", "Special Days", "Before & After"];
+    final controller = DuaController.instance;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: List.generate(labels.length, (index) {
-          bool isActive = index == activeIndex;
-          return Container(
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: isActive ? kBrown : kBlack,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              labels[index],
-              style: GoogleFonts.ebGaramond(
-                color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
+      child: Obx(
+        () => Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(controller.categories.length, (index) {
+            bool isActive = index == controller.selectedCategoryIndex.value;
+            return GestureDetector(
+              onTap: () => controller.updateCategory(index),
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: isActive ? kBrown : kBlack,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  controller.categories[index],
+                  style: GoogleFonts.ebGaramond(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
-            ),
-          );
-        }),
+            );
+          }),
+        ),
       ),
     );
   }
@@ -61,7 +68,7 @@ class DuaCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -133,7 +140,38 @@ class DuaListScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          const FilterChipRow(activeIndex: 0),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  height: 45,
+                  margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey.shade200),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.02),
+                        blurRadius: 10,
+                      ),
+                    ],
+                  ),
+                  child: TextField(
+                    onChanged: (v) => controller.updateSearch(v),
+                    decoration: const InputDecoration(
+                      hintText: "Search Duas...",
+                      hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
+                      icon: Icon(Icons.search, size: 20, color: kBrown),
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const FilterChipRow(),
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value) {
@@ -142,14 +180,16 @@ class DuaListScreen extends StatelessWidget {
                 );
               }
 
-              if (controller.duaList.isEmpty) {
+              final displayList = controller.filteredDuaList;
+
+              if (displayList.isEmpty) {
                 return const Center(child: Text("No Duas found"));
               }
 
               return ListView.builder(
-                itemCount: controller.duaList.length,
+                itemCount: displayList.length,
                 itemBuilder: (context, index) {
-                  final dua = controller.duaList[index];
+                  final dua = displayList[index];
                   return GestureDetector(
                     onTap: () => Navigator.push(
                       context,
@@ -158,8 +198,8 @@ class DuaListScreen extends StatelessWidget {
                       ),
                     ),
                     child: DuaCard(
-                      arabic: dua.nameArabic ?? "",
-                      title: dua.name ?? "",
+                      arabic: dua.arabic ?? "",
+                      title: dua.title ?? "",
                     ),
                   );
                 },
@@ -214,7 +254,7 @@ class DuaDetailScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.03),
+                    color: Colors.black.withValues(alpha: 0.03),
                     blurRadius: 10,
                   ),
                 ],
@@ -230,7 +270,7 @@ class DuaDetailScreen extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    dua.nameArabic ?? "",
+                    dua.arabic ?? "",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.amiri(
                       fontSize: 22,
@@ -239,7 +279,7 @@ class DuaDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 15),
                   Text(
-                    dua.translation ?? "",
+                    dua.pronunciation ?? "",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.ebGaramond(
                       fontSize: 14,
@@ -255,7 +295,7 @@ class DuaDetailScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
               decoration: BoxDecoration(
-                border: Border.all(color: kBrown.withOpacity(0.3)),
+                border: Border.all(color: kBrown.withValues(alpha: 0.3)),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
@@ -290,7 +330,7 @@ class DuaDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    dua.description ?? "",
+                    dua.meaning ?? "",
                     style: GoogleFonts.ebGaramond(fontSize: 14, height: 1.4),
                   ),
                 ],

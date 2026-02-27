@@ -56,38 +56,42 @@ class Pagination {
 
 class DuaData {
   String? id;
-  String? name;
-  String? nameArabic;
-  String? description;
-  String? translation;
-  String? reference;
+  String? title;
+  String? arabic;
+  String? pronunciation;
+  String? meaning;
+  String? status;
+  String? type;
 
   DuaData({
     this.id,
-    this.name,
-    this.nameArabic,
-    this.description,
-    this.translation,
-    this.reference,
+    this.title,
+    this.arabic,
+    this.pronunciation,
+    this.meaning,
+    this.status,
+    this.type,
   });
 
   DuaData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    name = json['name'];
-    nameArabic = json['nameArabic'];
-    description = json['description'];
-    translation = json['translation'];
-    reference = json['reference'];
+    title = json['title'];
+    arabic = json['arabic'];
+    pronunciation = json['pronunciation'];
+    meaning = json['meaning'];
+    status = json['status'];
+    type = json['type'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
-    data['name'] = name;
-    data['nameArabic'] = nameArabic;
-    data['description'] = description;
-    data['translation'] = translation;
-    data['reference'] = reference;
+    data['title'] = title;
+    data['arabic'] = arabic;
+    data['pronunciation'] = pronunciation;
+    data['meaning'] = meaning;
+    data['status'] = status;
+    data['type'] = type;
     return data;
   }
 }

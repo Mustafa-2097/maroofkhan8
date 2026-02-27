@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../controller/sahaba_controller.dart';
+import '../model/sahaba_model.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
-const Color kDarkButton = Color(0xFF1E120D); // Darker brown/black for inactive tabs
+const Color kDarkButton = Color(
+  0xFF1E120D,
+); // Darker brown/black for inactive tabs
 const Color kBackground = Color(0xFFFDFDFD);
 const Color kTextGrey = Color(0xFF757575);
-
 
 // ==========================================
 // SCREEN 1: SAHABA LIST
@@ -16,15 +20,28 @@ class SahabaListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(SahabaController());
+
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-        title: Text("Sahaba", style: GoogleFonts.playfairDisplay(color: Colors.black, fontWeight: FontWeight.bold)),
-        leading: const Icon(Icons.chevron_left, color: Colors.black),
-        actions: const [Icon(Icons.more_horiz, color: Colors.transparent)], // Spacing
+        title: Text(
+          "Sahaba",
+          style: GoogleFonts.playfairDisplay(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        leading: GestureDetector(
+          onTap: () => Get.back(),
+          child: const Icon(Icons.chevron_left, color: Colors.black),
+        ),
+        actions: const [
+          Icon(Icons.more_horiz, color: Colors.transparent),
+        ], // Spacing
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -52,40 +69,23 @@ class SahabaListScreen extends StatelessWidget {
 
             // List Items
             Expanded(
-              child: ListView(
-                children: [
-                  _sahabaCard(
-                      context,
-                      "Abu Bakr As-Siddiq",
-                      "First Caliph & closest companion of Prophet",
-                      "https://i.pinimg.com/564x/24/c9/22/24c92250106634710156d95958288593.jpg" // Placeholder URL
-                  ),
-                  _sahabaCard(
-                      context,
-                      "Umar ibn Al-Khattab",
-                      "Second Caliph & just leader of Islam",
-                      "https://i.pinimg.com/564x/d9/15/84/d9158498877569752943391740924976.jpg"
-                  ),
-                  _sahabaCard(
-                      context,
-                      "Uthman ibn Affan",
-                      "Third Caliph & compiler of the Qur'an",
-                      "https://i.pinimg.com/564x/78/33/c4/7833c46114a873832349072973167909.jpg"
-                  ),
-                  _sahabaCard(
-                      context,
-                      "Ali ibn Abi Talib",
-                      "Fourth Caliph & cousin of Prophet",
-                      "https://i.pinimg.com/564x/cf/f3/f1/cff3f15c7e39a0468945325793086381.jpg"
-                  ),
-                  _sahabaCard(
-                      context,
-                      "Abdur-Rahman ibn Awf",
-                      "Generous companion & trader of Medina",
-                      "https://i.pinimg.com/564x/72/06/00/720600a943890288863266943632204c.jpg"
-                  ),
-                ],
-              ),
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: kPrimaryBrown),
+                  );
+                }
+                if (controller.sahabaList.isEmpty) {
+                  return const Center(child: Text("No records found"));
+                }
+                return ListView.builder(
+                  itemCount: controller.sahabaList.length,
+                  itemBuilder: (context, index) {
+                    final item = controller.sahabaList[index];
+                    return _sahabaCard(context, item);
+                  },
+                );
+              }),
             ),
           ],
         ),
@@ -93,10 +93,10 @@ class SahabaListScreen extends StatelessWidget {
     );
   }
 
-  Widget _sahabaCard(BuildContext context, String name, String desc, String img) {
+  Widget _sahabaCard(BuildContext context, Sahaba item) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => const SahabaDetailScreen()));
+        Get.to(() => SahabaDetailScreen(sahaba: item));
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 15),
@@ -104,27 +104,61 @@ class SahabaListScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(15),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 2))],
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
           children: [
-            CircleAvatar(radius: 28, backgroundImage: NetworkImage(img)),
+            CircleAvatar(
+              radius: 28,
+              backgroundImage: item.image.isNotEmpty
+                  ? NetworkImage(item.image)
+                  : null,
+              backgroundColor: Colors.grey.shade200,
+              child: item.image.isEmpty
+                  ? const Icon(Icons.person, color: Colors.grey)
+                  : null,
+            ),
             const SizedBox(width: 15),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(name, style: GoogleFonts.playfairDisplay(fontSize: 15, fontWeight: FontWeight.bold)),
+                  Text(
+                    item.name,
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   const SizedBox(height: 4),
-                  Text(desc, style: const TextStyle(fontSize: 11, color: kTextGrey), maxLines: 2, overflow: TextOverflow.ellipsis),
+                  Text(
+                    item.title,
+                    style: const TextStyle(fontSize: 11, color: kTextGrey),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ],
               ),
             ),
             Container(
-              height: 30, width: 30,
-              decoration: BoxDecoration(color: kPrimaryBrown, borderRadius: BorderRadius.circular(8)),
-              child: const Icon(Icons.arrow_forward, color: Colors.white, size: 16),
-            )
+              height: 30,
+              width: 30,
+              decoration: BoxDecoration(
+                color: kPrimaryBrown,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.arrow_forward,
+                color: Colors.white,
+                size: 16,
+              ),
+            ),
           ],
         ),
       ),
@@ -136,7 +170,8 @@ class SahabaListScreen extends StatelessWidget {
 // SCREEN 2, 3, 4: DETAIL TABS (Bio, Teachings, Quotes)
 // ==========================================
 class SahabaDetailScreen extends StatefulWidget {
-  const SahabaDetailScreen({super.key});
+  final Sahaba sahaba;
+  const SahabaDetailScreen({super.key, required this.sahaba});
 
   @override
   State<SahabaDetailScreen> createState() => _SahabaDetailScreenState();
@@ -161,19 +196,48 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
                   onTap: () => Navigator.pop(context),
                   child: Container(
                     padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300), borderRadius: BorderRadius.circular(8)),
-                    child: const Icon(Icons.chevron_left, color: Colors.grey, size: 20),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.chevron_left,
+                      color: Colors.grey,
+                      size: 20,
+                    ),
                   ),
                 ),
               ),
 
               // Profile Header
               const SizedBox(height: 10),
-              const CircleAvatar(radius: 50, backgroundImage: NetworkImage("https://i.pinimg.com/564x/24/c9/22/24c92250106634710156d95958288593.jpg")),
+              CircleAvatar(
+                radius: 50,
+                backgroundImage: widget.sahaba.image.isNotEmpty
+                    ? NetworkImage(widget.sahaba.image)
+                    : null,
+                backgroundColor: Colors.grey.shade200,
+                child: widget.sahaba.image.isEmpty
+                    ? const Icon(Icons.person, size: 50, color: Colors.grey)
+                    : null,
+              ),
               const SizedBox(height: 15),
-              Text("Abu Bakr As-Siddiq", style: GoogleFonts.playfairDisplay(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text(
+                widget.sahaba.name,
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 5),
-              Text("أبو بكر الصديق", style: GoogleFonts.amiri(fontSize: 18, color: Colors.black87, fontWeight: FontWeight.bold)),
+              Text(
+                widget.sahaba.name, // Fallback for Arabic
+                style: GoogleFonts.amiri(
+                  fontSize: 18,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 20),
 
               // Custom Tab Bar
@@ -193,8 +257,13 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                    _currentTab == 0 ? "Biography" : (_currentTab == 1 ? "His Teaching" : "His Quotes"),
-                    style: GoogleFonts.playfairDisplay(fontSize: 18, fontWeight: FontWeight.w600)
+                  _currentTab == 0
+                      ? "Biography"
+                      : (_currentTab == 1 ? "His Teaching" : "His Quotes"),
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               const SizedBox(height: 15),
@@ -219,7 +288,14 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
           color: isActive ? kPrimaryBrown : kDarkButton,
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Text(text, style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+        child: Text(
+          text,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }
@@ -231,17 +307,18 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+          ),
+        ],
       ),
       child: Column(
         children: [
-          _bioRow("Name :", "Abdullah ibn Abi Quhafah."),
-          _bioRow("Born :", "Born in 573 CE in\nMecca, Arabia."),
-          _bioRow("Died :", "Died in 634 CE in Medina, aged 63"),
-          _bioRow("Position :", "First Caliph of Islam (632–634 CE)"),
-          _bioRow("Institution :", "Islamic Leadership"),
-          _bioRow("Works :", "Leadership as First Caliph"),
-          _bioRow("Known For :", "Closest Companion of Prophet ﷺ – unwavering support throughout Prophet's mission"),
+          _bioRow("Name :", widget.sahaba.name),
+          _bioRow("Title :", widget.sahaba.title),
+          _bioRow("Biography :", "Information coming soon..."),
         ],
       ),
     );
@@ -255,10 +332,20 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
         children: [
           SizedBox(
             width: 80,
-            child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+            child: Text(
+              label,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+            ),
           ),
           Expanded(
-            child: Text(value, style: const TextStyle(fontSize: 12, color: Colors.black87, height: 1.4)),
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.black87,
+                height: 1.4,
+              ),
+            ),
           ),
         ],
       ),
@@ -269,9 +356,10 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
   Widget _buildTeachingsList() {
     return Column(
       children: [
-        _contentCard("Inner Purification (Tazkiyah al-Nafs)", "A central theme in his teachings was the cleansing of the heart from spiritual maladies such as pride, envy, greed..."),
-        _contentCard("Inner Purification (Tazkiyah al-Nafs)", "A central theme in his teachings was the cleansing of the heart from spiritual maladies such as pride, envy, greed..."),
-        _contentCard("Inner Purification (Tazkiyah al-Nafs)", "A central theme in his teachings was the cleansing of the heart from spiritual maladies such as pride, envy, greed..."),
+        _contentCard(
+          "Inner Purification",
+          "Information about teachings is coming soon...",
+        ),
       ],
     );
   }
@@ -279,10 +367,10 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
   Widget _buildQuotesList() {
     return Column(
       children: [
-        _contentCard("On Remembrance of Allah", "Let your heart constantly call out Allah, Allah. Allah in every moment of your daily life..."),
-        _contentCard("On Muraqabah (Heart-Reflection)", "\"When you sit in stillness and look into your own heart, you patiently await Allah's mercy..."),
-        _contentCard("On Purifying the Heart", "\"The heart finds peace only through the remembrance of Allah; no wealth, companion..."),
-        _contentCard("On Spiritual Struggle", "\"Thoughts of the self will rise when you begin remembrance—don't be discouraged..."),
+        _contentCard(
+          "On Remembrance",
+          "Information about quotes is coming soon...",
+        ),
       ],
     );
   }
@@ -299,7 +387,13 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: GoogleFonts.playfairDisplay(fontWeight: FontWeight.bold, fontSize: 14)),
+          Text(
+            title,
+            style: GoogleFonts.playfairDisplay(
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+          ),
           const SizedBox(height: 8),
           Text(
             desc,
@@ -312,16 +406,24 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
             alignment: Alignment.centerRight,
             child: GestureDetector(
               onTap: () {
-                // Navigate to Audio Player (Screen 5)
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const SahabaAudioScreen()));
+                Get.to(() => SahabaAudioScreen(sahaba: widget.sahaba));
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(color: kPrimaryBrown, borderRadius: BorderRadius.circular(20)),
-                child: const Text("Read More", style: TextStyle(color: Colors.white, fontSize: 10)),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: kPrimaryBrown,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text(
+                  "Read More",
+                  style: TextStyle(color: Colors.white, fontSize: 10),
+                ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -332,7 +434,8 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
 // SCREEN 5: AUDIO PLAYER / LESSON DETAILS
 // ==========================================
 class SahabaAudioScreen extends StatelessWidget {
-  const SahabaAudioScreen({super.key});
+  final Sahaba sahaba;
+  const SahabaAudioScreen({super.key, required this.sahaba});
 
   @override
   Widget build(BuildContext context) {
@@ -350,19 +453,48 @@ class SahabaAudioScreen extends StatelessWidget {
                   onTap: () => Navigator.pop(context),
                   child: Container(
                     padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300), borderRadius: BorderRadius.circular(8)),
-                    child: const Icon(Icons.chevron_left, color: Colors.grey, size: 20),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.chevron_left,
+                      color: Colors.grey,
+                      size: 20,
+                    ),
                   ),
                 ),
               ),
 
               // Profile Header
               const SizedBox(height: 10),
-              const CircleAvatar(radius: 50, backgroundImage: NetworkImage("https://i.pinimg.com/564x/24/c9/22/24c92250106634710156d95958288593.jpg")),
+              CircleAvatar(
+                radius: 50,
+                backgroundImage: sahaba.image.isNotEmpty
+                    ? NetworkImage(sahaba.image)
+                    : null,
+                backgroundColor: Colors.grey.shade200,
+                child: sahaba.image.isEmpty
+                    ? const Icon(Icons.person, size: 50, color: Colors.grey)
+                    : null,
+              ),
               const SizedBox(height: 15),
-              Text("Abu Bakr As-Siddiq", style: GoogleFonts.playfairDisplay(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text(
+                sahaba.name,
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 5),
-              Text("أبو بكر الصديق", style: GoogleFonts.amiri(fontSize: 18, color: Colors.black87, fontWeight: FontWeight.bold)),
+              Text(
+                sahaba.name, // Fallback for Arabic
+                style: GoogleFonts.amiri(
+                  fontSize: 18,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 20),
 
               // Filter Tabs (Darker theme here per image)
@@ -385,23 +517,46 @@ class SahabaAudioScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(15),
-                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)],
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 10,
+                    ),
+                  ],
                 ),
                 child: Column(
                   children: [
-                    const Align(alignment: Alignment.topRight, child: Icon(Icons.bookmark_border, size: 20, color: Colors.grey)),
-                    Text("كرامات الأولياء", style: GoogleFonts.amiri(fontSize: 16, fontWeight: FontWeight.bold, color: kPrimaryBrown)),
+                    const Align(
+                      alignment: Alignment.topRight,
+                      child: Icon(
+                        Icons.bookmark_border,
+                        size: 20,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    Text(
+                      "كرامات الأولياء",
+                      style: GoogleFonts.amiri(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: kPrimaryBrown,
+                      ),
+                    ),
                     const SizedBox(height: 10),
                     Text(
-                      "تعني: أحداث خارقة تحدث بإذن الله لأوليائه الصالحين تظهر لطاعتهم وقربهم من الله",
+                      "كرامات ${sahaba.name}",
                       textAlign: TextAlign.center,
                       style: GoogleFonts.amiri(fontSize: 14),
                     ),
                     const SizedBox(height: 15),
-                    const Text(
-                      "Extraordinary events that occur by the permission of Allah for His righteous servants, demonstrating their obedience and closeness to Allah.",
+                    Text(
+                      "Lessons and contributions of ${sahaba.name} to Islam.",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 12, color: kTextGrey, height: 1.4),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: kTextGrey,
+                        height: 1.4,
+                      ),
                     ),
                     const SizedBox(height: 10),
                   ],
@@ -415,8 +570,20 @@ class SahabaAudioScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: const [
-                      Text("02:25", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-                      Text("10:25", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                      Text(
+                        "00:00",
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "00:00",
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                   SliderTheme(
@@ -425,10 +592,12 @@ class SahabaAudioScreen extends StatelessWidget {
                       inactiveTrackColor: Colors.grey.shade300,
                       thumbColor: kPrimaryBrown,
                       trackHeight: 2,
-                      thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 4),
+                      thumbShape: const RoundSliderThumbShape(
+                        enabledThumbRadius: 4,
+                      ),
                       overlayShape: SliderComponentShape.noOverlay,
                     ),
-                    child: Slider(value: 0.3, onChanged: (v) {}),
+                    child: Slider(value: 0.0, onChanged: (v) {}),
                   ),
                 ],
               ),
@@ -440,7 +609,11 @@ class SahabaAudioScreen extends StatelessWidget {
                 children: const [
                   Icon(Icons.skip_previous, size: 24, color: Colors.black),
                   SizedBox(width: 30),
-                  Icon(Icons.play_circle_outline, size: 35, color: Colors.black),
+                  Icon(
+                    Icons.play_circle_outline,
+                    size: 35,
+                    color: Colors.black,
+                  ),
                   SizedBox(width: 30),
                   Icon(Icons.skip_next, size: 24, color: Colors.black),
                 ],
@@ -449,21 +622,38 @@ class SahabaAudioScreen extends StatelessWidget {
 
               // Bottom Action Buttons
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 15,
+                ),
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    border: Border.all(color: kPrimaryBrown.withOpacity(0.5)),
-                    color: Colors.white
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(
+                    color: kPrimaryBrown.withValues(alpha: 0.5),
+                  ),
+                  color: Colors.white,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     _bottomAction(Icons.headset, "Listen", true),
-                    Container(height: 30, width: 1, color: Colors.grey.shade300),
+                    Container(
+                      height: 30,
+                      width: 1,
+                      color: Colors.grey.shade300,
+                    ),
                     _bottomAction(Icons.auto_awesome, "AI Explanation", false),
-                    Container(height: 30, width: 1, color: Colors.grey.shade300),
+                    Container(
+                      height: 30,
+                      width: 1,
+                      color: Colors.grey.shade300,
+                    ),
                     _bottomAction(Icons.share_outlined, "Share", false),
-                    Container(height: 30, width: 1, color: Colors.grey.shade300),
+                    Container(
+                      height: 30,
+                      width: 1,
+                      color: Colors.grey.shade300,
+                    ),
                     _bottomAction(Icons.download_outlined, "Download", false),
                   ],
                 ),
@@ -483,7 +673,14 @@ class SahabaAudioScreen extends StatelessWidget {
         color: isActive ? kPrimaryBrown : kDarkButton,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Text(text, style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 11,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 
@@ -493,7 +690,14 @@ class SahabaAudioScreen extends StatelessWidget {
       children: [
         Icon(icon, size: 20, color: isActive ? kPrimaryBrown : Colors.black),
         const SizedBox(height: 4),
-        Text(label, style: TextStyle(fontSize: 8, color: isActive ? kPrimaryBrown : Colors.black, fontWeight: FontWeight.bold)),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 8,
+            color: isActive ? kPrimaryBrown : Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ],
     );
   }
