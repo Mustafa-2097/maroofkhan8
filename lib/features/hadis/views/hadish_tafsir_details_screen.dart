@@ -1,11 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:maroofkhan8/features/hadis/controller/hadith_controller.dart';
+import 'package:maroofkhan8/features/hadis/models/last_read_hadith.dart';
 
-class HadishTafsirDetailsScreen extends StatelessWidget {
-  const HadishTafsirDetailsScreen({super.key});
+class HadishTafsirDetailsScreen extends StatefulWidget {
+  final String hadithText;
+  final String bookName;
+  final String chapterNum;
+  final String hadithNumber;
+  final String? heading;
 
+  const HadishTafsirDetailsScreen({
+    super.key,
+    required this.hadithText,
+    required this.bookName,
+    required this.chapterNum,
+    required this.hadithNumber,
+    this.heading,
+  });
+
+  @override
+  State<HadishTafsirDetailsScreen> createState() =>
+      _HadishTafsirDetailsScreenState();
+}
+
+class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
   final Color primaryBrown = const Color(0xFF8D3C1F);
   final Color darkBlack = const Color(0xFF1E120D);
+
+  @override
+  void initState() {
+    super.initState();
+    _trackLastRead();
+  }
+
+  void _trackLastRead() {
+    HadithController.instance.updateLastReadHadith(
+      LastReadHadith(
+        hadith: widget.hadithText,
+        book: widget.bookName,
+        chapterNo: widget.chapterNum,
+        hadithNo: widget.hadithNumber,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,25 +59,38 @@ class HadishTafsirDetailsScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(Icons.chevron_left, color: Colors.grey, size: 20),
-                  ),
-                  RichText(
-                    text: TextSpan(
-                      style: GoogleFonts.playfairDisplay(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF2E2E2E),
+                  GestureDetector(
+                    onTap: () => Get.back(),
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      children: [
-                        const TextSpan(text: "Sahih al-Bukhari-"),
-                        TextSpan(text: "(Volume-1)", style: TextStyle(color: primaryBrown)),
-                      ],
+                      child: const Icon(
+                        Icons.chevron_left,
+                        color: Colors.grey,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                  Flexible(
+                    child: RichText(
+                      overflow: TextOverflow.ellipsis,
+                      text: TextSpan(
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFF2E2E2E),
+                        ),
+                        children: [
+                          TextSpan(text: "${widget.bookName}-"),
+                          TextSpan(
+                            text: "(Chapter-${widget.chapterNum})",
+                            style: TextStyle(color: primaryBrown),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(width: 40), // Balance back button
@@ -48,8 +100,14 @@ class HadishTafsirDetailsScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Volume 1 > Book 1 > Hadith 1", style: TextStyle(fontSize: 11, color: Colors.grey)),
-                  const SizedBox(width: 80),
+                  Flexible(
+                    child: Text(
+                      "${widget.bookName} > Chapter ${widget.chapterNum} > Hadith ${widget.hadithNumber}",
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 11, color: Colors.grey),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
@@ -57,7 +115,11 @@ class HadishTafsirDetailsScreen extends StatelessWidget {
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.grey.shade200),
                     ),
-                    child: const Icon(Icons.bookmark_outline, size: 18, color: Colors.grey),
+                    child: const Icon(
+                      Icons.bookmark_outline,
+                      size: 18,
+                      color: Colors.grey,
+                    ),
                   ),
                 ],
               ),
@@ -65,11 +127,7 @@ class HadishTafsirDetailsScreen extends StatelessWidget {
               const SizedBox(height: 20),
 
               // --- TABS ---
-              Row(
-                children: [
-                  _tabButton("Tafsir", darkBlack, Colors.white),
-                ],
-              ),
+              Row(children: [_tabButton("Tafsir", darkBlack, Colors.white)]),
 
               const SizedBox(height: 25),
 
@@ -81,30 +139,55 @@ class HadishTafsirDetailsScreen extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(15),
                   boxShadow: [
-                    BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 15, offset: const Offset(0, 5)),
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
                   ],
                 ),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Align(
                       alignment: Alignment.topRight,
-                      child: Icon(Icons.bookmark, color: Color(0xFF2E2E2E), size: 20),
+                      child: Icon(
+                        Icons.bookmark,
+                        color: Color(0xFF2E2E2E),
+                        size: 20,
+                      ),
                     ),
-                    const Text(
-                      "الرَّاحِمُونَ يَرْحَمُهُمُ الرَّحْمَنُ، ارْحَمُوا مَنْ فِي الْأَرْضِ يَرْحَمْكُمْ مَنْ فِي السَّمَاءِ",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, height: 1.6),
+                    if (widget.heading != null &&
+                        widget.heading!.isNotEmpty) ...[
+                      Text(
+                        widget.heading!,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: primaryBrown,
+                          height: 1.4,
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                    ],
+                    Text(
+                      widget.hadithText,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        height: 1.6,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xFF2E2E2E),
+                      ),
                     ),
                     const SizedBox(height: 20),
-                    const Text(
-                      "Ar-rahi-moo-na yar-ha-mu-hu-mur Rah-maan, ir-ha-moo\nman fee al-ard, yar-ham-kum man fee as-sa-maa.",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 13, height: 1.4, color: Color(0xFF2E2E2E)),
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      "Sahih al-Bukhari -  Volume 1 • Hadith 1",
-                      style: TextStyle(fontSize: 10, color: Colors.grey),
+                    Center(
+                      child: Text(
+                        "${widget.bookName} • Hadith ${widget.hadithNumber}",
+                        style: const TextStyle(
+                          fontSize: 10,
+                          color: Colors.grey,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -143,11 +226,21 @@ class HadishTafsirDetailsScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Simple Explanation", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    const Text(
+                      "Simple Explanation",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(height: 15),
                     Text(
-                      "This Hadith teaches that intention is the foundation of all actions in Islam.",
-                      style: TextStyle(fontSize: 14, color: Colors.grey.shade600, height: 1.5),
+                      "Explanation not available from API yet.",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey.shade600,
+                        height: 1.5,
+                      ),
                     ),
                     const SizedBox(height: 150), // For scroll room
                   ],
@@ -171,7 +264,11 @@ class HadishTafsirDetailsScreen extends StatelessWidget {
         ),
         child: Text(
           text,
-          style: TextStyle(color: textColor, fontWeight: FontWeight.bold, fontSize: 13),
+          style: TextStyle(
+            color: textColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 13,
+          ),
         ),
       ),
     );
@@ -183,7 +280,14 @@ class HadishTafsirDetailsScreen extends StatelessWidget {
       children: [
         Icon(icon, color: primaryBrown, size: 22),
         const SizedBox(height: 4),
-        Text(label, style: TextStyle(color: primaryBrown, fontSize: 10, fontWeight: FontWeight.bold)),
+        Text(
+          label,
+          style: TextStyle(
+            color: primaryBrown,
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ],
     );
   }

@@ -4,6 +4,8 @@ import '../../../core/network/api_endpoints.dart';
 import '../models/hadith_book.dart';
 import '../models/hadith_chapter.dart';
 import '../models/hadith.dart';
+import '../models/popular_hadith.dart';
+import '../models/last_read_hadith.dart';
 
 class HadithController extends GetxController {
   static HadithController get instance => Get.find();
@@ -17,10 +19,18 @@ class HadithController extends GetxController {
   var isHadithLoading = false.obs;
   var hadithList = <Hadith>[].obs;
 
+  var isPopularLoading = false.obs;
+  var popularHadiths = <PopularHadith>[].obs;
+
+  var isLastReadLoading = false.obs;
+  var lastReadHadiths = <LastReadHadith>[].obs;
+
   @override
   void onInit() {
     super.onInit();
     fetchHadithBooks();
+    fetchPopularHadith();
+    fetchLastReadHadith();
   }
 
   Future<void> fetchHadithBooks() async {
@@ -71,6 +81,54 @@ class HadithController extends GetxController {
       // Error is handled in ApiService
     } finally {
       isHadithLoading.value = false;
+    }
+  }
+
+  Future<void> fetchPopularHadith() async {
+    isPopularLoading.value = true;
+    try {
+      final response = await ApiService.get(ApiEndpoints.popularHadith);
+      if (response['success'] == true) {
+        final List<dynamic> data = response['data'];
+        popularHadiths.value = data
+            .map((json) => PopularHadith.fromJson(json))
+            .toList();
+      }
+    } catch (e) {
+      // Error is handled in ApiService
+    } finally {
+      isPopularLoading.value = false;
+    }
+  }
+
+  Future<void> fetchLastReadHadith() async {
+    isLastReadLoading.value = true;
+    try {
+      final response = await ApiService.get(ApiEndpoints.lastReadHadith);
+      if (response['success'] == true) {
+        final List<dynamic> data = response['data'];
+        lastReadHadiths.value = data
+            .map((json) => LastReadHadith.fromJson(json))
+            .toList();
+      }
+    } catch (e) {
+      // Error handled in ApiService
+    } finally {
+      isLastReadLoading.value = false;
+    }
+  }
+
+  Future<void> updateLastReadHadith(LastReadHadith lastRead) async {
+    try {
+      final response = await ApiService.post(
+        ApiEndpoints.lastReadHadith,
+        body: lastRead.toJson(),
+      );
+      if (response['success'] == true) {
+        fetchLastReadHadith(); // Refresh list after update
+      }
+    } catch (e) {
+      // Error handled in ApiService
     }
   }
 }

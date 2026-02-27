@@ -140,6 +140,7 @@ class _HadithListDetailsScreenState extends State<HadithListDetailsScreen> {
                     return HadithCard(
                       hadith: hadith,
                       bookName: widget.bookName,
+                      chapterNum: widget.chapterNum,
                     );
                   },
                 );
@@ -182,8 +183,14 @@ class _HadithListDetailsScreenState extends State<HadithListDetailsScreen> {
 class HadithCard extends StatelessWidget {
   final Hadith hadith;
   final String bookName;
+  final String chapterNum;
 
-  const HadithCard({super.key, required this.hadith, required this.bookName});
+  const HadithCard({
+    super.key,
+    required this.hadith,
+    required this.bookName,
+    required this.chapterNum,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -239,7 +246,15 @@ class HadithCard extends StatelessWidget {
               const SizedBox(width: 15),
               GestureDetector(
                 onTap: () {
-                  Get.to(HadishTafsirDetailsScreen());
+                  Get.to(
+                    HadishTafsirDetailsScreen(
+                      hadithText: hadith.hadith,
+                      hadithNumber: hadith.number,
+                      heading: hadith.heading,
+                      bookName: bookName,
+                      chapterNum: chapterNum,
+                    ),
+                  );
                 },
                 child: _footerAction(Icons.visibility_outlined, "Full View"),
               ),
