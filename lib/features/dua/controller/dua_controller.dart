@@ -1,13 +1,18 @@
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import '../../../core/network/api_Service.dart';
 import '../../../core/network/api_endpoints.dart';
-import '../../../core/offline_storage/shared_pref.dart';
 import '../model/dua_model.dart';
 
 class DuaController extends GetxController {
+  static DuaController get instance => Get.find();
+
   var duaList = <DuaData>[].obs;
   var isLoading = false.obs;
+  var searchQuery = "".obs;
+  var selectedCategoryIndex = 0.obs;
+
+  List<String> categories = ["All Duas", "Special Days", "Before & After"];
+  List<String> categoryMapping = ["ALL", "SPECIAL_DAYS", "BEFORE_N_AFTER"];
 
   @override
   void onInit() {
@@ -15,38 +20,40 @@ class DuaController extends GetxController {
     fetchDuas();
   }
 
+  List<DuaData> get filteredDuaList {
+    List<DuaData> list = duaList;
+
+    // Category Filter
+    if (selectedCategoryIndex.value != 0) {
+      String targetType = categoryMapping[selectedCategoryIndex.value];
+      list = list.where((d) => d.type == targetType).toList();
+    }
+
+    // Search Filter
+    if (searchQuery.isNotEmpty) {
+      String query = searchQuery.value.toLowerCase();
+      list = list.where((d) {
+        return (d.title?.toLowerCase().contains(query) ?? false) ||
+            (d.meaning?.toLowerCase().contains(query) ?? false);
+      }).toList();
+    }
+
+    return list;
+  }
+
+  void updateSearch(String query) => searchQuery.value = query;
+
+  void updateCategory(int index) => selectedCategoryIndex.value = index;
+
   Future<void> fetchDuas() async {
+    isLoading.value = true;
     try {
-      isLoading.value = true;
-      final token = await SharedPreferencesHelper.getToken();
-
-      final headers = {
-        if (token != null) 'Authorization': '$token',
-        if (token != null) 'token': '$token',
-        if (token != null) 'access_token': '$token',
-      };
-
-      final url = Uri.parse(ApiEndpoints.duas);
-      final response = await http
-          .get(url, headers: headers)
-          .timeout(const Duration(seconds: 30));
-
-      print("DEBUG: Duas Status Code: ${response.statusCode}");
-
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        final decoded = jsonDecode(response.body);
-        dynamic data = decoded['data'];
-        if (data != null && data is List) {
-          duaList.value = data.map((json) => DuaData.fromJson(json)).toList();
-        }
-      } else {
-        print(
-          "DEBUG: Duas API rejected request with status ${response.statusCode}",
-        );
-        duaList.clear();
+      final response = await ApiService.get(ApiEndpoints.duas);
+      if (response['success'] == true) {
+        final List<dynamic> data = response['data'];
+        duaList.value = data.map((json) => DuaData.fromJson(json)).toList();
       }
     } catch (e) {
-      print("Error fetching duas: $e");
       duaList.clear();
     } finally {
       isLoading.value = false;

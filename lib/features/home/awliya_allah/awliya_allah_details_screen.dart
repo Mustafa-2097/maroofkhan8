@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import '../../../core/constant/app_colors.dart';
+import 'models/awliya_allah_model.dart';
 
 class AwliyaAllahDetailsScreen extends StatefulWidget {
-  const AwliyaAllahDetailsScreen({super.key});
+  final AwliyaAllah awliya;
+  const AwliyaAllahDetailsScreen({super.key, required this.awliya});
 
   @override
-  State<AwliyaAllahDetailsScreen> createState() => _AwliyaAllahDetailsScreenState();
+  State<AwliyaAllahDetailsScreen> createState() =>
+      _AwliyaAllahDetailsScreenState();
 }
 
 class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
@@ -32,28 +33,39 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
                     margin: const EdgeInsets.only(top: 10),
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.5),
+                      color: Colors.white.withValues(alpha: 0.5),
                       border: Border.all(color: Colors.grey.shade400),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.chevron_left, color: Colors.grey, size: 20),
+                    child: const Icon(
+                      Icons.chevron_left,
+                      color: Colors.grey,
+                      size: 20,
+                    ),
                   ),
                 ),
               ),
 
               // 3. Profile Image
               const SizedBox(height: 10),
-              const Center(
+              Center(
                 child: CircleAvatar(
                   radius: 90,
-                  backgroundImage: NetworkImage('https://i.pinimg.com/736x/8e/9d/23/8e9d23315a6792345e6912389d5f75e7.jpg'),
+                  backgroundImage: widget.awliya.image.isNotEmpty
+                      ? NetworkImage(widget.awliya.image)
+                      : null,
+                  backgroundColor: Colors.grey.shade200,
+                  child: widget.awliya.image.isEmpty
+                      ? const Icon(Icons.person, size: 90, color: Colors.grey)
+                      : null,
                 ),
               ),
 
               // 4. Names
               const SizedBox(height: 20),
               Text(
-                "Zulfiqar Ahmad Naqsh-bandi",
+                widget.awliya.name,
+                textAlign: TextAlign.center,
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 24,
                   fontWeight: FontWeight.w600,
@@ -62,7 +74,7 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
               ),
               const SizedBox(height: 5),
               Text(
-                "ذو الفقار أحمد النقشبندي",
+                widget.awliya.name, // Fallback for Arabic name
                 style: GoogleFonts.amiri(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -70,7 +82,6 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
                 ),
               ),
 
-              // 5. Tabs Row
               // 5. Tabs Row
               const SizedBox(height: 25),
               SingleChildScrollView(
@@ -84,7 +95,6 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
                   ],
                 ),
               ),
-
 
               // 6. Section Title
               const SizedBox(height: 25),
@@ -112,8 +122,7 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
     );
   }
 
-
-// Update the title getter to match the screenshot labels
+  // Update the title getter to match the screenshot labels
   String _getTabTitle() {
     switch (selectedTabIndex) {
       case 1:
@@ -140,6 +149,7 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
         return _biographyTab();
     }
   }
+
   // 1. Biography TAB
   Widget _biographyTab() {
     return Container(
@@ -150,21 +160,17 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, 10),
-          )
+          ),
         ],
       ),
       child: Column(
         children: [
-          _infoRow("Name :", "Zulfiqar Ahmad Naqshbandi"),
-          _infoRow("Born :", "1 April 1953, Jhang, Pakistan"),
-          _infoRow("Passed away :", "14 December 2025"),
-          _infoRow("Position :", "Islamic Scholar & Sufi Shaykh of the Naqshbandi-Mujaddidi Order"),
-          _infoRow("Institution :", "Jamia Mahad-ul-Faqeer Al-Islami"),
-          _infoRow("Works :", "Over 100 books on spirituality, ethics, and Islam"),
-          _infoRow("Known For :", "Spiritual purification, inner reform, ethical guidance"),
+          _infoRow("Name :", widget.awliya.name),
+          _infoRow("Title :", widget.awliya.title),
+          _infoRow("Biography :", "Information coming soon..."),
         ],
       ),
     );
@@ -173,10 +179,12 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
   // 2. TEACHINGS TAB (List of Cards)
   Widget _teachingsTab() {
     return Column(
-      children: List.generate(4, (index) => _actionCard(
-        "Inner Purification (Tazkiyah al-Nafs)",
-        "A central theme in his teachings was the cleansing of the heart from spiritual maladies such as pride, envy, greed, and heedlessness. He taught that true spirituality begins with self-reflection, repentance, and sincerity in worship",
-      )),
+      children: [
+        _actionCard(
+          "Inner Purification",
+          "A central theme in his teachings was the cleansing of the heart from spiritual maladies such as pride, envy, greed, and heedlessness.",
+        ),
+      ],
     );
   }
 
@@ -196,20 +204,22 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
           ),
           child: Column(
             children: [
-              Text("Key Teachings & Guidance", style: GoogleFonts.playfairDisplay(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(
+                "Key Guidance",
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 10),
-              const Text("1. Love & Service to Humanity\n2. Zikr & Contemplation\n3. Inner Purification (Tazkiya al-Nafs)", textAlign: TextAlign.start, style: TextStyle(fontSize: 12, height: 1.5)),
-              const SizedBox(height: 15),
-              const CircleAvatar(
-                radius: 40,
-                backgroundColor: Color(0xFFF5E6E0),
-                child: Text("Dargah\nVisuals", textAlign: TextAlign.center, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.brown)),
-              )
+              const Text(
+                "Information about Karamat and special guidance will be updated soon.",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12, height: 1.5),
+              ),
             ],
           ),
         ),
-        _actionCard("Healing through Barakah", "People reported feeling relief from physical ailments after sincere prayer and blessings (barakah) associated with his guidance."),
-        _actionCard("Blessed Increase in Provision", "Some followers noted unexpected provision and ease in sustenance when implementing teachings of sincere dhikr and trust in Allah."),
       ],
     );
   }
@@ -219,13 +229,8 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
     return Column(
       children: [
         _actionCard(
-          "On Remembrance of Allah",
-          "Let your heart constantly call out Allah, Allah, Allah in every moment of your daily life—walking, sitting, or working—so that your hands act while your heart remembers Him.\n(Inspired by his guidance on Dhikr practices)",
-          isQuote: true,
-        ),
-        _actionCard(
-          "On Muraqabah (Heart-Reflection)",
-          "When you sit in stillness and look into your own heart, you patiently await Allah's mercy—this inner watchfulness brings peace to the mind and soul.\n(Based on his instruction on muraqabah meditation)",
+          "On Remembrance",
+          "Let your heart constantly call out Allah, Allah, Allah in every moment of your daily life...",
           isQuote: true,
         ),
       ],
@@ -242,12 +247,24 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
         color: Colors.white,
         border: Border.all(width: 1, color: Colors.grey.shade200),
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10)],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 10,
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: GoogleFonts.playfairDisplay(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
+          Text(
+            title,
+            style: GoogleFonts.playfairDisplay(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
           const SizedBox(height: 8),
           Text(
             body,
@@ -263,17 +280,20 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
             alignment: Alignment.bottomRight,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              decoration: BoxDecoration(color: primaryBrown, borderRadius: BorderRadius.circular(15)),
-              child: const Text("Read More", style: TextStyle(color: Colors.white, fontSize: 10)),
+              decoration: BoxDecoration(
+                color: primaryBrown,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: const Text(
+                "Read More",
+                style: TextStyle(color: Colors.white, fontSize: 10),
+              ),
             ),
-          )
+          ),
         ],
       ),
     );
   }
-
-
-
 
   Widget _tabButton(String label, int index) {
     final bool isSelected = selectedTabIndex == index;
@@ -292,7 +312,10 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             if (!isSelected)
-              BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 5)
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 5,
+              ),
           ],
         ),
         child: Text(

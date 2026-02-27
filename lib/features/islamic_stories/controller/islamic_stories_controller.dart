@@ -9,6 +9,9 @@ class IslamicStoriesController extends GetxController {
   var isLoading = false.obs;
   var stories = <IslamicStory>[].obs;
 
+  var isDetailLoading = false.obs;
+  var storyDetail = Rxn<IslamicStory>();
+
   @override
   void onInit() {
     super.onInit();
@@ -29,6 +32,21 @@ class IslamicStoriesController extends GetxController {
       // Error is handled in ApiService
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchStoryDetails(String id) async {
+    isDetailLoading.value = true;
+    storyDetail.value = null;
+    try {
+      final response = await ApiService.get(ApiEndpoints.storyDetails(id));
+      if (response['success'] == true) {
+        storyDetail.value = IslamicStory.fromJson(response['data']);
+      }
+    } catch (e) {
+      // Error handled in ApiService
+    } finally {
+      isDetailLoading.value = false;
     }
   }
 }

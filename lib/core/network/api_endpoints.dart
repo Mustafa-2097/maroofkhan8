@@ -58,4 +58,14 @@ class ApiEndpoints {
 
   /// Stories
   static const String stories = '$baseUrl/stories';
+  static String storyDetails(String id) => '$baseUrl/stories/$id';
+
+  /// Ahl Al Bayt
+  static const String ahlalbayt = '$baseUrl/ahlalbayt';
+
+  /// Awliya
+  static const String awliya = '$baseUrl/awliya';
+
+  /// Sahaba
+  static const String sahaba = '$baseUrl/sahaba';
 }
