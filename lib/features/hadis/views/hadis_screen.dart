@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
 
+import '../controller/hadith_controller.dart';
 import 'hadith_book_details_screen.dart';
+import 'hadish_tafsir_details_screen.dart';
 
 class HadithScreen extends StatefulWidget {
   const HadithScreen({super.key});
@@ -13,6 +15,7 @@ class HadithScreen extends StatefulWidget {
 }
 
 class _HadithScreenState extends State<HadithScreen> {
+  final controller = Get.put(HadithController());
   int _selectedIndex = 0;
   final Color primaryBrown = const Color(0xFF8D3C1F);
   final Color darkBlack = const Color(0xFF1E120D);
@@ -101,7 +104,9 @@ class _HadithScreenState extends State<HadithScreen> {
             Expanded(
               child: _selectedIndex == 0
                   ? _buildBookList()
-                  : _buildHadithList(),
+                  : _selectedIndex == 1
+                  ? _buildHadithList()
+                  : _buildLastReadList(),
             ),
           ],
         ),
@@ -111,25 +116,121 @@ class _HadithScreenState extends State<HadithScreen> {
 
   // Book List for Screen 1
   Widget _buildBookList() {
-    final List<String> books = [
-      "Sahih al-Bukhari",
-      "Sahih Muslim",
-      "Sunan Abu Dawood",
-      "Jami' at-Tirmidhi",
-      "Sunan an-Nasa'i",
-    ];
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      if (controller.hadithBooks.isEmpty) {
+        return const Center(child: Text("No Books Available"));
+      }
+      return ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        itemCount: controller.hadithBooks.length,
+        itemBuilder: (context, index) {
+          final book = controller.hadithBooks[index];
+          return GestureDetector(
+            onTap: () {
+              Get.to(HadithBookDetailsScreen(book: book));
+            },
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 15),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.03),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  // Book Image Placeholder
+                  Container(
+                    width: 45,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade900,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: const Icon(
+                      Icons.menu_book,
+                      color: Colors.amber,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 15),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          book.name,
+                          style: GoogleFonts.playfairDisplay(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          "Chapters - ${book.chapters}",
+                          style: GoogleFonts.playfairDisplay(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFFA6A6A6),
+                          ),
+                        ),
+                        Text(
+                          "Hadith - ${book.hadiths}",
+                          style: GoogleFonts.playfairDisplay(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: const Color(0xFFA6A6A6),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: primaryBrown,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.arrow_forward,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    });
+  }
 
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      itemCount: books.length,
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: () {
-            Get.to(HadithBookDetailsScreen());
-          },
-          child: Container(
+  // Hadith Detail List for Screen 2 & 3
+  Widget _buildHadithList() {
+    return Obx(() {
+      if (controller.isPopularLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      if (controller.popularHadiths.isEmpty) {
+        return const Center(child: Text("No Popular Hadiths Available"));
+      }
+      return ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        itemCount: controller.popularHadiths.length,
+        itemBuilder: (context, index) {
+          final popular = controller.popularHadiths[index];
+          return Container(
             margin: const EdgeInsets.only(bottom: 15),
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
@@ -141,133 +242,164 @@ class _HadithScreenState extends State<HadithScreen> {
                 ),
               ],
             ),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Dummy Book Image
-                Container(
-                  width: 45,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: Colors.green.shade900,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: const Icon(
-                    Icons.menu_book,
-                    color: Colors.amber,
-                    size: 20,
+                const SizedBox(height: 10),
+                Text(
+                  popular.hadith,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    height: 1.5,
+                    color: Colors.black87,
                   ),
                 ),
-                const SizedBox(width: 15),
-                Expanded(
+                const SizedBox(height: 10),
+                Align(
+                  alignment: Alignment.bottomRight,
                   child: Text(
-                    books[index],
-                    style: GoogleFonts.playfairDisplay(
-                      fontSize: 16,
+                    popular.reference.isNotEmpty
+                        ? "— ${popular.reference}"
+                        : "— Hadith ${popular.hadithNo}",
+                    style: TextStyle(
+                      color: primaryBrown,
+                      fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: primaryBrown,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(
-                    Icons.arrow_forward,
-                    color: Colors.white,
-                    size: 18,
-                  ),
+                const Divider(height: 30),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.favorite_border,
+                      size: 18,
+                      color: Colors.grey,
+                    ),
+                    const SizedBox(width: 15),
+                    const Icon(
+                      Icons.share_outlined,
+                      size: 18,
+                      color: Colors.grey,
+                    ),
+                    const Spacer(),
+                    _iconLabel(Icons.volume_up_outlined, "Listen"),
+                    const SizedBox(width: 15),
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(
+                          HadishTafsirDetailsScreen(
+                            hadithText: popular.hadith,
+                            hadithNumber: popular.hadithNo?.toString() ?? "N/A",
+                            bookName: popular.reference.isNotEmpty
+                                ? popular.reference
+                                : "Popular",
+                            chapterNum: popular.chapterNo?.toString() ?? "N/A",
+                          ),
+                        );
+                      },
+                      child: _iconLabel(Icons.visibility_outlined, "Full View"),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ),
-        );
-      },
-    );
+          );
+        },
+      );
+    });
   }
 
-  // Hadith Detail List for Screen 2 & 3
-  Widget _buildHadithList() {
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      itemCount: 3,
-      itemBuilder: (context, index) {
-        return Container(
-          margin: const EdgeInsets.only(bottom: 15),
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.03),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Align(
-                alignment: Alignment.topRight,
-                child: Text(
-                  "إن الله لا ينظر إلى صوركم وأموالكم، ولكن ينظر إلى قلوبكم وأعمالكم",
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+  // Last Read Hadith List for Screen 3
+  Widget _buildLastReadList() {
+    return Obx(() {
+      if (controller.isLastReadLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      if (controller.lastReadHadiths.isEmpty) {
+        return const Center(child: Text("No Last Read Records"));
+      }
+      return ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        itemCount: controller.lastReadHadiths.length,
+        itemBuilder: (context, index) {
+          final lastRead = controller.lastReadHadiths[index];
+          return Container(
+            margin: const EdgeInsets.only(bottom: 15),
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.03),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 10),
+                Text(
+                  lastRead.hadith,
+                  style: const TextStyle(
+                    fontSize: 14,
                     height: 1.5,
+                    color: Colors.black87,
                   ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                '"Allah looks not at your appearance or wealth, but at your hearts and actions."',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontStyle: FontStyle.italic,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Text(
-                  "— Sahih Muslim",
-                  style: TextStyle(
-                    color: primaryBrown,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
+                const SizedBox(height: 10),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Text(
+                    "— ${lastRead.book}",
+                    style: TextStyle(
+                      color: primaryBrown,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-              const Divider(height: 30),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.favorite_border,
-                    size: 18,
-                    color: Colors.grey,
-                  ),
-                  const SizedBox(width: 15),
-                  const Icon(
-                    Icons.share_outlined,
-                    size: 18,
-                    color: Colors.grey,
-                  ),
-                  const Spacer(),
-                  _iconLabel(Icons.volume_up_outlined, "Listen"),
-                  const SizedBox(width: 15),
-                  _iconLabel(Icons.visibility_outlined, "Full View"),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
+                const Divider(height: 30),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.favorite_border,
+                      size: 18,
+                      color: Colors.grey,
+                    ),
+                    const SizedBox(width: 15),
+                    const Icon(
+                      Icons.share_outlined,
+                      size: 18,
+                      color: Colors.grey,
+                    ),
+                    const Spacer(),
+                    _iconLabel(Icons.volume_up_outlined, "Listen"),
+                    const SizedBox(width: 15),
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(
+                          HadishTafsirDetailsScreen(
+                            hadithText: lastRead.hadith,
+                            hadithNumber: lastRead.hadithNo ?? "N/A",
+                            bookName: lastRead.book,
+                            chapterNum: lastRead.chapterNo ?? "N/A",
+                          ),
+                        );
+                      },
+                      child: _iconLabel(Icons.visibility_outlined, "Full View"),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    });
   }
 
   Widget _iconLabel(IconData icon, String label) {
