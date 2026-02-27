@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../controller/islamic_stories_controller.dart';
+import '../models/islamic_story.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -14,13 +17,13 @@ class IslamicStoriesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(IslamicStoriesController());
+
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        // The image shows no app bar title, but system status bar.
-        // We leave this empty or handle safe area.
         toolbarHeight: 0,
       ),
       body: SafeArea(
@@ -30,7 +33,14 @@ class IslamicStoriesScreen extends StatelessWidget {
             children: [
               const SizedBox(height: 10),
               // Header Text
-              Text("Islamic Stories", style: GoogleFonts.amiri(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black)),
+              Text(
+                "Islamic Stories",
+                style: GoogleFonts.amiri(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
 
               const SizedBox(height: 20),
 
@@ -56,40 +66,21 @@ class IslamicStoriesScreen extends StatelessWidget {
 
               // List Items
               Expanded(
-                child: ListView(
-                  children: [
-                    _ahleBaitCard(
-                      context,
-                      "Ali ibn Abi Talib",
-                      "Cousin & son-in-law of Prophet\nFourth Caliph",
-                      "https://i.pinimg.com/564x/cf/f3/f1/cff3f15c7e39a0468945325793086381.jpg",
-                    ),
-                    _ahleBaitCard(
-                      context,
-                      "Hasan ibn Ali",
-                      "Grandson of Prophet peace\nadvocate",
-                      "https://i.pinimg.com/564x/24/c9/22/24c92250106634710156d95958288593.jpg",
-                    ),
-                    _ahleBaitCard(
-                      context,
-                      "Husayn ibn Ali",
-                      "Grandson of Prophet martyr of\nKarbala",
-                      "https://i.pinimg.com/564x/d9/15/84/d9158498877569752943391740924976.jpg",
-                    ),
-                    _ahleBaitCard(
-                      context,
-                      "Muhsin ibn Ali",
-                      "Son of Ali & Fatimah (in some\nnarrations",
-                      "https://i.pinimg.com/564x/78/33/c4/7833c46114a873832349072973167909.jpg",
-                    ),
-                    _ahleBaitCard(
-                      context,
-                      "Fatimah bint Muhammad",
-                      "Daughter of Prophet mother of\nHasan & Husayn",
-                      "https://i.pinimg.com/564x/72/06/00/720600a943890288863266943632204c.jpg",
-                    ),
-                  ],
-                ),
+                child: Obx(() {
+                  if (controller.isLoading.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (controller.stories.isEmpty) {
+                    return const Center(child: Text("No stories available."));
+                  }
+                  return ListView.builder(
+                    itemCount: controller.stories.length,
+                    itemBuilder: (context, index) {
+                      final story = controller.stories[index];
+                      return _ahleBaitCard(context, story);
+                    },
+                  );
+                }),
               ),
             ],
           ),
@@ -98,10 +89,10 @@ class IslamicStoriesScreen extends StatelessWidget {
     );
   }
 
-  Widget _ahleBaitCard(BuildContext context, String name, String desc, String img) {
+  Widget _ahleBaitCard(BuildContext context, IslamicStory story) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => const IslamicStoriesDetailScreen()));
+        Get.to(() => IslamicStoriesDetailScreen(story: story));
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 15),
@@ -109,27 +100,55 @@ class IslamicStoriesScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(15),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 2))],
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
           children: [
-            CircleAvatar(radius: 28, backgroundImage: NetworkImage(img)),
+            CircleAvatar(
+              radius: 28,
+              backgroundImage: NetworkImage(story.image),
+              backgroundColor: Colors.grey.shade200,
+            ),
             const SizedBox(width: 15),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(name, style: GoogleFonts.playfairDisplay(fontSize: 16, fontWeight: FontWeight.bold)),
+                  Text(
+                    story.title,
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   const SizedBox(height: 4),
-                  Text(desc, style: const TextStyle(fontSize: 11, color: kTextGrey), maxLines: 2),
+                  Text(
+                    story.subtitle,
+                    style: const TextStyle(fontSize: 11, color: kTextGrey),
+                    maxLines: 2,
+                  ),
                 ],
               ),
             ),
             Container(
-              height: 30, width: 30,
-              decoration: BoxDecoration(color: kPrimaryBrown, borderRadius: BorderRadius.circular(8)),
-              child: const Icon(Icons.arrow_forward, color: Colors.white, size: 16),
-            )
+              height: 30,
+              width: 30,
+              decoration: BoxDecoration(
+                color: kPrimaryBrown,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.arrow_forward,
+                color: Colors.white,
+                size: 16,
+              ),
+            ),
           ],
         ),
       ),
@@ -141,7 +160,8 @@ class IslamicStoriesScreen extends StatelessWidget {
 // SCREEN 2: SALAWAT DETAIL / PLAYER
 // ==========================================
 class IslamicStoriesDetailScreen extends StatelessWidget {
-  const IslamicStoriesDetailScreen({super.key});
+  final IslamicStory story;
+  const IslamicStoriesDetailScreen({super.key, required this.story});
 
   @override
   Widget build(BuildContext context) {
@@ -161,12 +181,20 @@ class IslamicStoriesDetailScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(8),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 5)],
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.03),
+                    blurRadius: 5,
+                  ),
+                ],
               ),
               child: Text(
-                "Durood Ibrahim (The Most Well-Known Salawat)",
+                story.title,
                 textAlign: TextAlign.center,
-                style: GoogleFonts.playfairDisplay(fontSize: 14, fontWeight: FontWeight.bold),
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -177,19 +205,28 @@ class IslamicStoriesDetailScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(15),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 10)],
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 10,
+                  ),
+                ],
               ),
               child: Column(
                 children: [
                   const Align(
                     alignment: Alignment.topRight,
-                    child: Icon(Icons.favorite_border, size: 20, color: Colors.grey),
+                    child: Icon(
+                      Icons.favorite_border,
+                      size: 20,
+                      color: Colors.grey,
+                    ),
                   ),
                   const SizedBox(height: 10),
                   const Text(
                     "Allah created Adam and taught him the names of all things. He then commanded the angels to prostrate to Adam as a sign of honor. All obeyed except Iblis, who refused out of arrogance."
-                      "Adam and his wife were placed in Jannah, with one command: not to approach a specific tree. Iblis deceived them, and they ate from it. Realizing their mistake, Adam and his wife repented sincerely."
-                        "Allah forgave them and sent them to the earth, promising guidance for those who follow His commands.",
+                    "Adam and his wife were placed in Jannah, with one command: not to approach a specific tree. Iblis deceived them, and they ate from it. Realizing their mistake, Adam and his wife repented sincerely."
+                    "Allah forgave them and sent them to the earth, promising guidance for those who follow His commands.",
                     style: TextStyle(
                       fontSize: 14,
                       color: kTextDark,
@@ -213,13 +250,29 @@ class IslamicStoriesDetailScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _ActionButton(icon: Icons.headset, label: "Listen", isActive: true),
+                  _ActionButton(
+                    icon: Icons.headset,
+                    label: "Listen",
+                    isActive: true,
+                  ),
 
-                  _ActionButton(icon: Icons.auto_awesome, label: "AI Explanation", isActive: false),
+                  _ActionButton(
+                    icon: Icons.auto_awesome,
+                    label: "AI Explanation",
+                    isActive: false,
+                  ),
 
-                  _ActionButton(icon: Icons.share_outlined, label: "Share", isActive: false),
+                  _ActionButton(
+                    icon: Icons.share_outlined,
+                    label: "Share",
+                    isActive: false,
+                  ),
 
-                  _ActionButton(icon: Icons.copy, label: "Copy", isActive: false),
+                  _ActionButton(
+                    icon: Icons.copy,
+                    label: "Copy",
+                    isActive: false,
+                  ),
                 ],
               ),
             ),
@@ -232,16 +285,32 @@ class IslamicStoriesDetailScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(15),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 10)],
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 10,
+                  ),
+                ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Simple Explanation:", style: GoogleFonts.playfairDisplay(fontSize: 14, fontWeight: FontWeight.bold, color: kPrimaryBrown)),
+                  Text(
+                    "Simple Explanation:",
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: kPrimaryBrown,
+                    ),
+                  ),
                   const SizedBox(height: 5),
                   const Text(
                     "This Hadith teaches that intention is the foundation of all actions in Islam.",
-                    style: TextStyle(fontSize: 14, height: 1.4, color: kTextDark),
+                    style: TextStyle(
+                      fontSize: 14,
+                      height: 1.4,
+                      color: kTextDark,
+                    ),
                   ),
                 ],
               ),
@@ -259,7 +328,11 @@ class _ActionButton extends StatelessWidget {
   final String label;
   final bool isActive;
 
-  const _ActionButton({required this.icon, required this.label, required this.isActive});
+  const _ActionButton({
+    required this.icon,
+    required this.label,
+    required this.isActive,
+  });
 
   @override
   Widget build(BuildContext context) {

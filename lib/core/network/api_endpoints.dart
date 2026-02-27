@@ -55,4 +55,7 @@ class ApiEndpoints {
       '$baseUrl/hadith/$slug/hadiths?chapter=$chapter';
   static const String popularHadith = '$baseUrl/hadith/popular';
   static const String lastReadHadith = '$baseUrl/hadith/last-read';
+
+  /// Stories
+  static const String stories = '$baseUrl/stories';
 }
