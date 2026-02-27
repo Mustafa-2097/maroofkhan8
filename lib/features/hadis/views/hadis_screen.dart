@@ -127,7 +127,7 @@ class _HadithScreenState extends State<HadithScreen> {
           final book = controller.hadithBooks[index];
           return GestureDetector(
             onTap: () {
-              Get.to(HadithBookDetailsScreen());
+              Get.to(HadithBookDetailsScreen(book: book));
             },
             child: Container(
               margin: const EdgeInsets.only(bottom: 15),

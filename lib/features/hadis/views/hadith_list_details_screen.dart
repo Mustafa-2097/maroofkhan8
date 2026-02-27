@@ -22,7 +22,14 @@ class HadithListDetailsScreen extends StatelessWidget {
               child: Row(
                 children: [
                   _backButton(),
-                  const Expanded(child: Divider(indent: 10, endIndent: 10, color: Colors.grey, thickness: 0.5)),
+                  const Expanded(
+                    child: Divider(
+                      indent: 10,
+                      endIndent: 10,
+                      color: Colors.grey,
+                      thickness: 0.5,
+                    ),
+                  ),
                   RichText(
                     text: TextSpan(
                       style: GoogleFonts.playfairDisplay(
@@ -32,11 +39,21 @@ class HadithListDetailsScreen extends StatelessWidget {
                       ),
                       children: const [
                         TextSpan(text: "Sahih al-Bukhari-"),
-                        TextSpan(text: "(Volume-1)", style: TextStyle(color: primaryBrown)),
+                        TextSpan(
+                          text: "(Volume-1)",
+                          style: TextStyle(color: primaryBrown),
+                        ),
                       ],
                     ),
                   ),
-                  const Expanded(child: Divider(indent: 10, endIndent: 10, color: Colors.grey, thickness: 0.5)),
+                  const Expanded(
+                    child: Divider(
+                      indent: 10,
+                      endIndent: 10,
+                      color: Colors.grey,
+                      thickness: 0.5,
+                    ),
+                  ),
                   const SizedBox(width: 40), // Placeholder for balance
                 ],
               ),
@@ -61,7 +78,10 @@ class HadithListDetailsScreen extends StatelessWidget {
                       child: const TextField(
                         decoration: InputDecoration(
                           hintText: 'Search',
-                          hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+                          hintStyle: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14,
+                          ),
                           border: InputBorder.none,
                         ),
                       ),
@@ -81,18 +101,22 @@ class HadithListDetailsScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 children: const [
                   HadithCard(
-                    arabic: "إنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ",
+                    // arabic: "إنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ",
                     english: "“Actions are judged by intentions...”",
                     hadithNumber: 1,
                   ),
                   HadithCard(
-                    arabic: "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الْآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ",
-                    english: "“Whoever believes in Allah and the Last Day should speak good or remain silent.”",
+                    // arabic:
+                    //     "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الْآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ",
+                    english:
+                        "“Whoever believes in Allah and the Last Day should speak good or remain silent.”",
                     hadithNumber: 2,
                   ),
                   HadithCard(
-                    arabic: "الرَّاحِمُونَ يَرْحَمُهُمُ الرَّحْمَنُ، ارْحَمُوا مَنْ فِي الْأَرْضِ يَرْحَمْكُمْ مَنْ فِي السَّمَاءِ",
-                    english: "“The merciful are shown mercy by the Most Merciful. Be merciful to those on earth, and the One above the heavens will have mercy upon you.”",
+                    // arabic:
+                    //    "الرَّاحِمُونَ يَرْحَمُهُمُ الرَّحْمَنُ، ارْحَمُوا مَنْ فِي الْأَرْضِ يَرْحَمْكُمْ مَنْ فِي السَّمَاءِ",
+                    english:
+                        "“The merciful are shown mercy by the Most Merciful. Be merciful to those on earth, and the One above the heavens will have mercy upon you.”",
                     hadithNumber: 3,
                   ),
                 ],
@@ -130,13 +154,13 @@ class HadithListDetailsScreen extends StatelessWidget {
 }
 
 class HadithCard extends StatelessWidget {
-  final String arabic;
+  // final String arabic;
   final String english;
   final int hadithNumber;
 
   const HadithCard({
     super.key,
-    required this.arabic,
+    //  required this.arabic,
     required this.english,
     required this.hadithNumber,
   });
@@ -159,24 +183,24 @@ class HadithCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(
-            arabic,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              height: 1.5,
-              color: Color(0xFF2E2E2E),
-            ),
-          ),
-          const SizedBox(height: 12),
+          // Text(
+          //   arabic,
+          //   textAlign: TextAlign.center,
+          //   style: const TextStyle(
+          //     fontSize: 18,
+          //     fontWeight: FontWeight.bold,
+          //     height: 1.5,
+          //     color: Color(0xFF2E2E2E),
+          //   ),
+          // ),
+          // const SizedBox(height: 12),
           Text(
             english,
             textAlign: TextAlign.center,
             style: const TextStyle(
-              fontSize: 14,
-              fontStyle: FontStyle.italic,
+              fontSize: 16,
               color: Colors.black87,
+              fontWeight: FontWeight.w400,
             ),
           ),
           const SizedBox(height: 15),
@@ -194,12 +218,13 @@ class HadithCard extends StatelessWidget {
               _footerAction(Icons.volume_up_outlined, "Listen"),
               const SizedBox(width: 15),
               GestureDetector(
-                  onTap: (){
-                    Get.to(HadishTafsirDetailsScreen());
-                  },
-                  child: _footerAction(Icons.visibility_outlined, "Full View")),
+                onTap: () {
+                  Get.to(HadishTafsirDetailsScreen());
+                },
+                child: _footerAction(Icons.visibility_outlined, "Full View"),
+              ),
             ],
-          )
+          ),
         ],
       ),
     );
