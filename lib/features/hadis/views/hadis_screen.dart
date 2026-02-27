@@ -159,12 +159,33 @@ class _HadithScreenState extends State<HadithScreen> {
                 ),
                 const SizedBox(width: 15),
                 Expanded(
-                  child: Text(
-                    books[index],
-                    style: GoogleFonts.playfairDisplay(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        books[index],
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "Chapters - 99",
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFFA6A6A6),
+                        ),
+                      ),
+                      Text(
+                        "Hadith - 7276",
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFFA6A6A6),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Container(
