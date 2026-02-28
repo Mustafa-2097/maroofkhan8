@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../bottom_nav_bar.dart';
 import '../../core/offline_storage/shared_pref.dart';
+import '../../features/auth/signin_signup/view/signin_signup_page.dart';
 import '../../onboarding/view/onboarding_screen.dart';
 
 class SplashController extends GetxController {
@@ -16,33 +18,25 @@ class SplashController extends GetxController {
     await Future.delayed(const Duration(seconds: 3));
 
     try {
-      // final onboardingDone = await SharedPreferencesHelper.isOnboardingCompleted();
-      //
-      // final rememberMe = await SharedPreferencesHelper.isRememberMe();
-      // final token = await SharedPreferencesHelper.getToken();
-      // final role = await SharedPreferencesHelper.getRole();
-      //
-      // debugPrint('Onboarding Completed: $onboardingDone');
-      // debugPrint('Token: $token');
-      // debugPrint("Role: $role");
+      final onboardingDone = await SharedPreferencesHelper.isOnboardingCompleted();
+      final token = await SharedPreferencesHelper.getToken();
+      debugPrint('Onboarding Completed: $onboardingDone');
+      debugPrint('Token: $token');
 
       /// Run navigation after frame renders
       Future.microtask(() {
-        Get.offAll(() => OnboardingScreen());
-        // if (!onboardingDone) {
-        //   // First time so Show Onboarding
-        //   Get.offAll(() => OnboardingScreen());
-        // }
-        // else if (!rememberMe || token == null || token.isEmpty) {
-        //   // Onboarding done but no token so go to Login
-        //   Get.offAll(() => SignInPage());
-        // } else if (role == 'ADMIN') {
-        //   Get.offAll(() => AdminDashboard());
-        // } else if (role == 'USER') {
-        //   Get.offAll(() => CustomerDashboard());
-        // } else{
-        //   Get.offAll(()=> SignInPage());
-        // }
+        if (!onboardingDone) {
+          /// First launch → onboarding
+          Get.offAll(() => OnboardingScreen());
+        }
+        else if (token == null || token.isEmpty) {
+          /// Not logged in → login
+          Get.offAll(() => SignInSignUpPage());
+        }
+        else {
+          /// Logged in → dashboard
+          Get.offAll(() => CustomBottomNavBar());
+        }
 
       });
 
@@ -51,7 +45,7 @@ class SplashController extends GetxController {
 
       /// Fallback navigation
       Future.microtask(() {
-        //Get.offAll(() => SignInPage());
+        Get.offAll(() => SignInSignUpPage());
       });
 
     }

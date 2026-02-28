@@ -41,17 +41,6 @@ class SharedPreferencesHelper {
     return prefs.getBool(_onboardingKey) ?? false;
   }
 
-  /// Saved Role and Get Role
-  static Future<void> saveRole(String role) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_roleKey, role);
-  }
-
-  static Future<String?> getRole() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_roleKey);
-  }
-
   /// Remember me button
   static Future<void> saveRememberMe(bool value) async {
     final prefs = await SharedPreferences.getInstance();
