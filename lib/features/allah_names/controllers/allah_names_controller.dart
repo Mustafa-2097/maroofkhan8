@@ -92,46 +92,53 @@ class AllahNamesController extends GetxController {
 
   Future<void> toggleSaveName(AllahName item) async {
     try {
-      // Find the exact item in the main list by ID, or fallback to exact arabic + pronunciation
-      // This is crucial because saved endpoints sometimes return relation IDs and
-      // mock items might share the same arabic text but differ in pronunciation.
-      final idx = namesList.indexWhere(
+      // Find in main list to get the actual Name ID (for POST case)
+      final mainIdx = namesList.indexWhere(
         (e) =>
             e.id == item.id ||
             (e.arabic == item.arabic && e.pronunciation == item.pronunciation),
       );
 
-      if (idx == -1) return;
+      // Find in saved list to get the relation ID (for DELETE case)
+      final savedIdx = savedNamesList.indexWhere(
+        (e) =>
+            e.id == item.id ||
+            (e.arabic == item.arabic && e.pronunciation == item.pronunciation),
+      );
 
-      final realItem = namesList[idx];
-      bool isCurrentlySaved = realItem.isSaved;
+      final isCurrentlySaved = savedIdx != -1;
 
       Map<String, dynamic> response;
       if (isCurrentlySaved) {
-        // Unsave (DELETE)
+        // Unsave (DELETE) using relation ID from savedNamesList
+        final relationId = savedNamesList[savedIdx].id;
         response = await ApiService.delete(
-          ApiEndpoints.deleteSavedAllahName(realItem.id),
+          ApiEndpoints.deleteSavedAllahName(relationId),
         );
       } else {
-        // Save (POST)
+        // Save (POST) using name ID from namesList
+        if (mainIdx == -1) return;
+        final nameId = namesList[mainIdx].id;
         response = await ApiService.post(
-          ApiEndpoints.toggleAllahNameSave(realItem.id),
+          ApiEndpoints.toggleAllahNameSave(nameId),
           body: {},
         );
       }
 
       if (response['success'] == true) {
-        // Update main list locally UI sync
-        namesList[idx] = AllahName(
-          id: realItem.id,
-          arabic: realItem.arabic,
-          pronunciation: realItem.pronunciation,
-          meaning: realItem.meaning,
-          isSaved: !isCurrentlySaved,
-        );
-        namesList.refresh();
+        if (mainIdx != -1) {
+          final realItem = namesList[mainIdx];
+          namesList[mainIdx] = AllahName(
+            id: realItem.id,
+            arabic: realItem.arabic,
+            pronunciation: realItem.pronunciation,
+            meaning: realItem.meaning,
+            isSaved: !isCurrentlySaved,
+          );
+          namesList.refresh();
+        }
 
-        // Refresh the saved list directly from backend
+        // Fetch saved names to update list and synchronize ui
         fetchSavedNames();
       } else {
         if (kDebugMode) print("Failed to toggle save: ${response['message']}");
