@@ -22,18 +22,15 @@ class ResetPasswordController extends GetxController {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
 
-  late final String email;
-  late final String otp;
+  late final String token;
 
   @override
   void onInit() {
     super.onInit();
     if (Get.arguments != null) {
-      email = Get.arguments['email'] ?? "";
-      otp = Get.arguments['otp'] ?? "";
+      token = Get.arguments['token'] ?? "";
     } else {
-      email = "";
-      otp = "";
+      token = "";
     }
   }
 
@@ -46,11 +43,7 @@ class ResetPasswordController extends GetxController {
     EasyLoading.show(status: 'Resetting password...');
 
     try {
-      final body = {
-        "email": email,
-        "otp": otp,
-        "password": passwordController.text,
-      };
+      final body = {"token": token, "password": passwordController.text};
 
       final response = await ApiService.post(
         ApiEndpoints.resetPassword,

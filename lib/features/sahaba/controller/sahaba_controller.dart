@@ -10,6 +10,9 @@ class SahabaController extends GetxController {
   var sahabaList = <Sahaba>[].obs;
   var isLoading = false.obs;
 
+  var selectedSahaba = Rxn<Sahaba>();
+  var isDetailLoading = false.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -29,6 +32,20 @@ class SahabaController extends GetxController {
       sahabaList.clear();
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchSahabaDetails(String id) async {
+    isDetailLoading.value = true;
+    try {
+      final response = await ApiService.get(ApiEndpoints.sahabaDetails(id));
+      if (response['success'] == true) {
+        selectedSahaba.value = Sahaba.fromJson(response['data']);
+      }
+    } catch (e) {
+      if (kDebugMode) print("Error fetching Sahaba details: $e");
+    } finally {
+      isDetailLoading.value = false;
     }
   }
 }

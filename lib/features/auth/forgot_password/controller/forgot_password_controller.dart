@@ -26,7 +26,7 @@ class ForgotPasswordController extends GetxController {
       final body = {"email": emailController.text.trim()};
 
       final response = await ApiService.post(
-        ApiEndpoints.forgotPassword,
+        ApiEndpoints.sendResetOtp,
         body: body,
       );
 

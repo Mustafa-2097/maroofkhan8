@@ -78,10 +78,9 @@ class VerificationCodeController extends GetxController {
 
       EasyLoading.dismiss();
 
-      Get.to(
-        () => ResetPassword(),
-        arguments: {"email": email, "otp": otp.value},
-      );
+      final token = response['data']?['token'] ?? response['token'] ?? '';
+
+      Get.to(() => ResetPassword(), arguments: {"token": token});
 
       Get.snackbar(
         'Success',
@@ -105,7 +104,7 @@ class VerificationCodeController extends GetxController {
       final body = {"email": email};
 
       final response = await ApiService.post(
-        ApiEndpoints.forgotPassword,
+        ApiEndpoints.sendResetOtp,
         body: body,
       );
 

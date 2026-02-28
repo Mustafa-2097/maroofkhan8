@@ -67,9 +67,11 @@ class ApiEndpoints {
 
   /// Ahl Al Bayt
   static const String ahlalbayt = '$baseUrl/ahlalbayt';
+  static String ahlalbaytDetails(String id) => '$baseUrl/ahlalbayt/$id';
 
   /// Awliya
   static const String awliya = '$baseUrl/awliya';
+  static String awliyaDetails(String id) => '$baseUrl/awliya/$id';
 
   /// Sahaba
   static const String sahaba = '$baseUrl/sahaba';
