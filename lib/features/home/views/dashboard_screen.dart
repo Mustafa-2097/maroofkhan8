@@ -20,6 +20,7 @@ import '../../sufism/views/sufism_screen.dart' hide HeaderWithLines;
 import '../../zakat_calculator/views/zakat_calculator.dart';
 import '../awliya_allah/awliya_allah_list_screen.dart';
 import '../dhikr/dhikr_screen.dart';
+import '../../profile/controller/profile_controller.dart';
 import 'custom_app_drawer.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -95,6 +96,8 @@ class HeaderSection extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
 
+    final profileController = Get.put(ProfileController());
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -131,14 +134,24 @@ class HeaderSection extends StatelessWidget {
             ),
             InkWell(
               onTap: () => Get.to(() => ProfileScreen()),
-              child: CircleAvatar(
-                radius: 18,
-                backgroundColor: isDark
-                    ? Colors.grey.shade800
-                    : Colors.grey.shade300,
-                child: Icon(
-                  Icons.person,
-                  color: isDark ? Colors.grey.shade300 : Colors.grey.shade600,
+              child: Obx(
+                () => CircleAvatar(
+                  radius: 18,
+                  backgroundColor: isDark
+                      ? Colors.grey.shade800
+                      : Colors.grey.shade300,
+                  backgroundImage: profileController.avatar.value.isNotEmpty
+                      ? NetworkImage(profileController.avatar.value)
+                      : null,
+                  child: profileController.avatar.value.isEmpty
+                      ? Icon(
+                          Icons.person,
+                          size: 20,
+                          color: isDark
+                              ? Colors.grey.shade300
+                              : Colors.grey.shade600,
+                        )
+                      : null,
                 ),
               ),
             ),

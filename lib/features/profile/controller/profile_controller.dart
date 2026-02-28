@@ -8,6 +8,7 @@ class ProfileController extends GetxController {
   var isLoading = false.obs;
   var name = "Checking...".obs;
   var email = "Checking...".obs;
+  var avatar = "".obs;
 
   @override
   void onInit() {
@@ -24,12 +25,14 @@ class ProfileController extends GetxController {
         email.value = data['email'] ?? "No Email";
 
         final profile = data['profile'];
-        if (profile != null &&
-            profile['name'] != null &&
-            profile['name'].toString().isNotEmpty) {
-          name.value = profile['name'];
-        } else {
-          name.value = "User";
+        if (profile != null) {
+          if (profile['name'] != null &&
+              profile['name'].toString().isNotEmpty) {
+            name.value = profile['name'];
+          } else {
+            name.value = "User";
+          }
+          avatar.value = profile['avatar'] ?? "";
         }
       }
     } catch (e) {

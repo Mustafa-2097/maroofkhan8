@@ -8,7 +8,8 @@ import 'hadith_book_details_screen.dart';
 import 'hadish_tafsir_details_screen.dart';
 
 class HadithScreen extends StatefulWidget {
-  const HadithScreen({super.key});
+  final bool hideBack;
+  const HadithScreen({super.key, this.hideBack = false});
 
   @override
   State<HadithScreen> createState() => _HadithScreenState();
@@ -28,10 +29,16 @@ class _HadithScreenState extends State<HadithScreen> {
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
-          onPressed: () => Navigator.pop(context),
-        ),
+        leading: widget.hideBack
+            ? null
+            : IconButton(
+                icon: const Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.grey,
+                  size: 20,
+                ),
+                onPressed: () => Navigator.pop(context),
+              ),
       ),
       body: SafeArea(
         child: Column(

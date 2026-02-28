@@ -1,8 +1,11 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/core/constant/app_colors.dart';
 import 'package:get/get.dart';
 import '../controller/quran_controller.dart';
+import '../model/surah_model.dart';
+import '../model/verse_model.dart' as vm;
 
 import '../../../core/constant/widgets/header.dart';
 import '../../ai_murshid/views/ai_murshid_screen.dart';
@@ -14,7 +17,8 @@ const Color kLightGrey = Color(0xFFA4AFC1);
 
 // --- MAIN CONTAINER WITH BOTTOM NAV ---
 class QuranScreen extends StatefulWidget {
-  const QuranScreen({super.key});
+  final bool hideBack;
+  const QuranScreen({super.key, this.hideBack = false});
 
   @override
   State<QuranScreen> createState() => _MainContainerState();
@@ -29,10 +33,16 @@ class _MainContainerState extends State<QuranScreen> {
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
-          onPressed: () => Navigator.pop(context),
-        ),
+        leading: widget.hideBack
+            ? null
+            : IconButton(
+                icon: const Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.grey,
+                  size: 20,
+                ),
+                onPressed: () => Navigator.pop(context),
+              ),
       ),
       body: const QuranTabsScreen(),
     );
@@ -147,11 +157,20 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
             itemCount: controller.juzList.length,
             itemBuilder: (context, i) {
               final juz = controller.juzList[i];
+              String subtitle = "";
+              if (juz.verses != null && juz.verses!.isNotEmpty) {
+                subtitle = juz.verses!
+                    .map((v) => "Chapter ${v.chapter}")
+                    .toSet()
+                    .join(", ");
+              } else {
+                subtitle = "Juz ${juz.number ?? 0}";
+              }
               return _listTile(
-                "${juz.number ?? 0}",
-                "Para - ${juz.number ?? 0}",
-                "Juz ${juz.number ?? 0}",
-                null,
+                num: "${juz.number ?? 0}",
+                title: "Juz ${juz.number ?? 0}",
+                sub: subtitle,
+                surah: null,
               );
             },
           );
@@ -171,10 +190,19 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
               final lastRead = controller.lastReadList[i];
               final chapter = lastRead.chapter;
               return _listTile(
-                "${chapter?.chapterNumber ?? i + 1}",
-                chapter?.name ?? "Unknown",
-                "Verse ${lastRead.verse ?? 1}",
-                null, // You can add relative time if available
+                num: "${chapter?.chapterNumber ?? i + 1}",
+                title: chapter?.name ?? "Unknown",
+                sub: "Verse ${lastRead.verse ?? 1}",
+                surah: chapter != null
+                    ? SurahModel(
+                        id: chapter.id ?? 0,
+                        name: chapter.name ?? "",
+                        translatedName: chapter.nameTranslated ?? "",
+                        versesCount: chapter.versesCount ?? 0,
+                        revelationPlace: chapter.revelationPlace ?? "",
+                      )
+                    : null,
+                onDelete: () => controller.deleteLastReadRecord(lastRead.id!),
               );
             },
           );
@@ -190,10 +218,11 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
                 itemBuilder: (context, i) {
                   final surah = controller.surahList[i];
                   return _listTile(
-                    "${surah.id}",
-                    surah.name,
-                    "${surah.translatedName}  | ${surah.versesCount} Ayah  |  ${surah.revelationPlace.toLowerCase().capitalizeFirst} Surah",
-                    null,
+                    num: "${surah.id}",
+                    title: surah.name,
+                    sub:
+                        "${surah.translatedName}  | ${surah.versesCount} Ayah  |  ${surah.revelationPlace.toLowerCase().capitalizeFirst} Surah",
+                    surah: surah,
                   );
                 },
               ),
@@ -216,12 +245,23 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
     }
   }
 
-  Widget _listTile(String num, String title, String sub, String? time) {
+  Widget _listTile({
+    required String num,
+    required String title,
+    required String sub,
+    String? time,
+    SurahModel? surah,
+    VoidCallback? onDelete,
+  }) {
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const QuranDetailsScreen()),
-      ),
+      onTap: () {
+        if (surah != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => QuranDetailsScreen(surah: surah)),
+          );
+        }
+      },
       child: Column(
         children: [
           Padding(
@@ -261,6 +301,31 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
                       color: Color(0xFF6F8DA1),
                     ),
                   ),
+                if (surah != null)
+                  Obx(() {
+                    final isPlaying =
+                        controller.playerState.value == PlayerState.playing &&
+                        controller.currentSurahId.value == surah.id;
+                    return IconButton(
+                      onPressed: () => controller.playSurahDirectly(surah),
+                      icon: Icon(
+                        isPlaying
+                            ? Icons.pause_circle_filled
+                            : Icons.play_circle_outline,
+                        color: kPrimaryBrown,
+                        size: 24,
+                      ),
+                    );
+                  }),
+                if (onDelete != null)
+                  IconButton(
+                    onPressed: onDelete,
+                    icon: const Icon(
+                      Icons.delete_outline,
+                      color: Color(0xFFE53935),
+                      size: 24,
+                    ),
+                  ),
               ],
             ),
           ),
@@ -273,14 +338,27 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
 
 // --- SCREEN 4 & 5: QURAN DETAILS ---
 class QuranDetailsScreen extends StatefulWidget {
-  const QuranDetailsScreen({super.key});
+  final SurahModel surah;
+  const QuranDetailsScreen({super.key, required this.surah});
 
   @override
   State<QuranDetailsScreen> createState() => _QuranDetailsScreenState();
 }
 
 class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
+  final QuranController controller = Get.find<QuranController>();
   int _activeDetailTab = 0; // 0: Surah, 1: Tafsir, 2: AI Explanation
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchSurahVerses(widget.surah.id);
+      controller.fetchSurahAudio(widget.surah.id);
+      controller.updateLastRead(widget.surah.id, 1);
+      controller.postChapters(widget.surah.id);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -304,12 +382,12 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                       visualDensity: VisualDensity.compact,
                     ),
                   ),
-                  const HeaderSection(title: "Al Baqarah"),
-                  const Align(
+                  HeaderSection(title: widget.surah.name),
+                  Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      "1",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      "${widget.surah.id}",
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -363,6 +441,9 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
             );
           } else {
             // 2. Otherwise, just switch the local tab (Surah or Tafsir)
+            if (index == 1) {
+              controller.fetchSurahTafsir(widget.surah.id);
+            }
             setState(() => _activeDetailTab = index);
           }
         },
@@ -399,107 +480,181 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
     var isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       children: [
-        // Audio Player Simulation
-        Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "02:25",
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: isDark ? AppColors.whiteColor : Colors.black87,
-                  ),
-                ),
-                SliderTheme(
-                  data: SliderTheme.of(context).copyWith(
-                    trackHeight: 2,
-                    thumbShape: const RoundSliderThumbShape(
-                      enabledThumbRadius: 4,
+        // Audio Player
+        Obx(() {
+          final current = controller.currentDuration.value;
+          final total = controller.totalDuration.value;
+          final isPlaying = controller.playerState.value == PlayerState.playing;
+
+          String formatDuration(Duration d) {
+            final minutes = d.inMinutes
+                .remainder(60)
+                .toString()
+                .padLeft(2, '0');
+            final seconds = d.inSeconds
+                .remainder(60)
+                .toString()
+                .padLeft(2, '0');
+            return "$minutes:$seconds";
+          }
+
+          return Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    formatDuration(current),
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: isDark ? AppColors.whiteColor : Colors.black87,
                     ),
-                    overlayShape: SliderComponentShape.noOverlay,
                   ),
-                  child: Slider(
-                    value: 0.3,
-                    onChanged: (v) {},
-                    activeColor: kPrimaryBrown,
-                    inactiveColor: Colors.grey.shade300,
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    child: SliderTheme(
+                      data: SliderTheme.of(context).copyWith(
+                        trackHeight: 2,
+                        thumbShape: const RoundSliderThumbShape(
+                          enabledThumbRadius: 4,
+                        ),
+                        overlayShape: SliderComponentShape.noOverlay,
+                      ),
+                      child: Slider(
+                        value: total.inMilliseconds > 0
+                            ? (current.inMilliseconds / total.inMilliseconds)
+                                  .clamp(0.0, 1.0)
+                            : 0.0,
+                        onChanged: (v) {
+                          if (total.inMilliseconds > 0) {
+                            final seekTo = Duration(
+                              milliseconds: (v * total.inMilliseconds).toInt(),
+                            );
+                            controller.seekAudio(seekTo);
+                          }
+                        },
+                        activeColor: kPrimaryBrown,
+                        inactiveColor: Colors.grey.shade300,
+                      ),
+                    ),
                   ),
-                ),
-                Text(
-                  "10:25",
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: isDark ? AppColors.whiteColor : Colors.black87,
+                  Text(
+                    formatDuration(total),
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: isDark ? AppColors.whiteColor : Colors.black87,
+                    ),
                   ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.skip_previous,
-                  color: isDark ? AppColors.whiteColor : Colors.black87,
-                ),
-                SizedBox(width: 20),
-                Icon(
-                  Icons.play_circle_filled,
-                  size: 40,
-                  color: isDark ? AppColors.whiteColor : Colors.black87,
-                ),
-                SizedBox(width: 20),
-                Icon(
-                  Icons.skip_next,
-                  color: isDark ? AppColors.whiteColor : Colors.black87,
-                ),
-              ],
-            ),
-          ],
-        ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () => controller.stopAudio(),
+                    icon: Icon(
+                      Icons.stop,
+                      color: isDark ? AppColors.whiteColor : Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  IconButton(
+                    onPressed: () {
+                      if (isPlaying) {
+                        controller.pauseAudio();
+                      } else {
+                        controller.playAudio();
+                      }
+                    },
+                    icon: Icon(
+                      isPlaying
+                          ? Icons.pause_circle_filled
+                          : Icons.play_circle_filled,
+                      size: 40,
+                      color: isDark ? AppColors.whiteColor : Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  IconButton(
+                    onPressed: () {}, // Future: Skip next
+                    icon: Icon(
+                      Icons.skip_next,
+                      color: isDark ? AppColors.whiteColor : Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        }),
         const SizedBox(height: 10),
         Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            itemCount: 10,
-            itemBuilder: (context, i) => _verseItem(i + 1),
-          ),
+          child: Obx(() {
+            if (controller.isVerseLoading.value) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (controller.verseList.isEmpty) {
+              return const Center(child: Text("No verses found"));
+            }
+            return ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              itemCount: controller.verseList.length,
+              itemBuilder: (context, i) => _verseItem(controller.verseList[i]),
+            );
+          }),
         ),
       ],
     );
   }
 
   Widget _buildTafsirReader() {
-    return ListView.builder(
-      padding: const EdgeInsets.all(20),
-      itemCount: 10,
-      itemBuilder: (context, i) => Padding(
-        padding: const EdgeInsets.only(bottom: 25),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: const [
-                Icon(Icons.menu_book, size: 16, color: kPrimaryBrown),
-                SizedBox(width: 8),
-                Text("Verse 1:", style: TextStyle(fontWeight: FontWeight.bold)),
+    return Obx(() {
+      if (controller.isTafsirLoading.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      if (controller.tafsirList.isEmpty) {
+        return const Center(child: Text("No tafsir found"));
+      }
+      return ListView.builder(
+        padding: const EdgeInsets.all(20),
+        itemCount: controller.tafsirList.length,
+        itemBuilder: (context, i) {
+          final tafsir = controller.tafsirList[i];
+          // Simple regex to strip HTML tags if present
+          final plainContent =
+              tafsir.content?.replaceAll(RegExp(r'<[^>]*>'), '') ?? '';
+
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 25),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.menu_book, size: 16, color: kPrimaryBrown),
+                    const SizedBox(width: 8),
+                    Text(
+                      "Verse ${tafsir.startKey ?? ''}:",
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  plainContent,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
               ],
             ),
-            const SizedBox(height: 10),
-            Text(
-              "These are muqatta'at — disconnected letters. Scholars say their precise meaning is known only to Allah. They draw attention to the miraculous nature of the Qur'an, which is composed of familiar Arabic letters yet cannot be matched by human speech.",
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ],
-        ),
-      ),
-    );
+          );
+        },
+      );
+    });
   }
 
-  Widget _verseItem(int index) {
+  Widget _verseItem(vm.Data verse) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Column(
@@ -512,31 +667,34 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Align(
+                    Align(
                       alignment: Alignment.centerRight,
                       child: Text(
-                        "ذَٰلِكَ الْكِتَابُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى لِّلْمُتَّقِينَ",
+                        verse.ayah ?? '',
                         textAlign: TextAlign.right,
-                        style: TextStyle(
-                          fontSize: 18,
+                        style: const TextStyle(
+                          fontSize: 22,
                           fontWeight: FontWeight.bold,
                           height: 1.8,
                         ),
                       ),
                     ),
                     const SizedBox(height: 10),
-                    const Text(
-                      "Zaalikal kitaabu laa raiba feeh, hudal lil-muttaqeen",
-                      style: TextStyle(
-                        fontSize: 11,
+                    Text(
+                      verse.transliteration ?? '',
+                      style: const TextStyle(
+                        fontSize: 13,
                         fontStyle: FontStyle.italic,
                         color: kLightGrey,
                       ),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
-                      "This is the Book about which there is no doubt, a guidance for the righteous.",
-                      style: TextStyle(fontSize: 12, color: Colors.black87),
+                    Text(
+                      verse.translation ?? '',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.black87,
+                      ),
                     ),
                   ],
                 ),
@@ -545,7 +703,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
               Column(
                 children: [
                   Text(
-                    "$index",
+                    "${verse.number ?? ''}",
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -558,10 +716,16 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                     color: Colors.grey,
                   ),
                   const SizedBox(height: 5),
-                  const Icon(
-                    Icons.play_circle_outline,
-                    size: 16,
-                    color: Colors.grey,
+                  IconButton(
+                    onPressed: () => controller.playVerse(verse.verseKey),
+                    icon: const Icon(
+                      Icons.play_circle_outline,
+                      size: 20,
+                      color: kPrimaryBrown,
+                    ),
+                    visualDensity: VisualDensity.compact,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
                   ),
                 ],
               ),

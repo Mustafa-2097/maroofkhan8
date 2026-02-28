@@ -33,15 +33,24 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: 10),
 
               /// User Image
-              CircleAvatar(
-                radius: 50,
-                backgroundColor: isDark
-                    ? const Color(0xFF494358)
-                    : Colors.grey.shade200,
-                child: Icon(
-                  Icons.person,
-                  size: 60,
-                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+              Obx(
+                () => CircleAvatar(
+                  radius: 50,
+                  backgroundColor: isDark
+                      ? const Color(0xFF494358)
+                      : Colors.grey.shade200,
+                  backgroundImage: controller.avatar.value.isNotEmpty
+                      ? NetworkImage(controller.avatar.value)
+                      : null,
+                  child: controller.avatar.value.isEmpty
+                      ? Icon(
+                          Icons.person,
+                          size: 60,
+                          color: isDark
+                              ? Colors.grey.shade400
+                              : Colors.grey.shade600,
+                        )
+                      : null,
                 ),
               ),
               const SizedBox(height: 16),
@@ -121,22 +130,21 @@ class ProfileScreen extends StatelessWidget {
                               Icon(
                                 Icons.auto_awesome,
                                 size: 20,
-                                color:Colors.white,
-                               // color: Theme.of(context).colorScheme.onPrimary,
+                                color: Colors.white,
+                                // color: Theme.of(context).colorScheme.onPrimary,
                               ),
                               const SizedBox(width: 8),
                               Text(
                                 "Basic Plan",
                                 style: TextStyle(
-                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimary,
                                   fontWeight: FontWeight.bold,
                                 ),
-
                               ),
-
                             ],
                           ),
-
                         ),
 
                         const Spacer(),

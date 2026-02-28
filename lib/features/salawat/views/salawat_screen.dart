@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../controller/salawat_controller.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -17,6 +19,8 @@ class SalawatListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(SalawatController());
+
     return Scaffold(
       backgroundColor: kBackground,
       appBar: _buildAppBar(context),
@@ -56,7 +60,11 @@ class SalawatListScreen extends StatelessWidget {
                     border: Border.all(color: Colors.grey.shade200),
                     color: Colors.white,
                   ),
-                  child: const Icon(Icons.bookmark_border, color: Colors.grey, size: 20),
+                  child: const Icon(
+                    Icons.bookmark_border,
+                    color: Colors.grey,
+                    size: 20,
+                  ),
                 ),
               ],
             ),
@@ -64,19 +72,30 @@ class SalawatListScreen extends StatelessWidget {
 
             // List Items
             Expanded(
-              child: ListView(
-                children: [
-                  _SalawatListItem(
-                    title: "Durood Ibrahim (Most Well-Known Salawat)",
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SalawatDetailScreen())),
-                  ),
-                  _SalawatListItem(title: "Salawat with Salam (Salutation)", onTap: () {}),
-                  _SalawatListItem(title: "Salawat for the Ummah (Durood Abrar)", onTap: () {}),
-                  _SalawatListItem(title: "Masnoon Salawat", onTap: () {}),
-                  _SalawatListItem(title: "Complete & Healing Salawat (Durood Kamil)", onTap: () {}),
-                  _SalawatListItem(title: "Salawat for Maqam Mahmood", onTap: () {}),
-                ],
-              ),
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (controller.salawatList.isEmpty) {
+                  return const Center(child: Text("No items found"));
+                }
+
+                return ListView.builder(
+                  itemCount: controller.salawatList.length,
+                  itemBuilder: (context, index) {
+                    final salawat = controller.salawatList[index];
+                    return _SalawatListItem(
+                      title: salawat.title ?? "Untitled",
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const SalawatDetailScreen(),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }),
             ),
           ],
         ),
@@ -102,7 +121,11 @@ class _SalawatListItem extends StatelessWidget {
           color: kCardColor,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, 4)),
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
           ],
         ),
         child: Row(
@@ -113,7 +136,11 @@ class _SalawatListItem extends StatelessWidget {
                 border: Border.all(color: kPrimaryBrown, width: 1.5),
                 borderRadius: BorderRadius.circular(4),
               ),
-              child: const Icon(Icons.menu_book_outlined, color: kPrimaryBrown, size: 16),
+              child: const Icon(
+                Icons.menu_book_outlined,
+                color: kPrimaryBrown,
+                size: 16,
+              ),
             ),
             const SizedBox(width: 15),
             Expanded(
@@ -127,7 +154,11 @@ class _SalawatListItem extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 10),
-            Icon(Icons.arrow_circle_right_outlined, color: kPrimaryBrown.withOpacity(0.8), size: 22),
+            Icon(
+              Icons.arrow_circle_right_outlined,
+              color: kPrimaryBrown.withOpacity(0.8),
+              size: 22,
+            ),
           ],
         ),
       ),
@@ -170,12 +201,20 @@ class SalawatDetailScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(8),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 5)],
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.03),
+                    blurRadius: 5,
+                  ),
+                ],
               ),
               child: Text(
                 "Durood Ibrahim (The Most Well-Known Salawat)",
                 textAlign: TextAlign.center,
-                style: GoogleFonts.playfairDisplay(fontSize: 14, fontWeight: FontWeight.bold),
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -186,13 +225,22 @@ class SalawatDetailScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(15),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 10)],
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 10,
+                  ),
+                ],
               ),
               child: Column(
                 children: [
                   const Align(
                     alignment: Alignment.topRight,
-                    child: Icon(Icons.favorite_border, size: 20, color: Colors.grey),
+                    child: Icon(
+                      Icons.favorite_border,
+                      size: 20,
+                      color: Colors.grey,
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Text(
@@ -225,8 +273,20 @@ class SalawatDetailScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
-                    Text("02:25", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-                    Text("10:25", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                    Text(
+                      "02:25",
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "10:25",
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
                 SliderTheme(
@@ -235,7 +295,9 @@ class SalawatDetailScreen extends StatelessWidget {
                     inactiveTrackColor: Colors.grey.shade300,
                     thumbColor: kPrimaryBrown,
                     trackHeight: 3,
-                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 4),
+                    thumbShape: const RoundSliderThumbShape(
+                      enabledThumbRadius: 4,
+                    ),
                     overlayShape: SliderComponentShape.noOverlay,
                   ),
                   child: Slider(value: 0.35, onChanged: (v) {}),
@@ -246,7 +308,11 @@ class SalawatDetailScreen extends StatelessWidget {
                   children: const [
                     Icon(Icons.skip_previous, size: 24, color: Colors.black54),
                     SizedBox(width: 30),
-                    Icon(Icons.play_circle_outline, size: 36, color: Colors.black),
+                    Icon(
+                      Icons.play_circle_outline,
+                      size: 36,
+                      color: Colors.black,
+                    ),
                     SizedBox(width: 30),
                     Icon(Icons.skip_next, size: 24, color: Colors.black54),
                   ],
@@ -266,13 +332,29 @@ class SalawatDetailScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _ActionButton(icon: Icons.headset, label: "Listen", isActive: true),
+                  _ActionButton(
+                    icon: Icons.headset,
+                    label: "Listen",
+                    isActive: true,
+                  ),
                   _VerticalDivider(),
-                  _ActionButton(icon: Icons.auto_awesome, label: "AI Explanation", isActive: false),
+                  _ActionButton(
+                    icon: Icons.auto_awesome,
+                    label: "AI Explanation",
+                    isActive: false,
+                  ),
                   _VerticalDivider(),
-                  _ActionButton(icon: Icons.share_outlined, label: "Share", isActive: false),
+                  _ActionButton(
+                    icon: Icons.share_outlined,
+                    label: "Share",
+                    isActive: false,
+                  ),
                   _VerticalDivider(),
-                  _ActionButton(icon: Icons.download_outlined, label: "Download", isActive: false),
+                  _ActionButton(
+                    icon: Icons.download_outlined,
+                    label: "Download",
+                    isActive: false,
+                  ),
                 ],
               ),
             ),
@@ -285,16 +367,32 @@ class SalawatDetailScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(15),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 10)],
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 10,
+                  ),
+                ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Meaning:", style: GoogleFonts.playfairDisplay(fontSize: 14, fontWeight: FontWeight.bold, color: kPrimaryBrown)),
+                  Text(
+                    "Meaning:",
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: kPrimaryBrown,
+                    ),
+                  ),
                   const SizedBox(height: 5),
                   const Text(
                     "O Allah, send blessings upon Muhammad and the family of Muhammad as You sent blessings upon Ibrahim and his family. Indeed, You are Praiseworthy and Glorious.\nO Allah, bless Muhammad and the family of Muhammad as You blessed Ibrahim and his family.",
-                    style: TextStyle(fontSize: 12, height: 1.4, color: kTextDark),
+                    style: TextStyle(
+                      fontSize: 12,
+                      height: 1.4,
+                      color: kTextDark,
+                    ),
                   ),
                 ],
               ),
@@ -325,7 +423,11 @@ class _TabButton extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
@@ -336,7 +438,11 @@ class _ActionButton extends StatelessWidget {
   final String label;
   final bool isActive;
 
-  const _ActionButton({required this.icon, required this.label, required this.isActive});
+  const _ActionButton({
+    required this.icon,
+    required this.label,
+    required this.isActive,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -361,11 +467,7 @@ class _ActionButton extends StatelessWidget {
 class _VerticalDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 25,
-      width: 1,
-      color: Colors.grey.shade300,
-    );
+    return Container(height: 25, width: 1, color: Colors.grey.shade300);
   }
 }
 

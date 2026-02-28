@@ -15,11 +15,15 @@ class SurahModel {
 
   factory SurahModel.fromJson(Map<String, dynamic> json) {
     return SurahModel(
-      id: json['id'],
-      name: json['name'],
-      translatedName: json['nameTranslated'],
-      versesCount: json['versesCount'],
-      revelationPlace: json['revelationPlace'],
+      id: json['id'] is int
+          ? json['id']
+          : int.tryParse(json['id'].toString()) ?? 0,
+      name: json['name'] ?? '',
+      translatedName: json['nameTranslated'] ?? json['translatedName'] ?? '',
+      versesCount: json['versesCount'] is int
+          ? json['versesCount']
+          : int.tryParse(json['versesCount'].toString()) ?? 0,
+      revelationPlace: json['revelationPlace'] ?? '',
     );
   }
 }

@@ -42,8 +42,13 @@ class ApiEndpoints {
 
   /// Quran
   static const String Surah = '$baseUrl/quran/chapters';
-  static const String Juz = '$baseUrl/quran/juzs?series=1';
+  static String surahDetails(String id) => '$baseUrl/quran/chapters/$id/verses';
+  static String surahTafsir(String id) => '$baseUrl/quran/chapters/$id/tafsir';
+  static String surahAudio(String id) =>
+      '$baseUrl/quran/chapters/$id/audio?segments=true';
+  static const String juzs = '$baseUrl/quran/juzs?series=1';
   static const String lastRead = '$baseUrl/quran/last-read';
+  static String deleteLastRead(String id) => '$baseUrl/quran/last-read/$id';
 
   /// Duas
   static const String duas = '$baseUrl/duas';
@@ -70,16 +75,9 @@ class ApiEndpoints {
 
   /// Sahaba
   static const String sahaba = '$baseUrl/sahaba';
-  static String sahabaDetails(String id) => '$baseUrl/sahaba/$id';
-
-  /// Tasbih (Dhikr)
-  static const String tasbih = '$baseUrl/tasbih';
-
-  /// Allah Names
-  static const String allahNames = '$baseUrl/names/allah';
-  static String toggleAllahNameSave(String id) =>
-      '$baseUrl/names/allah/$id/save';
-  static const String savedAllahNames = '$baseUrl/names/allah/save';
-  static String deleteSavedAllahName(String id) =>
-      '$baseUrl/names/allah/save/$id';
+  static const String salawat = '$baseUrl/salawat';
+  static const String books = '$baseUrl/books';
+  static const String meditation = '$baseUrl/meditation';
+  static const String profile = '$baseUrl/me';
+  static const String subscriptionPlan = '$baseUrl/subscription-plan';
 }
