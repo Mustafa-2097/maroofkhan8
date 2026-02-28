@@ -1,19 +1,35 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../../core/network/api_endpoints.dart';
 import '../model/surah_model.dart';
-import '../model/juz_model.dart';
+import '../model/juz_model.dart' as jm;
 import '../model/last_read_model.dart';
+import '../model/verse_model.dart' as vm;
+import '../model/tafsir_model.dart' as tm;
+import '../model/audio_model.dart' as am;
 import '../../../core/offline_storage/shared_pref.dart';
 
 class QuranController extends GetxController {
   var surahList = <SurahModel>[].obs;
   var isLoading = false.obs;
-  var juzList = <Data>[].obs;
+  var juzList = <jm.Data>[].obs;
   var isJuzLoading = false.obs;
   var lastReadList = <LastReadData>[].obs;
   var isLastReadLoading = false.obs;
+  var verseList = <vm.Data>[].obs;
+  var isVerseLoading = false.obs;
+  var tafsirList = <tm.Data>[].obs;
+  var isTafsirLoading = false.obs;
+  var surahAudio = Rxn<am.Data>();
+  var isAudioLoading = false.obs;
+  var currentSurahId = Rxn<int>();
+
+  final AudioPlayer audioPlayer = AudioPlayer();
+  var playerState = PlayerState.stopped.obs;
+  var currentDuration = Duration.zero.obs;
+  var totalDuration = Duration.zero.obs;
 
   // Dummy data for fallback
   final List<SurahModel> dummySurahs = [
@@ -78,11 +94,29 @@ class QuranController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Initialize with dummy data only for surahs
-    surahList.assignAll(dummySurahs);
     fetchSurahs();
     fetchJuzs();
     fetchLastRead();
+
+    audioPlayer.onPlayerStateChanged.listen((state) {
+      print("DEBUG: Player State Changed: $state");
+      playerState.value = state;
+    });
+
+    audioPlayer.onDurationChanged.listen((duration) {
+      print("DEBUG: Audio Duration: $duration");
+      totalDuration.value = duration;
+    });
+
+    audioPlayer.onPositionChanged.listen((position) {
+      currentDuration.value = position;
+    });
+  }
+
+  @override
+  void onClose() {
+    audioPlayer.dispose();
+    super.onClose();
   }
 
   Future<void> fetchSurahs() async {
@@ -110,6 +144,8 @@ class QuranController extends GetxController {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final decoded = jsonDecode(response.body);
         dynamic surahData = decoded['data'];
+        print("DEBUG: Found surahData: ${surahData != null}");
+
         if (surahData != null) {
           List<dynamic> chapters;
           if (surahData is List) {
@@ -117,18 +153,27 @@ class QuranController extends GetxController {
           } else if (surahData is Map && surahData['chapters'] is List) {
             chapters = surahData['chapters'];
           } else {
+            print("DEBUG: Unexpected data format: ${surahData.runtimeType}");
             return;
           }
-          surahList.value = chapters
-              .map((json) => SurahModel.fromJson(json))
-              .toList();
+
+          final List<SurahModel> parsedSurahs = [];
+          for (var i = 0; i < chapters.length; i++) {
+            try {
+              parsedSurahs.add(SurahModel.fromJson(chapters[i]));
+            } catch (modelError) {
+              print("DEBUG: Error parsing surah at index $i: $modelError");
+              print("DEBUG: Problematic JSON: ${chapters[i]}");
+            }
+          }
+          surahList.value = parsedSurahs;
+          print("DEBUG: Successfully loaded ${parsedSurahs.length} surahs");
         }
       } else {
         print("DEBUG: API rejected request with status ${response.statusCode}");
       }
     } catch (e) {
-      // Keep dummy data if fetch fails
-      print("Error fetching surahs, using fallback: $e");
+      print("Error fetching surahs: $e");
     } finally {
       isLoading.value = false;
     }
@@ -145,7 +190,7 @@ class QuranController extends GetxController {
         if (token != null) 'access_token': '$token',
       };
 
-      final url = Uri.parse(ApiEndpoints.Juz);
+      final url = Uri.parse(ApiEndpoints.juzs);
       final response = await http
           .get(url, headers: headers)
           .timeout(const Duration(seconds: 30));
@@ -154,7 +199,9 @@ class QuranController extends GetxController {
         final decoded = jsonDecode(response.body);
         dynamic juzData = decoded['data'];
         if (juzData != null && juzData is List) {
-          juzList.value = juzData.map((json) => Data.fromJson(json)).toList();
+          juzList.value = juzData
+              .map((json) => jm.Data.fromJson(json))
+              .toList();
         }
       } else {
         print(
@@ -210,5 +257,271 @@ class QuranController extends GetxController {
     } finally {
       isLastReadLoading.value = false;
     }
+  }
+
+  Future<void> fetchSurahVerses(int id) async {
+    try {
+      isVerseLoading.value = true;
+      verseList.clear();
+      final token = await SharedPreferencesHelper.getToken();
+
+      final headers = {
+        if (token != null) 'Authorization': '$token',
+        if (token != null) 'token': '$token',
+        if (token != null) 'access_token': '$token',
+      };
+
+      final url = Uri.parse(ApiEndpoints.surahDetails(id.toString()));
+      final response = await http
+          .get(url, headers: headers)
+          .timeout(const Duration(seconds: 30));
+
+      print("DEBUG: Surah Verses Status Code: ${response.statusCode}");
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final decoded = jsonDecode(response.body);
+        final verseResponse = vm.VerseModel.fromJson(decoded);
+        if (verseResponse.data != null) {
+          verseList.value = verseResponse.data!;
+        }
+      } else {
+        print(
+          "DEBUG: Surah Details API rejected request with status ${response.statusCode}",
+        );
+        verseList.clear();
+      }
+    } catch (e) {
+      print("Error fetching surah verses: $e");
+      verseList.clear();
+    } finally {
+      isVerseLoading.value = false;
+    }
+  }
+
+  Future<void> fetchSurahTafsir(int id) async {
+    try {
+      isTafsirLoading.value = true;
+      tafsirList.clear();
+      final token = await SharedPreferencesHelper.getToken();
+
+      final headers = {
+        if (token != null) 'Authorization': '$token',
+        if (token != null) 'token': '$token',
+        if (token != null) 'access_token': '$token',
+      };
+
+      final url = Uri.parse(ApiEndpoints.surahTafsir(id.toString()));
+      final response = await http
+          .get(url, headers: headers)
+          .timeout(const Duration(seconds: 30));
+
+      print("DEBUG: Surah Tafsir Status Code: ${response.statusCode}");
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final decoded = jsonDecode(response.body);
+        final tafsirResponse = tm.TafsirModel.fromJson(decoded);
+        if (tafsirResponse.data != null) {
+          tafsirList.value = tafsirResponse.data!;
+        }
+      } else {
+        print(
+          "DEBUG: Surah Tafsir API rejected request with status ${response.statusCode}",
+        );
+        tafsirList.clear();
+      }
+    } catch (e) {
+      print("Error fetching surah tafsir: $e");
+      tafsirList.clear();
+    } finally {
+      isTafsirLoading.value = false;
+    }
+  }
+
+  Future<void> fetchSurahAudio(int id) async {
+    try {
+      isAudioLoading.value = true;
+      surahAudio.value = null;
+      currentSurahId.value = id;
+      print("DEBUG: Fetching audio for Surah $id");
+      final token = await SharedPreferencesHelper.getToken();
+
+      final headers = {
+        if (token != null) 'Authorization': '$token',
+        if (token != null) 'token': '$token',
+        if (token != null) 'access_token': '$token',
+      };
+
+      final url = Uri.parse(ApiEndpoints.surahAudio(id.toString()));
+      final response = await http
+          .get(url, headers: headers)
+          .timeout(const Duration(seconds: 30));
+
+      print("DEBUG: Surah Audio Status Code: ${response.statusCode}");
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final decoded = jsonDecode(response.body);
+        final audioResponse = am.AudioResponse.fromJson(decoded);
+        if (audioResponse.data != null) {
+          surahAudio.value = audioResponse.data;
+          print("DEBUG: Fetched Audio URL: ${surahAudio.value?.url}");
+        } else {
+          print("DEBUG: Audio data is null in response");
+        }
+      } else {
+        print(
+          "DEBUG: Surah Audio API rejected request with status ${response.statusCode}",
+        );
+        surahAudio.value = null;
+      }
+    } catch (e) {
+      print("Error fetching surah audio: $e");
+      surahAudio.value = null;
+    } finally {
+      isAudioLoading.value = false;
+    }
+  }
+
+  Future<void> playAudio() async {
+    try {
+      if (surahAudio.value?.url == null) {
+        print("DEBUG: Cannot play audio, URL is null");
+        return;
+      }
+
+      print("DEBUG: Attempting to play: ${surahAudio.value!.url}");
+      if (playerState.value == PlayerState.paused) {
+        await audioPlayer.resume();
+      } else {
+        await audioPlayer.play(UrlSource(surahAudio.value!.url!));
+      }
+    } catch (e) {
+      print("DEBUG: Error playing audio: $e");
+    }
+  }
+
+  Future<void> pauseAudio() async {
+    await audioPlayer.pause();
+  }
+
+  Future<void> stopAudio() async {
+    await audioPlayer.stop();
+  }
+
+  Future<void> seekAudio(Duration duration) async {
+    await audioPlayer.seek(duration);
+  }
+
+  Future<void> playVerse(String? verseKey) async {
+    if (verseKey == null || surahAudio.value == null) return;
+
+    final segment = surahAudio.value!.segments?.firstWhereOrNull(
+      (s) => s.verseKey == verseKey,
+    );
+
+    if (segment != null && segment.timestampFrom != null) {
+      await seekAudio(Duration(milliseconds: segment.timestampFrom!));
+      await playAudio();
+
+      // Update last read when a specific verse is played
+      final verseParts = verseKey.split(':');
+      if (verseParts.length == 2) {
+        final chapterId = int.tryParse(verseParts[0]);
+        final verseNum = int.tryParse(verseParts[1]);
+        if (chapterId != null && verseNum != null) {
+          updateLastRead(chapterId, verseNum);
+        }
+      }
+    }
+  }
+
+  Future<void> updateLastRead(int chapterId, int verse) async {
+    try {
+      final token = await SharedPreferencesHelper.getToken();
+      final headers = {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': '$token',
+        if (token != null) 'token': '$token',
+        if (token != null) 'access_token': '$token',
+      };
+
+      final body = jsonEncode({"chapter": chapterId, "verse": verse});
+
+      final url = Uri.parse(ApiEndpoints.lastRead);
+      final response = await http.post(url, headers: headers, body: body);
+
+      print("DEBUG: Update Last Read Status Code: ${response.statusCode}");
+      print("DEBUG: Update Last Read Response: ${response.body}");
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        fetchLastRead();
+      }
+    } catch (e) {
+      print("Error updating last read: $e");
+    }
+  }
+
+  Future<void> postChapters(int chapterId) async {
+    try {
+      final token = await SharedPreferencesHelper.getToken();
+      final headers = {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': '$token',
+        if (token != null) 'token': '$token',
+        if (token != null) 'access_token': '$token',
+      };
+
+      final body = jsonEncode({"chapter": chapterId});
+      final url = Uri.parse(ApiEndpoints.Surah);
+      final response = await http.post(url, headers: headers, body: body);
+
+      print("DEBUG: Post Chapters Status Code: ${response.statusCode}");
+      print("DEBUG: Post Chapters Response: ${response.body}");
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        fetchSurahs();
+      }
+    } catch (e) {
+      print("Error posting chapters: $e");
+    }
+  }
+
+  Future<void> deleteLastReadRecord(String id) async {
+    try {
+      final token = await SharedPreferencesHelper.getToken();
+      final headers = {
+        if (token != null) 'Authorization': '$token',
+        if (token != null) 'token': '$token',
+        if (token != null) 'access_token': '$token',
+      };
+
+      final url = Uri.parse(ApiEndpoints.deleteLastRead(id));
+      final response = await http.delete(url, headers: headers);
+
+      print("DEBUG: Delete Last Read Status Code: ${response.statusCode}");
+      print("DEBUG: Delete Last Read Response: ${response.body}");
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        // Refresh the list after deletion
+        fetchLastRead();
+      }
+    } catch (e) {
+      print("Error deleting last read record: $e");
+    }
+  }
+
+  Future<void> playSurahDirectly(SurahModel surah) async {
+    // If it's already playing this surah, just toggle
+    if (currentSurahId.value == surah.id && surahAudio.value?.url != null) {
+      if (playerState.value == PlayerState.playing) {
+        await pauseAudio();
+      } else {
+        await playAudio();
+      }
+      return;
+    }
+
+    // Otherwise, fetch and play
+    await fetchSurahAudio(surah.id);
+    await playAudio();
   }
 }

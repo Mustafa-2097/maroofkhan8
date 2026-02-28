@@ -25,8 +25,8 @@ class _UserNavBarState extends State<CustomBottomNavBar> {
   final List<Widget> pages = [
     DashboardScreen(),
     ChatScreen(),
-    QuranScreen(),
-    HadithScreen(),
+    QuranScreen(hideBack: true),
+    HadithScreen(hideBack: true),
     SufismHomeScreen(),
   ];
 
@@ -51,7 +51,8 @@ class _UserNavBarState extends State<CustomBottomNavBar> {
                 final direction = notification.direction;
                 if (direction == ScrollDirection.reverse && _isNavbarVisible) {
                   setState(() => _isNavbarVisible = false);
-                } else if (direction == ScrollDirection.forward && !_isNavbarVisible) {
+                } else if (direction == ScrollDirection.forward &&
+                    !_isNavbarVisible) {
                   setState(() => _isNavbarVisible = true);
                 }
               }
@@ -66,9 +67,7 @@ class _UserNavBarState extends State<CustomBottomNavBar> {
             curve: Curves.easeInOutCubic,
             left: 20,
             right: 20,
-            bottom: keyboardOpen
-                ? -100
-                : (_isNavbarVisible ? 25 : -100),
+            bottom: keyboardOpen ? -100 : (_isNavbarVisible ? 25 : -100),
             child: Container(
               height: 70,
               decoration: BoxDecoration(
@@ -97,12 +96,12 @@ class _UserNavBarState extends State<CustomBottomNavBar> {
                   ),
                   _buildNavItem(
                     icon: Icons.menu_book_outlined,
-                    label: "Hadith",
+                    label: "Quran",
                     index: 2,
                   ),
                   _buildNavItem(
                     icon: Icons.import_contacts, // Quran Icon
-                    label: "Quran",
+                    label: "Hadith",
                     index: 3,
                   ),
                   _buildNavItem(
@@ -136,11 +135,7 @@ class _UserNavBarState extends State<CustomBottomNavBar> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                icon,
-                color: color,
-                size: 26,
-              ),
+              Icon(icon, color: color, size: 26),
               const SizedBox(height: 4),
               Text(
                 label,
@@ -167,5 +162,4 @@ class _UserNavBarState extends State<CustomBottomNavBar> {
       ),
     );
   }
-
 }

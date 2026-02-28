@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:audioplayers/audioplayers.dart';
+import '../controller/meditation_controller.dart';
+import '../model/meditation_model.dart';
 
 class IslaahApp extends StatelessWidget {
   const IslaahApp({super.key});
@@ -29,7 +33,14 @@ class CustomHeader extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 20.0),
       child: Row(
         children: [
-          const Expanded(child: Divider(color: Color(0xFF8D4B33), indent: 40, endIndent: 10, thickness: 0.8)),
+          const Expanded(
+            child: Divider(
+              color: Color(0xFF8D4B33),
+              indent: 40,
+              endIndent: 10,
+              thickness: 0.8,
+            ),
+          ),
           Text(
             title.toUpperCase(),
             style: GoogleFonts.ebGaramond(
@@ -39,7 +50,14 @@ class CustomHeader extends StatelessWidget {
               color: const Color(0xFF8D4B33),
             ),
           ),
-          const Expanded(child: Divider(color: Color(0xFF8D4B33), indent: 10, endIndent: 40, thickness: 0.8)),
+          const Expanded(
+            child: Divider(
+              color: Color(0xFF8D4B33),
+              indent: 10,
+              endIndent: 40,
+              thickness: 0.8,
+            ),
+          ),
         ],
       ),
     );
@@ -51,7 +69,12 @@ class CategoryCard extends StatelessWidget {
   final String subtitle;
   final IconData icon;
 
-  const CategoryCard({super.key, required this.title, required this.subtitle, required this.icon});
+  const CategoryCard({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +86,11 @@ class CategoryCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey.withOpacity(0.1)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 4)),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
         ],
       ),
       child: Row(
@@ -74,16 +101,35 @@ class CategoryCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: GoogleFonts.playfairDisplay(fontSize: 16, fontWeight: FontWeight.bold)),
-                Text(subtitle, style: GoogleFonts.ebGaramond(fontSize: 13, color: Colors.grey[600])),
+                Text(
+                  title,
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  subtitle,
+                  style: GoogleFonts.ebGaramond(
+                    fontSize: 13,
+                    color: Colors.grey[600],
+                  ),
+                ),
               ],
             ),
           ),
           Container(
             padding: const EdgeInsets.all(4),
-            decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFF8D4B33)),
-            child: const Icon(Icons.chevron_right, color: Colors.white, size: 16),
-          )
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Color(0xFF8D4B33),
+            ),
+            child: const Icon(
+              Icons.chevron_right,
+              color: Colors.white,
+              size: 16,
+            ),
+          ),
         ],
       ),
     );
@@ -98,29 +144,46 @@ class MainMenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(MeditationController());
+
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
             const CustomHeader(title: "Islaah & Meditation"),
             const SizedBox(height: 20),
-            GestureDetector(
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (c) => const MeditationPlayerScreen())),
-              child: const CategoryCard(
-                title: "Inner Peace",
-                subtitle: "Find tranquility within",
-                icon: Icons.self_improvement,
-              ),
-            ),
-            const CategoryCard(
-              title: "Relief from Anxiety",
-              subtitle: "Calm your mind",
-              icon: Icons.spa_outlined,
-            ),
-            const CategoryCard(
-              title: "Journey of Repentance",
-              subtitle: "Calm your mind",
-              icon: Icons.auto_awesome_outlined,
+            Expanded(
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (controller.meditationList.isEmpty) {
+                  return const Center(
+                    child: Text("No meditation records found"),
+                  );
+                }
+
+                return ListView.builder(
+                  itemCount: controller.meditationList.length,
+                  itemBuilder: (context, index) {
+                    final med = controller.meditationList[index];
+                    return GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (c) =>
+                              MeditationPlayerScreen(meditation: med),
+                        ),
+                      ),
+                      child: CategoryCard(
+                        title: med.title ?? "Untitled",
+                        subtitle: med.subtitle ?? "",
+                        icon: Icons.self_improvement,
+                      ),
+                    );
+                  },
+                );
+              }),
             ),
           ],
         ),
@@ -130,8 +193,81 @@ class MainMenuScreen extends StatelessWidget {
 }
 
 // 2. Meditation Player Screen (Matches Screen 5, 6, 7)
-class MeditationPlayerScreen extends StatelessWidget {
-  const MeditationPlayerScreen({super.key});
+class MeditationPlayerScreen extends StatefulWidget {
+  final MeditationData meditation;
+
+  const MeditationPlayerScreen({super.key, required this.meditation});
+
+  @override
+  State<MeditationPlayerScreen> createState() => _MeditationPlayerScreenState();
+}
+
+class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
+  late AudioPlayer player;
+  PlayerState playerState = PlayerState.stopped;
+  Duration duration = Duration.zero;
+  Duration position = Duration.zero;
+
+  @override
+  void initState() {
+    super.initState();
+    player = AudioPlayer();
+
+    // Set source
+    if (widget.meditation.file != null) {
+      player.setSourceUrl(widget.meditation.file!);
+    }
+
+    // Listen to player state
+    player.onPlayerStateChanged.listen((state) {
+      if (mounted) {
+        setState(() {
+          playerState = state;
+        });
+      }
+    });
+
+    // Listen to duration
+    player.onDurationChanged.listen((d) {
+      if (mounted) {
+        setState(() {
+          duration = d;
+        });
+      }
+    });
+
+    // Listen to position
+    player.onPositionChanged.listen((p) {
+      if (mounted) {
+        setState(() {
+          position = p;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    player.dispose();
+    super.dispose();
+  }
+
+  String formatDuration(Duration d) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(d.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(d.inSeconds.remainder(60));
+    return "$twoDigitMinutes:$twoDigitSeconds";
+  }
+
+  void _togglePlay() async {
+    if (playerState == PlayerState.playing) {
+      await player.pause();
+    } else {
+      if (widget.meditation.file != null) {
+        await player.play(UrlSource(widget.meditation.file!));
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -139,12 +275,17 @@ class MeditationPlayerScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            const CustomHeader(title: "Inner Peace"),
+            CustomHeader(title: widget.meditation.title ?? "Inner Peace"),
             const SizedBox(height: 20),
             Text(
-              "Calm your heart, balance your\nmind",
+              widget.meditation.subtitle ??
+                  "Calm your heart, balance your\nmind",
               textAlign: TextAlign.center,
-              style: GoogleFonts.ebGaramond(fontSize: 18, fontStyle: FontStyle.italic, color: Colors.black87),
+              style: GoogleFonts.ebGaramond(
+                fontSize: 18,
+                fontStyle: FontStyle.italic,
+                color: Colors.black87,
+              ),
             ),
             const Spacer(),
             // The Circular Image
@@ -155,7 +296,9 @@ class MeditationPlayerScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: const DecorationImage(
-                    image: NetworkImage('https://images.unsplash.com/photo-1519817650390-64a93db51149?q=80&w=400'),
+                    image: NetworkImage(
+                      'https://images.unsplash.com/photo-1519817650390-64a93db51149?q=80&w=400',
+                    ),
                     fit: BoxFit.cover,
                   ),
                   border: Border.all(color: const Color(0xFFF0E6E1), width: 8),
@@ -163,12 +306,21 @@ class MeditationPlayerScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 30),
-            Text("Al Murshid", style: GoogleFonts.playfairDisplay(fontSize: 22, fontWeight: FontWeight.bold)),
+            Text(
+              "Al Murshid",
+              style: GoogleFonts.playfairDisplay(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const SizedBox(height: 10),
             Text(
               "Take a deep breath and remember Allah.\nPause if needed. Focus on your heart",
               textAlign: TextAlign.center,
-              style: GoogleFonts.ebGaramond(fontSize: 15, color: Colors.black54),
+              style: GoogleFonts.ebGaramond(
+                fontSize: 15,
+                color: Colors.black54,
+              ),
             ),
             const Spacer(),
             // Audio Controls
@@ -179,16 +331,28 @@ class MeditationPlayerScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("02:25", style: GoogleFonts.ebGaramond(fontSize: 12)),
+                      Text(
+                        formatDuration(position),
+                        style: GoogleFonts.ebGaramond(fontSize: 12),
+                      ),
                       Expanded(
                         child: Slider(
-                          value: 0.3,
-                          onChanged: (v) {},
+                          value: (duration.inMilliseconds > 0)
+                              ? position.inMilliseconds /
+                                    duration.inMilliseconds
+                              : 0.0,
+                          onChanged: (v) {
+                            final newPos = duration.inMilliseconds * v;
+                            player.seek(Duration(milliseconds: newPos.round()));
+                          },
                           activeColor: const Color(0xFF8D4B33),
                           inactiveColor: Colors.grey[300],
                         ),
                       ),
-                      Text("10:25", style: GoogleFonts.ebGaramond(fontSize: 12)),
+                      Text(
+                        formatDuration(duration),
+                        style: GoogleFonts.ebGaramond(fontSize: 12),
+                      ),
                     ],
                   ),
                   Row(
@@ -196,10 +360,21 @@ class MeditationPlayerScreen extends StatelessWidget {
                     children: [
                       const Icon(Icons.skip_previous_outlined, size: 30),
                       const SizedBox(width: 25),
-                      Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(width: 1)),
-                        child: const Icon(Icons.play_arrow_rounded, size: 35),
+                      GestureDetector(
+                        onTap: _togglePlay,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(width: 1),
+                          ),
+                          child: Icon(
+                            playerState == PlayerState.playing
+                                ? Icons.pause_rounded
+                                : Icons.play_arrow_rounded,
+                            size: 35,
+                          ),
+                        ),
                       ),
                       const SizedBox(width: 25),
                       const Icon(Icons.skip_next_outlined, size: 30),
@@ -238,7 +413,11 @@ class MeditationPlayerScreen extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: GoogleFonts.ebGaramond(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
+        style: GoogleFonts.ebGaramond(
+          color: Colors.white,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }

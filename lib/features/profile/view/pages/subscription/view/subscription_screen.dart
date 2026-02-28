@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:maroofkhan8/core/constant/app_colors.dart';
+import 'package:maroofkhan8/features/profile/view/pages/subscription/controller/subscription_controller.dart';
 import 'package:maroofkhan8/features/profile/view/pages/subscription/widgets/subscription_bottom_sheet.dart';
 
 class SubscriptionPage extends StatelessWidget {
-  const SubscriptionPage({super.key});
+  SubscriptionPage({super.key});
+
+  final controller = Get.put(SubscriptionController());
 
   @override
   Widget build(BuildContext context) {
@@ -76,66 +79,80 @@ class SubscriptionPage extends StatelessWidget {
                   ),
 
                   Expanded(
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: horizontalPadding,
-                        ),
-                        child: Column(
-                          children: [
-                            // Title
-                            Text(
-                              'SUBSCRIBE TO PREMIUM',
-                              style: TextStyle(
-                                color: AppColors.blackColor,
-                                fontSize: 22.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(height: 8.h),
+                    child: Obx(() {
+                      if (controller.isLoading.value) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
 
-                            // Subtitle
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: isWide ? 100.w : 20.w,
-                              ),
-                              child: Text(
-                                'Enjoy watching Full-HD videos, without restrictions and without ads',
+                      if (controller.subscriptionPlans.isEmpty) {
+                        return const Center(
+                          child: Text("No Subscription Plans available"),
+                        );
+                      }
+
+                      return SingleChildScrollView(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: horizontalPadding,
+                          ),
+                          child: Column(
+                            children: [
+                              // Title
+                              Text(
+                                'SUBSCRIBE TO PREMIUM',
                                 style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 14.sp,
-                                  height: 1.4,
+                                  color: AppColors.blackColor,
+                                  fontSize: 22.sp,
+                                  fontWeight: FontWeight.bold,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
-                            ),
-                            SizedBox(height: 30.h),
+                              SizedBox(height: 8.h),
 
-                            // Subscription Plans
-                            if (isWide)
-                              Wrap(
-                                spacing: 20.w,
-                                runSpacing: 20.h,
-                                alignment: WrapAlignment.center,
-                                children: _buildPlanCards(context, isWide),
-                              )
-                            else
-                              Column(
-                                children: _buildPlanCards(context, isWide)
-                                    .map(
-                                      (card) => Padding(
-                                        padding: EdgeInsets.only(bottom: 20.h),
-                                        child: card,
-                                      ),
-                                    )
-                                    .toList(),
+                              // Subtitle
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: isWide ? 100.w : 20.w,
+                                ),
+                                child: Text(
+                                  'Enjoy watching Full-HD videos, without restrictions and without ads',
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontSize: 14.sp,
+                                    height: 1.4,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
-                            SizedBox(height: 30.h),
-                          ],
+                              SizedBox(height: 30.h),
+
+                              // Subscription Plans
+                              if (isWide)
+                                Wrap(
+                                  spacing: 20.w,
+                                  runSpacing: 20.h,
+                                  alignment: WrapAlignment.center,
+                                  children: _buildPlanCards(context, isWide),
+                                )
+                              else
+                                Column(
+                                  children: _buildPlanCards(context, isWide)
+                                      .map(
+                                        (card) => Padding(
+                                          padding: EdgeInsets.only(
+                                            bottom: 20.h,
+                                          ),
+                                          child: card,
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                              SizedBox(height: 30.h),
+                            ],
+                          ),
                         ),
-                      ),
-                    ),
+                      );
+                    }),
                   ),
                 ],
               );
@@ -148,32 +165,38 @@ class SubscriptionPage extends StatelessWidget {
 
   List<Widget> _buildPlanCards(BuildContext context, bool isWide) {
     final cardWidth = isWide ? 400.w : double.infinity;
-    return [
-      _buildPlanCard(
+    return controller.subscriptionPlans.map((plan) {
+      return _buildPlanCard(
         context: context,
         cardWidth: cardWidth,
-        originalPrice: '\$9.99',
-        discountedPrice: '\$7.99',
-        savePercent: '20%',
-      ),
-      _buildPlanCard(
-        context: context,
-        cardWidth: cardWidth,
-        originalPrice: '\$9.99',
-        discountedPrice: '\$7.99',
-        savePercent: '20%',
-        isMostPopular: true,
-      ),
-    ];
+        title: plan.title ?? 'No Title',
+        price: '${plan.price ?? 0}',
+        previousPrice: plan.previousPrice != null
+            ? '${plan.previousPrice}'
+            : null,
+        type: plan.type ?? 'PLAN',
+        features: plan.features ?? [],
+        isMostPopular: plan.title?.toLowerCase() == 'premium',
+        onSeeMore: () {
+          if (plan.id != null) {
+            controller.fetchSingleSubscriptionPlan(plan.id!);
+            showSubscriptionBottomSheet(context);
+          }
+        },
+      );
+    }).toList();
   }
 
   Widget _buildPlanCard({
     required BuildContext context,
     required double cardWidth,
-    required String originalPrice,
-    required String discountedPrice,
-    required String savePercent,
+    required String title,
+    required String price,
+    String? previousPrice,
+    required String type,
+    required List<String> features,
     bool isMostPopular = false,
+    required VoidCallback onSeeMore,
   }) {
     return Container(
       width: cardWidth,
@@ -197,6 +220,15 @@ class SubscriptionPage extends StatelessWidget {
           Center(
             child: Column(
               children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: AppColors.primaryColorLight,
+                    fontSize: 22.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 10),
                 Image.asset(
                   "assets/images/subscription_logo.png",
                   color: AppColors.primaryColorLight,
@@ -208,19 +240,21 @@ class SubscriptionPage extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        originalPrice,
-                        style: TextStyle(
-                          color: Colors.grey[400],
-                          fontSize: 28.sp,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.lineThrough,
-                          decorationColor: Colors.grey[400],
+                      if (previousPrice != null) ...[
+                        Text(
+                          '\$$previousPrice',
+                          style: TextStyle(
+                            color: Colors.grey[400],
+                            fontSize: 28.sp,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.lineThrough,
+                            decorationColor: Colors.grey[400],
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 12.w),
+                        SizedBox(width: 12.w),
+                      ],
                       Text(
-                        discountedPrice,
+                        '\$$price',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 28.sp,
@@ -229,7 +263,7 @@ class SubscriptionPage extends StatelessWidget {
                       ),
                       SizedBox(width: 12.w),
                       Text(
-                        '/Duration-30 days',
+                        '/$type',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 15.sp,
@@ -237,18 +271,6 @@ class SubscriptionPage extends StatelessWidget {
                         ),
                       ),
                     ],
-                  ),
-                ),
-                SizedBox(height: 10),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    'Save $savePercent',
-                    style: TextStyle(
-                      color: AppColors.primaryColorLight,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w400,
-                    ),
                   ),
                 ),
               ],
@@ -259,20 +281,18 @@ class SubscriptionPage extends StatelessWidget {
           SizedBox(height: 10.h),
 
           // Features
-          _buildFeatureRow("Full Qur'an (Arabic + Transliteration)."),
-          SizedBox(height: 12.h),
-          _buildFeatureRow('Audio Recitation (Multiple Qaris).'),
-          SizedBox(height: 12.h),
-          _buildFeatureRow('Full Hadith Collections.'),
-          SizedBox(height: 12.h),
+          ...features.map(
+            (feature) => Padding(
+              padding: EdgeInsets.only(bottom: 12.h),
+              child: _buildFeatureRow(feature),
+            ),
+          ),
 
           // See more button
           Align(
             alignment: Alignment.centerRight,
             child: TextButton(
-              onPressed: () {
-                showSubscriptionBottomSheet(context);
-              },
+              onPressed: onSeeMore,
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
                 minimumSize: Size.zero,

@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../../../core/network/api_endpoints.dart';
+import '../../../core/offline_storage/shared_pref.dart';
+import '../model/user_model.dart';
 
 class PersonalDataController extends GetxController {
   // Use Get.isDarkMode instead of Theme.of(context)
@@ -13,25 +20,130 @@ class PersonalDataController extends GetxController {
   final emailController = TextEditingController();
   final dobController = TextEditingController();
 
-  // Reactive variables for dropdowns
+  // Reactive variables
   var selectedCountry = "Bangladesh".obs;
   var selectedGender = "Male".obs;
+  var isLoading = false.obs;
+  var userData = Rxn<UserData>();
+  var profileImage = Rxn<File>();
 
-  void saveProfile() {
-    // Check if the form is valid
+  @override
+  void onInit() {
+    super.onInit();
+    fetchProfile();
+  }
+
+  Future<void> pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      profileImage.value = File(image.path);
+    }
+  }
+
+  Future<void> fetchProfile() async {
+    try {
+      isLoading.value = true;
+      final token = await SharedPreferencesHelper.getToken();
+
+      final headers = {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': '$token',
+        if (token != null) 'token': '$token',
+        if (token != null) 'access_token': '$token',
+      };
+
+      final url = Uri.parse(ApiEndpoints.profile);
+      final response = await http.get(url, headers: headers);
+
+      print("DEBUG: Profile Status Code: ${response.statusCode}");
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final decoded = jsonDecode(response.body);
+        final userRes = UserResponse.fromJson(decoded);
+        if (userRes.data != null) {
+          userData.value = userRes.data;
+
+          // Populate controllers
+          nameController.text = userRes.data!.profile?.name ?? "";
+          phoneController.text = userRes.data!.profile?.phone ?? "";
+          emailController.text = userRes.data!.email ?? "";
+        }
+      }
+    } catch (e) {
+      print("Error fetching profile: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> saveProfile() async {
     if (formKey.currentState?.validate() ?? false) {
+      try {
+        isLoading.value = true;
+        final token = await SharedPreferencesHelper.getToken();
 
-      // Logic for saving (e.g., API call) goes here
+        var request = http.MultipartRequest(
+          'PATCH',
+          Uri.parse(ApiEndpoints.profile),
+        );
 
-      Get.back();
+        // Headers
+        if (token != null) {
+          request.headers['Authorization'] = '$token';
+          request.headers['token'] = '$token';
+          request.headers['access_token'] = '$token';
+        }
 
-      Get.snackbar(
-        "Success",
-        "Profile updated successfully!",
-        backgroundColor: Get.theme.colorScheme.primary,
-        colorText: Get.theme.colorScheme.onPrimary,
-        duration: const Duration(seconds: 2),
-      );
+        // Fields
+        request.fields['name'] = nameController.text;
+        request.fields['phone'] = phoneController.text;
+
+        // Image
+        if (profileImage.value != null) {
+          request.files.add(
+            await http.MultipartFile.fromPath(
+              'avatar',
+              profileImage.value!.path,
+            ),
+          );
+        }
+
+        print("DEBUG: Profile Update Request to: ${ApiEndpoints.profile}");
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        print("DEBUG: Profile Update Status Code: ${response.statusCode}");
+        print("DEBUG: Profile Update Response Body: ${response.body}");
+
+        if (response.statusCode >= 200 && response.statusCode < 300) {
+          Get.snackbar(
+            "Success",
+            "User data updated",
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+          );
+          profileImage.value = null; // Clear picked image
+          fetchProfile(); // Refresh the data to be sure
+        } else {
+          final error = jsonDecode(response.body);
+          Get.snackbar(
+            "Error",
+            error['message'] ?? "Failed to update profile",
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
+        }
+      } catch (e) {
+        print("Error updating profile: $e");
+        Get.snackbar(
+          "Error",
+          "An unexpected error occurred",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      } finally {
+        isLoading.value = false;
+      }
     }
   }
 
