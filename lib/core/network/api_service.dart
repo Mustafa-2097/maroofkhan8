@@ -143,6 +143,45 @@ class ApiService {
     }
   }
 
+  /// DELETE REQUEST
+  static Future<Map<String, dynamic>> delete(
+    String url, {
+    Map<String, String>? headers,
+    Map<String, dynamic>? body,
+  }) async {
+    try {
+      final finalHeaders = await _getHeaders(headers);
+
+      debugPrint('🚨🚨🚨 API DELETE REQUEST START 🚨🚨🚨');
+      debugPrint('URL: $url');
+      debugPrint('HEADERS: $finalHeaders');
+      if (body != null) debugPrint('BODY: ${jsonEncode(body)}');
+
+      final response = await http
+          .delete(
+            Uri.parse(url),
+            headers: finalHeaders,
+            body: body != null ? jsonEncode(body) : null,
+          )
+          .timeout(timeout);
+
+      debugPrint('🟢🟢🟢 API RESPONSE 🟢🟢🟢');
+      debugPrint('STATUS: ${response.statusCode}');
+      debugPrint('BODY: ${response.body}');
+
+      final decoded = jsonDecode(response.body);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return decoded;
+      } else {
+        throw decoded['message'] ?? 'Something went wrong';
+      }
+    } catch (e) {
+      Get.snackbar("Error", _friendlyError(e));
+      rethrow;
+    }
+  }
+
   /// PATCH REQUEST
   static Future<Map<String, dynamic>> patch(
     String url, {

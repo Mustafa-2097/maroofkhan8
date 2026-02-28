@@ -62,10 +62,24 @@ class ApiEndpoints {
 
   /// Ahl Al Bayt
   static const String ahlalbayt = '$baseUrl/ahlalbayt';
+  static String ahlalbaytDetails(String id) => '$baseUrl/ahlalbayt/$id';
 
   /// Awliya
   static const String awliya = '$baseUrl/awliya';
+  static String awliyaDetails(String id) => '$baseUrl/awliya/$id';
 
   /// Sahaba
   static const String sahaba = '$baseUrl/sahaba';
+  static String sahabaDetails(String id) => '$baseUrl/sahaba/$id';
+
+  /// Tasbih (Dhikr)
+  static const String tasbih = '$baseUrl/tasbih';
+
+  /// Allah Names
+  static const String allahNames = '$baseUrl/names/allah';
+  static String toggleAllahNameSave(String id) =>
+      '$baseUrl/names/allah/$id/save';
+  static const String savedAllahNames = '$baseUrl/names/allah/save';
+  static String deleteSavedAllahName(String id) =>
+      '$baseUrl/names/allah/save/$id';
 }

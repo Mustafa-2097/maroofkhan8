@@ -178,104 +178,140 @@ class SahabaDetailScreen extends StatefulWidget {
 }
 
 class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
+  final SahabaController controller = Get.find<SahabaController>();
   int _currentTab = 0; // 0: Bio, 1: Teachings, 2: Quotes
+
+  @override
+  void initState() {
+    super.initState();
+    controller.selectedSahaba.value = null;
+    controller.fetchSahabaDetails(widget.sahaba.id);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBackground,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Column(
-            children: [
-              // Back Button
-              Align(
-                alignment: Alignment.centerLeft,
-                child: GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(
-                      Icons.chevron_left,
-                      color: Colors.grey,
-                      size: 20,
+        child: Obx(() {
+          if (controller.isDetailLoading.value) {
+            return const Center(
+              child: CircularProgressIndicator(color: kPrimaryBrown),
+            );
+          }
+
+          final sahaba = controller.selectedSahaba.value ?? widget.sahaba;
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Column(
+              children: [
+                // Back Button
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.chevron_left,
+                        color: Colors.grey,
+                        size: 20,
+                      ),
                     ),
                   ),
                 ),
-              ),
 
-              // Profile Header
-              const SizedBox(height: 10),
-              CircleAvatar(
-                radius: 50,
-                backgroundImage: widget.sahaba.image.isNotEmpty
-                    ? NetworkImage(widget.sahaba.image)
-                    : null,
-                backgroundColor: Colors.grey.shade200,
-                child: widget.sahaba.image.isEmpty
-                    ? const Icon(Icons.person, size: 50, color: Colors.grey)
-                    : null,
-              ),
-              const SizedBox(height: 15),
-              Text(
-                widget.sahaba.name,
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                // Profile Header
+                const SizedBox(height: 10),
+                CircleAvatar(
+                  radius: 50,
+                  backgroundImage: sahaba.image.isNotEmpty
+                      ? NetworkImage(sahaba.image)
+                      : null,
+                  backgroundColor: Colors.grey.shade200,
+                  child: sahaba.image.isEmpty
+                      ? const Icon(Icons.person, size: 50, color: Colors.grey)
+                      : null,
                 ),
-              ),
-              const SizedBox(height: 5),
-              Text(
-                widget.sahaba.name, // Fallback for Arabic
-                style: GoogleFonts.amiri(
-                  fontSize: 18,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Custom Tab Bar
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _tabButton("Biography", 0),
-                  const SizedBox(width: 10),
-                  _tabButton("Teachings", 1),
-                  const SizedBox(width: 10),
-                  _tabButton("Quotes", 2),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              // Dynamic Content
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  _currentTab == 0
-                      ? "Biography"
-                      : (_currentTab == 1 ? "His Teaching" : "His Quotes"),
+                const SizedBox(height: 15),
+                Text(
+                  sahaba.name,
                   style: GoogleFonts.playfairDisplay(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-              const SizedBox(height: 15),
+                const SizedBox(height: 5),
+                Text(
+                  sahaba.title,
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 16,
+                    color: Colors.black54,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 20),
 
-              if (_currentTab == 0) _buildBiographyContent(),
-              if (_currentTab == 1) _buildTeachingsList(),
-              if (_currentTab == 2) _buildQuotesList(),
-            ],
-          ),
-        ),
+                // Custom Tab Bar
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _tabButton("Biography", 0),
+                    const SizedBox(width: 10),
+                    _tabButton("Teachings", 1),
+                    const SizedBox(width: 10),
+                    _tabButton("Quotes", 2),
+                  ],
+                ),
+                const SizedBox(height: 20),
+
+                // Dynamic Content
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    _getTabTitle(),
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+
+                _buildTabBody(sahaba),
+              ],
+            ),
+          );
+        }),
       ),
     );
+  }
+
+  String _getTabTitle() {
+    switch (_currentTab) {
+      case 1:
+        return "His Teachings";
+      case 2:
+        return "His Quotes";
+      default:
+        return "Biography";
+    }
+  }
+
+  Widget _buildTabBody(Sahaba sahaba) {
+    switch (_currentTab) {
+      case 1:
+        return _contentListTab(sahaba.teachings, "Teachings");
+      case 2:
+        return _contentListTab(sahaba.quotes, "Quotes", isQuote: true);
+      default:
+        return _buildBiographyContent(sahaba);
+    }
   }
 
   Widget _tabButton(String text, int index) {
@@ -301,7 +337,7 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
   }
 
   // --- TAB 1: BIOGRAPHY ---
-  Widget _buildBiographyContent() {
+  Widget _buildBiographyContent(Sahaba sahaba) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -316,9 +352,13 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
       ),
       child: Column(
         children: [
-          _bioRow("Name :", widget.sahaba.name),
-          _bioRow("Title :", widget.sahaba.title),
-          _bioRow("Biography :", "Information coming soon..."),
+          _bioRow("Name :", sahaba.name),
+          _bioRow("Born :", sahaba.dateOfBirth ?? "N/A"),
+          _bioRow("Died :", sahaba.dateOfDeath ?? "N/A"),
+          _bioRow("Position :", sahaba.position ?? "N/A"),
+          _bioRow("Institution :", sahaba.institution ?? "N/A"),
+          _bioRow("Works :", sahaba.works ?? "N/A"),
+          _bioRow("Known For :", sahaba.knownFor ?? "N/A"),
         ],
       ),
     );
@@ -352,30 +392,35 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
     );
   }
 
-  // --- TAB 2 & 3: TEACHINGS / QUOTES (Reusable Card) ---
-  Widget _buildTeachingsList() {
-    return Column(
-      children: [
-        _contentCard(
-          "Inner Purification",
-          "Information about teachings is coming soon...",
+  Widget _contentListTab(
+    List<SahabaContentItem>? items,
+    String type, {
+    bool isQuote = false,
+  }) {
+    if (items == null || items.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 20),
+          child: Text(
+            "Information about $type will be updated soon.",
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 14, color: Colors.grey),
+          ),
         ),
-      ],
+      );
+    }
+
+    return Column(
+      children: items
+          .map(
+            (item) =>
+                _contentCard(item.title, item.description, isQuote: isQuote),
+          )
+          .toList(),
     );
   }
 
-  Widget _buildQuotesList() {
-    return Column(
-      children: [
-        _contentCard(
-          "On Remembrance",
-          "Information about quotes is coming soon...",
-        ),
-      ],
-    );
-  }
-
-  Widget _contentCard(String title, String desc) {
+  Widget _contentCard(String title, String desc, {bool isQuote = false}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
       padding: const EdgeInsets.all(15),
@@ -397,16 +442,23 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
           const SizedBox(height: 8),
           Text(
             desc,
-            style: const TextStyle(fontSize: 11, color: kTextGrey, height: 1.5),
-            maxLines: 4,
-            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 11,
+              color: kTextGrey,
+              height: 1.5,
+              fontStyle: isQuote ? FontStyle.italic : FontStyle.normal,
+            ),
           ),
           const SizedBox(height: 10),
           Align(
             alignment: Alignment.centerRight,
             child: GestureDetector(
               onTap: () {
-                Get.to(() => SahabaAudioScreen(sahaba: widget.sahaba));
+                Get.to(
+                  () => SahabaAudioScreen(
+                    sahaba: controller.selectedSahaba.value ?? widget.sahaba,
+                  ),
+                );
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(
@@ -488,11 +540,11 @@ class SahabaAudioScreen extends StatelessWidget {
               ),
               const SizedBox(height: 5),
               Text(
-                sahaba.name, // Fallback for Arabic
-                style: GoogleFonts.amiri(
-                  fontSize: 18,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold,
+                sahaba.title,
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 16,
+                  color: Colors.black54,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               const SizedBox(height: 20),
@@ -535,8 +587,8 @@ class SahabaAudioScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "كرامات الأولياء",
-                      style: GoogleFonts.amiri(
+                      "Lessons and Contributions",
+                      style: GoogleFonts.playfairDisplay(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: kPrimaryBrown,
@@ -544,13 +596,13 @@ class SahabaAudioScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      "كرامات ${sahaba.name}",
+                      sahaba.works ?? "Contributions information coming soon.",
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.amiri(fontSize: 14),
+                      style: GoogleFonts.playfairDisplay(fontSize: 14),
                     ),
                     const SizedBox(height: 15),
                     Text(
-                      "Lessons and contributions of ${sahaba.name} to Islam.",
+                      sahaba.knownFor ?? "Known for information coming soon.",
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 12,
