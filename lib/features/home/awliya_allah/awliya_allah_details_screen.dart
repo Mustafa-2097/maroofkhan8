@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'models/awliya_allah_model.dart';
+import 'controllers/awliya_allah_controller.dart';
 
 class AwliyaAllahDetailsScreen extends StatefulWidget {
   final AwliyaAllah awliya;
@@ -13,116 +15,132 @@ class AwliyaAllahDetailsScreen extends StatefulWidget {
 
 class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
   final Color primaryBrown = const Color(0xFF8D3C1F);
+  final AwliyaAllahController controller = Get.find<AwliyaAllahController>();
 
   int selectedTabIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    controller.selectedAwliya.value = null;
+    controller.fetchAwliyaDetails(widget.awliya.id);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            children: [
-              // 2. Back Button
-              InkWell(
-                onTap: () => Navigator.pop(context),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 10),
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.5),
-                      border: Border.all(color: Colors.grey.shade400),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(
-                      Icons.chevron_left,
-                      color: Colors.grey,
-                      size: 20,
+        child: Obx(() {
+          if (controller.isDetailLoading.value) {
+            return const Center(
+              child: CircularProgressIndicator(color: Color(0xFF8D3C1F)),
+            );
+          }
+
+          final awliya = controller.selectedAwliya.value ?? widget.awliya;
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              children: [
+                // 2. Back Button
+                InkWell(
+                  onTap: () => Navigator.pop(context),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 10),
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.5),
+                        border: Border.all(color: Colors.grey.shade400),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.chevron_left,
+                        color: Colors.grey,
+                        size: 20,
+                      ),
                     ),
                   ),
                 ),
-              ),
 
-              // 3. Profile Image
-              const SizedBox(height: 10),
-              Center(
-                child: CircleAvatar(
-                  radius: 90,
-                  backgroundImage: widget.awliya.image.isNotEmpty
-                      ? NetworkImage(widget.awliya.image)
-                      : null,
-                  backgroundColor: Colors.grey.shade200,
-                  child: widget.awliya.image.isEmpty
-                      ? const Icon(Icons.person, size: 90, color: Colors.grey)
-                      : null,
+                // 3. Profile Image
+                const SizedBox(height: 10),
+                Center(
+                  child: CircleAvatar(
+                    radius: 90,
+                    backgroundImage: awliya.image.isNotEmpty
+                        ? NetworkImage(awliya.image)
+                        : null,
+                    backgroundColor: Colors.grey.shade200,
+                    child: awliya.image.isEmpty
+                        ? const Icon(Icons.person, size: 90, color: Colors.grey)
+                        : null,
+                  ),
                 ),
-              ),
 
-              // 4. Names
-              const SizedBox(height: 20),
-              Text(
-                widget.awliya.name,
-                textAlign: TextAlign.center,
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF2E2E2E),
-                ),
-              ),
-              const SizedBox(height: 5),
-              Text(
-                widget.awliya.name, // Fallback for Arabic name
-                style: GoogleFonts.amiri(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-
-              // 5. Tabs Row
-              const SizedBox(height: 25),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    _tabButton("Biography", 0),
-                    _tabButton("Teachings", 1),
-                    _tabButton("Karamat", 2),
-                    _tabButton("Quotes", 3),
-                  ],
-                ),
-              ),
-
-              // 6. Section Title
-              const SizedBox(height: 25),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  _getTabTitle(),
+                // 4. Names
+                const SizedBox(height: 20),
+                Text(
+                  awliya.name,
+                  textAlign: TextAlign.center,
                   style: GoogleFonts.playfairDisplay(
-                    fontSize: 22,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
                     color: const Color(0xFF2E2E2E),
                   ),
                 ),
-              ),
+                const SizedBox(height: 5),
+                Text(
+                  awliya.title,
+                  style: GoogleFonts.amiri(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54,
+                  ),
+                ),
 
-              // ... after Section Title ...
-              const SizedBox(height: 15),
+                // 5. Tabs Row
+                const SizedBox(height: 25),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      _tabButton("Biography", 0),
+                      _tabButton("Teachings", 1),
+                      _tabButton("Karamat", 2),
+                      _tabButton("Quotes", 3),
+                    ],
+                  ),
+                ),
 
-              _buildTabBody(),
+                // 6. Section Title
+                const SizedBox(height: 25),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    _getTabTitle(),
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 22,
+                      color: const Color(0xFF2E2E2E),
+                    ),
+                  ),
+                ),
 
-              const SizedBox(height: 40),
-            ],
-          ),
-        ),
+                const SizedBox(height: 15),
+
+                _buildTabBody(awliya),
+
+                const SizedBox(height: 40),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }
 
-  // Update the title getter to match the screenshot labels
   String _getTabTitle() {
     switch (selectedTabIndex) {
       case 1:
@@ -136,22 +154,20 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
     }
   }
 
-  // Refined Tab Body Switcher
-  Widget _buildTabBody() {
+  Widget _buildTabBody(AwliyaAllah awliya) {
     switch (selectedTabIndex) {
       case 1:
-        return _teachingsTab();
+        return _contentListTab(awliya.teachings, "Teachings");
       case 2:
-        return _karamatTab();
+        return _contentListTab(awliya.karamats, "Karamat");
       case 3:
-        return _quotesTab();
+        return _contentListTab(awliya.quotes, "Quotes", isQuote: true);
       default:
-        return _biographyTab();
+        return _biographyTab(awliya);
     }
   }
 
-  // 1. Biography TAB
-  Widget _biographyTab() {
+  Widget _biographyTab(AwliyaAllah awliya) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(25),
@@ -168,76 +184,46 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
       ),
       child: Column(
         children: [
-          _infoRow("Name :", widget.awliya.name),
-          _infoRow("Title :", widget.awliya.title),
-          _infoRow("Biography :", "Information coming soon..."),
+          _infoRow("Name :", awliya.name),
+          _infoRow("Born :", awliya.dateOfBirth ?? "N/A"),
+          _infoRow("Passed Away :", awliya.dateOfDeath ?? "N/A"),
+          _infoRow("Position :", awliya.position ?? "N/A"),
+          _infoRow("Institution :", awliya.institution ?? "N/A"),
+          _infoRow("Works :", awliya.works ?? "N/A"),
+          _infoRow("Known For :", awliya.knownFor ?? "N/A"),
         ],
       ),
     );
   }
 
-  // 2. TEACHINGS TAB (List of Cards)
-  Widget _teachingsTab() {
-    return Column(
-      children: [
-        _actionCard(
-          "Inner Purification",
-          "A central theme in his teachings was the cleansing of the heart from spiritual maladies such as pride, envy, greed, and heedlessness.",
-        ),
-      ],
-    );
-  }
-
-  // 3. KARAMAT TAB (Summary Card + List)
-  Widget _karamatTab() {
-    return Column(
-      children: [
-        // Top Summary Card
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(20),
-          margin: const EdgeInsets.only(bottom: 20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(width: 1, color: Colors.grey.shade200),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Column(
-            children: [
-              Text(
-                "Key Guidance",
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                "Information about Karamat and special guidance will be updated soon.",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, height: 1.5),
-              ),
-            ],
+  Widget _contentListTab(
+    List<AwliyaContentItem>? items,
+    String type, {
+    bool isQuote = false,
+  }) {
+    if (items == null || items.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 20),
+          child: Text(
+            "Information about $type will be updated soon.",
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 14, color: Colors.grey),
           ),
         ),
-      ],
-    );
-  }
+      );
+    }
 
-  // 4. QUOTES TAB (Italicized Text)
-  Widget _quotesTab() {
     return Column(
-      children: [
-        _actionCard(
-          "On Remembrance",
-          "Let your heart constantly call out Allah, Allah, Allah in every moment of your daily life...",
-          isQuote: true,
-        ),
-      ],
+      children: items
+          .map(
+            (item) =>
+                _actionCard(item.title, item.description, isQuote: isQuote),
+          )
+          .toList(),
     );
   }
 
-  // HELPER: The White Card with Brown "Read More" Button
   Widget _actionCard(String title, String body, {bool isQuote = false}) {
     return Container(
       width: double.infinity,

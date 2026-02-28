@@ -201,88 +201,96 @@ class AhleBaitDetailScreen extends StatefulWidget {
 
 class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
   int _currentTab = 0; // 0: Bio, 1: Story, 2: Quotes/Translation
+  final AhleBaitController controller = Get.find<AhleBaitController>();
+
+  @override
+  void initState() {
+    super.initState();
+    controller.selectedMember.value = null;
+    controller.fetchMemberDetails(widget.item.id);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBackground,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Column(
-            children: [
-              // Back Button
-              Align(
-                alignment: Alignment.centerLeft,
-                child: GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(
-                      Icons.chevron_left,
-                      color: Colors.grey,
-                      size: 20,
+        child: Obx(() {
+          if (controller.isDetailLoading.value) {
+            return const Center(
+              child: CircularProgressIndicator(color: kPrimaryBrown),
+            );
+          }
+
+          final member = controller.selectedMember.value ?? widget.item;
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Column(
+              children: [
+                // Back Button
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.chevron_left,
+                        color: Colors.grey,
+                        size: 20,
+                      ),
                     ),
                   ),
                 ),
-              ),
 
-              // Profile Header
-              const SizedBox(height: 10),
-              CircleAvatar(
-                radius: 50,
-                backgroundImage: widget.item.image.isNotEmpty
-                    ? NetworkImage(widget.item.image)
-                    : null,
-                backgroundColor: Colors.grey.shade200,
-                child: widget.item.image.isEmpty
-                    ? const Icon(Icons.person, size: 50, color: Colors.grey)
-                    : null,
-              ),
-              const SizedBox(height: 15),
-              Text(
-                widget.item.name,
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                // Profile Header
+                const SizedBox(height: 10),
+                CircleAvatar(
+                  radius: 50,
+                  backgroundImage: member.image.isNotEmpty
+                      ? NetworkImage(member.image)
+                      : null,
+                  backgroundColor: Colors.grey.shade200,
+                  child: member.image.isEmpty
+                      ? const Icon(Icons.person, size: 50, color: Colors.grey)
+                      : null,
                 ),
-              ),
-              const SizedBox(height: 5),
-              Text(
-                widget
-                    .item
-                    .name, // Using name as fallback for Arabic if not available in API
-                style: GoogleFonts.amiri(
-                  fontSize: 18,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold,
+                const SizedBox(height: 15),
+                Text(
+                  member.name,
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-              // Custom Tab Bar
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _tabButton("Biography", 0),
-                  const SizedBox(width: 10),
-                  _tabButton("Story", 1),
-                  const SizedBox(width: 10),
-                  _tabButton(_currentTab == 1 ? "Translation" : "Quotes", 2),
-                ],
-              ),
-              const SizedBox(height: 20),
+                // Custom Tab Bar
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _tabButton("Biography", 0),
+                    const SizedBox(width: 10),
+                    _tabButton("Story", 1),
+                    const SizedBox(width: 10),
+                    _tabButton("Quotes", 2),
+                  ],
+                ),
+                const SizedBox(height: 20),
 
-              // Content Handling
-              if (_currentTab == 0) _buildBiographySection(),
-              if (_currentTab == 1) _buildStoryPlayerSection(),
-            ],
-          ),
-        ),
+                // Content Handling
+                if (_currentTab == 0) _buildBiographySection(member),
+                if (_currentTab == 1) _buildStoryPlayerSection(member),
+                if (_currentTab == 2) _buildQuotesSection(member),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }
@@ -310,7 +318,7 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
   }
 
   // --- TAB CONTENT 1: BIOGRAPHY ---
-  Widget _buildBiographySection() {
+  Widget _buildBiographySection(AhleBait member) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -336,9 +344,14 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
           ),
           child: Column(
             children: [
-              _bioRow("Name :", widget.item.name),
-              _bioRow("Relation :", widget.item.relation),
-              _bioRow("Biography :", "Biography information is coming soon..."),
+              _bioRow("Name :", member.name),
+              _bioRow("Relation :", member.relation),
+              _bioRow("Born :", member.dateOfBirth ?? "N/A"),
+              _bioRow("Died :", member.dateOfDeath ?? "N/A"),
+              _bioRow("Position :", member.position ?? "N/A"),
+              _bioRow("Institution :", member.institution ?? "N/A"),
+              _bioRow("Works :", member.work ?? "N/A"),
+              _bioRow("Known For :", member.knownFor ?? "N/A"),
             ],
           ),
         ),
@@ -375,9 +388,18 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
   }
 
   // --- TAB CONTENT 2: STORY / PLAYER ---
-  Widget _buildStoryPlayerSection() {
+  Widget _buildStoryPlayerSection(AhleBait member) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text(
+          "Story",
+          style: GoogleFonts.playfairDisplay(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 15),
         // Text Content Card
         Container(
           width: double.infinity,
@@ -403,8 +425,10 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
                 ),
               ),
               Text(
-                "Full story for ${widget.item.name} is coming soon. This section will feature detailed narrations about their life and contributions to Islam.",
-                textAlign: TextAlign.center,
+                (member.story != null && member.story!.trim().isNotEmpty)
+                    ? member.story!
+                    : "The full story for ${member.name} will be added here once it is available in the database.",
+                textAlign: TextAlign.left,
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 14,
                   color: Colors.black87,
@@ -483,6 +507,69 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
           ),
         ),
         const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  Widget _buildQuotesSection(AhleBait member) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Quotes",
+          style: GoogleFonts.playfairDisplay(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 15),
+        if (member.quotes == null || member.quotes!.isEmpty)
+          const Center(
+            child: Text(
+              "Quotes coming soon...",
+              style: TextStyle(color: kTextGrey),
+            ),
+          )
+        else
+          ...member.quotes!.map((quote) {
+            return Container(
+              width: double.infinity,
+              margin: const EdgeInsets.only(bottom: 15),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    quote.title,
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    quote.description,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: Colors.black54,
+                      height: 1.5,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
       ],
     );
   }

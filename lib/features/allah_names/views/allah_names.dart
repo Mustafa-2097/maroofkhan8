@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:get/get.dart';
+import '../controllers/allah_names_controller.dart';
+import '../models/allah_name_model.dart';
+import 'saved_allah_names_screen.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -16,50 +20,7 @@ class NamesOfAllahScreen extends StatefulWidget {
 
 class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
   int _selectedFilterIndex = 0; // 0: All, 1: Meaning, 2: Audio
-
-  // Mock Data
-  final List<Map<String, String>> _names = [
-    {
-      "arabic": "الرَّحْمَن",
-      "transliteration": "Ar-Rahman",
-      "meaning": "The Most\nMerciful"
-    },
-    {
-      "arabic": "الرَّحِيم",
-      "transliteration": "Ar-Rahim",
-      "meaning": "The Most Compassionate,\nThe Especially Merciful"
-    },
-    {
-      "arabic": "الْمَلِك",
-      "transliteration": "Al-Malik",
-      "meaning": "The King, Absolute\nOwner"
-    },
-    {
-      "arabic": "الْقُدُّوس",
-      "transliteration": "Al-Quddus",
-      "meaning": "The Most\nPure"
-    },
-    {
-      "arabic": "السَّلَام",
-      "transliteration": "As-Salam",
-      "meaning": "The Most\nMerciful" // Placeholder text from image
-    },
-    {
-      "arabic": "الْمُؤْمِن",
-      "transliteration": "Al-Mu'min",
-      "meaning": "Giver of\nSecurity"
-    },
-    {
-      "arabic": "الْمُهَيْمِن",
-      "transliteration": "Al-Muhaymin",
-      "meaning": "The Protector"
-    },
-    {
-      "arabic": "الْعَزِيز",
-      "transliteration": "Al-Aziz",
-      "meaning": "The All-\nMighty"
-    },
-  ];
+  final controller = Get.put(AllahNamesController());
 
   @override
   Widget build(BuildContext context) {
@@ -77,22 +38,53 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
             // 2. Search Bar
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Container(
-                height: 45,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.grey.shade300),
-                ),
-                child: const TextField(
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.search, color: Colors.grey, size: 20),
-                    hintText: "search...",
-                    hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.only(top: 8),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 45,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: const TextField(
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: Colors.grey,
+                            size: 20,
+                          ),
+                          hintText: "search...",
+                          hintStyle: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 14,
+                          ),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.only(top: 8),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                  const SizedBox(width: 10),
+                  GestureDetector(
+                    onTap: () => Get.to(() => const SavedAllahNamesScreen()),
+                    child: Container(
+                      height: 45,
+                      width: 45,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: const Icon(
+                        Icons.bookmark_border,
+                        color: Colors.grey,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 20),
@@ -112,28 +104,47 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
 
             // 4. Grid of Names
             Expanded(
-              child: GridView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.85, // Adjusts height relative to width
-                  crossAxisSpacing: 15,
-                  mainAxisSpacing: 15,
-                ),
-                itemCount: _names.length,
-                itemBuilder: (context, index) {
-                  return _NameCard(
-                    data: _names[index],
-                    onTap: () {
-                      // Open the Player View (Screen 3)
-                      showDialog(
-                        context: context,
-                        builder: (_) => PlayerDialog(data: _names[index]),
-                      );
-                    },
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: kPrimaryBrown),
                   );
-                },
-              ),
+                }
+
+                if (controller.namesList.isEmpty) {
+                  return const Center(child: Text("No names found"));
+                }
+
+                // Filter logic based on tab (if applicable)
+                // For now, displaying all as the mock data did
+                final displayedNames = controller.namesList;
+
+                return GridView.builder(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 10,
+                  ),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.85,
+                    crossAxisSpacing: 15,
+                    mainAxisSpacing: 15,
+                  ),
+                  itemCount: displayedNames.length,
+                  itemBuilder: (context, index) {
+                    final nameItem = displayedNames[index];
+                    return NameCard(
+                      data: nameItem,
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (_) => PlayerDialog(data: nameItem),
+                        );
+                      },
+                    );
+                  },
+                );
+              }),
             ),
           ],
         ),
@@ -157,7 +168,11 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
         ),
         child: Text(
           text,
-          style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
@@ -165,11 +180,11 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
 }
 
 // --- NAME CARD WIDGET ---
-class _NameCard extends StatelessWidget {
-  final Map<String, String> data;
+class NameCard extends StatelessWidget {
+  final AllahName data;
   final VoidCallback onTap;
 
-  const _NameCard({required this.data, required this.onTap});
+  const NameCard({super.key, required this.data, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -182,61 +197,80 @@ class _NameCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
           ],
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            // Top Icons
+            // Top Row: Bookmark, Arabic Name, Speaker
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Icon(Icons.bookmark_border, size: 20, color: Colors.black87),
                 GestureDetector(
-                  onTap: onTap, // Also open player on speaker click
-                  child: const Icon(Icons.volume_up_outlined, size: 20, color: Colors.grey),
+                  onTap: () {
+                    Get.find<AllahNamesController>().toggleSaveName(data);
+                  },
+                  child: Icon(
+                    data.isSaved ? Icons.bookmark : Icons.bookmark_border,
+                    size: 20,
+                    color: data.isSaved ? kPrimaryBrown : Colors.black87,
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    data.arabic,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.amiri(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      height: 1,
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: onTap,
+                  child: const Icon(
+                    Icons.volume_up_outlined,
+                    size: 20,
+                    color: Colors.grey,
+                  ),
                 ),
               ],
             ),
 
-            // Content
+            // Middle & Bottom: Pronunciation & Meaning
+            // Padding(
+            //    padding: const EdgeInsets.only(top: 10),
+            //   child:
             Column(
               children: [
                 Text(
-                  data['arabic']!,
-                  style: GoogleFonts.amiri(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  data['transliteration']!,
-                  style: GoogleFonts.playfairDisplay(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  data['meaning']!,
+                  data.pronunciation,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 11,
-                    color: kTextGrey,
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xFF2E2E2E),
+                  ),
+                ),
+                Text(
+                  data.meaning,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 14,
+                    color: Colors.grey.shade400,
                     height: 1.2,
                   ),
                 ),
               ],
             ),
 
-            // Spacer to balance bottom
-            const SizedBox(height: 5),
+            // ),
+            //const SizedBox(height: 5),
           ],
         ),
       ),
@@ -246,7 +280,7 @@ class _NameCard extends StatelessWidget {
 
 // --- PLAYER DIALOG (SCREEN 3) ---
 class PlayerDialog extends StatelessWidget {
-  final Map<String, String> data;
+  final AllahName data;
 
   const PlayerDialog({super.key, required this.data});
 
@@ -265,7 +299,6 @@ class PlayerDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Tabs in Player (Visual only for consistency with design)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -273,7 +306,7 @@ class PlayerDialog extends StatelessWidget {
                 const SizedBox(width: 5),
                 _miniTab("With Meaning", false),
                 const SizedBox(width: 5),
-                _miniTab("With Audio", true), // Highlighted in design
+                _miniTab("With Audio", true),
               ],
             ),
             const SizedBox(height: 30),
@@ -286,33 +319,50 @@ class PlayerDialog extends StatelessWidget {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 15),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 15,
+                  ),
                 ],
               ),
               child: Column(
                 children: [
-                  Align(
+                  const Align(
                     alignment: Alignment.topRight,
-                    child: const Icon(Icons.volume_up_outlined, color: Colors.grey, size: 20),
+                    child: Icon(
+                      Icons.volume_up_outlined,
+                      color: Colors.grey,
+                      size: 20,
+                    ),
                   ),
                   Text(
-                    data['arabic']!,
-                    style: GoogleFonts.amiri(fontSize: 32, fontWeight: FontWeight.bold),
+                    data.arabic,
+                    style: GoogleFonts.amiri(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    data['transliteration']!,
-                    style: GoogleFonts.playfairDisplay(fontSize: 22, fontWeight: FontWeight.bold),
+                    data.pronunciation,
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   Text(
-                    data['meaning']!.replaceAll('\n', ' '), // Flatten text
+                    data.meaning,
                     textAlign: TextAlign.center,
                     style: const TextStyle(fontSize: 14, color: kTextGrey),
                   ),
                   const SizedBox(height: 20),
                   Align(
                     alignment: Alignment.bottomRight,
-                    child: const Icon(Icons.bookmark_border, size: 22),
+                    child: Icon(
+                      data.isSaved ? Icons.bookmark : Icons.bookmark_border,
+                      size: 22,
+                      color: data.isSaved ? kPrimaryBrown : Colors.black,
+                    ),
                   ),
                 ],
               ),
@@ -326,8 +376,14 @@ class PlayerDialog extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
-                    Text("1:00", style: TextStyle(fontSize: 10, color: Colors.grey)),
-                    Text("2:12", style: TextStyle(fontSize: 10, color: Colors.grey)),
+                    Text(
+                      "1:00",
+                      style: TextStyle(fontSize: 10, color: Colors.grey),
+                    ),
+                    Text(
+                      "2:12",
+                      style: TextStyle(fontSize: 10, color: Colors.grey),
+                    ),
                   ],
                 ),
                 SliderTheme(
@@ -335,7 +391,9 @@ class PlayerDialog extends StatelessWidget {
                     activeTrackColor: kPrimaryBrown,
                     inactiveTrackColor: Colors.grey.shade300,
                     thumbColor: kPrimaryBrown,
-                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
+                    thumbShape: const RoundSliderThumbShape(
+                      enabledThumbRadius: 5,
+                    ),
                     trackHeight: 2,
                     overlayShape: SliderComponentShape.noOverlay,
                   ),
@@ -349,7 +407,11 @@ class PlayerDialog extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
-                Icon(Icons.skip_previous_outlined, size: 28, color: Colors.black87),
+                Icon(
+                  Icons.skip_previous_outlined,
+                  size: 28,
+                  color: Colors.black87,
+                ),
                 SizedBox(width: 30),
                 Icon(Icons.play_circle_outline, size: 40, color: Colors.black),
                 SizedBox(width: 30),
@@ -392,7 +454,14 @@ class HeaderWithLines extends StatelessWidget {
         const SizedBox(width: 5),
         const Icon(Icons.circle, size: 3, color: kPrimaryBrown),
         const SizedBox(width: 8),
-        Text(title, style: GoogleFonts.playfairDisplay(fontSize: 18, fontWeight: FontWeight.w600, color: const Color(0xFF2E2E2E))),
+        Text(
+          title,
+          style: GoogleFonts.playfairDisplay(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF2E2E2E),
+          ),
+        ),
         const SizedBox(width: 8),
         const Icon(Icons.circle, size: 3, color: kPrimaryBrown),
         const SizedBox(width: 5),

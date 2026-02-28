@@ -10,6 +10,9 @@ class AwliyaAllahController extends GetxController {
   var awliyaList = <AwliyaAllah>[].obs;
   var isLoading = false.obs;
 
+  var selectedAwliya = Rxn<AwliyaAllah>();
+  var isDetailLoading = false.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -31,6 +34,20 @@ class AwliyaAllahController extends GetxController {
       awliyaList.clear();
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchAwliyaDetails(String id) async {
+    isDetailLoading.value = true;
+    try {
+      final response = await ApiService.get(ApiEndpoints.awliyaDetails(id));
+      if (response['success'] == true) {
+        selectedAwliya.value = AwliyaAllah.fromJson(response['data']);
+      }
+    } catch (e) {
+      if (kDebugMode) print("Error fetching Awliya Allah details: $e");
+    } finally {
+      isDetailLoading.value = false;
     }
   }
 }

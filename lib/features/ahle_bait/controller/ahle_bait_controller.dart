@@ -10,6 +10,9 @@ class AhleBaitController extends GetxController {
   var ahlalbaytList = <AhleBait>[].obs;
   var isLoading = false.obs;
 
+  var selectedMember = Rxn<AhleBait>();
+  var isDetailLoading = false.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -31,6 +34,20 @@ class AhleBaitController extends GetxController {
       ahlalbaytList.clear();
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchMemberDetails(String id) async {
+    isDetailLoading.value = true;
+    try {
+      final response = await ApiService.get(ApiEndpoints.ahlalbaytDetails(id));
+      if (response['success'] == true) {
+        selectedMember.value = AhleBait.fromJson(response['data']);
+      }
+    } catch (e) {
+      if (kDebugMode) print("Error fetching Ahl Al Bayt details: $e");
+    } finally {
+      isDetailLoading.value = false;
     }
   }
 }
