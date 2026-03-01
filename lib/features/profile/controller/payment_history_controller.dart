@@ -9,7 +9,7 @@ class PaymentHistoryController extends GetxController {
       "amount": "\$9.00",
       "status": "Confirmed",
       "date": "16 Sep 2026 11:21 AM",
-      "logo": "assets/images/stripe.png"
+      "logo": "assets/images/stripe.png",
     },
     {
       "method": "Stripe",
@@ -17,7 +17,7 @@ class PaymentHistoryController extends GetxController {
       "amount": "\$9.00",
       "status": "Confirmed",
       "date": "16 Sep 2026 11:21 AM",
-      "logo": "assets/images/stripe.png"
+      "logo": "assets/images/stripe.png",
     },
     {
       "method": "Stripe",
@@ -25,7 +25,7 @@ class PaymentHistoryController extends GetxController {
       "amount": "\$9.00",
       "status": "Confirmed",
       "date": "16 Sep 2026 11:21 AM",
-      "logo": "assets/images/stripe.png"
+      "logo": "assets/images/stripe.png",
     },
     {
       "method": "Stripe",
@@ -33,7 +33,7 @@ class PaymentHistoryController extends GetxController {
       "amount": "\$9.00",
       "status": "Confirmed",
       "date": "16 Sep 2026 11:21 AM",
-      "logo": "assets/images/stripe.png"
+      "logo": "assets/images/stripe.png",
     },
     // Add more mock items here
   ].obs;

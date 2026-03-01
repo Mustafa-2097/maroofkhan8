@@ -149,14 +149,14 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
           if (controller.isJuzLoading.value) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (controller.juzList.isEmpty) {
+          if (controller.filteredJuzList.isEmpty) {
             return const Center(child: Text("No Juz found"));
           }
           return ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            itemCount: controller.juzList.length,
+            itemCount: controller.filteredJuzList.length,
             itemBuilder: (context, i) {
-              final juz = controller.juzList[i];
+              final juz = controller.filteredJuzList[i];
               String subtitle = "";
               if (juz.verses != null && juz.verses!.isNotEmpty) {
                 subtitle = juz.verses!
@@ -180,14 +180,14 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
           if (controller.isLastReadLoading.value) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (controller.lastReadList.isEmpty) {
+          if (controller.filteredLastReadList.isEmpty) {
             return const Center(child: Text("No items found"));
           }
           return ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            itemCount: controller.lastReadList.length,
+            itemCount: controller.filteredLastReadList.length,
             itemBuilder: (context, i) {
-              final lastRead = controller.lastReadList[i];
+              final lastRead = controller.filteredLastReadList[i];
               final chapter = lastRead.chapter;
               return _listTile(
                 num: "${chapter?.chapterNumber ?? i + 1}",
@@ -214,9 +214,9 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
             children: [
               ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                itemCount: controller.surahList.length,
+                itemCount: controller.filteredSurahList.length,
                 itemBuilder: (context, i) {
-                  final surah = controller.surahList[i];
+                  final surah = controller.filteredSurahList[i];
                   return _listTile(
                     num: "${surah.id}",
                     title: surah.name,
@@ -759,8 +759,13 @@ class SearchAndBookmark extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: AppColors.stroke),
               ),
-              child: const TextField(
-                decoration: InputDecoration(
+              child: TextField(
+                onChanged: (val) {
+                  final QuranController controller =
+                      Get.find<QuranController>();
+                  controller.searchQuery.value = val;
+                },
+                decoration: const InputDecoration(
                   hintText: 'Search',
                   hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
                   border: InputBorder.none,

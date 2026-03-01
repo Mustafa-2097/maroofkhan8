@@ -27,6 +27,50 @@ class QuranController extends GetxController {
   var isAudioLoading = false.obs;
   var currentSurahId = Rxn<int>();
 
+  // Search functionality
+  var searchQuery = ''.obs;
+
+  List<SurahModel> get filteredSurahList {
+    if (searchQuery.value.isEmpty) return surahList;
+    return surahList
+        .where(
+          (s) =>
+              s.name.toLowerCase().contains(searchQuery.value.toLowerCase()) ||
+              s.translatedName.toLowerCase().contains(
+                searchQuery.value.toLowerCase(),
+              ) ||
+              s.id.toString() == searchQuery.value,
+        )
+        .toList();
+  }
+
+  List<jm.Data> get filteredJuzList {
+    if (searchQuery.value.isEmpty) return juzList;
+    return juzList.where((j) {
+      final juzStr = j.number?.toString() ?? "";
+      final chaptersStr =
+          j.verses?.map((v) => v.chapter?.toString() ?? "").join(" ") ?? "";
+      return juzStr.contains(searchQuery.value) ||
+          chaptersStr.contains(searchQuery.value);
+    }).toList();
+  }
+
+  List<LastReadData> get filteredLastReadList {
+    if (searchQuery.value.isEmpty) return lastReadList;
+    return lastReadList
+        .where(
+          (lr) =>
+              (lr.chapter?.name ?? '').toLowerCase().contains(
+                searchQuery.value.toLowerCase(),
+              ) ||
+              (lr.chapter?.nameTranslated ?? '').toLowerCase().contains(
+                searchQuery.value.toLowerCase(),
+              ) ||
+              (lr.chapter?.chapterNumber ?? 0).toString() == searchQuery.value,
+        )
+        .toList();
+  }
+
   final AudioPlayer audioPlayer = AudioPlayer();
   var playerState = PlayerState.stopped.obs;
   var currentDuration = Duration.zero.obs;
