@@ -9,6 +9,7 @@ import '../model/last_read_model.dart';
 import '../model/verse_model.dart' as vm;
 import '../model/tafsir_model.dart' as tm;
 import '../model/audio_model.dart' as am;
+import '../model/static_surah_data.dart';
 import '../../../core/offline_storage/shared_pref.dart';
 
 class QuranController extends GetxController {
@@ -122,58 +123,11 @@ class QuranController extends GetxController {
   Future<void> fetchSurahs() async {
     try {
       isLoading.value = true;
-      final token = await SharedPreferencesHelper.getToken();
-      print("DEBUG: Fetching Surahs... Token present: ${token != null}");
-
-      final headers = {
-        if (token != null) 'Authorization': '$token',
-        if (token != null) 'token': '$token',
-        if (token != null) 'access_token': '$token',
-      };
-
-      print("DEBUG: Sending Headers: $headers");
-
-      final url = Uri.parse(ApiEndpoints.Surah);
-      final response = await http
-          .get(url, headers: headers)
-          .timeout(const Duration(seconds: 30));
-
-      print("DEBUG: Status Code: ${response.statusCode}");
-      print("DEBUG: Response Body: ${response.body}");
-
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        final decoded = jsonDecode(response.body);
-        dynamic surahData = decoded['data'];
-        print("DEBUG: Found surahData: ${surahData != null}");
-
-        if (surahData != null) {
-          List<dynamic> chapters;
-          if (surahData is List) {
-            chapters = surahData;
-          } else if (surahData is Map && surahData['chapters'] is List) {
-            chapters = surahData['chapters'];
-          } else {
-            print("DEBUG: Unexpected data format: ${surahData.runtimeType}");
-            return;
-          }
-
-          final List<SurahModel> parsedSurahs = [];
-          for (var i = 0; i < chapters.length; i++) {
-            try {
-              parsedSurahs.add(SurahModel.fromJson(chapters[i]));
-            } catch (modelError) {
-              print("DEBUG: Error parsing surah at index $i: $modelError");
-              print("DEBUG: Problematic JSON: ${chapters[i]}");
-            }
-          }
-          surahList.value = parsedSurahs;
-          print("DEBUG: Successfully loaded ${parsedSurahs.length} surahs");
-        }
-      } else {
-        print("DEBUG: API rejected request with status ${response.statusCode}");
-      }
+      // Use static data instead of fetching from API
+      surahList.value = StaticSurahData.surahs;
+      print("DEBUG: Successfully loaded ${surahList.length} static surahs");
     } catch (e) {
-      print("Error fetching surahs: $e");
+      print("Error loading static surahs: $e");
     } finally {
       isLoading.value = false;
     }

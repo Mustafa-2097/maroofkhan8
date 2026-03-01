@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:maroofkhan8/features/profile/view/pages/subscription/view/PremiumSubscriptionPage.dart';
+import 'package:maroofkhan8/features/profile/view/pages/subscription/view/subscription_screen.dart';
 import 'package:maroofkhan8/features/profile/view/widgets/profile_list.dart';
 import '../controller/profile_controller.dart';
 
@@ -92,7 +93,7 @@ class ProfileScreen extends StatelessWidget {
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         InkWell(
-                          onTap: () => Get.to(() => PremiumSubscriptionPage()),
+                          onTap: () => Get.to(() => SubscriptionPage()),
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,
