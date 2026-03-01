@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class LastReadResponse {
   bool? success;
   int? statusCode;
@@ -10,10 +12,19 @@ class LastReadResponse {
     success = json['success'];
     statusCode = json['statusCode'];
     message = json['message'];
-    if (json['data'] != null) {
+    if (json['data'] != null && json['data'] is List) {
       data = <LastReadData>[];
       json['data'].forEach((v) {
-        data!.add(LastReadData.fromJson(v));
+        if (v is Map<String, dynamic>) {
+          data!.add(LastReadData.fromJson(v));
+        } else if (v is String) {
+          try {
+            final decoded = jsonDecode(v);
+            if (decoded is Map<String, dynamic>) {
+              data!.add(LastReadData.fromJson(decoded));
+            }
+          } catch (_) {}
+        }
       });
     }
   }
@@ -39,14 +50,28 @@ class LastReadData {
   LastReadData({this.id, this.chapter, this.verse, this.createdAt});
 
   LastReadData.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    chapter = json['chapter'] != null
-        ? LastReadChapter.fromJson(json['chapter'])
-        : null;
-    verse = json['verse'];
-    createdAt = json['createdAt'] != null
-        ? CreatedAt.fromJson(json['createdAt'])
-        : null;
+    id = json['id']?.toString();
+    if (json['chapter'] != null) {
+      if (json['chapter'] is Map<String, dynamic>) {
+        chapter = LastReadChapter.fromJson(json['chapter']);
+      } else {
+        // Handle case where chapter is just an ID
+        chapter = LastReadChapter(
+          id: int.tryParse(json['chapter'].toString()),
+          chapterNumber: int.tryParse(json['chapter'].toString()),
+        );
+      }
+    }
+    verse = json['verse'] is int
+        ? json['verse']
+        : int.tryParse(json['verse']?.toString() ?? "");
+
+    if (json['createdAt'] != null &&
+        json['createdAt'] is Map<String, dynamic>) {
+      createdAt = CreatedAt.fromJson(json['createdAt']);
+    } else {
+      createdAt = null;
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -116,7 +141,7 @@ class LastReadChapter {
 class CreatedAt {
   CreatedAt();
 
-  CreatedAt.fromJson(Map<String, dynamic> json);
+  CreatedAt.fromJson(dynamic json);
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};

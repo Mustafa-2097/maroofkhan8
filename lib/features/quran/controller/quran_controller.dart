@@ -238,12 +238,35 @@ class QuranController extends GetxController {
       print("DEBUG: Last Read Status Code: ${response.statusCode}");
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
+        print("DEBUG: Last Read Response Body: ${response.body}");
         final decoded = jsonDecode(response.body);
+        print("DEBUG: Decoded type: ${decoded.runtimeType}");
+
         dynamic lastReadData = decoded['data'];
+        print("DEBUG: lastReadData type: ${lastReadData.runtimeType}");
+
         if (lastReadData != null && lastReadData is List) {
-          lastReadList.value = lastReadData
-              .map((json) => LastReadData.fromJson(json))
-              .toList();
+          print("DEBUG: lastReadData is List, size: ${lastReadData.length}");
+          if (lastReadData.isNotEmpty) {
+            print(
+              "DEBUG: first element type: ${lastReadData.first.runtimeType}",
+            );
+          }
+
+          lastReadList.value = lastReadData.map((json) {
+            if (json is String) {
+              print("DEBUG: Found string instead of Map: $json");
+              // If it's a string, maybe it's double encoded?
+              try {
+                final innerDecoded = jsonDecode(json);
+                return LastReadData.fromJson(innerDecoded);
+              } catch (e) {
+                print("DEBUG: Failed to decode inner string: $e");
+                return LastReadData(); // Return empty if failed
+              }
+            }
+            return LastReadData.fromJson(json);
+          }).toList();
         }
       } else {
         print(
