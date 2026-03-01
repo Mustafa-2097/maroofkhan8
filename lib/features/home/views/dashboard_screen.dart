@@ -1,26 +1,14 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:maroofkhan8/features/hadis/views/hadis_screen.dart';
 import 'package:maroofkhan8/features/profile/view/profile_screen.dart';
 import 'package:maroofkhan8/features/quran/views/quran_screen.dart';
 import '../../../core/constant/app_colors.dart';
-import '../../Islam_meditation/views/islam_meditation_screen.dart';
-import '../../ahle_bait/views/ahle_bait_screen.dart';
-import '../../allah_names/views/allah_names.dart' hide HeaderWithLines;
-import '../../audio/views/audio_screen.dart';
-import '../../dua/views/dua_screen.dart';
-import '../../islamic_books/views/islamic_books_screen.dart';
-import '../../islamic_calander/views/islamic_calander.dart';
-import '../../islamic_stories/views/islamic_stories.dart';
-import '../../prayer_tracker/views/prayer_tracker_screen.dart';
-import '../../sahaba/views/sahaba_screen.dart';
-import '../../salawat/views/salawat_screen.dart';
-import '../../sufism/views/sufism_screen.dart' hide HeaderWithLines;
-import '../../zakat_calculator/views/zakat_calculator.dart';
 import '../awliya_allah/awliya_allah_list_screen.dart';
 import '../dhikr/dhikr_screen.dart';
 import '../../profile/controller/profile_controller.dart';
+import '../controller/dashboard_controller.dart';
 import 'custom_app_drawer.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -97,6 +85,7 @@ class HeaderSection extends StatelessWidget {
     final primaryColor = Theme.of(context).colorScheme.primary;
 
     final profileController = Get.put(ProfileController());
+    final dashboardController = Get.put(DashboardController());
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -197,8 +186,11 @@ class HeaderSection extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: TextField(
-                  decoration: InputDecoration(
-                    hintText: "Search Quran, Duas, Names…",
+                  onChanged: (val) {
+                    dashboardController.searchQuery.value = val;
+                  },
+                  decoration: const InputDecoration(
+                    hintText: "Search Features...",
                     hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
                     border: InputBorder.none,
                   ),
@@ -222,6 +214,37 @@ class HeroSection extends StatefulWidget {
 class _HeroSectionState extends State<HeroSection> {
   final PageController _pageController = PageController(viewportFraction: 0.92);
   int _currentIndex = 0;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 4), (timer) {
+      if (_currentIndex < _slides.length - 1) {
+        _currentIndex++;
+      } else {
+        _currentIndex = 0;
+      }
+      if (_pageController.hasClients) {
+        _pageController.animateToPage(
+          _currentIndex,
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
 
   final List<Map<String, dynamic>> _slides = [
     {
@@ -629,110 +652,51 @@ class QuickStartGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
+    final DashboardController controller = Get.find<DashboardController>();
 
-    return GridView.count(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 4,
-      childAspectRatio: 0.90,
-      mainAxisSpacing: 12,
-      crossAxisSpacing: 8,
-      children: [
-        GestureDetector(
-          onTap: () {
-            Get.to(() => QuranScreen());
-          },
-          child: _GridCard(
-            title: "Quran",
-            icon: Icons.menu_book,
-            color: isDark
-                ? primaryColor.withOpacity(0.15)
-                : const Color(0xFFDCD6FF),
-            isDark: isDark,
+    return Obx(() {
+      final features = controller.filteredFeatures;
+
+      if (features.isEmpty) {
+        return const Padding(
+          padding: EdgeInsets.symmetric(vertical: 20),
+          child: Center(
+            child: Text(
+              "No features found matching your search.",
+              style: TextStyle(color: Colors.grey),
+            ),
           ),
+        );
+      }
+
+      return GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: features.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 4,
+          childAspectRatio: 0.90,
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 8,
         ),
-        GestureDetector(
-          onTap: () {
-            Get.to(() => HadithScreen());
-          },
-          child: _GridCard(
-            title: "Hadith",
-            icon: Icons.book,
-            color: isDark
-                ? Colors.orange.withOpacity(0.15)
-                : const Color(0xFFFFD6CA),
-            isDark: isDark,
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            Get.to(() => DuaListScreen());
-          },
-          child: _GridCard(
-            title: "Dua",
-            icon: Icons.front_hand,
-            color: isDark
-                ? Colors.orange.withOpacity(0.15)
-                : const Color(0xFFFFD6CA),
-            isDark: isDark,
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            Get.to(() => PrayerTrackerScreen());
-          },
-          child: _GridCard(
-            title: "Prayer\nTracker",
-            icon: Icons.gps_fixed,
-            color: isDark
-                ? primaryColor.withOpacity(0.1)
-                : const Color(0xFFE0D9FA),
-            isDark: isDark,
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            Get.to(() => IslamicStoriesScreen());
-          },
-          child: _GridCard(
-            title: "Islamic\nStories",
-            icon: Icons.auto_stories,
-            color: isDark
-                ? primaryColor.withOpacity(0.15)
-                : const Color(0xFFDCD6FF),
-            isDark: isDark,
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            Get.to(() => ZakatCalculator());
-          },
-          child: _GridCard(
-            title: "Zakat\nCalculator",
-            icon: Icons.savings_outlined,
-            color: isDark
-                ? Colors.pink.withOpacity(0.15)
-                : const Color(0xFFE94E77),
-            isPinkCard: true,
-            textColor: isDark ? Colors.white : Colors.white,
-            isDark: isDark,
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            Get.to(() => AudioScreen());
-          },
-          child: _GridCard(
-            title: "Audio",
-            icon: Icons.audiotrack,
-            color: isDark
-                ? primaryColor.withOpacity(0.15)
-                : const Color(0xFFDCD6FF),
-            isDark: isDark,
-          ),
-        ),
-      ],
-    );
+        itemBuilder: (context, index) {
+          final feature = features[index];
+          return GestureDetector(
+            onTap: () {
+              Get.to(feature.destination());
+            },
+            child: _GridCard(
+              title: feature.title,
+              icon: feature.icon,
+              color: feature.colorBuilder(isDark, primaryColor),
+              isPinkCard: feature.isPinkCard,
+              textColor: isDark ? Colors.white : Colors.white,
+              isDark: isDark,
+            ),
+          );
+        },
+      );
+    });
   }
 }
 

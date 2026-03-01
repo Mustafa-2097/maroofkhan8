@@ -8,9 +8,20 @@ class IslamicStoriesController extends GetxController {
 
   var isLoading = false.obs;
   var stories = <IslamicStory>[].obs;
+  var searchQuery = ''.obs;
 
   var isDetailLoading = false.obs;
   var storyDetail = Rxn<IslamicStory>();
+
+  List<IslamicStory> get filteredStories {
+    if (searchQuery.value.isEmpty) return stories;
+    return stories
+        .where(
+          (s) =>
+              s.title.toLowerCase().contains(searchQuery.value.toLowerCase()),
+        )
+        .toList();
+  }
 
   @override
   void onInit() {

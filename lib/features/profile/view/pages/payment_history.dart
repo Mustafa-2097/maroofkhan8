@@ -21,15 +21,15 @@ class PaymentHistory extends StatelessWidget {
         ),
         title: Text(
           "PAYMENT HISTORY",
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
       body: SafeArea(
         child: Obx(
-              () => ListView.separated(
+          () => ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             itemCount: controller.transactions.length,
             separatorBuilder: (context, index) => const SizedBox(height: 16),
@@ -58,9 +58,7 @@ class _TransactionCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isDark ? Colors.white10 : Colors.black12,
-        ),
+        border: Border.all(color: isDark ? Colors.white10 : Colors.black12),
       ),
       child: Row(
         children: [
@@ -86,19 +84,16 @@ class _TransactionCard extends StatelessWidget {
               children: [
                 Text(
                   "Transfer via ${tx['method']}",
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   "ID: ${tx['id']}",
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
-                Text(
-                  tx['date'],
-                  style: Theme.of(context).textTheme.labelSmall,
-                ),
+                Text(tx['date'], style: Theme.of(context).textTheme.labelSmall),
               ],
             ),
           ),

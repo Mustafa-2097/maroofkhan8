@@ -9,6 +9,7 @@ import '../model/last_read_model.dart';
 import '../model/verse_model.dart' as vm;
 import '../model/tafsir_model.dart' as tm;
 import '../model/audio_model.dart' as am;
+import '../model/static_surah_data.dart';
 import '../../../core/offline_storage/shared_pref.dart';
 
 class QuranController extends GetxController {
@@ -25,6 +26,50 @@ class QuranController extends GetxController {
   var surahAudio = Rxn<am.Data>();
   var isAudioLoading = false.obs;
   var currentSurahId = Rxn<int>();
+
+  // Search functionality
+  var searchQuery = ''.obs;
+
+  List<SurahModel> get filteredSurahList {
+    if (searchQuery.value.isEmpty) return surahList;
+    return surahList
+        .where(
+          (s) =>
+              s.name.toLowerCase().contains(searchQuery.value.toLowerCase()) ||
+              s.translatedName.toLowerCase().contains(
+                searchQuery.value.toLowerCase(),
+              ) ||
+              s.id.toString() == searchQuery.value,
+        )
+        .toList();
+  }
+
+  List<jm.Data> get filteredJuzList {
+    if (searchQuery.value.isEmpty) return juzList;
+    return juzList.where((j) {
+      final juzStr = j.number?.toString() ?? "";
+      final chaptersStr =
+          j.verses?.map((v) => v.chapter?.toString() ?? "").join(" ") ?? "";
+      return juzStr.contains(searchQuery.value) ||
+          chaptersStr.contains(searchQuery.value);
+    }).toList();
+  }
+
+  List<LastReadData> get filteredLastReadList {
+    if (searchQuery.value.isEmpty) return lastReadList;
+    return lastReadList
+        .where(
+          (lr) =>
+              (lr.chapter?.name ?? '').toLowerCase().contains(
+                searchQuery.value.toLowerCase(),
+              ) ||
+              (lr.chapter?.nameTranslated ?? '').toLowerCase().contains(
+                searchQuery.value.toLowerCase(),
+              ) ||
+              (lr.chapter?.chapterNumber ?? 0).toString() == searchQuery.value,
+        )
+        .toList();
+  }
 
   final AudioPlayer audioPlayer = AudioPlayer();
   var playerState = PlayerState.stopped.obs;
@@ -122,58 +167,11 @@ class QuranController extends GetxController {
   Future<void> fetchSurahs() async {
     try {
       isLoading.value = true;
-      final token = await SharedPreferencesHelper.getToken();
-      print("DEBUG: Fetching Surahs... Token present: ${token != null}");
-
-      final headers = {
-        if (token != null) 'Authorization': '$token',
-        if (token != null) 'token': '$token',
-        if (token != null) 'access_token': '$token',
-      };
-
-      print("DEBUG: Sending Headers: $headers");
-
-      final url = Uri.parse(ApiEndpoints.Surah);
-      final response = await http
-          .get(url, headers: headers)
-          .timeout(const Duration(seconds: 30));
-
-      print("DEBUG: Status Code: ${response.statusCode}");
-      print("DEBUG: Response Body: ${response.body}");
-
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        final decoded = jsonDecode(response.body);
-        dynamic surahData = decoded['data'];
-        print("DEBUG: Found surahData: ${surahData != null}");
-
-        if (surahData != null) {
-          List<dynamic> chapters;
-          if (surahData is List) {
-            chapters = surahData;
-          } else if (surahData is Map && surahData['chapters'] is List) {
-            chapters = surahData['chapters'];
-          } else {
-            print("DEBUG: Unexpected data format: ${surahData.runtimeType}");
-            return;
-          }
-
-          final List<SurahModel> parsedSurahs = [];
-          for (var i = 0; i < chapters.length; i++) {
-            try {
-              parsedSurahs.add(SurahModel.fromJson(chapters[i]));
-            } catch (modelError) {
-              print("DEBUG: Error parsing surah at index $i: $modelError");
-              print("DEBUG: Problematic JSON: ${chapters[i]}");
-            }
-          }
-          surahList.value = parsedSurahs;
-          print("DEBUG: Successfully loaded ${parsedSurahs.length} surahs");
-        }
-      } else {
-        print("DEBUG: API rejected request with status ${response.statusCode}");
-      }
+      // Use static data instead of fetching from API
+      surahList.value = StaticSurahData.surahs;
+      print("DEBUG: Successfully loaded ${surahList.length} static surahs");
     } catch (e) {
-      print("Error fetching surahs: $e");
+      print("Error loading static surahs: $e");
     } finally {
       isLoading.value = false;
     }
@@ -238,12 +236,35 @@ class QuranController extends GetxController {
       print("DEBUG: Last Read Status Code: ${response.statusCode}");
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
+        print("DEBUG: Last Read Response Body: ${response.body}");
         final decoded = jsonDecode(response.body);
+        print("DEBUG: Decoded type: ${decoded.runtimeType}");
+
         dynamic lastReadData = decoded['data'];
+        print("DEBUG: lastReadData type: ${lastReadData.runtimeType}");
+
         if (lastReadData != null && lastReadData is List) {
-          lastReadList.value = lastReadData
-              .map((json) => LastReadData.fromJson(json))
-              .toList();
+          print("DEBUG: lastReadData is List, size: ${lastReadData.length}");
+          if (lastReadData.isNotEmpty) {
+            print(
+              "DEBUG: first element type: ${lastReadData.first.runtimeType}",
+            );
+          }
+
+          lastReadList.value = lastReadData.map((json) {
+            if (json is String) {
+              print("DEBUG: Found string instead of Map: $json");
+              // If it's a string, maybe it's double encoded?
+              try {
+                final innerDecoded = jsonDecode(json);
+                return LastReadData.fromJson(innerDecoded);
+              } catch (e) {
+                print("DEBUG: Failed to decode inner string: $e");
+                return LastReadData(); // Return empty if failed
+              }
+            }
+            return LastReadData.fromJson(json);
+          }).toList();
         }
       } else {
         print(
