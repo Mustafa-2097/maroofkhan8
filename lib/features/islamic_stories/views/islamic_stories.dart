@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import '../controller/islamic_stories_controller.dart';
 import '../models/islamic_story.dart';
 
@@ -13,7 +14,8 @@ const Color kTextDark = Color(0xFF2E2E2E);
 const Color kTextGrey = Color(0xFF757575);
 
 class IslamicStoriesScreen extends StatelessWidget {
-  const IslamicStoriesScreen({super.key});
+  final bool hideBack;
+  const IslamicStoriesScreen({super.key, this.hideBack = false});
 
   @override
   Widget build(BuildContext context) {
@@ -22,26 +24,44 @@ class IslamicStoriesScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
+        title: const HeaderSection(title: "Islamic Stories"),
+        centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        toolbarHeight: 0,
+        leading: hideBack
+            ? null
+            : IconButton(
+                icon: const Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.grey,
+                  size: 20,
+                ),
+                onPressed: () => Navigator.pop(context),
+              ),
       ),
+      //   backgroundColor: Colors.transparent,
+      //   elevation: 0,
+      //   leading: IconButton(
+      //     icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+      //     onPressed: () => Navigator.pop(context),
+      //   ),
+      // ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
               const SizedBox(height: 10),
-              // Header Text
-              Text(
-                "Islamic Stories",
-                style: GoogleFonts.amiri(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
 
+              // Header Text
+              // Text(
+              //   "Islamic Stories",
+              //   style: GoogleFonts.amiri(
+              //     fontSize: 22,
+              //     fontWeight: FontWeight.bold,
+              //     color: Colors.black,
+              //   ),
+              // ),
               const SizedBox(height: 20),
 
               // Search Bar
@@ -53,8 +73,9 @@ class IslamicStoriesScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: Colors.grey.shade200),
                 ),
-                child: const TextField(
-                  decoration: InputDecoration(
+                child: TextField(
+                  onChanged: (val) => controller.searchQuery.value = val,
+                  decoration: const InputDecoration(
                     hintText: "Search",
                     hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
                     border: InputBorder.none,
@@ -70,13 +91,13 @@ class IslamicStoriesScreen extends StatelessWidget {
                   if (controller.isLoading.value) {
                     return const Center(child: CircularProgressIndicator());
                   }
-                  if (controller.stories.isEmpty) {
+                  if (controller.filteredStories.isEmpty) {
                     return const Center(child: Text("No stories available."));
                   }
                   return ListView.builder(
-                    itemCount: controller.stories.length,
+                    itemCount: controller.filteredStories.length,
                     itemBuilder: (context, index) {
-                      final story = controller.stories[index];
+                      final story = controller.filteredStories[index];
                       return _ahleBaitCard(context, story);
                     },
                   );
@@ -385,20 +406,11 @@ AppBar _buildAppBar(BuildContext context) {
   return AppBar(
     backgroundColor: Colors.transparent,
     elevation: 0,
-    leading: Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: GestureDetector(
-        onTap: () {
-          if (Navigator.canPop(context)) Navigator.pop(context);
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: const Icon(Icons.chevron_left, color: Colors.grey, size: 20),
-        ),
-      ),
+    leading: IconButton(
+      icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+      onPressed: () {
+        if (Navigator.canPop(context)) Navigator.pop(context);
+      },
     ),
     centerTitle: true,
     title: Text(
