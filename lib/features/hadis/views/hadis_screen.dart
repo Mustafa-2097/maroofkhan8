@@ -59,8 +59,11 @@ class _HadithScreenState extends State<HadithScreen> {
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Colors.grey.shade200),
                       ),
-                      child: const TextField(
-                        decoration: InputDecoration(
+                      child: TextField(
+                        onChanged: (val) {
+                          controller.searchQuery.value = val;
+                        },
+                        decoration: const InputDecoration(
                           hintText: 'Search',
                           hintStyle: TextStyle(
                             color: Colors.grey,
@@ -127,14 +130,14 @@ class _HadithScreenState extends State<HadithScreen> {
       if (controller.isLoading.value) {
         return const Center(child: CircularProgressIndicator());
       }
-      if (controller.hadithBooks.isEmpty) {
+      if (controller.filteredHadithBooks.isEmpty) {
         return const Center(child: Text("No Books Available"));
       }
       return ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        itemCount: controller.hadithBooks.length,
+        itemCount: controller.filteredHadithBooks.length,
         itemBuilder: (context, index) {
-          final book = controller.hadithBooks[index];
+          final book = controller.filteredHadithBooks[index];
           return GestureDetector(
             onTap: () {
               Get.to(HadithBookDetailsScreen(book: book));
@@ -227,14 +230,14 @@ class _HadithScreenState extends State<HadithScreen> {
       if (controller.isPopularLoading.value) {
         return const Center(child: CircularProgressIndicator());
       }
-      if (controller.popularHadiths.isEmpty) {
+      if (controller.filteredPopularHadiths.isEmpty) {
         return const Center(child: Text("No Popular Hadiths Available"));
       }
       return ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        itemCount: controller.popularHadiths.length,
+        itemCount: controller.filteredPopularHadiths.length,
         itemBuilder: (context, index) {
-          final popular = controller.popularHadiths[index];
+          final popular = controller.filteredPopularHadiths[index];
           return Container(
             margin: const EdgeInsets.only(bottom: 15),
             padding: const EdgeInsets.all(20),
@@ -323,14 +326,14 @@ class _HadithScreenState extends State<HadithScreen> {
       if (controller.isLastReadLoading.value) {
         return const Center(child: CircularProgressIndicator());
       }
-      if (controller.lastReadHadiths.isEmpty) {
+      if (controller.filteredLastReadHadiths.isEmpty) {
         return const Center(child: Text("No Last Read Records"));
       }
       return ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        itemCount: controller.lastReadHadiths.length,
+        itemCount: controller.filteredLastReadHadiths.length,
         itemBuilder: (context, index) {
-          final lastRead = controller.lastReadHadiths[index];
+          final lastRead = controller.filteredLastReadHadiths[index];
           return Container(
             margin: const EdgeInsets.only(bottom: 15),
             padding: const EdgeInsets.all(20),

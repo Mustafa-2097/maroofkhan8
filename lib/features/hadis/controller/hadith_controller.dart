@@ -25,6 +25,39 @@ class HadithController extends GetxController {
   var isLastReadLoading = false.obs;
   var lastReadHadiths = <LastReadHadith>[].obs;
 
+  var searchQuery = ''.obs;
+
+  List<HadithBook> get filteredHadithBooks {
+    if (searchQuery.value.isEmpty) return hadithBooks;
+    return hadithBooks
+        .where(
+          (b) => b.name.toLowerCase().contains(searchQuery.value.toLowerCase()),
+        )
+        .toList();
+  }
+
+  List<PopularHadith> get filteredPopularHadiths {
+    if (searchQuery.value.isEmpty) return popularHadiths;
+    return popularHadiths.where((h) {
+      final query = searchQuery.value.toLowerCase();
+      final textMatches = h.hadith.toLowerCase().contains(query);
+      final refMatches = h.reference.toLowerCase().contains(query);
+      final idMatches = (h.hadithNo ?? 0).toString() == searchQuery.value;
+      return textMatches || refMatches || idMatches;
+    }).toList();
+  }
+
+  List<LastReadHadith> get filteredLastReadHadiths {
+    if (searchQuery.value.isEmpty) return lastReadHadiths;
+    return lastReadHadiths.where((h) {
+      final query = searchQuery.value.toLowerCase();
+      final textMatches = h.hadith.toLowerCase().contains(query);
+      final refMatches = h.book.toLowerCase().contains(query);
+      final idMatches = (h.hadithNo ?? '').toString() == searchQuery.value;
+      return textMatches || refMatches || idMatches;
+    }).toList();
+  }
+
   @override
   void onInit() {
     super.onInit();
