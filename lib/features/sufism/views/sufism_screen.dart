@@ -6,14 +6,16 @@ import 'package:maroofkhan8/features/home/dhikr/dhikr_screen.dart';
 
 import '../../../core/constant/app_colors.dart';
 import '../../../core/constant/widgets/header.dart';
-import '../../Islam_meditation/views/islam_meditation_screen.dart';
 import '../../ahle_bait/views/ahle_bait_screen.dart';
 import '../../allah_names/views/allah_names.dart';
 import '../../home/awliya_allah/awliya_allah_list_screen.dart';
 import '../../islamic_books/views/islamic_books_screen.dart';
 import '../../sahaba/views/sahaba_screen.dart';
 import '../../salawat/views/salawat_screen.dart';
-import '../../home/dhikr/dhikr_screen.dart';
+import '../controller/sufism_controller.dart';
+import '../../Islam_meditation/controller/meditation_controller.dart';
+import '../../Islam_meditation/model/meditation_model.dart';
+import '../../Islam_meditation/views/islam_meditation_screen.dart';
 
 // --- CONSTANTS & THEME ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
