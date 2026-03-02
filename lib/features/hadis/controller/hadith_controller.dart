@@ -6,6 +6,7 @@ import '../models/hadith_chapter.dart';
 import '../models/hadith.dart';
 import '../models/popular_hadith.dart';
 import '../models/last_read_hadith.dart';
+import '../data/hadith_data.dart';
 
 class HadithController extends GetxController {
   static HadithController get instance => Get.find();
@@ -90,6 +91,10 @@ class HadithController extends GetxController {
   Future<void> fetchHadithBooks() async {
     isLoading.value = true;
     try {
+      // Using static data from separate file
+      hadithBooks.value = HadithData.staticHadithBooks;
+
+      /*
       final response = await ApiService.get(ApiEndpoints.hadithBooks);
       if (response['success'] == true) {
         final List<dynamic> data = response['data'];
@@ -97,6 +102,7 @@ class HadithController extends GetxController {
             .map((json) => HadithBook.fromJson(json))
             .toList();
       }
+      */
     } catch (e) {
       // Error is handled in ApiService
     } finally {
