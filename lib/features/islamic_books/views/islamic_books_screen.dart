@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart'; // Add GetX
 import 'package:google_fonts/google_fonts.dart';
+import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import '../controller/book_controller.dart'; // Add Controller
 
 // --- CONSTANTS ---
@@ -24,36 +25,49 @@ class IslamicBooksListScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
+        title: const HeaderSection(title: "Islamic Books"),
+        centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 20),
-          child: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              margin: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(
-                Icons.chevron_left,
-                color: Colors.grey,
-                size: 20,
-              ),
-            ),
-          ),
-        ),
-        centerTitle: true,
-        title: Text(
-          "Islamic Book's",
-          style: GoogleFonts.playfairDisplay(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
+
+      // appBar: AppBar(
+      //   backgroundColor: Colors.transparent,
+      //   elevation: 0,
+      //   leading: Padding(
+      //     padding: const EdgeInsets.only(left: 20),
+      //     child: GestureDetector(
+      //       onTap: () => Navigator.pop(context),
+      //       child: Container(
+      //         margin: const EdgeInsets.all(8),
+      //         decoration: BoxDecoration(
+      //           border: Border.all(color: Colors.grey.shade300),
+      //           borderRadius: BorderRadius.circular(8),
+      //         ),
+      //         child: const Icon(
+      //           Icons.arrow_back_ios,
+      //           color: Colors.grey,
+      //           // Icons.chevron_left,
+      //           // color: Colors.grey,
+      //           size: 20,
+      //         ),
+      //       ),
+      //     ),
+      //   ),
+      //   centerTitle: true,
+      //   title: Text(
+      //     "Islamic Book's",
+      //     style: GoogleFonts.playfairDisplay(
+      //       color: Colors.black,
+      //       fontWeight: FontWeight.bold,
+      //       fontSize: 20,
+      //     ),
+      //   ),
+      // ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
@@ -71,8 +85,9 @@ class IslamicBooksListScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: Colors.grey.shade200),
                     ),
-                    child: const TextField(
-                      decoration: InputDecoration(
+                    child: TextField(
+                      onChanged: controller.updateSearchQuery,
+                      decoration: const InputDecoration(
                         hintText: "Search",
                         hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
                         border: InputBorder.none,
@@ -106,14 +121,14 @@ class IslamicBooksListScreen extends StatelessWidget {
                 if (controller.isLoading.value) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                if (controller.bookList.isEmpty) {
+                if (controller.filteredBookList.isEmpty) {
                   return const Center(child: Text("No books found"));
                 }
 
                 return ListView.builder(
-                  itemCount: controller.bookList.length,
+                  itemCount: controller.filteredBookList.length,
                   itemBuilder: (context, index) {
-                    final book = controller.bookList[index];
+                    final book = controller.filteredBookList[index];
                     return _BookListItem(
                       title: book.title ?? "Untitled",
                       subtitle: book.subtitle ?? "",
@@ -285,16 +300,10 @@ class BookReaderScreen extends StatelessWidget {
           padding: const EdgeInsets.all(10.0),
           child: GestureDetector(
             onTap: () => Navigator.pop(context),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(
-                Icons.chevron_left,
-                color: Colors.grey,
-                size: 20,
-              ),
+            child: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.grey,
+              size: 20,
             ),
           ),
         ),

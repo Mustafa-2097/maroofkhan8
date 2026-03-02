@@ -203,7 +203,17 @@ class _IslamicStoriesDetailScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBackground,
-      appBar: _buildAppBar(context),
+      appBar: AppBar(
+        title: const HeaderSection(title: "Islamic Stories"),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      // appBar: _buildAppBar(context),
       body: Obx(() {
         if (controller.isDetailLoading.value) {
           return const Center(child: CircularProgressIndicator());
@@ -402,24 +412,24 @@ class _ActionButton extends StatelessWidget {
   }
 }
 
-AppBar _buildAppBar(BuildContext context) {
-  return AppBar(
-    backgroundColor: Colors.transparent,
-    elevation: 0,
-    leading: IconButton(
-      icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
-      onPressed: () {
-        if (Navigator.canPop(context)) Navigator.pop(context);
-      },
-    ),
-    centerTitle: true,
-    title: Text(
-      "Islamic Stories",
-      style: GoogleFonts.playfairDisplay(
-        color: Colors.black,
-        fontWeight: FontWeight.bold,
-        fontSize: 20,
-      ),
-    ),
-  );
-}
+// AppBar _buildAppBar(BuildContext context) {
+//   return AppBar(
+//     backgroundColor: Colors.transparent,
+//     elevation: 0,
+//     leading: IconButton(
+//       icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+//       onPressed: () {
+//         if (Navigator.canPop(context)) Navigator.pop(context);
+//       },
+//     ),
+//     centerTitle: true,
+//     title: Text(
+//       "Islamic Stories",
+//       style: GoogleFonts.playfairDisplay(
+//         color: Colors.black,
+//         fontWeight: FontWeight.bold,
+//         fontSize: 20,
+//       ),
+//     ),
+//   );
+// }

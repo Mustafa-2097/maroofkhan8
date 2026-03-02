@@ -9,6 +9,21 @@ class SahabaController extends GetxController {
 
   var sahabaList = <Sahaba>[].obs;
   var isLoading = false.obs;
+  var searchQuery = "".obs;
+
+  List<Sahaba> get filteredSahabaList {
+    if (searchQuery.value.isEmpty) {
+      return sahabaList;
+    }
+    final query = searchQuery.value.toLowerCase();
+    return sahabaList
+        .where(
+          (s) =>
+              s.name.toLowerCase().contains(query) ||
+              s.title.toLowerCase().contains(query),
+        )
+        .toList();
+  }
 
   var selectedSahaba = Rxn<Sahaba>();
   var isDetailLoading = false.obs;

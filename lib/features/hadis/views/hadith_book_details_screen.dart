@@ -25,6 +25,7 @@ class _HadithBookDetailsScreenState extends State<HadithBookDetailsScreen> {
     super.initState();
     // Fetch chapters using the book slug (id)
     controller.fetchHadithChapters(widget.book.id);
+    controller.chapterSearchQuery.value = '';
   }
 
   @override
@@ -51,14 +52,14 @@ class _HadithBookDetailsScreenState extends State<HadithBookDetailsScreen> {
                 if (controller.isChaptersLoading.value) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                if (controller.chapters.isEmpty) {
-                  return const Center(child: Text("No Chapters Available"));
+                if (controller.filteredChapters.isEmpty) {
+                  return const Center(child: Text("No Chapters Found"));
                 }
                 return ListView.builder(
                   padding: const EdgeInsets.symmetric(vertical: 10),
-                  itemCount: controller.chapters.length,
+                  itemCount: controller.filteredChapters.length,
                   itemBuilder: (context, index) {
-                    final chapter = controller.chapters[index];
+                    final chapter = controller.filteredChapters[index];
                     return GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -122,7 +123,7 @@ class _HadithBookDetailsScreenState extends State<HadithBookDetailsScreen> {
         ),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 20),
-          child: Divider(height: 1, color: Color(0xFFF1F1F1)),
+          child: Divider(height: 1, color: Colors.grey),
         ),
       ],
     );
@@ -141,17 +142,10 @@ class HeaderDecoration extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () => Navigator.pop(context),
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: const Icon(
-                Icons.chevron_left,
-                color: Colors.grey,
-                size: 20,
-              ),
+            child: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.grey,
+              size: 20,
             ),
           ),
           const Expanded(
@@ -159,9 +153,10 @@ class HeaderDecoration extends StatelessWidget {
               indent: 10,
               endIndent: 10,
               color: Colors.grey,
-              thickness: 0.5,
+              thickness: 0.7,
             ),
           ),
+
           const Icon(Icons.circle, size: 4, color: Color(0xFF8D3C1F)),
           const SizedBox(width: 8),
           Flexible(
@@ -182,7 +177,7 @@ class HeaderDecoration extends StatelessWidget {
               indent: 10,
               endIndent: 10,
               color: Colors.grey,
-              thickness: 0.5,
+              thickness: 0.7,
             ),
           ),
           const SizedBox(width: 30), // Balancing for back button
@@ -210,8 +205,10 @@ class SearchBarSection extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: Colors.grey.shade200),
               ),
-              child: const TextField(
-                decoration: InputDecoration(
+              child: TextField(
+                onChanged: (value) =>
+                    HadithController.instance.chapterSearchQuery.value = value,
+                decoration: const InputDecoration(
                   hintText: 'Search',
                   hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
                   border: InputBorder.none,

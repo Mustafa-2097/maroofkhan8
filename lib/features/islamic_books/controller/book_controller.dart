@@ -8,6 +8,23 @@ import '../model/book_model.dart';
 class BookController extends GetxController {
   var isLoading = false.obs;
   var bookList = <BookData>[].obs;
+  var searchQuery = ''.obs;
+
+  List<BookData> get filteredBookList {
+    if (searchQuery.value.isEmpty) {
+      return bookList;
+    }
+    return bookList.where((book) {
+      final title = book.title?.toLowerCase() ?? '';
+      final subtitle = book.subtitle?.toLowerCase() ?? '';
+      final query = searchQuery.value.toLowerCase();
+      return title.contains(query) || subtitle.contains(query);
+    }).toList();
+  }
+
+  void updateSearchQuery(String query) {
+    searchQuery.value = query;
+  }
 
   @override
   void onInit() {

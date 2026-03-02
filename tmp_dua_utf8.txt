@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import '../controller/dua_controller.dart';
@@ -226,43 +226,26 @@ class _DuaListScreenState extends State<DuaListScreen> {
   }
 }
 
-class DuaDetailScreen extends StatefulWidget {
+class DuaDetailScreen extends StatelessWidget {
   final DuaData dua;
   const DuaDetailScreen({super.key, required this.dua});
 
   @override
-  State<DuaDetailScreen> createState() => _DuaDetailScreenState();
-}
-
-class _DuaDetailScreenState extends State<DuaDetailScreen> {
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const HeaderSection(title: "Duas"),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.black54),
           onPressed: () => Navigator.pop(context),
         ),
+        title: Text(
+          "Duas",
+          style: GoogleFonts.ebGaramond(color: Colors.black, fontSize: 18),
+        ),
+        centerTitle: true,
       ),
-
-      // appBar: AppBar(
-      //   backgroundColor: Colors.white,
-      //   elevation: 0,
-      //   leading: IconButton(
-      //     icon: const Icon(Icons.arrow_back_ios, color: Colors.black54),
-      //     onPressed: () => Navigator.pop(context),
-      //   ),
-
-      //   title: Text(
-      //     "Duas",
-      //     style: GoogleFonts.ebGaramond(color: Colors.black, fontSize: 18),
-      //   ),
-      //   centerTitle: true,
-      // ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -301,7 +284,7 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
                     ),
                   ),
                   Text(
-                    widget.dua.arabic ?? "",
+                    dua.arabic ?? "",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.amiri(
                       fontSize: 22,
@@ -310,7 +293,7 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
                   ),
                   const SizedBox(height: 15),
                   Text(
-                    widget.dua.pronunciation ?? "",
+                    dua.pronunciation ?? "",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.ebGaramond(
                       fontSize: 14,
@@ -361,7 +344,7 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    widget.dua.meaning ?? "",
+                    dua.meaning ?? "",
                     style: GoogleFonts.ebGaramond(fontSize: 14, height: 1.4),
                   ),
                 ],

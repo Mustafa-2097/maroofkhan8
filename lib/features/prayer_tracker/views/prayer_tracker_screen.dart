@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../core/constant/widgets/header.dart';
 
 // --- COLORS & THEME ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -14,12 +15,29 @@ const Color kOrangeCircleStart = Color(0xFFD66445);
 const Color kOrangeCircleEnd = Color(0xFFC75138);
 
 class PrayerTrackerScreenn extends StatelessWidget {
-  const PrayerTrackerScreenn({super.key});
+  final bool hideBack;
+  const PrayerTrackerScreenn({super.key, this.hideBack = false});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBackground,
+      appBar: AppBar(
+        title: const HeaderSection(title: "Prayer Tracker"),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: hideBack
+            ? null
+            : IconButton(
+                icon: const Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.grey,
+                  size: 20,
+                ),
+                onPressed: () => Navigator.pop(context),
+              ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
