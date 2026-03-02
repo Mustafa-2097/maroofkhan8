@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:maroofkhan8/core/constant/app_colors.dart';
-import 'package:maroofkhan8/core/constant/widgets/header.dart';
-import 'package:maroofkhan8/features/sufism/controller/sufism_controller.dart';
-import '../../Islam_meditation/controller/meditation_controller.dart';
-import '../../Islam_meditation/model/meditation_model.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:maroofkhan8/features/home/dhikr/dhikr_screen.dart';
+
+import '../../../core/constant/app_colors.dart';
+import '../../../core/constant/widgets/header.dart';
 import '../../Islam_meditation/views/islam_meditation_screen.dart';
 import '../../ahle_bait/views/ahle_bait_screen.dart';
 import '../../allah_names/views/allah_names.dart';
@@ -37,7 +37,7 @@ class SufismHomeScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
           child: Column(
             children: [
               const HeaderSection(title: "Sufism"),
@@ -697,9 +697,9 @@ class ExploreMoreGrid extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       crossAxisCount: 4,
-      childAspectRatio: 0.90,
-      mainAxisSpacing: 12,
-      crossAxisSpacing: 8,
+      childAspectRatio: 0.75, // Increased vertical space
+      mainAxisSpacing: 12.h,
+      crossAxisSpacing: 8.w,
       children: [
         GestureDetector(
           onTap: () {
@@ -853,13 +853,17 @@ class _GridCard extends StatelessWidget {
               color: isDark ? Colors.white : Colors.black87,
             ),
           ),
-          const SizedBox(height: 2),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : Colors.black87,
+          const SizedBox(height: 4),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : Colors.black87,
+                fontSize: 11.sp,
+              ),
             ),
           ),
         ],

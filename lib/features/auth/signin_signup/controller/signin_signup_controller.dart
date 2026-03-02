@@ -4,6 +4,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../../../../core/network/api_Service.dart';
 import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/offline_storage/shared_pref.dart';
+import '../../../../core/constant/app_colors.dart';
 import '../../../../bottom_nav_bar.dart';
 import '../view/signup_otp_verification_page.dart';
 
@@ -22,6 +23,8 @@ class SignInSignUpController extends GetxController {
   final nameController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final phoneController = TextEditingController();
+  final fullPhoneNumber = ''.obs;
+  final phoneError = RxnString();
 
   void togglePasswordVisibility() =>
       isPasswordVisible.value = !isPasswordVisible.value;
@@ -52,6 +55,8 @@ class SignInSignUpController extends GetxController {
     // 2. Clear password fields for security/UX when switching
     passwordController.clear();
     confirmPasswordController.clear();
+    fullPhoneNumber.value = '';
+    phoneError.value = null;
 
     // Optional: If you want to clear EVERYTHING (including email/name) when switching:
     // emailController.clear();
@@ -92,10 +97,10 @@ class SignInSignUpController extends GetxController {
       EasyLoading.dismiss();
 
       Get.snackbar(
-        'Success',
-        response['message'] ?? 'Login successful',
+        'Login successful',
+        'Welcome!',
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
+        backgroundColor: AppColors.primaryColorLight,
         colorText: Colors.white,
       );
 
@@ -113,11 +118,14 @@ class SignInSignUpController extends GetxController {
 
   Future<void> _registerUser() async {
     EasyLoading.show(status: 'Registering...');
+    phoneError.value = null;
     try {
       final body = {
         "name": nameController.text.trim(),
         "email": emailController.text.trim(),
-        "phone": phoneController.text.trim(),
+        "phone": fullPhoneNumber.value.isNotEmpty
+            ? fullPhoneNumber.value
+            : phoneController.text.trim(),
         "password": passwordController.text,
       };
 
@@ -139,6 +147,10 @@ class SignInSignUpController extends GetxController {
       );
     } catch (e) {
       EasyLoading.dismiss();
+      final msg = e.toString();
+      if (msg.toLowerCase().contains('phone must be a valid phone number')) {
+        phoneError.value = 'Enter a valid phone number';
+      }
     }
   }
 

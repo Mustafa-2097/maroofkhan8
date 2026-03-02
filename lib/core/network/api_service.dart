@@ -65,10 +65,19 @@ class ApiService {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return decoded;
       } else {
-        throw decoded['message'] ?? 'Something went wrong';
+        String errorMsg = decoded['message'] ?? 'Something went wrong';
+        if (decoded['errorMessages'] != null &&
+            decoded['errorMessages'] is List &&
+            (decoded['errorMessages'] as List).isNotEmpty) {
+          errorMsg = decoded['errorMessages'][0]['message'] ?? errorMsg;
+        }
+        throw errorMsg;
       }
     } catch (e) {
-      Get.snackbar("Error", _friendlyError(e));
+      final friendlyMsg = _friendlyError(e);
+      if (friendlyMsg != null) {
+        Get.snackbar("Error", friendlyMsg);
+      }
       rethrow;
     }
   }
@@ -100,10 +109,19 @@ class ApiService {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return decoded;
       } else {
-        throw decoded['message'] ?? 'Something went wrong';
+        String errorMsg = decoded['message'] ?? 'Something went wrong';
+        if (decoded['errorMessages'] != null &&
+            decoded['errorMessages'] is List &&
+            (decoded['errorMessages'] as List).isNotEmpty) {
+          errorMsg = decoded['errorMessages'][0]['message'] ?? errorMsg;
+        }
+        throw errorMsg;
       }
     } catch (e) {
-      Get.snackbar("Error", _friendlyError(e));
+      final friendlyMsg = _friendlyError(e);
+      if (friendlyMsg != null) {
+        Get.snackbar("Error", friendlyMsg);
+      }
       rethrow;
     }
   }
@@ -135,10 +153,19 @@ class ApiService {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return decoded;
       } else {
-        throw decoded['message'] ?? 'Something went wrong';
+        String errorMsg = decoded['message'] ?? 'Something went wrong';
+        if (decoded['errorMessages'] != null &&
+            decoded['errorMessages'] is List &&
+            (decoded['errorMessages'] as List).isNotEmpty) {
+          errorMsg = decoded['errorMessages'][0]['message'] ?? errorMsg;
+        }
+        throw errorMsg;
       }
     } catch (e) {
-      Get.snackbar("Error", _friendlyError(e));
+      final friendlyMsg = _friendlyError(e);
+      if (friendlyMsg != null) {
+        Get.snackbar("Error", friendlyMsg);
+      }
       rethrow;
     }
   }
@@ -174,10 +201,19 @@ class ApiService {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return decoded;
       } else {
-        throw decoded['message'] ?? 'Something went wrong';
+        String errorMsg = decoded['message'] ?? 'Something went wrong';
+        if (decoded['errorMessages'] != null &&
+            decoded['errorMessages'] is List &&
+            (decoded['errorMessages'] as List).isNotEmpty) {
+          errorMsg = decoded['errorMessages'][0]['message'] ?? errorMsg;
+        }
+        throw errorMsg;
       }
     } catch (e) {
-      Get.snackbar("Error", _friendlyError(e));
+      final friendlyMsg = _friendlyError(e);
+      if (friendlyMsg != null) {
+        Get.snackbar("Error", friendlyMsg);
+      }
       rethrow;
     }
   }
@@ -209,10 +245,19 @@ class ApiService {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return decoded;
       } else {
-        throw decoded['message'] ?? 'Something went wrong';
+        String errorMsg = decoded['message'] ?? 'Something went wrong';
+        if (decoded['errorMessages'] != null &&
+            decoded['errorMessages'] is List &&
+            (decoded['errorMessages'] as List).isNotEmpty) {
+          errorMsg = decoded['errorMessages'][0]['message'] ?? errorMsg;
+        }
+        throw errorMsg;
       }
     } catch (e) {
-      Get.snackbar("Error", _friendlyError(e));
+      final friendlyMsg = _friendlyError(e);
+      if (friendlyMsg != null) {
+        Get.snackbar("Error", friendlyMsg);
+      }
       rethrow;
     }
   }
@@ -266,10 +311,19 @@ class ApiService {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return decoded;
       } else {
-        throw decoded['message'] ?? 'Something went wrong';
+        String errorMsg = decoded['message'] ?? 'Something went wrong';
+        if (decoded['errorMessages'] != null &&
+            decoded['errorMessages'] is List &&
+            (decoded['errorMessages'] as List).isNotEmpty) {
+          errorMsg = decoded['errorMessages'][0]['message'] ?? errorMsg;
+        }
+        throw errorMsg;
       }
     } catch (e) {
-      Get.snackbar("Error", _friendlyError(e));
+      final friendlyMsg = _friendlyError(e);
+      if (friendlyMsg != null) {
+        Get.snackbar("Error", friendlyMsg);
+      }
       rethrow;
     }
   }
@@ -289,11 +343,16 @@ class ApiService {
     }
   }
 
-  static String _friendlyError(Object e) {
+  static String? _friendlyError(Object e) {
     final msg = e.toString();
     if (msg.contains('TimeoutException')) return 'Request timed out.';
     if (msg.contains('SocketException')) return 'No internet connection.';
     if (msg.contains('FormatException')) return 'Server response error.';
+    if (msg.toLowerCase().contains('invalid credentials'))
+      return 'Invalid email or password';
+    if (msg.toLowerCase().contains('phone must be a valid phone number')) {
+      return null; // Return null so we can handle it inline in the controller
+    }
     if (!msg.contains('Exception:') && !msg.contains('Error:')) return msg;
     return 'Something went wrong.';
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../core/constant/app_colors.dart';
@@ -81,13 +82,7 @@ class SignInSignUpPage extends StatelessWidget {
 
                   if (!controller.isLogin.value) ...[
                     _Label(text: 'Phone Number *'),
-                    _TextField(
-                      controller: controller.phoneController,
-                      hint: 'Your Phone Number',
-                      validator: (value) => value == null || value.isEmpty
-                          ? "Phone number is required"
-                          : null,
-                    ),
+                    _PhoneField(),
                     const SizedBox(height: 16),
                   ],
 
@@ -358,6 +353,58 @@ class _TextField extends StatelessWidget {
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: Colors.red, width: 2),
+        ),
+      ),
+    );
+  }
+}
+
+class _PhoneField extends GetView<SignInSignUpController> {
+  const _PhoneField();
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Obx(
+      () => IntlPhoneField(
+        controller: controller.phoneController,
+        initialCountryCode: 'BD', // Adjust as needed
+        autovalidateMode: AutovalidateMode.disabled,
+        disableLengthCheck: true,
+        onChanged: (phone) {
+          controller.fullPhoneNumber.value = phone.completeNumber;
+          controller.phoneError.value = null;
+        },
+        decoration: InputDecoration(
+          hintText: 'Your Phone Number',
+          counterText: '',
+          errorText: controller.phoneError.value,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(
+              color: isDark
+                  ? AppColors.primaryColorDark
+                  : AppColors.primaryColorLight,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(
+              color: isDark
+                  ? AppColors.primaryColorDark
+                  : AppColors.primaryColorLight,
+              width: 2,
+            ),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Colors.red),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Colors.red, width: 2),
+          ),
         ),
       ),
     );

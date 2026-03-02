@@ -45,28 +45,28 @@ class DashboardScreen extends StatelessWidget {
         ),
         child: SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                HeaderSection(),
-                const SizedBox(height: 20),
-                HeroSection(),
-                const SizedBox(height: 30),
+                const HeaderSection(),
+                SizedBox(height: 20.h),
+                const HeroSection(),
+                SizedBox(height: 30.h),
 
                 // 1. Your Journey Section
-                SectionHeader(title: "Your Journey"),
-                const SizedBox(height: 15),
+                const SectionHeader(title: "Your Journey"),
+                SizedBox(height: 15.h),
                 const YourJourneyRow(),
 
-                const SizedBox(height: 30),
+                SizedBox(height: 30.h),
 
                 // 2. Quick Start Section
-                SectionHeader(title: "Quick Start"),
-                const SizedBox(height: 15),
+                const SectionHeader(title: "Quick Start"),
+                SizedBox(height: 15.h),
                 const QuickStartGrid(),
 
-                const SizedBox(height: 40),
+                SizedBox(height: 40.h),
               ],
             ),
           ),
@@ -622,21 +622,29 @@ class _JourneyCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 6),
-          Text(
-            topText,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : Colors.black87,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              topText,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : Colors.black87,
+                fontSize: 12.sp,
+              ),
             ),
           ),
           const SizedBox(height: 2),
-          Text(
-            bottomText,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : Colors.black87,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              bottomText,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : Colors.black87,
+                fontSize: 10.sp,
+              ),
             ),
           ),
         ],
@@ -673,11 +681,11 @@ class QuickStartGrid extends StatelessWidget {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: features.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
-          childAspectRatio: 0.90,
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 8,
+          childAspectRatio: 0.75, // Increased vertical space
+          mainAxisSpacing: 12.h,
+          crossAxisSpacing: 8.w,
         ),
         itemBuilder: (context, index) {
           final feature = features[index];
@@ -741,13 +749,17 @@ class _GridCard extends StatelessWidget {
               color: isDark ? Colors.white : Colors.black87,
             ),
           ),
-          const SizedBox(height: 2),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : Colors.black87,
+          const SizedBox(height: 4),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : Colors.black87,
+                fontSize: 11.sp,
+              ),
             ),
           ),
         ],

@@ -23,6 +23,8 @@ class _HadithBookDetailsScreenState extends State<HadithBookDetailsScreen> {
   @override
   void initState() {
     super.initState();
+    // Clear chapter search query only
+    controller.chapterSearchQuery.value = '';
     // Fetch chapters using the book slug (id)
     controller.fetchHadithChapters(widget.book.id);
     controller.chapterSearchQuery.value = '';
@@ -52,14 +54,16 @@ class _HadithBookDetailsScreenState extends State<HadithBookDetailsScreen> {
                 if (controller.isChaptersLoading.value) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                if (controller.filteredChapters.isEmpty) {
-                  return const Center(child: Text("No Chapters Found"));
+
+                final chapters = controller.filteredChapters;
+                if (chapters.isEmpty) {
+                  return const Center(child: Text("No Chapters Available"));
                 }
                 return ListView.builder(
                   padding: const EdgeInsets.symmetric(vertical: 10),
-                  itemCount: controller.filteredChapters.length,
+                  itemCount: chapters.length,
                   itemBuilder: (context, index) {
-                    final chapter = controller.filteredChapters[index];
+                    final chapter = chapters[index];
                     return GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -192,6 +196,7 @@ class SearchBarSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = HadithController.instance;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
@@ -207,7 +212,7 @@ class SearchBarSection extends StatelessWidget {
               ),
               child: TextField(
                 onChanged: (value) =>
-                    HadithController.instance.chapterSearchQuery.value = value,
+                    controller.chapterSearchQuery.value = value,
                 decoration: const InputDecoration(
                   hintText: 'Search',
                   hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
