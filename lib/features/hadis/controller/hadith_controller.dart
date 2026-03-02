@@ -25,7 +25,9 @@ class HadithController extends GetxController {
   var isLastReadLoading = false.obs;
   var lastReadHadiths = <LastReadHadith>[].obs;
 
-  var searchQuery = ''.obs;
+  var searchQuery = ''.obs; // For Main Hadith Screen
+  var chapterSearchQuery = ''.obs; // For Chapters Screen
+  var hadithSearchQuery = ''.obs; // For Hadith List Screen
 
   List<HadithBook> get filteredHadithBooks {
     if (searchQuery.value.isEmpty) return hadithBooks;
@@ -55,6 +57,25 @@ class HadithController extends GetxController {
       final refMatches = h.book.toLowerCase().contains(query);
       final idMatches = (h.hadithNo ?? '').toString() == searchQuery.value;
       return textMatches || refMatches || idMatches;
+    }).toList();
+  }
+
+  List<HadithChapter> get filteredChapters {
+    if (chapterSearchQuery.value.isEmpty) return chapters;
+    return chapters.where((c) {
+      final query = chapterSearchQuery.value.toLowerCase();
+      return c.name.toLowerCase().contains(query) ||
+          c.number.toLowerCase().contains(query);
+    }).toList();
+  }
+
+  List<Hadith> get filteredHadithList {
+    if (hadithSearchQuery.value.isEmpty) return hadithList;
+    return hadithList.where((h) {
+      final query = hadithSearchQuery.value.toLowerCase();
+      return h.hadith.toLowerCase().contains(query) ||
+          h.heading.toLowerCase().contains(query) ||
+          h.number.toLowerCase().contains(query);
     }).toList();
   }
 

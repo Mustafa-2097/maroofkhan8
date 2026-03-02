@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:country_picker/country_picker.dart';
 import 'package:get/get.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../../controller/personal_data_controller.dart';
@@ -132,25 +133,33 @@ class PersonalData extends StatelessWidget {
                     () => _DropdownField(
                       value: controller.selectedCountry.value,
                       onTap: () {
-                        Get.bottomSheet(
-                          Container(
-                            color: isDark
+                        showCountryPicker(
+                          context: context,
+                          showPhoneCode: false,
+                          onSelect: (Country country) {
+                            controller.selectedCountry.value =
+                                "${country.flagEmoji} ${country.name}";
+                          },
+                          countryListTheme: CountryListThemeData(
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            ),
+                            inputDecoration: InputDecoration(
+                              labelText: 'Search',
+                              hintText: 'Start typing to search',
+                              prefixIcon: const Icon(Icons.search),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: const Color(
+                                    0xFF8C98A8,
+                                  ).withOpacity(0.2),
+                                ),
+                              ),
+                            ),
+                            backgroundColor: isDark
                                 ? const Color(0xFF2A2438)
                                 : Colors.white,
-                            child: ListView(
-                              shrinkWrap: true,
-                              children: ["Bangladesh", "USA", "UK", "Canada"]
-                                  .map(
-                                    (c) => ListTile(
-                                      title: Text(c),
-                                      onTap: () {
-                                        controller.selectedCountry.value = c;
-                                        Get.back();
-                                      },
-                                    ),
-                                  )
-                                  .toList(),
-                            ),
                           ),
                         );
                       },

@@ -22,6 +22,11 @@ class _HadithScreenState extends State<HadithScreen> {
   final Color darkBlack = const Color(0xFF1E120D);
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -130,14 +135,15 @@ class _HadithScreenState extends State<HadithScreen> {
       if (controller.isLoading.value) {
         return const Center(child: CircularProgressIndicator());
       }
-      if (controller.filteredHadithBooks.isEmpty) {
+      final books = controller.filteredHadithBooks;
+      if (books.isEmpty) {
         return const Center(child: Text("No Books Available"));
       }
       return ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        itemCount: controller.filteredHadithBooks.length,
+        itemCount: books.length,
         itemBuilder: (context, index) {
-          final book = controller.filteredHadithBooks[index];
+          final book = books[index];
           return GestureDetector(
             onTap: () {
               Get.to(HadithBookDetailsScreen(book: book));
@@ -230,14 +236,15 @@ class _HadithScreenState extends State<HadithScreen> {
       if (controller.isPopularLoading.value) {
         return const Center(child: CircularProgressIndicator());
       }
-      if (controller.filteredPopularHadiths.isEmpty) {
+      final popular = controller.filteredPopularHadiths;
+      if (popular.isEmpty) {
         return const Center(child: Text("No Popular Hadiths Available"));
       }
       return ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        itemCount: controller.filteredPopularHadiths.length,
+        itemCount: popular.length,
         itemBuilder: (context, index) {
-          final popular = controller.filteredPopularHadiths[index];
+          final item = popular[index];
           return Container(
             margin: const EdgeInsets.only(bottom: 15),
             padding: const EdgeInsets.all(20),
@@ -257,7 +264,7 @@ class _HadithScreenState extends State<HadithScreen> {
               children: [
                 const SizedBox(height: 10),
                 Text(
-                  popular.hadith,
+                  item.hadith,
                   style: const TextStyle(
                     fontSize: 14,
                     height: 1.5,
@@ -268,9 +275,9 @@ class _HadithScreenState extends State<HadithScreen> {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
-                    popular.reference.isNotEmpty
-                        ? "— ${popular.reference}"
-                        : "— Hadith ${popular.hadithNo}",
+                    item.reference.isNotEmpty
+                        ? "— ${item.reference}"
+                        : "— Hadith ${item.hadithNo}",
                     style: TextStyle(
                       color: primaryBrown,
                       fontSize: 12,
@@ -299,12 +306,12 @@ class _HadithScreenState extends State<HadithScreen> {
                       onTap: () {
                         Get.to(
                           HadishTafsirDetailsScreen(
-                            hadithText: popular.hadith,
-                            hadithNumber: popular.hadithNo?.toString() ?? "N/A",
-                            bookName: popular.reference.isNotEmpty
-                                ? popular.reference
+                            hadithText: item.hadith,
+                            hadithNumber: item.hadithNo?.toString() ?? "N/A",
+                            bookName: item.reference.isNotEmpty
+                                ? item.reference
                                 : "Popular",
-                            chapterNum: popular.chapterNo?.toString() ?? "N/A",
+                            chapterNum: item.chapterNo?.toString() ?? "N/A",
                           ),
                         );
                       },
@@ -326,14 +333,15 @@ class _HadithScreenState extends State<HadithScreen> {
       if (controller.isLastReadLoading.value) {
         return const Center(child: CircularProgressIndicator());
       }
-      if (controller.filteredLastReadHadiths.isEmpty) {
+      final lastRead = controller.filteredLastReadHadiths;
+      if (lastRead.isEmpty) {
         return const Center(child: Text("No Last Read Records"));
       }
       return ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        itemCount: controller.filteredLastReadHadiths.length,
+        itemCount: lastRead.length,
         itemBuilder: (context, index) {
-          final lastRead = controller.filteredLastReadHadiths[index];
+          final item = lastRead[index];
           return Container(
             margin: const EdgeInsets.only(bottom: 15),
             padding: const EdgeInsets.all(20),
@@ -353,7 +361,7 @@ class _HadithScreenState extends State<HadithScreen> {
               children: [
                 const SizedBox(height: 10),
                 Text(
-                  lastRead.hadith,
+                  item.hadith,
                   style: const TextStyle(
                     fontSize: 14,
                     height: 1.5,
@@ -364,7 +372,7 @@ class _HadithScreenState extends State<HadithScreen> {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
-                    "— ${lastRead.book}",
+                    "— ${item.book}",
                     style: TextStyle(
                       color: primaryBrown,
                       fontSize: 12,
@@ -393,10 +401,10 @@ class _HadithScreenState extends State<HadithScreen> {
                       onTap: () {
                         Get.to(
                           HadishTafsirDetailsScreen(
-                            hadithText: lastRead.hadith,
-                            hadithNumber: lastRead.hadithNo ?? "N/A",
-                            bookName: lastRead.book,
-                            chapterNum: lastRead.chapterNo ?? "N/A",
+                            hadithText: item.hadith,
+                            hadithNumber: item.hadithNo ?? "N/A",
+                            bookName: item.book,
+                            chapterNum: item.chapterNo ?? "N/A",
                           ),
                         );
                       },

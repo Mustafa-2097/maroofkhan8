@@ -21,7 +21,7 @@ class PersonalDataController extends GetxController {
   final dobController = TextEditingController();
 
   // Reactive variables
-  var selectedCountry = "Bangladesh".obs;
+  var selectedCountry = "🇧🇩 Bangladesh".obs;
   var selectedGender = "Male".obs;
   var isLoading = false.obs;
   var userData = Rxn<UserData>();
