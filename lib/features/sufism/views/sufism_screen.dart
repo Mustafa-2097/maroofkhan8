@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:maroofkhan8/features/Islam_meditation/controller/meditation_controller.dart';
+import 'package:maroofkhan8/features/Islam_meditation/model/meditation_model.dart';
 import 'package:maroofkhan8/features/home/dhikr/dhikr_screen.dart';
+import 'package:maroofkhan8/features/sufism/controller/sufism_controller.dart';
 
 import '../../../core/constant/app_colors.dart';
 import '../../../core/constant/widgets/header.dart';
