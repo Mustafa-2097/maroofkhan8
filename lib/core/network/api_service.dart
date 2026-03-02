@@ -294,6 +294,8 @@ class ApiService {
     if (msg.contains('TimeoutException')) return 'Request timed out.';
     if (msg.contains('SocketException')) return 'No internet connection.';
     if (msg.contains('FormatException')) return 'Server response error.';
+    if (msg.toLowerCase().contains('invalid credentials'))
+      return 'Invalid email or password';
     if (!msg.contains('Exception:') && !msg.contains('Error:')) return msg;
     return 'Something went wrong.';
   }
