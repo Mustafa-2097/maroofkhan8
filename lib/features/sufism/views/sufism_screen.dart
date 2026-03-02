@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:maroofkhan8/features/home/dhikr/dhikr_screen.dart';
 
 import '../../../core/constant/app_colors.dart';
@@ -32,7 +33,7 @@ class SufismHomeScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
           child: Column(
             children: [
               const HeaderSection(title: "Sufism"),
@@ -838,9 +839,9 @@ class ExploreMoreGrid extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       crossAxisCount: 4,
-      childAspectRatio: 0.90,
-      mainAxisSpacing: 12,
-      crossAxisSpacing: 8,
+      childAspectRatio: 0.75, // Increased vertical space
+      mainAxisSpacing: 12.h,
+      crossAxisSpacing: 8.w,
       children: [
         GestureDetector(
           onTap: () {
@@ -994,13 +995,17 @@ class _GridCard extends StatelessWidget {
               color: isDark ? Colors.white : Colors.black87,
             ),
           ),
-          const SizedBox(height: 2),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : Colors.black87,
+          const SizedBox(height: 4),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : Colors.black87,
+                fontSize: 11.sp,
+              ),
             ),
           ),
         ],
