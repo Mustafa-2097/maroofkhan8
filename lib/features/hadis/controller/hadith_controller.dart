@@ -20,6 +20,23 @@ class HadithController extends GetxController {
   var isHadithLoading = false.obs;
   var hadithList = <Hadith>[].obs;
 
+  var chapterSearchQuery = "".obs;
+
+  List<HadithChapter> get filteredChapters {
+    if (chapterSearchQuery.value.isEmpty) {
+      return chapters;
+    }
+    return chapters
+        .where(
+          (c) =>
+              c.name.toLowerCase().contains(
+                chapterSearchQuery.value.toLowerCase(),
+              ) ||
+              c.number.toString().contains(chapterSearchQuery.value),
+        )
+        .toList();
+  }
+
   var isPopularLoading = false.obs;
   var popularHadiths = <PopularHadith>[].obs;
 

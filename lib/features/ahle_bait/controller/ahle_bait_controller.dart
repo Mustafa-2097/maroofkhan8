@@ -9,6 +9,21 @@ class AhleBaitController extends GetxController {
 
   var ahlalbaytList = <AhleBait>[].obs;
   var isLoading = false.obs;
+  var searchQuery = "".obs;
+
+  List<AhleBait> get filteredAhlalbaytList {
+    if (searchQuery.value.isEmpty) {
+      return ahlalbaytList;
+    }
+    final query = searchQuery.value.toLowerCase();
+    return ahlalbaytList
+        .where(
+          (member) =>
+              member.name.toLowerCase().contains(query) ||
+              member.relation.toLowerCase().contains(query),
+        )
+        .toList();
+  }
 
   var selectedMember = Rxn<AhleBait>();
   var isDetailLoading = false.obs;

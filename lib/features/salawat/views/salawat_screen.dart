@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import '../controller/salawat_controller.dart';
 
 // --- CONSTANTS ---
@@ -23,7 +24,17 @@ class SalawatListScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: kBackground,
-      appBar: _buildAppBar(context),
+      appBar: AppBar(
+        title: const HeaderSection(title: "Salawat"),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      // appBar: _buildAppBar(context),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
@@ -176,7 +187,17 @@ class SalawatDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBackground,
-      appBar: _buildAppBar(context),
+      appBar: AppBar(
+        title: const HeaderSection(title: "Salawat"),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      // appBar: _buildAppBar(context),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -471,33 +492,36 @@ class _VerticalDivider extends StatelessWidget {
   }
 }
 
-AppBar _buildAppBar(BuildContext context) {
-  return AppBar(
-    backgroundColor: Colors.transparent,
-    elevation: 0,
-    leading: Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: GestureDetector(
-        onTap: () {
-          if (Navigator.canPop(context)) Navigator.pop(context);
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: const Icon(Icons.chevron_left, color: Colors.grey, size: 20),
-        ),
-      ),
-    ),
-    centerTitle: true,
-    title: Text(
-      "Salawat",
-      style: GoogleFonts.playfairDisplay(
-        color: Colors.black,
-        fontWeight: FontWeight.bold,
-        fontSize: 20,
-      ),
-    ),
-  );
-}
+///////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+// AppBar _buildAppBar(BuildContext context) {
+//   return AppBar(
+//     backgroundColor: Colors.transparent,
+//     elevation: 0,
+//     leading: Padding(
+//       padding: const EdgeInsets.all(10.0),
+//       child: GestureDetector(
+//         onTap: () {
+//           if (Navigator.canPop(context)) Navigator.pop(context);
+//         },
+//         child: Container(
+//           decoration: BoxDecoration(
+//             border: Border.all(color: Colors.grey.shade300),
+//             borderRadius: BorderRadius.circular(8),
+//           ),
+//           child: const Icon(Icons.chevron_left, color: Colors.grey, size: 20),
+//         ),
+//       ),
+//     ),
+//     centerTitle: true,
+//     title: Text(
+//       "Salawat",
+//       style: GoogleFonts.playfairDisplay(
+//         color: Colors.black,
+//         fontWeight: FontWeight.bold,
+//         fontSize: 20,
+//       ),
+//     ),
+//   );
+// }

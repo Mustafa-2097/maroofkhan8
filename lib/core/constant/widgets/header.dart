@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:maroofkhan8/core/constant/app_colors.dart';
 
 class HeaderSection extends StatelessWidget {
   final String title;
@@ -8,21 +7,34 @@ class HeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(width: 60, height: 1, color: Colors.grey.shade300),
-        const SizedBox(width: 10),
-        Icon(Icons.circle, size: 4, color: Theme.of(context).colorScheme.primary),
-        const SizedBox(width: 10),
-        Text(title, style: GoogleFonts.amiri(fontSize: 18, fontWeight: FontWeight.bold)),
-        const SizedBox(width: 10),
-        Icon(Icons.circle, size: 4, color: Theme.of(context).colorScheme.primary),
-        const SizedBox(width: 10),
-        Container(width: 60, height: 1, color: Colors.grey.shade300),
-      ],
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(width: 60, height: 1, color: Colors.grey.shade300),
+          const SizedBox(width: 10),
+          Icon(
+            Icons.circle,
+            size: 4,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          const SizedBox(width: 10),
+          Text(
+            title,
+            style: GoogleFonts.amiri(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(width: 10),
+          Icon(
+            Icons.circle,
+            size: 4,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          const SizedBox(width: 10),
+          Container(width: 60, height: 1, color: Colors.grey.shade300),
+        ],
+      ),
     );
   }
 }

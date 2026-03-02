@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:maroofkhan8/core/constant/widgets/header.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -16,40 +17,58 @@ class ZakatRulesDetailScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(Icons.chevron_left, color: Colors.grey, size: 20),
-            ),
-          ),
-        ),
-        centerTitle: true,
         title: Column(
           children: [
-            Text(
-              "Zakat",
-              style: GoogleFonts.playfairDisplay(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-            const SizedBox(height: 4),
+            const HeaderSection(title: "Zakat Calculator"),
             const Text(
               "Purify your wealth with ease and accuracy",
-              style: TextStyle(fontSize: 10, color: Colors.grey),
+              style: TextStyle(fontSize: 10, color: kTextGrey),
             ),
           ],
         ),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.white,
+      //   elevation: 0,
+      //   leading: Padding(
+      //     padding: const EdgeInsets.all(10.0),
+      //     child: GestureDetector(
+      //       onTap: () => Navigator.pop(context),
+      //       child: Container(
+      //         decoration: BoxDecoration(
+      //           border: Border.all(color: Colors.grey.shade300),
+      //           borderRadius: BorderRadius.circular(8),
+      //         ),
+      //         child: const Icon(Icons.chevron_left, color: Colors.grey, size: 20),
+      //       ),
+      //     ),
+      //   ),
+      //   centerTitle: true,
+      //   title: Column(
+      //     children: [
+      //       Text(
+      //         "Zakat",
+      //         style: GoogleFonts.playfairDisplay(
+      //           color: Colors.black,
+      //           fontWeight: FontWeight.bold,
+      //           fontSize: 18,
+      //         ),
+      //       ),
+      //       const SizedBox(height: 4),
+      //       const Text(
+      //         "Purify your wealth with ease and accuracy",
+      //         style: TextStyle(fontSize: 10, color: Colors.grey),
+      //       ),
+      //     ],
+      //   ),
+      // ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -67,7 +86,11 @@ class ZakatRulesDetailScreen extends StatelessWidget {
                       color: const Color(0xFF8D3C1F), // Brown background
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.people_outline, color: Colors.white, size: 28),
+                    child: const Icon(
+                      Icons.people_outline,
+                      color: Colors.white,
+                      size: 28,
+                    ),
                   ),
                   const SizedBox(width: 15),
                   Expanded(
@@ -117,21 +140,35 @@ class ZakatRulesDetailScreen extends StatelessWidget {
                   // Checklist Items
                   _checkListItem("Must be an adult and sane"),
                   _checkListItem("Must be a free person (not a slave)"),
-                  _checkListItem("Must possess wealth above the Nisab threshold"),
-                  _checkListItem("The wealth must be in possession for one full lunar year (Hawl)"),
-                  _checkListItem("The wealth must be of a growing nature (cash, gold, silver, business assets, etc.)"),
+                  _checkListItem(
+                    "Must possess wealth above the Nisab threshold",
+                  ),
+                  _checkListItem(
+                    "The wealth must be in possession for one full lunar year (Hawl)",
+                  ),
+                  _checkListItem(
+                    "The wealth must be of a growing nature (cash, gold, silver, business assets, etc.)",
+                  ),
 
                   const SizedBox(height: 15),
 
                   // Paragraphs
                   const Text(
                     "Children and insane persons are exempt, though guardians may pay on their behalf if they have substantial wealth.",
-                    style: TextStyle(fontSize: 13, color: kTextDark, height: 1.5),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: kTextDark,
+                      height: 1.5,
+                    ),
                   ),
                   const SizedBox(height: 15),
                   const Text(
                     "If your wealth falls below Nisab during the year, the count resets when it reaches Nisab again.",
-                    style: TextStyle(fontSize: 13, color: kTextDark, height: 1.5),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: kTextDark,
+                      height: 1.5,
+                    ),
                   ),
                 ],
               ),
@@ -164,7 +201,11 @@ class ZakatRulesDetailScreen extends StatelessWidget {
                 children: [
                   const Padding(
                     padding: EdgeInsets.only(top: 2.0),
-                    child: Icon(Icons.menu_book_outlined, color: kTextDark, size: 20),
+                    child: Icon(
+                      Icons.menu_book_outlined,
+                      color: kTextDark,
+                      size: 20,
+                    ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(

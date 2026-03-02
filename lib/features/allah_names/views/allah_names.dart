@@ -19,7 +19,6 @@ class NamesOfAllahScreen extends StatefulWidget {
 }
 
 class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
-  int _selectedFilterIndex = 0; // 0: All, 1: Meaning, 2: Audio
   final controller = Get.put(AllahNamesController());
 
   @override
@@ -48,8 +47,9 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Colors.grey.shade300),
                       ),
-                      child: const TextField(
-                        decoration: InputDecoration(
+                      child: TextField(
+                        onChanged: controller.updateSearchQuery,
+                        decoration: const InputDecoration(
                           prefixIcon: Icon(
                             Icons.search,
                             color: Colors.grey,
@@ -111,13 +111,11 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
                   );
                 }
 
-                if (controller.namesList.isEmpty) {
+                final displayedNames = controller.filteredNamesList;
+
+                if (displayedNames.isEmpty) {
                   return const Center(child: Text("No names found"));
                 }
-
-                // Filter logic based on tab (if applicable)
-                // For now, displaying all as the mock data did
-                final displayedNames = controller.namesList;
 
                 return GridView.builder(
                   padding: const EdgeInsets.symmetric(
@@ -153,29 +151,29 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
   }
 
   Widget _filterButton(String text, int index) {
-    bool isActive = _selectedFilterIndex == index;
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedFilterIndex = index;
-        });
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        decoration: BoxDecoration(
-          color: isActive ? kPrimaryBrown : kDarkButton,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Text(
-          text,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
+    return Obx(() {
+      bool isActive = controller.selectedFilterIndex.value == index;
+      return GestureDetector(
+        onTap: () {
+          controller.updateFilterIndex(index);
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          decoration: BoxDecoration(
+            color: isActive ? kPrimaryBrown : kDarkButton,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Text(
+            text,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
 
@@ -447,26 +445,45 @@ class HeaderWithLines extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(width: 40, height: 1, color: Colors.grey.shade300),
-        const SizedBox(width: 5),
-        const Icon(Icons.circle, size: 3, color: kPrimaryBrown),
-        const SizedBox(width: 8),
-        Text(
-          title,
-          style: GoogleFonts.playfairDisplay(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: const Color(0xFF2E2E2E),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(width: 40, height: 1, color: Colors.grey.shade300),
+              const SizedBox(width: 5),
+              const Icon(Icons.circle, size: 3, color: kPrimaryBrown),
+              const SizedBox(width: 8),
+              Text(
+                title,
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF2E2E2E),
+                ),
+              ),
+              const SizedBox(width: 8),
+              const Icon(Icons.circle, size: 3, color: kPrimaryBrown),
+              const SizedBox(width: 5),
+              Container(width: 40, height: 1, color: Colors.grey.shade300),
+            ],
           ),
-        ),
-        const SizedBox(width: 8),
-        const Icon(Icons.circle, size: 3, color: kPrimaryBrown),
-        const SizedBox(width: 5),
-        Container(width: 40, height: 1, color: Colors.grey.shade300),
-      ],
+          Align(
+            alignment: Alignment.centerLeft,
+            child: IconButton(
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                color: Colors.grey,
+                size: 20,
+              ),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

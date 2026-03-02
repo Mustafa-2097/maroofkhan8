@@ -53,9 +53,12 @@ class _HadithListDetailsScreenState extends State<HadithListDetailsScreen> {
                       indent: 10,
                       endIndent: 10,
                       color: Colors.grey,
-                      thickness: 0.5,
+                      thickness: 0.7,
                     ),
                   ),
+                  const SizedBox(width: 8),
+                  const Icon(Icons.circle, size: 4, color: Color(0xFF8D3C1F)),
+                  const SizedBox(width: 8),
                   Flexible(
                     child: RichText(
                       overflow: TextOverflow.ellipsis,
@@ -75,12 +78,14 @@ class _HadithListDetailsScreenState extends State<HadithListDetailsScreen> {
                       ),
                     ),
                   ),
+                  const SizedBox(width: 8),
+                  const Icon(Icons.circle, size: 4, color: Color(0xFF8D3C1F)),
                   const Expanded(
                     child: Divider(
                       indent: 10,
                       endIndent: 10,
                       color: Colors.grey,
-                      thickness: 0.5,
+                      thickness: 0.7,
                     ),
                   ),
                   const SizedBox(width: 40), // Placeholder for balance
@@ -159,14 +164,7 @@ class _HadithListDetailsScreenState extends State<HadithListDetailsScreen> {
   Widget _backButton() {
     return GestureDetector(
       onTap: () => Get.back(),
-      child: Container(
-        padding: const EdgeInsets.all(4),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.shade300),
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: const Icon(Icons.chevron_left, color: Colors.grey, size: 20),
-      ),
+      child: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
     );
   }
 

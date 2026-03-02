@@ -9,6 +9,44 @@ class AllahNamesController extends GetxController {
 
   var namesList = <AllahName>[].obs;
   var isLoading = false.obs;
+  var searchQuery = "".obs;
+  var selectedFilterIndex = 0.obs; // 0: All, 1: Meaning, 2: Audio
+
+  List<AllahName> get filteredNamesList {
+    List<AllahName> list = namesList;
+
+    // Filter by tab
+    if (selectedFilterIndex.value == 1) {
+      list = list.where((e) => e.meaning.isNotEmpty).toList();
+    } else if (selectedFilterIndex.value == 2) {
+      // Assuming 'With Audio' means it has an audio file or as defined by data
+      // For now we'll just return the list as is if no specific audio check is needed
+      // or filter if there's an audio property.
+    }
+
+    // Filter by search query
+    if (searchQuery.value.isNotEmpty) {
+      final query = searchQuery.value.toLowerCase();
+      list = list
+          .where(
+            (e) =>
+                e.arabic.toLowerCase().contains(query) ||
+                e.pronunciation.toLowerCase().contains(query) ||
+                e.meaning.toLowerCase().contains(query),
+          )
+          .toList();
+    }
+
+    return list;
+  }
+
+  void updateSearchQuery(String query) {
+    searchQuery.value = query;
+  }
+
+  void updateFilterIndex(int index) {
+    selectedFilterIndex.value = index;
+  }
 
   var savedNamesList = <AllahName>[].obs;
   var isSavedLoading = false.obs;

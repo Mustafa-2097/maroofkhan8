@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import '../controller/ahle_bait_controller.dart';
 import '../model/ahle_bait_model.dart';
 
@@ -13,9 +14,15 @@ const Color kTextGrey = Color(0xFF757575);
 // ==========================================
 // SCREEN 1: AHLE BAIT LIST SCREEN
 // ==========================================
-class AhleBaitListScreen extends StatelessWidget {
-  const AhleBaitListScreen({super.key});
+class AhleBaitListScreen extends StatefulWidget {
+  final bool hideBack;
+  const AhleBaitListScreen({super.key, this.hideBack = false});
 
+  @override
+  State<AhleBaitListScreen> createState() => _AhleBaitListScreenState();
+}
+
+class _AhleBaitListScreenState extends State<AhleBaitListScreen> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(AhleBaitController());
@@ -23,9 +30,20 @@ class AhleBaitListScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
+        title: const HeaderSection(title: "Ahle Bait  أهل البيت"),
+        centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        toolbarHeight: 0,
+        leading: widget.hideBack
+            ? null
+            : IconButton(
+                icon: const Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.grey,
+                  size: 20,
+                ),
+                onPressed: () => Navigator.pop(context),
+              ),
       ),
       body: SafeArea(
         child: Padding(
@@ -33,15 +51,6 @@ class AhleBaitListScreen extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 10),
-              // Header Text
-              Text(
-                "أهل البيت (Ahle Bait)",
-                style: GoogleFonts.amiri(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
               const SizedBox(height: 5),
               RichText(
                 textAlign: TextAlign.center,
@@ -54,10 +63,10 @@ class AhleBaitListScreen extends StatelessWidget {
                     const TextSpan(
                       text: "refers to the household and family members of ",
                     ),
-                    TextSpan(
-                      text: "أهل البيت",
-                      style: GoogleFonts.amiri(fontWeight: FontWeight.bold),
-                    ),
+                    // TextSpan(
+                    //   text: "أهل البيت",
+                    //   style: GoogleFonts.amiri(fontWeight: FontWeight.bold),
+                    // ),
                     const TextSpan(text: "\nProphet Muhammad"),
                   ],
                 ),
@@ -73,8 +82,9 @@ class AhleBaitListScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: Colors.grey.shade200),
                 ),
-                child: const TextField(
-                  decoration: InputDecoration(
+                child: TextField(
+                  onChanged: (val) => controller.searchQuery.value = val,
+                  decoration: const InputDecoration(
                     hintText: "Search",
                     hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
                     border: InputBorder.none,
@@ -92,7 +102,7 @@ class AhleBaitListScreen extends StatelessWidget {
                       child: CircularProgressIndicator(color: kPrimaryBrown),
                     );
                   }
-                  if (controller.ahlalbaytList.isEmpty) {
+                  if (controller.filteredAhlalbaytList.isEmpty) {
                     return const Center(
                       child: Text(
                         "No records found",
@@ -101,9 +111,9 @@ class AhleBaitListScreen extends StatelessWidget {
                     );
                   }
                   return ListView.builder(
-                    itemCount: controller.ahlalbaytList.length,
+                    itemCount: controller.filteredAhlalbaytList.length,
                     itemBuilder: (context, index) {
-                      final item = controller.ahlalbaytList[index];
+                      final item = controller.filteredAhlalbaytList[index];
                       return _ahleBaitCard(context, item);
                     },
                   );
@@ -233,17 +243,10 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
                   alignment: Alignment.centerLeft,
                   child: GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(
-                        Icons.chevron_left,
-                        color: Colors.grey,
-                        size: 20,
-                      ),
+                    child: const Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.grey,
+                      size: 20,
                     ),
                   ),
                 ),
@@ -569,7 +572,7 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
                 ],
               ),
             );
-          }).toList(),
+          }),
       ],
     );
   }

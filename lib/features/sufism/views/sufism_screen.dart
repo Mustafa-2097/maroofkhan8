@@ -13,6 +13,7 @@ import '../../home/awliya_allah/awliya_allah_list_screen.dart';
 import '../../islamic_books/views/islamic_books_screen.dart';
 import '../../sahaba/views/sahaba_screen.dart';
 import '../../salawat/views/salawat_screen.dart';
+import '../../home/dhikr/dhikr_screen.dart';
 
 // --- CONSTANTS & THEME ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -24,10 +25,13 @@ const Color kBackground = Color(0xFFFDFDFD);
 // SCREEN 1: SUFISM HOME
 // ==========================================
 class SufismHomeScreen extends StatelessWidget {
-  const SufismHomeScreen({super.key});
+  final bool hideBack;
+  const SufismHomeScreen({super.key, this.hideBack = false});
 
   @override
   Widget build(BuildContext context) {
+    Get.put(MeditationController());
+    final sufismController = Get.put(SufismController());
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
     return Scaffold(
@@ -50,7 +54,10 @@ class SufismHomeScreen extends StatelessWidget {
               const SizedBox(height: 20),
 
               // Search
-              const CustomSearchBar(),
+              // Search
+              CustomSearchBar(
+                onChanged: (val) => sufismController.searchQuery.value = val,
+              ),
               const SizedBox(height: 20),
 
               // Quote Card
@@ -135,40 +142,36 @@ class SufismHomeScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 15),
-              _meditationTile(
-                context,
-                "Yā Halīm (يَا حَلِيمُ)",
-                "Calms anger and brings patience",
-              ),
-              _meditationTile(
-                context,
-                "Yā Salām (يَا سَلَامُ)",
-                "Brings tranquility to the heart",
-              ),
-              _meditationTile(
-                context,
-                "Yā Rahmān (يَا رَحْمَٰنُ)",
-                "Softens the heart and removes fear",
-              ),
-              _meditationTile(
-                context,
-                "Yā Latīf (يَا لَطِيفُ)",
-                "Helps in difficult and sensitive moments",
-              ),
-              _meditationTile(
-                context,
-                "Astaghfirullāh (أَسْتَغْفِرُ اللَّهَ)",
-                "Cleanses the heart and brings relief",
-              ),
+              Obx(() {
+                if (sufismController.filteredMeditationList.isEmpty) {
+                  return const Center(child: Text("No records found"));
+                }
+                return Column(
+                  children: sufismController.filteredMeditationList
+                      .take(5) // Limit to 5 items on home
+                      .map(
+                        (med) => _meditationTile(
+                          context,
+                          med.title ?? "Untitled",
+                          med.subtitle ?? "",
+                          medData: med,
+                        ),
+                      )
+                      .toList(),
+                );
+              }),
 
               const SizedBox(height: 10),
-              const Center(
-                child: Text(
-                  "See more",
-                  style: TextStyle(
-                    color: kPrimaryBrown,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
+              GestureDetector(
+                onTap: () => Get.to(() => const MainMenuScreen()),
+                child: const Center(
+                  child: Text(
+                    "See more",
+                    style: TextStyle(
+                      color: kPrimaryBrown,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -253,12 +256,23 @@ class SufismHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _meditationTile(BuildContext context, String title, String sub) {
+  Widget _meditationTile(
+    BuildContext context,
+    String title,
+    String sub, {
+    MeditationData? medData,
+  }) {
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const MeditationPlayerScreen()),
-      ),
+      onTap: () {
+        if (medData != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => MeditationPlayerScreen(meditation: medData),
+            ),
+          );
+        }
+      },
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 15),
@@ -335,23 +349,25 @@ class IslamicTeachersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sufismController = SufismController.instance;
     return Scaffold(
       backgroundColor: kBackground,
+      appBar: AppBar(
+        title: const HeaderSection(title: "Islamic Teachers"),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
-              const SizedBox(height: 20),
-              // Header
-              Text(
-                "Islamic teachers",
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               // Simple Border Search
               Container(
                 height: 45,
@@ -360,41 +376,41 @@ class IslamicTeachersScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: Colors.grey.shade300),
                 ),
-                child: const TextField(
-                  decoration: InputDecoration(
+                child: TextField(
+                  onChanged: (val) =>
+                      sufismController.teacherSearchQuery.value = val,
+                  decoration: const InputDecoration(
                     hintText: "Search",
                     hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
                     border: InputBorder.none,
+                    prefixIcon: Icon(
+                      Icons.search,
+                      size: 20,
+                      color: Colors.grey,
+                    ),
                   ),
                 ),
               ),
               const SizedBox(height: 20),
               // List
               Expanded(
-                child: ListView(
-                  children: [
-                    _teacherCard(
-                      context,
-                      "Islamic Mentor",
-                      "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=200",
-                    ),
-                    _teacherCard(
-                      context,
-                      "Islamic Mentor",
-                      "https://images.unsplash.com/photo-1542358827-046645367332?auto=format&fit=crop&q=80&w=200",
-                    ),
-                    _teacherCard(
-                      context,
-                      "Deen Guide",
-                      "https://images.unsplash.com/photo-1519817650390-64a93db51149?auto=format&fit=crop&q=80&w=200",
-                    ),
-                    _teacherCard(
-                      context,
-                      "Fiqh Instructor",
-                      "https://images.unsplash.com/photo-1545989253-02cc26577f88?auto=format&fit=crop&q=80&w=200",
-                    ),
-                  ],
-                ),
+                child: Obx(() {
+                  if (sufismController.filteredTeacherList.isEmpty) {
+                    return const Center(child: Text("No teachers found"));
+                  }
+                  return ListView.builder(
+                    itemCount: sufismController.filteredTeacherList.length,
+                    itemBuilder: (context, index) {
+                      final teacher =
+                          sufismController.filteredTeacherList[index];
+                      return _teacherCard(
+                        context,
+                        teacher['name']!,
+                        teacher['img']!,
+                      );
+                    },
+                  );
+                }),
               ),
             ],
           ),
@@ -484,15 +500,12 @@ class TeachingDetailsScreen extends StatelessWidget {
             children: [
               Align(
                 alignment: Alignment.centerLeft,
-                child: GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(Icons.chevron_left, color: Colors.grey),
+                child: IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.grey,
+                    size: 20,
                   ),
                 ),
               ),
@@ -584,164 +597,6 @@ class TeachingDetailsScreen extends StatelessWidget {
   }
 }
 
-// ==========================================
-// SCREEN 4: MEDITATION PLAYER
-// ==========================================
-class MeditationPlayerScreen extends StatelessWidget {
-  const MeditationPlayerScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kBackground,
-      body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            // Header
-            const HeaderWithLines(title: "Inner Peace"),
-            const SizedBox(height: 10),
-            const Text(
-              "Calm your heart, balance your\nmind",
-              textAlign: TextAlign.center,
-              style: TextStyle(color: kTextGrey),
-            ),
-
-            const Spacer(),
-
-            // Central Image
-            Container(
-              height: 150,
-              width: 150,
-              decoration: const BoxDecoration(
-                color: kPrimaryBrown,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.volunteer_activism,
-                size: 70,
-                color: Colors.white,
-              ), // Tasbih Icon Placeholder
-            ),
-
-            const SizedBox(height: 30),
-
-            Text(
-              "Al Murshid",
-              style: GoogleFonts.playfairDisplay(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              "Take a deep breath and remember Allah.",
-              style: TextStyle(fontSize: 14),
-            ),
-            const SizedBox(height: 5),
-            const Text(
-              "Pause if needed. Focus on your heart",
-              style: TextStyle(fontSize: 12, color: kTextGrey),
-            ),
-
-            const SizedBox(height: 30),
-
-            // Slider
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: [
-                  SliderTheme(
-                    data: SliderTheme.of(context).copyWith(
-                      activeTrackColor: kPrimaryBrown,
-                      inactiveTrackColor: Colors.grey.shade300,
-                      thumbColor: kPrimaryBrown,
-                      trackHeight: 2,
-                      thumbShape: const RoundSliderThumbShape(
-                        enabledThumbRadius: 6,
-                      ),
-                    ),
-                    child: Slider(value: 0.3, onChanged: (val) {}),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text("02:25", style: TextStyle(fontSize: 10)),
-                        Text("10:25", style: TextStyle(fontSize: 10)),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Controls
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.skip_previous_outlined, size: 30),
-                ),
-                const SizedBox(width: 20),
-                const Icon(
-                  Icons.play_circle_outline,
-                  size: 50,
-                  color: kTextDark,
-                ),
-                const SizedBox(width: 20),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.skip_next_outlined, size: 30),
-                ),
-              ],
-            ),
-
-            const Spacer(),
-
-            // Buttons
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _actionButton(
-                    "Start Session",
-                    const Color(0xFF1B5E20),
-                  ), // Green
-                  _actionButton("Keep Breathing", kPrimaryBrown), // Brown
-                  _actionButton("End Session", const Color(0xFF0D47A1)), // Blue
-                ],
-              ),
-            ),
-            const SizedBox(height: 40),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _actionButton(String label, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        label,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 11,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-}
-
 // --- SHARED HELPER WIDGETS ---
 
 class HeaderWithLines extends StatelessWidget {
@@ -801,7 +656,8 @@ class HeaderDecorationMini extends StatelessWidget {
 }
 
 class CustomSearchBar extends StatelessWidget {
-  const CustomSearchBar({super.key});
+  final ValueChanged<String>? onChanged;
+  const CustomSearchBar({super.key, this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -814,8 +670,10 @@ class CustomSearchBar extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: AppColors.stroke),
       ),
-      child: const TextField(
-        decoration: InputDecoration(
+      child: TextField(
+        onChanged: onChanged,
+        style: TextStyle(color: isDark ? Colors.white : Colors.black),
+        decoration: const InputDecoration(
           prefixIcon: Icon(Icons.search, color: Colors.grey, size: 20),
           hintText: "Search...",
           hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
@@ -911,7 +769,7 @@ class ExploreMoreGrid extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            Get.to(() => IslaahApp());
+            Get.to(() => const MainMenuScreen());
           },
           child: _GridCard(
             title: "Islaah &\nMeditation",
