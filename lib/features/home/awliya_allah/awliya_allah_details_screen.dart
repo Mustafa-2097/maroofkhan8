@@ -48,19 +48,10 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
                   onTap: () => Navigator.pop(context),
                   child: Align(
                     alignment: Alignment.topLeft,
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.5),
-                        border: Border.all(color: Colors.grey.shade400),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(
-                        Icons.chevron_left,
-                        color: Colors.grey,
-                        size: 20,
-                      ),
+                    child: const Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.grey,
+                      size: 20,
                     ),
                   ),
                 ),

@@ -2,24 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import '../controller/meditation_controller.dart';
 import '../model/meditation_model.dart';
-
-class IslaahApp extends StatelessWidget {
-  const IslaahApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFFFDFDFD),
-        primaryColor: const Color(0xFF8D4B33),
-      ),
-      home: const MainMenuScreen(),
-    );
-  }
-}
 
 // --- Reusable Components ---
 
@@ -147,10 +132,19 @@ class MainMenuScreen extends StatelessWidget {
     final controller = Get.put(MeditationController());
 
     return Scaffold(
+      appBar: AppBar(
+        title: const HeaderSection(title: "Islaah & Meditation"),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: SafeArea(
         child: Column(
           children: [
-            const CustomHeader(title: "Islaah & Meditation"),
             const SizedBox(height: 20),
             Expanded(
               child: Obx(() {
@@ -272,10 +266,19 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: HeaderSection(title: widget.meditation.title ?? "Inner Peace"),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: SafeArea(
         child: Column(
           children: [
-            CustomHeader(title: widget.meditation.title ?? "Inner Peace"),
             const SizedBox(height: 20),
             Text(
               widget.meditation.subtitle ??

@@ -2,13 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import 'controllers/dhikr_controller.dart';
+import 'package:maroofkhan8/core/constant/widgets/header.dart';
 
 const Color primaryBrown = Color(0xFF8D3C1F);
 
 // --- SCREEN 1: TASBIH LIST ---
-class DhikrListScreen extends StatelessWidget {
-  const DhikrListScreen({super.key});
+class DhikrListScreen extends StatefulWidget {
+  final bool hideBack;
+  const DhikrListScreen({super.key, this.hideBack = false});
 
+  @override
+  State<DhikrListScreen> createState() => _DhikrListScreenState();
+}
+
+class _DhikrListScreenState extends State<DhikrListScreen> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(DhikrController());
@@ -16,20 +23,20 @@ class DhikrListScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FE),
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Text(
-          "Dhikr",
-          style: GoogleFonts.playfairDisplay(
-            color: Colors.black87,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: HeaderSection(title: "Dhikr"),
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.black),
-          onPressed: () => Get.back(),
-        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: widget.hideBack
+            ? null
+            : IconButton(
+                icon: const Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.grey,
+                  size: 20,
+                ),
+                onPressed: () => Navigator.pop(context),
+              ),
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
@@ -101,7 +108,12 @@ class DhikrListScreen extends StatelessWidget {
 // --- SCREEN 2: TASBIH COUNTER ---
 class DhikrCounterScreen extends StatefulWidget {
   final int initialIndex;
-  const DhikrCounterScreen({super.key, required this.initialIndex});
+  final bool hideBack;
+  const DhikrCounterScreen({
+    super.key,
+    required this.initialIndex,
+    this.hideBack = false,
+  });
 
   @override
   State<DhikrCounterScreen> createState() => _DhikrCounterScreenState();
@@ -145,20 +157,20 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FE),
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.black),
-          onPressed: () => Get.back(),
-        ),
-        title: Text(
-          "Dhikr",
-          style: GoogleFonts.playfairDisplay(
-            color: Colors.black87,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: HeaderSection(title: "Dhikr"),
         centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: widget.hideBack
+            ? null
+            : IconButton(
+                icon: const Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.grey,
+                  size: 20,
+                ),
+                onPressed: () => Navigator.pop(context),
+              ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(25.0),

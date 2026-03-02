@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import '../controller/sahaba_controller.dart';
 import '../model/sahaba_model.dart';
 
@@ -15,9 +16,15 @@ const Color kTextGrey = Color(0xFF757575);
 // ==========================================
 // SCREEN 1: SAHABA LIST
 // ==========================================
-class SahabaListScreen extends StatelessWidget {
-  const SahabaListScreen({super.key});
+class SahabaListScreen extends StatefulWidget {
+  final bool hideBack;
+  const SahabaListScreen({super.key, this.hideBack = false});
 
+  @override
+  State<SahabaListScreen> createState() => _SahabaListScreenState();
+}
+
+class _SahabaListScreenState extends State<SahabaListScreen> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(SahabaController());
@@ -25,24 +32,40 @@ class SahabaListScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
+        title: HeaderSection(title: "Sahaba"),
+        centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        centerTitle: true,
-        title: Text(
-          "Sahaba",
-          style: GoogleFonts.playfairDisplay(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        leading: GestureDetector(
-          onTap: () => Get.back(),
-          child: const Icon(Icons.chevron_left, color: Colors.black),
-        ),
-        actions: const [
-          Icon(Icons.more_horiz, color: Colors.transparent),
-        ], // Spacing
+        leading: widget.hideBack
+            ? null
+            : IconButton(
+                icon: const Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.grey,
+                  size: 20,
+                ),
+                onPressed: () => Navigator.pop(context),
+              ),
       ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.transparent,
+      //   elevation: 0,
+      //   centerTitle: true,
+      //   title: Text(
+      //     "Sahaba",
+      //     style: GoogleFonts.playfairDisplay(
+      //       color: Colors.black,
+      //       fontWeight: FontWeight.bold,
+      //     ),
+      //   ),
+      //   leading: GestureDetector(
+      //     onTap: () => Get.back(),
+      //     child: const Icon(Icons.chevron_left, color: Colors.black),
+      //   ),
+      //   actions: const [
+      //     Icon(Icons.more_horiz, color: Colors.transparent),
+      //   ], // Spacing
+      // ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
@@ -56,8 +79,9 @@ class SahabaListScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.grey.shade200),
               ),
-              child: const TextField(
-                decoration: InputDecoration(
+              child: TextField(
+                onChanged: (val) => controller.searchQuery.value = val,
+                decoration: const InputDecoration(
                   hintText: "Search",
                   hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
                   border: InputBorder.none,
@@ -75,13 +99,13 @@ class SahabaListScreen extends StatelessWidget {
                     child: CircularProgressIndicator(color: kPrimaryBrown),
                   );
                 }
-                if (controller.sahabaList.isEmpty) {
+                if (controller.filteredSahabaList.isEmpty) {
                   return const Center(child: Text("No records found"));
                 }
                 return ListView.builder(
-                  itemCount: controller.sahabaList.length,
+                  itemCount: controller.filteredSahabaList.length,
                   itemBuilder: (context, index) {
-                    final item = controller.sahabaList[index];
+                    final item = controller.filteredSahabaList[index];
                     return _sahabaCard(context, item);
                   },
                 );
@@ -211,17 +235,10 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
                   alignment: Alignment.centerLeft,
                   child: GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(
-                        Icons.chevron_left,
-                        color: Colors.grey,
-                        size: 20,
-                      ),
+                    child: const Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.grey,
+                      size: 20,
                     ),
                   ),
                 ),

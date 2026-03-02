@@ -9,6 +9,21 @@ class AwliyaAllahController extends GetxController {
 
   var awliyaList = <AwliyaAllah>[].obs;
   var isLoading = false.obs;
+  var searchQuery = "".obs;
+
+  List<AwliyaAllah> get filteredAwliyaList {
+    if (searchQuery.value.isEmpty) {
+      return awliyaList;
+    }
+    final query = searchQuery.value.toLowerCase();
+    return awliyaList
+        .where(
+          (s) =>
+              s.name.toLowerCase().contains(query) ||
+              s.title.toLowerCase().contains(query),
+        )
+        .toList();
+  }
 
   var selectedAwliya = Rxn<AwliyaAllah>();
   var isDetailLoading = false.obs;
