@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
-import 'package:maroofkhan8/features/zakat_calculator/views/zakat_details_screen.dart';
+import 'package:maroofkhan8/features/zakat_calculator/views/what_is_zakat_screen.dart';
+import 'package:maroofkhan8/features/zakat_calculator/views/who_must_pay_zakat_screen.dart';
+import 'package:maroofkhan8/features/zakat_calculator/views/nisab_hawl_screen.dart';
+import 'package:maroofkhan8/features/zakat_calculator/views/assets_included_screen.dart';
+import 'package:maroofkhan8/features/zakat_calculator/views/who_can_receive_zakat_screen.dart';
+import 'package:maroofkhan8/features/zakat_calculator/views/who_cannot_receive_zakat_screen.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -40,7 +45,7 @@ class ZakatCalculator extends StatelessWidget {
       //   centerTitle: true,
       //   title: Text("Zakat", style: GoogleFonts.playfairDisplay(color: Colors.black, fontWeight: FontWeight.bold)),
       // ),
-      bottomNavigationBar: _buildBottomNav(0),
+      //bottomNavigationBar: _buildBottomNav(0),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
@@ -166,7 +171,7 @@ class ZakatCalculator extends StatelessWidget {
             // 4. List Items
             GestureDetector(
               onTap: () {
-                Get.to(ZakatRulesDetailScreen());
+                Get.to(const ZakatWhatIsScreen());
               },
               child: _ruleItem(
                 Icons.library_books,
@@ -175,35 +180,60 @@ class ZakatCalculator extends StatelessWidget {
                 kPrimaryBrown,
               ),
             ),
-            _ruleItem(
-              Icons.people,
-              "Who Must Pay Zakat?",
-              "Understand the conditions for Zakat obligation",
-              const Color(0xFFA1887F),
+            GestureDetector(
+              onTap: () {
+                Get.to(const ZakatWhoMustPayScreen());
+              },
+              child: _ruleItem(
+                Icons.people,
+                "Who Must Pay Zakat?",
+                "Understand the conditions for Zakat obligation",
+                const Color(0xFFA1887F),
+              ),
             ),
-            _ruleItem(
-              Icons.balance,
-              "Nisab & Hawl",
-              "Understanding the minimum threshold and time period",
-              const Color(0xFF8D6E63),
+            GestureDetector(
+              onTap: () {
+                Get.to(const NisabHawlScreen());
+              },
+              child: _ruleItem(
+                Icons.balance,
+                "Nisab & Hawl",
+                "Understanding the minimum threshold and time period",
+                const Color(0xFF8D6E63),
+              ),
             ),
-            _ruleItem(
-              Icons.pie_chart,
-              "Assets Included In Zakat",
-              "What types of wealth are subject to Zakat",
-              const Color(0xFF795548),
+            GestureDetector(
+              onTap: () {
+                Get.to(const AssetsIncludedScreen());
+              },
+              child: _ruleItem(
+                Icons.pie_chart,
+                "Assets Included In Zakat",
+                "What types of wealth are subject to Zakat",
+                const Color(0xFF795548),
+              ),
             ),
-            _ruleItem(
-              Icons.volunteer_activism,
-              "Who Can Receive Zakat?",
-              "The eight categories of Zakat recipients",
-              const Color(0xFF6D4C41),
+            GestureDetector(
+              onTap: () {
+                Get.to(const WhoCanReceiveZakatScreen());
+              },
+              child: _ruleItem(
+                Icons.volunteer_activism,
+                "Who Can Receive Zakat?",
+                "The eight categories of Zakat recipients",
+                const Color(0xFF6D4C41),
+              ),
             ),
-            _ruleItem(
-              Icons.block,
-              "Who Cannot Receive Zakat?",
-              "People who are not eligible for Zakat",
-              const Color(0xFF5D4037),
+            GestureDetector(
+              onTap: () {
+                Get.to(const WhoCannotReceiveZakatScreen());
+              },
+              child: _ruleItem(
+                Icons.block,
+                "Who Cannot Receive Zakat?",
+                "People who are not eligible for Zakat",
+                const Color(0xFF5D4037),
+              ),
             ),
 
             const SizedBox(height: 30),
