@@ -2,7 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
-import 'package:maroofkhan8/features/zakat_calculator/views/zakat_details_screen.dart';
+import 'package:maroofkhan8/features/zakat_calculator/views/what_is_zakat_screen.dart';
+import 'package:maroofkhan8/features/zakat_calculator/views/who_must_pay_zakat_screen.dart';
+import 'package:maroofkhan8/features/zakat_calculator/views/nisab_hawl_screen.dart';
+import 'package:maroofkhan8/features/zakat_calculator/views/assets_included_screen.dart';
+import 'package:maroofkhan8/features/zakat_calculator/views/who_can_receive_zakat_screen.dart';
+import 'package:maroofkhan8/features/zakat_calculator/views/who_cannot_receive_zakat_screen.dart';
+import 'package:maroofkhan8/features/zakat_calculator/controller/zakat_controller.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -40,7 +46,7 @@ class ZakatCalculator extends StatelessWidget {
       //   centerTitle: true,
       //   title: Text("Zakat", style: GoogleFonts.playfairDisplay(color: Colors.black, fontWeight: FontWeight.bold)),
       // ),
-      bottomNavigationBar: _buildBottomNav(0),
+      //bottomNavigationBar: _buildBottomNav(0),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
@@ -166,7 +172,7 @@ class ZakatCalculator extends StatelessWidget {
             // 4. List Items
             GestureDetector(
               onTap: () {
-                Get.to(ZakatRulesDetailScreen());
+                Get.to(const ZakatWhatIsScreen());
               },
               child: _ruleItem(
                 Icons.library_books,
@@ -175,35 +181,60 @@ class ZakatCalculator extends StatelessWidget {
                 kPrimaryBrown,
               ),
             ),
-            _ruleItem(
-              Icons.people,
-              "Who Must Pay Zakat?",
-              "Understand the conditions for Zakat obligation",
-              const Color(0xFFA1887F),
+            GestureDetector(
+              onTap: () {
+                Get.to(const ZakatWhoMustPayScreen());
+              },
+              child: _ruleItem(
+                Icons.people,
+                "Who Must Pay Zakat?",
+                "Understand the conditions for Zakat obligation",
+                kPrimaryBrown,
+              ),
             ),
-            _ruleItem(
-              Icons.balance,
-              "Nisab & Hawl",
-              "Understanding the minimum threshold and time period",
-              const Color(0xFF8D6E63),
+            GestureDetector(
+              onTap: () {
+                Get.to(const NisabHawlScreen());
+              },
+              child: _ruleItem(
+                Icons.balance,
+                "Nisab & Hawl",
+                "Understanding the minimum threshold and time period",
+                kPrimaryBrown,
+              ),
             ),
-            _ruleItem(
-              Icons.pie_chart,
-              "Assets Included In Zakat",
-              "What types of wealth are subject to Zakat",
-              const Color(0xFF795548),
+            GestureDetector(
+              onTap: () {
+                Get.to(const AssetsIncludedScreen());
+              },
+              child: _ruleItem(
+                Icons.pie_chart,
+                "Assets Included In Zakat",
+                "What types of wealth are subject to Zakat",
+                kPrimaryBrown,
+              ),
             ),
-            _ruleItem(
-              Icons.volunteer_activism,
-              "Who Can Receive Zakat?",
-              "The eight categories of Zakat recipients",
-              const Color(0xFF6D4C41),
+            GestureDetector(
+              onTap: () {
+                Get.to(const WhoCanReceiveZakatScreen());
+              },
+              child: _ruleItem(
+                Icons.volunteer_activism,
+                "Who Can Receive Zakat?",
+                "The eight categories of Zakat recipients",
+                kPrimaryBrown,
+              ),
             ),
-            _ruleItem(
-              Icons.block,
-              "Who Cannot Receive Zakat?",
-              "People who are not eligible for Zakat",
-              const Color(0xFF5D4037),
+            GestureDetector(
+              onTap: () {
+                Get.to(const WhoCannotReceiveZakatScreen());
+              },
+              child: _ruleItem(
+                Icons.block,
+                "Who Cannot Receive Zakat?",
+                "People who are not eligible for Zakat",
+                kPrimaryBrown,
+              ),
             ),
 
             const SizedBox(height: 30),
@@ -262,6 +293,8 @@ class ZakatCalculatorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(ZakatController());
+
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
@@ -380,64 +413,99 @@ class ZakatCalculatorScreen extends StatelessWidget {
             _inputField(
               Icons.attach_money,
               "Cash in Hand & Bank",
-              "0.00",
+              controller.cashController,
               "USD",
             ),
             _inputField(
               Icons.trending_up,
               "Gold Price per Gram",
-              "0.00",
+              controller.goldPriceController,
               "USD",
             ),
-            _inputField(Icons.diamond_outlined, "Gold", "0.00", "grams"),
+            _inputField(
+              Icons.diamond_outlined,
+              "Gold",
+              controller.goldGramsController,
+              "grams",
+            ),
             _inputField(
               Icons.trending_up,
               "Silver Price per Gram",
-              "0.85",
+              controller.silverPriceController,
               "USD",
             ),
-            _inputField(Icons.link, "Silver", "0.00", "grams"),
-            _inputField(Icons.store, "Business Assets", "0.85", ""),
-            _inputField(Icons.credit_card, "Savings & Investments", "0.85", ""),
-            _inputField(Icons.money_off, "Liabilities / Debts", "0.85", ""),
+            _inputField(
+              Icons.link,
+              "Silver",
+              controller.silverGramsController,
+              "grams",
+            ),
+            _inputField(
+              Icons.store,
+              "Business Assets",
+              controller.businessAssetsController,
+              "USD",
+            ),
+            _inputField(
+              Icons.credit_card,
+              "Savings & Investments",
+              controller.savingsInvestmentsController,
+              "USD",
+            ),
+            _inputField(
+              Icons.money_off,
+              "Liabilities / Debts",
+              controller.liabilitiesController,
+              "USD",
+            ),
 
             const SizedBox(height: 20),
 
             // Summary Footer
-            Container(
-              padding: const EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                children: [
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Summary",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  _summaryRow("Total Assets:", "\$0.00"),
-                  _summaryRow("Nisab Threshold:", "\$520.51"),
-                  const Divider(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text("Status:", style: TextStyle(fontSize: 12)),
-                      Text(
-                        "Below Nisab",
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red[800],
-                        ),
+            Obx(
+              () => Container(
+                padding: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: [
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Summary",
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    const SizedBox(height: 10),
+                    _summaryRow(
+                      "Total Assets:",
+                      "\$${controller.totalAssets.value.toStringAsFixed(2)}",
+                    ),
+                    _summaryRow(
+                      "Nisab Threshold:",
+                      "\$${controller.nisabThreshold.value.toStringAsFixed(2)}",
+                    ),
+                    const Divider(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Status:", style: TextStyle(fontSize: 12)),
+                        Text(
+                          controller.status.value,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: controller.isAboveNisab.value
+                                ? Colors.green[800]
+                                : Colors.red[800],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -477,7 +545,12 @@ class ZakatCalculatorScreen extends StatelessWidget {
     );
   }
 
-  Widget _inputField(IconData icon, String label, String value, String suffix) {
+  Widget _inputField(
+    IconData icon,
+    String label,
+    TextEditingController controller,
+    String suffix,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
       padding: const EdgeInsets.all(12),
@@ -521,7 +594,24 @@ class ZakatCalculatorScreen extends StatelessWidget {
             child: Row(
               children: [
                 Expanded(
-                  child: Text(value, style: const TextStyle(fontSize: 14)),
+                  child: TextField(
+                    controller: controller,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    style: const TextStyle(fontSize: 14),
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      isDense: true,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                    onTap: () {
+                      if (controller.text == "0.00" ||
+                          controller.text == "0.0") {
+                        controller.clear();
+                      }
+                    },
+                  ),
                 ),
                 if (suffix.isNotEmpty)
                   Text(
@@ -561,6 +651,8 @@ class ZakatResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<ZakatController>();
+
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
@@ -654,102 +746,157 @@ class ZakatResultScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             // Status Card
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(15),
-              decoration: _cardDecoration(),
-              child: Column(
-                children: [
-                  const Text(
-                    "Zakat Status: NOT ELIGIBLE",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                  ),
-                  const Text(
-                    "Nisab threshold (silver): \$520.51",
-                    style: TextStyle(fontSize: 11, color: kTextGrey),
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 15,
+            Obx(
+              () => Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(15),
+                decoration: _cardDecoration(),
+                child: Column(
+                  children: [
+                    Text(
+                      "Zakat Status: ${controller.isAboveNisab.value ? "ELIGIBLE" : "NOT ELIGIBLE"}",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
                     ),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade200),
-                      borderRadius: BorderRadius.circular(5),
+                    Text(
+                      "Nisab threshold (silver): \$${controller.nisabThreshold.value.toStringAsFixed(2)}",
+                      style: const TextStyle(fontSize: 11, color: kTextGrey),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text(
-                          "Total Zakat Assets:",
-                          style: TextStyle(fontSize: 12, color: kTextGrey),
-                        ),
-                        Text(
-                          "\$0.00",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
+                    const SizedBox(height: 10),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 15,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade200),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "Total Zakat Assets:",
+                            style: TextStyle(fontSize: 12, color: kTextGrey),
                           ),
-                        ),
-                      ],
+                          Text(
+                            "\$${controller.totalAssets.value.toStringAsFixed(2)}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    "Your wealth is below the Nisab threshold. Zakat is not obligatory at this time, but voluntary charity (Sadaqah) is always encouraged.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 10, color: kTextGrey),
-                  ),
-                ],
+                    const SizedBox(height: 10),
+                    Text(
+                      controller.isAboveNisab.value
+                          ? "Your wealth is above the Nisab threshold. Zakat of 2.5% is obligatory on your total assets."
+                          : "Your wealth is below the Nisab threshold. Zakat is not obligatory at this time, but voluntary charity (Sadaqah) is always encouraged.",
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 10, color: kTextGrey),
+                    ),
+                    if (controller.isAboveNisab.value) ...[
+                      const SizedBox(height: 10),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.green[50],
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "Zakat Payable (2.5%):",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green,
+                              ),
+                            ),
+                            Text(
+                              "\$${controller.zakatPayable.value.toStringAsFixed(2)}",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.green,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 20),
 
             // Breakdown
-            Container(
-              padding: const EdgeInsets.all(15),
-              decoration: _cardDecoration(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Breakdown",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 15),
-                  _breakdownRow(Icons.attach_money, "Cash", "\$0.00"),
-                  _breakdownRow(
-                    Icons.diamond_outlined,
-                    "Gold\n0g x \$65",
-                    "\$0.00",
-                  ),
-                  _breakdownRow(Icons.link, "Silver\n0g x \$0.85", "\$0.00"),
-                  _breakdownRow(Icons.store, "Business Assets", "\$0.00"),
-                  _breakdownRow(
-                    Icons.credit_card,
-                    "Savings & Investments",
-                    "\$0.00",
-                  ),
-                  _breakdownRow(Icons.money_off, "Less: Debts", "\$0.00"),
-                  const Divider(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text(
-                        "Total:",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        "\$0.00",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: kPrimaryBrown,
+            Obx(
+              () => Container(
+                padding: const EdgeInsets.all(15),
+                decoration: _cardDecoration(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Breakdown",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 15),
+                    _breakdownRow(
+                      Icons.attach_money,
+                      "Cash",
+                      "\$${double.tryParse(controller.cashController.text)?.toStringAsFixed(2) ?? "0.00"}",
+                    ),
+                    _breakdownRow(
+                      Icons.diamond_outlined,
+                      "Gold\n${controller.goldGramsController.text}g x \$${controller.goldPriceController.text}",
+                      "\$${((double.tryParse(controller.goldGramsController.text) ?? 0) * (double.tryParse(controller.goldPriceController.text) ?? 0)).toStringAsFixed(2)}",
+                    ),
+                    _breakdownRow(
+                      Icons.link,
+                      "Silver\n${controller.silverGramsController.text}g x \$${controller.silverPriceController.text}",
+                      "\$${((double.tryParse(controller.silverGramsController.text) ?? 0) * (double.tryParse(controller.silverPriceController.text) ?? 0)).toStringAsFixed(2)}",
+                    ),
+                    _breakdownRow(
+                      Icons.store,
+                      "Business Assets",
+                      "\$${double.tryParse(controller.businessAssetsController.text)?.toStringAsFixed(2) ?? "0.00"}",
+                    ),
+                    _breakdownRow(
+                      Icons.credit_card,
+                      "Savings & Investments",
+                      "\$${double.tryParse(controller.savingsInvestmentsController.text)?.toStringAsFixed(2) ?? "0.00"}",
+                    ),
+                    _breakdownRow(
+                      Icons.money_off,
+                      "Less: Debts",
+                      "\$${double.tryParse(controller.liabilitiesController.text)?.toStringAsFixed(2) ?? "0.00"}",
+                    ),
+                    const Divider(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Total:",
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                        Text(
+                          "\$${controller.totalAssets.value.toStringAsFixed(2)}",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: kPrimaryBrown,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 20),

@@ -19,6 +19,7 @@ import '../controller/sufism_controller.dart';
 import '../../Islam_meditation/controller/meditation_controller.dart';
 import '../../Islam_meditation/model/meditation_model.dart';
 import '../../Islam_meditation/views/islam_meditation_screen.dart';
+import '../../islamic_names/views/islamic_names_screen.dart';
 
 // --- CONSTANTS & THEME ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -809,6 +810,19 @@ class ExploreMoreGrid extends StatelessWidget {
                 ? Colors.pink.withOpacity(0.15)
                 : const Color(0xFFE94E77),
             isPinkCard: true,
+            isDark: isDark,
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Get.to(() => const IslamicNamesScreen());
+          },
+          child: _GridCard(
+            title: "Islamic\nNames",
+            icon: Icons.child_care,
+            color: isDark
+                ? Colors.green.withOpacity(0.15)
+                : const Color(0xFFE6F5D8),
             isDark: isDark,
           ),
         ),
