@@ -6,9 +6,11 @@ import 'package:get/get.dart';
 import '../controller/quran_controller.dart';
 import '../model/surah_model.dart';
 import '../model/verse_model.dart' as vm;
+import 'package:share_plus/share_plus.dart';
 
 import '../../../core/constant/widgets/header.dart';
 import '../../ai_murshid/views/ai_murshid_screen.dart';
+import 'saved_suras_screen.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -202,7 +204,7 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
                         revelationPlace: chapter.revelationPlace ?? "",
                       )
                     : null,
-                onDelete: () => controller.deleteLastReadRecord(lastRead.id!),
+                isLastRead: true,
               );
             },
           );
@@ -252,6 +254,7 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
     String? time,
     SurahModel? surah,
     VoidCallback? onDelete,
+    bool isLastRead = false,
   }) {
     return GestureDetector(
       onTap: () {
@@ -302,21 +305,32 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
                     ),
                   ),
                 if (surah != null)
-                  Obx(() {
-                    final isPlaying =
-                        controller.playerState.value == PlayerState.playing &&
-                        controller.currentSurahId.value == surah.id;
-                    return IconButton(
-                      onPressed: () => controller.playSurahDirectly(surah),
-                      icon: Icon(
-                        isPlaying
-                            ? Icons.pause_circle_filled
-                            : Icons.play_circle_outline,
-                        color: kPrimaryBrown,
-                        size: 24,
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        onPressed: () => controller.downloadSurahAudio(surah),
+                        icon: const Icon(
+                          Icons.download_for_offline_outlined,
+                          color: kPrimaryBrown,
+                          size: 24,
+                        ),
                       ),
-                    );
-                  }),
+                      if (!isLastRead)
+                        Obx(() {
+                          final isSaved = controller.surahBookmarkIds
+                              .containsKey(surah.id);
+                          return IconButton(
+                            onPressed: () => controller.toggleSaveSurah(surah),
+                            icon: Icon(
+                              isSaved ? Icons.bookmark : Icons.bookmark_border,
+                              color: kPrimaryBrown,
+                              size: 24,
+                            ),
+                          );
+                        }),
+                    ],
+                  ),
                 if (onDelete != null)
                   IconButton(
                     onPressed: onDelete,
@@ -577,11 +591,16 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  IconButton(
-                    onPressed: () {}, // Future: Skip next
-                    icon: Icon(
-                      Icons.skip_next,
-                      color: isDark ? AppColors.whiteColor : Colors.black87,
+                  GestureDetector(
+                    onLongPress: () =>
+                        controller.seekRelative(const Duration(seconds: 5)),
+                    child: IconButton(
+                      onPressed: () =>
+                          controller.seekRelative(const Duration(seconds: 5)),
+                      icon: Icon(
+                        Icons.skip_next,
+                        color: isDark ? AppColors.whiteColor : Colors.black87,
+                      ),
                     ),
                   ),
                 ],
@@ -710,10 +729,22 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                     ),
                   ),
                   const SizedBox(height: 5),
-                  const Icon(
-                    Icons.share_outlined,
-                    size: 16,
-                    color: Colors.grey,
+                  IconButton(
+                    onPressed: () {
+                      final shareText =
+                          "${verse.ayah ?? ''}\n\n"
+                          "${verse.translation ?? ''}\n\n"
+                          "(${widget.surah.name}, Verse ${verse.number ?? ''})";
+                      Share.share(shareText);
+                    },
+                    icon: const Icon(
+                      Icons.share_outlined,
+                      size: 20,
+                      color: Colors.grey,
+                    ),
+                    visualDensity: VisualDensity.compact,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
                   ),
                   const SizedBox(height: 5),
                   IconButton(
@@ -774,18 +805,21 @@ class SearchAndBookmark extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          Container(
-            height: 45,
-            width: 45,
-            decoration: BoxDecoration(
-              color: isDark ? kDarkBlack : Colors.white,
-              borderRadius: BorderRadius.circular(30),
-              border: Border.all(color: AppColors.stroke),
-            ),
-            child: Icon(
-              Icons.bookmark_outline,
-              color: AppColors.stroke,
-              size: 20,
+          GestureDetector(
+            onTap: () => Get.to(() => const SavedSurasScreen()),
+            child: Container(
+              height: 45,
+              width: 45,
+              decoration: BoxDecoration(
+                color: isDark ? kDarkBlack : Colors.white,
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(color: AppColors.stroke),
+              ),
+              child: Icon(
+                Icons.bookmark_outline,
+                color: AppColors.stroke,
+                size: 20,
+              ),
             ),
           ),
         ],
