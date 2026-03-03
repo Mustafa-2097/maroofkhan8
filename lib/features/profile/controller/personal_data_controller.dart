@@ -11,8 +11,19 @@ import '../model/user_model.dart';
 class PersonalDataController extends GetxController {
   // Use Get.isDarkMode instead of Theme.of(context)
   bool get isDark => Get.isDarkMode;
-
   final formKey = GlobalKey<FormState>();
+
+  // Helper to check if data has changed
+  bool _hasChanges() {
+    final currentData = userData.value?.profile;
+    if (currentData == null) return true; // Treat as changes if no data exists
+
+    bool nameChanged = nameController.text != (currentData.name ?? "");
+    bool phoneChanged = phoneController.text != (currentData.phone ?? "");
+    bool imageChanged = profileImage.value != null;
+
+    return nameChanged || phoneChanged || imageChanged;
+  }
 
   // Controllers
   final nameController = TextEditingController();
@@ -21,8 +32,10 @@ class PersonalDataController extends GetxController {
   final dobController = TextEditingController();
 
   // Reactive variables
-  var selectedCountry = "🇧🇩 Bangladesh".obs;
-  var selectedGender = "Male".obs;
+  var selectedCountry = "Select Your Country".obs;
+  var selectedGender = "Select Your Gender".obs;
+  // var selectedCountry = "🇧🇩 Bangladesh".obs;
+  // var selectedGender = "Male".obs;
   var isLoading = false.obs;
   var userData = Rxn<UserData>();
   var profileImage = Rxn<File>();
@@ -78,6 +91,16 @@ class PersonalDataController extends GetxController {
 
   Future<void> saveProfile() async {
     if (formKey.currentState?.validate() ?? false) {
+      if (!_hasChanges()) {
+        Get.snackbar(
+          "No Changes",
+          "Data already exists",
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+        );
+        return;
+      }
+
       try {
         isLoading.value = true;
         final token = await SharedPreferencesHelper.getToken();
