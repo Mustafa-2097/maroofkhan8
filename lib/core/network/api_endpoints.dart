@@ -15,7 +15,8 @@ class ApiEndpoints {
   /// Forgot Password
   static const String forgotPassword = '$baseUrl/auth/forgot-password';
   static const String sendResetOtp = '$baseUrl/auth/send-otp/password-reset';
-  static const String verifyResetOtp = '$baseUrl/auth/verify-otp/password-reset';
+  static const String verifyResetOtp =
+      '$baseUrl/auth/verify-otp/password-reset';
 
   /// Reset password (NEW)
   static const String resetPassword = '$baseUrl/auth/reset-password';
@@ -43,10 +44,13 @@ class ApiEndpoints {
   static const String Surah = '$baseUrl/quran/chapters';
   static String surahDetails(String id) => '$baseUrl/quran/chapters/$id/verses';
   static String surahTafsir(String id) => '$baseUrl/quran/chapters/$id/tafsir';
-  static String surahAudio(String id) => '$baseUrl/quran/chapters/$id/audio?segments=true';
+  static String surahAudio(String id) =>
+      '$baseUrl/quran/chapters/$id/audio?segments=true';
   static const String juzs = '$baseUrl/quran/juzs?series=1';
   static const String lastRead = '$baseUrl/quran/last-read';
   static String deleteLastRead(String id) => '$baseUrl/quran/last-read/$id';
+  static const String quranSaved = '$baseUrl/quran/saved';
+  static String deleteQuranSaved(String id) => '$baseUrl/quran/saved/$id';
 
   /// Duas
   static const String duas = '$baseUrl/duas';
@@ -80,9 +84,11 @@ class ApiEndpoints {
 
   /// Allah Names
   static const String allahNames = '$baseUrl/names/allah';
-  static String toggleAllahNameSave(String id) => '$baseUrl/names/allah/$id/save';
+  static String toggleAllahNameSave(String id) =>
+      '$baseUrl/names/allah/$id/save';
   static const String savedAllahNames = '$baseUrl/names/allah/save';
-  static String deleteSavedAllahName(String id) => '$baseUrl/names/allah/save/$id';
+  static String deleteSavedAllahName(String id) =>
+      '$baseUrl/names/allah/save/$id';
   static const String salawat = '$baseUrl/salawat';
   static const String books = '$baseUrl/books';
   static const String meditation = '$baseUrl/meditation';

@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import '../../../core/network/api_Service.dart';
 import 'dart:convert';
 import '../../../core/network/api_endpoints.dart';
 import '../model/surah_model.dart';
@@ -26,6 +27,12 @@ class QuranController extends GetxController {
   var surahAudio = Rxn<am.Data>();
   var isAudioLoading = false.obs;
   var currentSurahId = Rxn<int>();
+
+  // Quran Bookmarks (Surahs)
+  var savedSurahs = <SurahModel>[].obs;
+  var isSavedLoading = false.obs;
+  // Key: Surah ID, Value: Relation ID for deletion
+  var surahBookmarkIds = <int, String>{}.obs;
 
   // Search functionality
   var searchQuery = ''.obs;
@@ -142,6 +149,7 @@ class QuranController extends GetxController {
     fetchSurahs();
     fetchJuzs();
     fetchLastRead();
+    fetchSavedSurahs();
 
     audioPlayer.onPlayerStateChanged.listen((state) {
       print("DEBUG: Player State Changed: $state");
@@ -432,6 +440,18 @@ class QuranController extends GetxController {
     await audioPlayer.seek(duration);
   }
 
+  Future<void> seekRelative(Duration offset) async {
+    final newPosition = currentDuration.value + offset;
+    // Clamp between zero and total duration
+    if (newPosition < Duration.zero) {
+      await audioPlayer.seek(Duration.zero);
+    } else if (newPosition > totalDuration.value) {
+      await audioPlayer.seek(totalDuration.value);
+    } else {
+      await audioPlayer.seek(newPosition);
+    }
+  }
+
   Future<void> playVerse(String? verseKey) async {
     if (verseKey == null || surahAudio.value == null) return;
 
@@ -544,5 +564,74 @@ class QuranController extends GetxController {
     // Otherwise, fetch and play
     await fetchSurahAudio(surah.id);
     await playAudio();
+  }
+
+  Future<void> fetchSavedSurahs() async {
+    isSavedLoading.value = true;
+    try {
+      final response = await ApiService.get(ApiEndpoints.quranSaved);
+
+      if (response['success'] == true && response['data'] != null) {
+        final List<dynamic> data = response['data'];
+        surahBookmarkIds.clear();
+        for (var item in data) {
+          final relationId = item['id'].toString();
+          final chapterData = item['chapter'];
+          final surahId = chapterData is Map
+              ? chapterData['id']
+              : (chapterData ?? item['chapterId']);
+          if (surahId != null) {
+            surahBookmarkIds[int.parse(surahId.toString())] = relationId;
+          }
+        }
+        _syncSavedSurahs();
+      }
+    } catch (e) {
+      print("Error fetching saved surahs: $e");
+    } finally {
+      isSavedLoading.value = false;
+    }
+  }
+
+  Future<void> toggleSaveSurah(SurahModel surah) async {
+    try {
+      final isSaved = surahBookmarkIds.containsKey(surah.id);
+
+      if (isSaved) {
+        final relationId = surahBookmarkIds[surah.id];
+        final response = await ApiService.delete(
+          ApiEndpoints.deleteQuranSaved(relationId!),
+        );
+
+        if (response['success'] == true) {
+          surahBookmarkIds.remove(surah.id);
+          Get.snackbar("Success", "${surah.name} removed from bookmarks");
+        }
+      } else {
+        final response = await ApiService.post(
+          ApiEndpoints.quranSaved,
+          body: {"chapter": surah.id, "verse": 1},
+        );
+
+        if (response['success'] == true) {
+          final relationId = response['data']['id'].toString();
+          surahBookmarkIds[surah.id] = relationId;
+          Get.snackbar("Success", "${surah.name} added to bookmarks");
+        }
+      }
+      _syncSavedSurahs();
+    } catch (e) {
+      print("Error toggling surah bookmark: $e");
+    }
+  }
+
+  Future<void> downloadSurahAudio(SurahModel surah) async {
+    Get.snackbar("Download", "Starting download for ${surah.name}...");
+  }
+
+  void _syncSavedSurahs() {
+    savedSurahs.value = surahList
+        .where((s) => surahBookmarkIds.containsKey(s.id))
+        .toList();
   }
 }

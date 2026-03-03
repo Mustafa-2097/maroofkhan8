@@ -62,14 +62,28 @@ class Profile {
   String? phone;
   String? avatar;
   String? description;
+  String? country;
+  String? gender;
+  String? dateOfBirth;
 
-  Profile({this.name, this.phone, this.avatar, this.description});
+  Profile({
+    this.name,
+    this.phone,
+    this.avatar,
+    this.description,
+    this.country,
+    this.gender,
+    this.dateOfBirth,
+  });
 
   Profile.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     phone = json['phone'];
     avatar = json['avatar'];
     description = json['description'];
+    country = json['country'];
+    gender = json['gender'];
+    dateOfBirth = json['dateOfBirth'];
   }
 
   Map<String, dynamic> toJson() {
@@ -78,6 +92,9 @@ class Profile {
     data['phone'] = phone;
     data['avatar'] = avatar;
     data['description'] = description;
+    data['country'] = country;
+    data['gender'] = gender;
+    data['dateOfBirth'] = dateOfBirth;
     return data;
   }
 }
