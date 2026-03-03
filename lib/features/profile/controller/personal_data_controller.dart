@@ -7,6 +7,7 @@ import 'dart:convert';
 import '../../../core/network/api_endpoints.dart';
 import '../../../core/offline_storage/shared_pref.dart';
 import '../model/user_model.dart';
+import 'profile_controller.dart';
 
 class PersonalDataController extends GetxController {
   // Use Get.isDarkMode instead of Theme.of(context)
@@ -22,7 +23,65 @@ class PersonalDataController extends GetxController {
     bool phoneChanged = phoneController.text != (currentData.phone ?? "");
     bool imageChanged = profileImage.value != null;
 
-    return nameChanged || phoneChanged || imageChanged;
+    String apiCountry = currentData.country ?? "Select Your Country";
+    bool countryChanged = selectedCountry.value != apiCountry;
+
+    String apiGender = _mapGenderToUI(currentData.gender);
+    bool genderChanged = selectedGender.value != apiGender;
+
+    String apiDob = _formatDobToUI(currentData.dateOfBirth);
+    bool dobChanged = dobController.text != apiDob;
+
+    return nameChanged ||
+        phoneChanged ||
+        imageChanged ||
+        countryChanged ||
+        genderChanged ||
+        dobChanged;
+  }
+
+  // Mapper helpers
+  String _mapGenderToAPI(String uiGender) {
+    if (uiGender == "Male") return "MALE";
+    if (uiGender == "Female") return "FEMALE";
+    if (uiGender == "Other") return "OTHER";
+    return "";
+  }
+
+  String _mapGenderToUI(String? apiGender) {
+    if (apiGender == "MALE") return "Male";
+    if (apiGender == "FEMALE") return "Female";
+    if (apiGender == "OTHER") return "Other";
+    return "Select Your Gender";
+  }
+
+  String _formatDobToAPI(String uiDob) {
+    if (uiDob.isEmpty) return "";
+    try {
+      final parts = uiDob.split('/');
+      if (parts.length == 3) {
+        // DD/MM/YYYY -> ISO-8601 DateTime
+        final day = int.parse(parts[0]);
+        final month = int.parse(parts[1]);
+        final year = int.parse(parts[2]);
+        return DateTime.utc(year, month, day).toIso8601String();
+      }
+    } catch (e) {
+      print("Error formatting DOB for API: $e");
+    }
+    return uiDob;
+  }
+
+  String _formatDobToUI(String? apiDob) {
+    if (apiDob == null || apiDob.isEmpty) return "";
+    try {
+      // YYYY-MM-DD -> DD/MM/YYYY
+      final date = DateTime.parse(apiDob);
+      return "${date.day}/${date.month}/${date.year}";
+    } catch (e) {
+      print("Error formatting DOB for UI: $e");
+    }
+    return apiDob;
   }
 
   // Controllers
@@ -80,6 +139,12 @@ class PersonalDataController extends GetxController {
           nameController.text = userRes.data!.profile?.name ?? "";
           phoneController.text = userRes.data!.profile?.phone ?? "";
           emailController.text = userRes.data!.email ?? "";
+          selectedCountry.value =
+              userRes.data!.profile?.country ?? "Select Your Country";
+          selectedGender.value = _mapGenderToUI(userRes.data!.profile?.gender);
+          dobController.text = _formatDobToUI(
+            userRes.data!.profile?.dateOfBirth,
+          );
         }
       }
     } catch (e) {
@@ -120,6 +185,12 @@ class PersonalDataController extends GetxController {
         // Fields
         request.fields['name'] = nameController.text;
         request.fields['phone'] = phoneController.text;
+        request.fields['country'] =
+            selectedCountry.value == "Select Your Country"
+            ? ""
+            : selectedCountry.value;
+        request.fields['gender'] = _mapGenderToAPI(selectedGender.value);
+        request.fields['dateOfBirth'] = _formatDobToAPI(dobController.text);
 
         // Image
         if (profileImage.value != null) {
@@ -147,6 +218,11 @@ class PersonalDataController extends GetxController {
           );
           profileImage.value = null; // Clear picked image
           fetchProfile(); // Refresh the data to be sure
+
+          // Refresh ProfileController if it exists
+          if (Get.isRegistered<ProfileController>()) {
+            ProfileController.instance.fetchUserData();
+          }
         } else {
           final error = jsonDecode(response.body);
           Get.snackbar(
