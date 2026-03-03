@@ -189,7 +189,7 @@ class ZakatCalculator extends StatelessWidget {
                 Icons.people,
                 "Who Must Pay Zakat?",
                 "Understand the conditions for Zakat obligation",
-                const Color(0xFFA1887F),
+                kPrimaryBrown,
               ),
             ),
             GestureDetector(
@@ -200,7 +200,7 @@ class ZakatCalculator extends StatelessWidget {
                 Icons.balance,
                 "Nisab & Hawl",
                 "Understanding the minimum threshold and time period",
-                const Color(0xFF8D6E63),
+                kPrimaryBrown,
               ),
             ),
             GestureDetector(
@@ -211,7 +211,7 @@ class ZakatCalculator extends StatelessWidget {
                 Icons.pie_chart,
                 "Assets Included In Zakat",
                 "What types of wealth are subject to Zakat",
-                const Color(0xFF795548),
+                kPrimaryBrown,
               ),
             ),
             GestureDetector(
@@ -222,7 +222,7 @@ class ZakatCalculator extends StatelessWidget {
                 Icons.volunteer_activism,
                 "Who Can Receive Zakat?",
                 "The eight categories of Zakat recipients",
-                const Color(0xFF6D4C41),
+                kPrimaryBrown,
               ),
             ),
             GestureDetector(
@@ -233,7 +233,7 @@ class ZakatCalculator extends StatelessWidget {
                 Icons.block,
                 "Who Cannot Receive Zakat?",
                 "People who are not eligible for Zakat",
-                const Color(0xFF5D4037),
+                kPrimaryBrown,
               ),
             ),
 

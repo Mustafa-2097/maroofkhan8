@@ -90,6 +90,10 @@ class ApiEndpoints {
   static const String salawat = '$baseUrl/salawat';
   static const String books = '$baseUrl/books';
   static const String meditation = '$baseUrl/meditation';
+  static const String islamicNames = '$baseUrl/names';
+  static const String savedIslamicNames = '$baseUrl/names/save';
+  static String toggleIslamicNameSave(String id) => '$baseUrl/names/$id/save';
+  static String deleteSavedIslamicName(String id) => '$baseUrl/names/save/$id';
   static const String profile = '$baseUrl/me';
   static const String subscriptionPlan = '$baseUrl/subscription-plan';
 }
