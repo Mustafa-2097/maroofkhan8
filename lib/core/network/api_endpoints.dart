@@ -15,8 +15,7 @@ class ApiEndpoints {
   /// Forgot Password
   static const String forgotPassword = '$baseUrl/auth/forgot-password';
   static const String sendResetOtp = '$baseUrl/auth/send-otp/password-reset';
-  static const String verifyResetOtp =
-      '$baseUrl/auth/verify-otp/password-reset';
+  static const String verifyResetOtp = '$baseUrl/auth/verify-otp/password-reset';
 
   /// Reset password (NEW)
   static const String resetPassword = '$baseUrl/auth/reset-password';
