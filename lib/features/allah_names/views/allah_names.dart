@@ -95,8 +95,8 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
               children: [
                 _filterButton("All", 0),
                 const SizedBox(width: 10),
-                _filterButton("With Meaning", 1),
-                const SizedBox(width: 10),
+                // _filterButton("With Meaning", 1),
+                // const SizedBox(width: 10),
                 _filterButton("With Audio", 2),
               ],
             ),
@@ -117,6 +117,18 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
                   return const Center(child: Text("No names found"));
                 }
 
+                if (controller.selectedFilterIndex.value == 2) {
+                  final audioIdx = controller.currentAudioIndex.value;
+                  // Guard against index out of bounds
+                  final safeIdx = audioIdx < displayedNames.length
+                      ? audioIdx
+                      : 0;
+                  return AudioPlayerSection(
+                    controller: controller,
+                    data: displayedNames[safeIdx],
+                  );
+                }
+
                 return GridView.builder(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,
@@ -134,10 +146,8 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
                     return NameCard(
                       data: nameItem,
                       onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (_) => PlayerDialog(data: nameItem),
-                        );
+                        controller.currentAudioIndex.value = index;
+                        controller.selectedFilterIndex.value = 2;
                       },
                     );
                   },
@@ -174,6 +184,160 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
         ),
       );
     });
+  }
+}
+
+// --- AUDIO PLAYER SECTION ---
+class AudioPlayerSection extends StatelessWidget {
+  final AllahNamesController controller;
+  final AllahName data;
+
+  const AudioPlayerSection({
+    super.key,
+    required this.controller,
+    required this.data,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        children: [
+          const SizedBox(height: 10),
+          // Large White Card
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(25),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 15,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Icon(
+                    Icons.volume_up_outlined,
+                    color: Colors.grey.shade400,
+                    size: 24,
+                  ),
+                ),
+                Text(
+                  data.arabic,
+                  style: GoogleFonts.amiri(
+                    fontSize: 48,
+                    fontWeight: FontWeight.bold,
+                    height: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 15),
+                Text(
+                  data.pronunciation,
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF2E2E2E),
+                  ),
+                ),
+                Text(
+                  data.meaning,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 18,
+                    color: Colors.grey.shade400,
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: GestureDetector(
+                    onTap: () => controller.toggleSaveName(data),
+                    child: Icon(
+                      data.isSaved ? Icons.bookmark : Icons.bookmark_border,
+                      size: 26,
+                      color: data.isSaved ? kPrimaryBrown : Colors.black87,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 50),
+
+          // Slider
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const [
+                    Text(
+                      "1:00",
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                    Text(
+                      "2:12",
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5),
+                SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    activeTrackColor: kPrimaryBrown,
+                    inactiveTrackColor: Colors.grey.shade300,
+                    thumbColor: kPrimaryBrown,
+                    thumbShape: const RoundSliderThumbShape(
+                      enabledThumbRadius: 6,
+                    ),
+                    trackHeight: 3,
+                    overlayShape: SliderComponentShape.noOverlay,
+                  ),
+                  child: Slider(value: 0.45, onChanged: (v) {}),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 40),
+
+          // Controls
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                onPressed: controller.previousAudio,
+                icon: const Icon(Icons.skip_previous_outlined, size: 35),
+                color: Colors.black87,
+              ),
+              const SizedBox(width: 30),
+              const Icon(
+                Icons
+                    .play_circle_filled, // Filled for play look consistent with screenshot
+                size: 55,
+                color: Color(0xFF2E2E2E),
+              ),
+              const SizedBox(width: 30),
+              IconButton(
+                onPressed: controller.nextAudio,
+                icon: const Icon(Icons.skip_next_outlined, size: 35),
+                color: Colors.black87,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
 

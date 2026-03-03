@@ -11,6 +11,7 @@ class AllahNamesController extends GetxController {
   var isLoading = false.obs;
   var searchQuery = "".obs;
   var selectedFilterIndex = 0.obs; // 0: All, 1: Meaning, 2: Audio
+  var currentAudioIndex = 0.obs;
 
   List<AllahName> get filteredNamesList {
     List<AllahName> list = namesList;
@@ -46,6 +47,30 @@ class AllahNamesController extends GetxController {
 
   void updateFilterIndex(int index) {
     selectedFilterIndex.value = index;
+    // Reset index when switching to audio mode to show the first one
+    if (index == 2) {
+      currentAudioIndex.value = 0;
+    }
+  }
+
+  void nextAudio() {
+    final list = filteredNamesList;
+    if (list.isEmpty) return;
+    if (currentAudioIndex.value < list.length - 1) {
+      currentAudioIndex.value++;
+    } else {
+      currentAudioIndex.value = 0; // Loop back
+    }
+  }
+
+  void previousAudio() {
+    final list = filteredNamesList;
+    if (list.isEmpty) return;
+    if (currentAudioIndex.value > 0) {
+      currentAudioIndex.value--;
+    } else {
+      currentAudioIndex.value = list.length - 1; // Loop to end
+    }
   }
 
   var savedNamesList = <AllahName>[].obs;
