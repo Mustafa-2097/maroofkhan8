@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:maroofkhan8/features/auth/forgot_password/view/password_changed.dart';
 import '../../../../core/network/api_Service.dart';
 import '../../../../core/network/api_endpoints.dart';
+import '../../../../core/utils/snackbar_utils.dart';
 
 class ResetPasswordController extends GetxController {
   static ResetPasswordController get instance => Get.find();
@@ -54,12 +55,9 @@ class ResetPasswordController extends GetxController {
 
       Get.offAll(() => PasswordChange());
 
-      Get.snackbar(
+      SnackbarUtils.showSnackbar(
         'Success',
         response['message'] ?? 'Password reset successfully',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
       );
     } catch (e) {
       EasyLoading.dismiss();

@@ -4,6 +4,8 @@ class LastReadHadith {
   final String book;
   final String? chapterNo;
   final String? hadithNo;
+  bool isSaved;
+  String? savedId;
 
   LastReadHadith({
     this.id,
@@ -11,6 +13,8 @@ class LastReadHadith {
     required this.book,
     this.chapterNo,
     this.hadithNo,
+    this.isSaved = false,
+    this.savedId,
   });
 
   factory LastReadHadith.fromJson(Map<String, dynamic> json) {
@@ -20,6 +24,8 @@ class LastReadHadith {
       book: json['book'] ?? '',
       chapterNo: json['chapterNo']?.toString(),
       hadithNo: json['hadithNo']?.toString(),
+      isSaved: json['isSaved'] ?? false,
+      savedId: json['savedId'],
     );
   }
 

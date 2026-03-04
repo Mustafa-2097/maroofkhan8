@@ -57,7 +57,7 @@ class SignInSignUpPage extends StatelessWidget {
                     _Label(text: 'Full Name *'),
                     _TextField(
                       controller: controller.nameController,
-                      hint: 'Your Name',
+                      hint: 'Your name',
                       validator: (value) => value == null || value.isEmpty
                           ? "Name is required"
                           : null,
@@ -68,7 +68,7 @@ class SignInSignUpPage extends StatelessWidget {
                   _Label(text: 'Email *'),
                   _TextField(
                     controller: controller.emailController,
-                    hint: 'example@gmail.com',
+                    hint: 'Enter your email',
                     validator: (value) {
                       if (value == null || value.isEmpty)
                         return "Email is required";
@@ -94,7 +94,7 @@ class SignInSignUpPage extends StatelessWidget {
                   ),
                   _TextField(
                     controller: controller.passwordController,
-                    hint: 'must be 6 characters',
+                    hint: 'Enter your password',
                     obscure: !controller.isPasswordVisible.value,
                     validator: (value) {
                       if (value == null || value.isEmpty)
@@ -120,7 +120,7 @@ class SignInSignUpPage extends StatelessWidget {
                     _Label(text: 'Confirm password *'),
                     _TextField(
                       controller: controller.confirmPasswordController,
-                      hint: 'repeat password',
+                      hint: 'Repeat the password',
                       obscure: !controller.isConfirmPasswordVisible.value,
                       validator: (value) {
                         if (value == null || value.isEmpty)

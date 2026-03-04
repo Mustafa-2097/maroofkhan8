@@ -7,6 +7,7 @@ import 'dart:convert';
 import '../../../core/network/api_endpoints.dart';
 import '../../../core/offline_storage/shared_pref.dart';
 import '../model/user_model.dart';
+import '../../../core/utils/snackbar_utils.dart';
 import 'profile_controller.dart';
 
 class PersonalDataController extends GetxController {
@@ -157,12 +158,7 @@ class PersonalDataController extends GetxController {
   Future<void> saveProfile() async {
     if (formKey.currentState?.validate() ?? false) {
       if (!_hasChanges()) {
-        Get.snackbar(
-          "No Changes",
-          "Data already exists",
-          backgroundColor: Colors.orange,
-          colorText: Colors.white,
-        );
+        SnackbarUtils.showSnackbar("No Changes", "Data already exists");
         return;
       }
 
@@ -210,12 +206,7 @@ class PersonalDataController extends GetxController {
         print("DEBUG: Profile Update Response Body: ${response.body}");
 
         if (response.statusCode >= 200 && response.statusCode < 300) {
-          Get.snackbar(
-            "Success",
-            "User data updated",
-            backgroundColor: Colors.green,
-            colorText: Colors.white,
-          );
+          SnackbarUtils.showSnackbar("Success", "User data updated");
           profileImage.value = null; // Clear picked image
           fetchProfile(); // Refresh the data to be sure
 
@@ -225,20 +216,18 @@ class PersonalDataController extends GetxController {
           }
         } else {
           final error = jsonDecode(response.body);
-          Get.snackbar(
+          SnackbarUtils.showSnackbar(
             "Error",
             error['message'] ?? "Failed to update profile",
-            backgroundColor: Colors.red,
-            colorText: Colors.white,
+            isError: true,
           );
         }
       } catch (e) {
         print("Error updating profile: $e");
-        Get.snackbar(
+        SnackbarUtils.showSnackbar(
           "Error",
           "An unexpected error occurred",
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
+          isError: true,
         );
       } finally {
         isLoading.value = false;

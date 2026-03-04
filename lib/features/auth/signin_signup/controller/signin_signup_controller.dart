@@ -4,7 +4,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../../../../core/network/api_Service.dart';
 import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/offline_storage/shared_pref.dart';
-import '../../../../core/constant/app_colors.dart';
+import '../../../../core/utils/snackbar_utils.dart';
 import '../../../../bottom_nav_bar.dart';
 import '../view/signup_otp_verification_page.dart';
 
@@ -96,13 +96,7 @@ class SignInSignUpController extends GetxController {
 
       EasyLoading.dismiss();
 
-      Get.snackbar(
-        'Login successful',
-        'Welcome!',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: AppColors.primaryColorLight,
-        colorText: Colors.white,
-      );
+      SnackbarUtils.showSnackbar('Login successful', 'Welcome!');
 
       if (response['data'] != null && response['data']['accessToken'] != null) {
         await SharedPreferencesHelper.saveToken(
@@ -133,12 +127,9 @@ class SignInSignUpController extends GetxController {
 
       EasyLoading.dismiss();
 
-      Get.snackbar(
+      SnackbarUtils.showSnackbar(
         'Success',
         response['message'] ?? 'OTP Sent to your Email',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
       );
 
       Get.to(

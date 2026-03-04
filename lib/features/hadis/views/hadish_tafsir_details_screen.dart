@@ -108,19 +108,40 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
                     ),
                   ),
                   const SizedBox(width: 20),
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.grey.shade200),
-                    ),
-                    child: const Icon(
-                      Icons.bookmark_outline,
-                      size: 18,
-                      color: Colors.grey,
-                    ),
-                  ),
+                  Obx(() {
+                    final isSaved = HadithController.instance.isHadithSaved(
+                      widget.hadithText,
+                    );
+                    final sId = HadithController.instance.getSavedId(
+                      widget.hadithText,
+                    );
+
+                    return GestureDetector(
+                      onTap: () {
+                        HadithController.instance.toggleSaveHadith(
+                          hadithText: widget.hadithText,
+                          book: widget.bookName,
+                          chapterNo: widget.chapterNum,
+                          hadithNo: widget.hadithNumber,
+                          currentlySaved: isSaved,
+                          savedId: sId,
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.grey.shade200),
+                        ),
+                        child: Icon(
+                          isSaved ? Icons.bookmark : Icons.bookmark_border,
+                          size: 18,
+                          color: isSaved ? Color(0xFF8D3C1F) : Colors.grey,
+                        ),
+                      ),
+                    );
+                  }),
                 ],
               ),
 
@@ -149,14 +170,37 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Align(
-                      alignment: Alignment.topRight,
-                      child: Icon(
-                        Icons.bookmark,
-                        color: Color(0xFF2E2E2E),
-                        size: 20,
-                      ),
-                    ),
+                    // Obx(() {
+                    //   final isSaved = HadithController.instance.isHadithSaved(
+                    //     widget.hadithText,
+                    //   );
+                    //   final sId = HadithController.instance.getSavedId(
+                    //     widget.hadithText,
+                    //   );
+
+                    //   return GestureDetector(
+                    //     onTap: () {
+                    //       HadithController.instance.toggleSaveHadith(
+                    //         hadithText: widget.hadithText,
+                    //         book: widget.bookName,
+                    //         chapterNo: widget.chapterNum,
+                    //         hadithNo: widget.hadithNumber,
+                    //         currentlySaved: isSaved,
+                    //         savedId: sId,
+                    //       );
+                    //     },
+                    //     child: Align(
+                    //       alignment: Alignment.topRight,
+                    //       child: Icon(
+                    //         isSaved ? Icons.favorite : Icons.favorite_border,
+                    //         color: isSaved
+                    //             ? Colors.red
+                    //             : const Color(0xFF2E2E2E),
+                    //         size: 20,
+                    //       ),
+                    //     ),
+                    //   );
+                    // }),
                     if (widget.heading != null &&
                         widget.heading!.isNotEmpty) ...[
                       Text(

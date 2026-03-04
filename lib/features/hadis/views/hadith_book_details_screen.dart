@@ -7,6 +7,7 @@ import 'package:maroofkhan8/features/hadis/models/hadith_chapter.dart';
 import 'package:maroofkhan8/features/quran/views/quran_screen.dart';
 
 import 'hadith_list_details_screen.dart';
+import 'saved_hadiths_screen.dart';
 
 class HadithBookDetailsScreen extends StatefulWidget {
   final HadithBook book;
@@ -222,15 +223,18 @@ class SearchBarSection extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          Container(
-            height: 45,
-            width: 45,
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 255, 255, 255),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.grey.shade200),
+          GestureDetector(
+            onTap: () => Get.to(() => const SavedHadithsScreen()),
+            child: Container(
+              height: 45,
+              width: 45,
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 255, 255, 255),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.grey.shade200),
+              ),
+              child: Icon(Icons.bookmark_outline, color: Colors.grey.shade300),
             ),
-            child: Icon(Icons.bookmark_outline, color: Colors.grey.shade300),
           ),
         ],
       ),

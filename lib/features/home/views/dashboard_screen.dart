@@ -258,29 +258,29 @@ class _HeroSectionState extends State<HeroSection> {
       "progress": 0.3,
       "time": "58 sec",
     },
-    {
-      "title": "Daily Wisdom",
-      "nameEn": "Jalaluddin Rumi",
-      "nameAr": "جلال الدين الرومي",
-      "quoteEn": "What you seek is\nseeking you.",
-      "quoteAr": "ما تبحث عنه يبحث عنك",
-      "image":
-          "https://img.freepik.com/free-vector/gradient-islamic-new-year-background_23-2148967924.jpg",
-      "progress": 0.7,
-      "time": "1 min 20 sec",
-    },
-    {
-      "title": "Hadith of the Day",
-      "nameEn": "Imam Ali (AS)",
-      "nameAr": "الإمام علي",
-      "quoteEn":
-          "Patience is of two kinds: patience over what pains you, and patience against what you covet.",
-      "quoteAr": "الصبر صبران: صبر على ما تكره وصبر عما تحب",
-      "image":
-          "https://img.freepik.com/free-vector/golden-islamic-pattern-dark-background_1017-31354.jpg",
-      "progress": 0.1,
-      "time": "45 sec",
-    },
+    // {
+    //   "title": "Daily Wisdom",
+    //   "nameEn": "Jalaluddin Rumi",
+    //   "nameAr": "جلال الدين الرومي",
+    //   "quoteEn": "What you seek is\nseeking you.",
+    //   "quoteAr": "ما تبحث عنه يبحث عنك",
+    //   "image":
+    //       "https://img.freepik.com/free-vector/gradient-islamic-new-year-background_23-2148967924.jpg",
+    //   "progress": 0.7,
+    //   "time": "1 min 20 sec",
+    // },
+    // {
+    //   "title": "Hadith of the Day",
+    //   "nameEn": "Imam Ali (AS)",
+    //   "nameAr": "الإمام علي",
+    //   "quoteEn":
+    //       "Patience is of two kinds: patience over what pains you, and patience against what you covet.",
+    //   "quoteAr": "الصبر صبران: صبر على ما تكره وصبر عما تحب",
+    //   "image":
+    //       "https://img.freepik.com/free-vector/golden-islamic-pattern-dark-background_1017-31354.jpg",
+    //   "progress": 0.1,
+    //   "time": "45 sec",
+    // },
   ];
 
   @override
@@ -304,26 +304,6 @@ class _HeroSectionState extends State<HeroSection> {
               return _buildSlideCard(_slides[index], isDark, primaryColor);
             },
           ),
-        ),
-
-        const SizedBox(height: 10),
-
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(_slides.length, (index) {
-            return AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              width: _currentIndex == index ? 20 : 8,
-              height: 8,
-              decoration: BoxDecoration(
-                color: _currentIndex == index
-                    ? primaryColor
-                    : Colors.grey.shade400,
-                borderRadius: BorderRadius.circular(4),
-              ),
-            );
-          }),
         ),
       ],
     );
@@ -391,23 +371,23 @@ class _HeroSectionState extends State<HeroSection> {
             ),
 
             // Icons (Top Right)
-            Align(
-              alignment: Alignment.topRight,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.bookmark_border,
-                    color: Colors.white.withOpacity(0.8),
-                  ),
-                  const SizedBox(width: 10),
-                  Icon(
-                    Icons.download_outlined,
-                    color: Colors.white.withOpacity(0.8),
-                  ),
-                ],
-              ),
-            ),
+            // Align(
+            //   alignment: Alignment.topRight,
+            //   child: Row(
+            //     mainAxisSize: MainAxisSize.min,
+            //     children: [
+            //       Icon(
+            //         Icons.bookmark_border,
+            //         color: Colors.white.withOpacity(0.8),
+            //       ),
+            //       const SizedBox(width: 10),
+            //       Icon(
+            //         Icons.download_outlined,
+            //         color: Colors.white.withOpacity(0.8),
+            //       ),
+            //     ],
+            //   ),
+            // ),
 
             // Content (Center)
             Center(
@@ -446,45 +426,45 @@ class _HeroSectionState extends State<HeroSection> {
             ),
 
             // Progress & Time (Bottom)
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  LinearProgressIndicator(
-                    value: data['progress'],
-                    backgroundColor: Colors.white.withOpacity(0.3),
-                    valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 5,
-                    ),
-                    decoration: BoxDecoration(
-                      color: primaryColor.withOpacity(0.4),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.access_time, color: Colors.white, size: 14),
-                        const SizedBox(width: 5),
-                        Text(
-                          data['time'],
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // Align(
+            //   alignment: Alignment.bottomCenter,
+            //   child: Column(
+            //     mainAxisSize: MainAxisSize.min,
+            //     children: [
+            //       LinearProgressIndicator(
+            //         value: data['progress'],
+            //         backgroundColor: Colors.white.withOpacity(0.3),
+            //         valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+            //         borderRadius: BorderRadius.circular(4),
+            //       ),
+            //       const SizedBox(height: 10),
+            //       Container(
+            //         padding: const EdgeInsets.symmetric(
+            //           horizontal: 10,
+            //           vertical: 5,
+            //         ),
+            //         decoration: BoxDecoration(
+            //           color: primaryColor.withOpacity(0.4),
+            //           borderRadius: BorderRadius.circular(20),
+            //         ),
+            //         child: Row(
+            //           mainAxisSize: MainAxisSize.min,
+            //           children: [
+            //             Icon(Icons.access_time, color: Colors.white, size: 14),
+            //             const SizedBox(width: 5),
+            //             Text(
+            //               data['time'],
+            //               style: const TextStyle(
+            //                 color: Colors.white,
+            //                 fontSize: 12,
+            //               ),
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
           ],
         ),
       ),

@@ -272,8 +272,8 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _buildSmallPill("Dua", true),
-                _buildSmallPill("Translation", false),
-                _buildSmallPill("Tafsir", false),
+                // _buildSmallPill("Translation", false),
+                // _buildSmallPill("Tafsir", false),
               ],
             ),
             const SizedBox(height: 25),
@@ -292,14 +292,14 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
               ),
               child: Column(
                 children: [
-                  const Align(
-                    alignment: Alignment.topRight,
-                    child: Icon(
-                      Icons.favorite_border,
-                      color: Colors.grey,
-                      size: 20,
-                    ),
-                  ),
+                  // const Align(
+                  //   alignment: Alignment.topRight,
+                  //   child: Icon(
+                  //     Icons.favorite_border,
+                  //     color: Colors.grey,
+                  //     size: 20,
+                  //   ),
+                  // ),
                   Text(
                     widget.dua.arabic ?? "",
                     textAlign: TextAlign.center,

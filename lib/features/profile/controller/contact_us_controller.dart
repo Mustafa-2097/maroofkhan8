@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import '../../../core/utils/snackbar_utils.dart';
 
 class ContactUsController extends GetxController {
   static ContactUsController get instance => Get.find();
@@ -20,22 +21,11 @@ class ContactUsController extends GetxController {
       await Future.delayed(const Duration(seconds: 2));
 
       EasyLoading.dismiss();
-      Get.snackbar(
-        "Success",
-        "Your message has been sent!",
-        backgroundColor: Get.theme.colorScheme.primary.withOpacity(0.9),
-        colorText: Colors.white,
-      );
+      SnackbarUtils.showSnackbar("Success", "Your message has been sent!");
       messageController.clear();
-
     } catch (e) {
       EasyLoading.dismiss();
-      Get.snackbar(
-        "Error",
-        e.toString(),
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      SnackbarUtils.showSnackbar("Error", e.toString(), isError: true);
     }
   }
 

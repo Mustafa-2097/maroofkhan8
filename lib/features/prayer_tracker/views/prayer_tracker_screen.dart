@@ -98,7 +98,7 @@ class PrayerTrackerScreenn extends StatelessWidget {
               const SizedBox(height: 15),
 
               // 4. Rak'ah Guide Card
-              const RakahGuideCard(),
+              //const RakahGuideCard(),
               const SizedBox(height: 15),
 
               // 5. Duas & Reflection
@@ -106,16 +106,16 @@ class PrayerTrackerScreenn extends StatelessWidget {
               const SizedBox(height: 15),
 
               // 6. Special in Ramadan
-              const SpecialRamadanCard(),
-              const SizedBox(height: 15),
+              // const SpecialRamadanCard(),
+              // const SizedBox(height: 15),
 
               // 7. Ramadan Countdown Circles
               const RamadanCountdownCard(),
               const SizedBox(height: 15),
 
               // 8. Ayah of the Day
-              const AyahOfDayCard(),
-              const SizedBox(height: 30),
+              // const AyahOfDayCard(),
+              // const SizedBox(height: 30),
             ],
           ),
         ),
@@ -237,37 +237,37 @@ class PrayerTimesCard extends StatelessWidget {
   }
 }
 
-class RakahGuideCard extends StatelessWidget {
-  const RakahGuideCard({super.key});
+// class RakahGuideCard extends StatelessWidget {
+//   const RakahGuideCard({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-      decoration: _cardDecoration(),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            "Rak'ah Guide",
-            style: GoogleFonts.playfairDisplay(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.only(bottom: 2),
-            decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.grey, width: 1)),
-            ),
-            child: const Text("Asr - 4Rak'ahs", style: TextStyle(fontSize: 12)),
-          ),
-          _brownButton("Step by step", showArrow: true),
-        ],
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+//       decoration: _cardDecoration(),
+//       child: Row(
+//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//         children: [
+//           Text(
+//             "Rak'ah Guide",
+//             style: GoogleFonts.playfairDisplay(
+//               fontSize: 13,
+//               fontWeight: FontWeight.bold,
+//             ),
+//           ),
+//           Container(
+//             padding: const EdgeInsets.only(bottom: 2),
+//             decoration: const BoxDecoration(
+//               border: Border(bottom: BorderSide(color: Colors.grey, width: 1)),
+//             ),
+//             child: const Text("Asr - 4Rak'ahs", style: TextStyle(fontSize: 12)),
+//           ),
+//           _brownButton("Step by step", showArrow: true),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 class DuasReflectionCard extends StatelessWidget {
   const DuasReflectionCard({super.key});
