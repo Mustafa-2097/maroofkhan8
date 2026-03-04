@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import 'package:maroofkhan8/features/audio/views/audio_list_screen.dart';
+import 'package:maroofkhan8/features/audio/controller/audio_controller.dart';
+import 'package:maroofkhan8/features/audio/model/audio_model.dart';
 
 class AudioScreen extends StatelessWidget {
   const AudioScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(AudioController());
     return Scaffold(
       appBar: AppBar(
         title: HeaderSection(title: "Audio"),
@@ -27,13 +30,29 @@ class AudioScreen extends StatelessWidget {
 
             /// List
             Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: 4,
-                itemBuilder: (context, index) {
-                  return const AudioCard();
-                },
-              ),
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (controller.audioList.isEmpty) {
+                  return const Center(child: Text("No audio found"));
+                }
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: controller.audioList.length,
+                  itemBuilder: (context, index) {
+                    final audio = controller.audioList[index];
+                    return AudioCard(
+                      audio: audio,
+                      onTap: () => Get.to(
+                        () => AudioListScreen(
+                          category: audio.category ?? "Sufi Lectures",
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }),
             ),
           ],
         ),
@@ -43,12 +62,14 @@ class AudioScreen extends StatelessWidget {
 }
 
 class AudioCard extends StatelessWidget {
-  const AudioCard({super.key});
+  final AudioData audio;
+  final VoidCallback? onTap;
+  const AudioCard({super.key, required this.audio, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Get.to(() => const AudioListScreen()),
+      onTap: onTap,
       child: Container(
         height: 95,
         width: 392,
@@ -79,23 +100,30 @@ class AudioCard extends StatelessWidget {
             const SizedBox(width: 12),
 
             /// Title + Subtitle
-            const Expanded(
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Power of Tawakkul",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    "Shaykh’s Lecture",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: const Color(0xFFA6A6A6),
+                    audio.title ?? "Untitled",
+                    style: const TextStyle(
+                      fontSize: 20,
                       fontWeight: FontWeight.w400,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    audio.subtitle ?? "Shaykh’s Lecture",
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFFA6A6A6),
+                      fontWeight: FontWeight.w400,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
@@ -107,7 +135,7 @@ class AudioCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
-                  "18:22",
+                  "00:00", // Dynamic duration if available in model, else placeholder
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.black,

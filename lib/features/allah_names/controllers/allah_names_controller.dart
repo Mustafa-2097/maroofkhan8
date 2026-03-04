@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import '../../../../core/network/api_Service.dart';
 import '../../../../core/network/api_endpoints.dart';
 import '../models/allah_name_model.dart';
+import '../data/static_allah_names.dart';
 import 'package:flutter/foundation.dart';
 
 class AllahNamesController extends GetxController {
@@ -21,8 +22,6 @@ class AllahNamesController extends GetxController {
       list = list.where((e) => e.meaning.isNotEmpty).toList();
     } else if (selectedFilterIndex.value == 2) {
       // Assuming 'With Audio' means it has an audio file or as defined by data
-      // For now we'll just return the list as is if no specific audio check is needed
-      // or filter if there's an audio property.
     }
 
     // Filter by search query
@@ -84,6 +83,8 @@ class AllahNamesController extends GetxController {
   }
 
   Future<void> fetchAllahNames() async {
+    // ---- API FETCH (COMMENTED OUT AS REQUESTED) ----
+    /*
     isLoading.value = true;
     try {
       final response = await ApiService.get(ApiEndpoints.allahNames);
@@ -98,6 +99,11 @@ class AllahNamesController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+    */
+
+    // ---- STATIC DATA (ACTIVE) ----
+    namesList.assignAll(staticAllahNames);
+    _syncSavedNames();
   }
 
   Future<void> fetchSavedNames() async {

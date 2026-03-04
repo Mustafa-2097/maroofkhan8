@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:maroofkhan8/features/Islam_meditation/controller/meditation_controller.dart';
-import 'package:maroofkhan8/features/Islam_meditation/model/meditation_model.dart';
 import 'package:maroofkhan8/features/home/dhikr/dhikr_screen.dart';
 import 'package:maroofkhan8/features/sufism/controller/sufism_controller.dart';
 
@@ -15,11 +14,11 @@ import '../../home/awliya_allah/awliya_allah_list_screen.dart';
 import '../../islamic_books/views/islamic_books_screen.dart';
 import '../../sahaba/views/sahaba_screen.dart';
 import '../../salawat/views/salawat_screen.dart';
-import '../controller/sufism_controller.dart';
-import '../../Islam_meditation/controller/meditation_controller.dart';
-import '../../Islam_meditation/model/meditation_model.dart';
-import '../../Islam_meditation/views/islam_meditation_screen.dart';
+import '../../Islam_meditation/views/islam_meditation_screen.dart'
+    show MainMenuScreen, MeditationPlayerScreen;
 import '../../islamic_names/views/islamic_names_screen.dart';
+import '../model/guided_meditation_model.dart';
+import '../model/islamic_teacher_model.dart';
 
 // --- CONSTANTS & THEME ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -42,220 +41,274 @@ class SufismHomeScreen extends StatelessWidget {
     final primaryColor = Theme.of(context).colorScheme.primary;
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-          child: Column(
-            children: [
-              const HeaderSection(title: "Sufism"),
-              Center(
-                child: Text(
-                  "Daily Wisdom & Meditation",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: isDark ? AppColors.whiteColor : Colors.black87,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Search
-              // Search
-              CustomSearchBar(
-                onChanged: (val) => sufismController.searchQuery.value = val,
-              ),
-              const SizedBox(height: 20),
-
-              // Quote Card
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      "مَنْ عَرَفَ نَفْسَهُ عَرَفَ رَبَّهُ",
-                      style: GoogleFonts.amiri(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      "Man ‘arafa nafsahu ‘arafa rabbahu.",
-                      style: GoogleFonts.playfairDisplay(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    const Text(
-                      "Whoever knows himself knows his Lord.\"",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 12, color: kTextGrey),
-                    ),
-                    const SizedBox(height: 10),
-                    const HeaderDecorationMini(label: "Ibn Arabi"),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: Icon(
-                        Icons.favorite_border,
-                        size: 18,
-                        color: Colors.grey.shade400,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 25),
-
-              // 3. Explore more Section
-              Row(
-                children: [
-                  Icon(Icons.explore_outlined, color: primaryColor, size: 24),
-                  const SizedBox(width: 8),
-                  Text(
-                    "Explore",
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.white : Colors.black87,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 15),
-              const ExploreMoreGrid(),
-
-              const SizedBox(height: 25),
-
-              // Guided Meditation List
-              Text(
-                "Guided Meditation",
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 15),
-              Obx(() {
-                if (sufismController.filteredMeditationList.isEmpty) {
-                  return const Center(child: Text("No records found"));
-                }
-                return Column(
-                  children: sufismController.filteredMeditationList
-                      .take(5) // Limit to 5 items on home
-                      .map(
-                        (med) => _meditationTile(
-                          context,
-                          med.title ?? "Untitled",
-                          med.subtitle ?? "",
-                          medData: med,
-                        ),
-                      )
-                      .toList(),
-                );
-              }),
-
-              const SizedBox(height: 10),
-              GestureDetector(
-                onTap: () => Get.to(() => const MainMenuScreen()),
-                child: const Center(
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await sufismController.fetchGuidedMeditations();
+            await sufismController.fetchIslamicTeachers();
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+            child: Column(
+              children: [
+                const HeaderSection(title: "Sufism"),
+                Center(
                   child: Text(
-                    "See more",
+                    "Daily Wisdom & Meditation",
                     style: TextStyle(
-                      color: kPrimaryBrown,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: isDark ? AppColors.whiteColor : Colors.black87,
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 25),
+                const SizedBox(height: 20),
 
-              // Teaching Section
-              Text(
-                "Teaching",
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+                // Search
+                // Search
+                // CustomSearchBar(
+                //   onChanged: (val) => sufismController.searchQuery.value = val,
+                // ),
+                const SizedBox(height: 20),
+
+                // Quote Card
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        "مَنْ عَرَفَ نَفْسَهُ عَرَفَ رَبَّهُ",
+                        style: GoogleFonts.amiri(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        "Man ‘arafa nafsahu ‘arafa rabbahu.",
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      const Text(
+                        "Whoever knows himself knows his Lord.\"",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 12, color: kTextGrey),
+                      ),
+                      const SizedBox(height: 10),
+                      const HeaderDecorationMini(label: "Ibn Arabi"),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        // child: Icon(
+                        //   Icons.favorite_border,
+                        //   size: 18,
+                        //   color: Colors.grey.shade400,
+                        // ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 15),
-              Container(
-                padding: const EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 10,
+                const SizedBox(height: 25),
+
+                // 3. Explore more Section
+                Row(
+                  children: [
+                    Icon(Icons.explore_outlined, color: primaryColor, size: 24),
+                    const SizedBox(width: 8),
+                    Text(
+                      "Explore",
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: isDark ? Colors.white : Colors.black87,
+                          ),
                     ),
                   ],
                 ),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _teachingCard(
+                const SizedBox(height: 15),
+                const ExploreMoreGrid(),
+
+                const SizedBox(height: 25),
+
+                // Guided Meditation List
+                Text(
+                  "Guided Meditation",
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 15),
+                Obx(() {
+                  if (sufismController.isMeditationLoading.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (sufismController.guidedMeditationList.isEmpty) {
+                    return const Center(child: Text("No records found"));
+                  }
+                  final displayList =
+                      sufismController.isMeditationExpanded.value
+                      ? sufismController.guidedMeditationList
+                      : sufismController.guidedMeditationList.take(2);
+                  return Column(
+                    children: displayList
+                        .map(
+                          (med) => _meditationTile(
                             context,
-                            "Spiritual Teaches",
-                            'https://images.unsplash.com/photo-1542358827-046645367332?auto=format&fit=crop&q=80&w=200',
+                            med.name ?? "Untitled",
+                            med.meaning ?? "",
+                            medData: med,
                           ),
+                        )
+                        .toList(),
+                  );
+                }),
+
+                const SizedBox(height: 10),
+                Obx(() {
+                  if (sufismController.guidedMeditationList.length <= 2) {
+                    return const SizedBox.shrink();
+                  }
+                  return GestureDetector(
+                    onTap: () => sufismController.isMeditationExpanded.value =
+                        !sufismController.isMeditationExpanded.value,
+                    child: Center(
+                      child: Text(
+                        sufismController.isMeditationExpanded.value
+                            ? "Show less"
+                            : "See more",
+                        style: const TextStyle(
+                          color: kPrimaryBrown,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
                         ),
-                        const SizedBox(width: 15),
-                        Expanded(
-                          child: _teachingCard(
-                            context,
-                            "Poem of love",
-                            'https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&q=80&w=200',
+                      ),
+                    ),
+                  );
+                }),
+                const SizedBox(height: 25),
+
+                // Teaching Section
+                Text(
+                  "Teaching",
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 15),
+                Obx(() {
+                  if (sufismController.isTeacherLoading.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (sufismController.teacherList.isEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text("No records found"),
+                          const SizedBox(height: 8),
+                          TextButton(
+                            onPressed: () =>
+                                sufismController.fetchIslamicTeachers(),
+                            child: const Text(
+                              "Retry",
+                              style: TextStyle(color: kPrimaryBrown),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  return Container(
+                    padding: const EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: sufismController.teacherList
+                              .take(2)
+                              .map(
+                                (teacher) => Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 5,
+                                    ),
+                                    child: _teachingCard(
+                                      context,
+                                      teacher.title ?? "",
+                                      teacher.image ?? "",
+                                      teacherId: teacher.id,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                        const SizedBox(height: 15),
+                        GestureDetector(
+                          onTap: () =>
+                              Get.to(() => const IslamicTeachersScreen()),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: kPrimaryBrown,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "More",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                SizedBox(width: 5),
+                                Icon(
+                                  Icons.arrow_forward,
+                                  size: 12,
+                                  color: Colors.white,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 15),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: kPrimaryBrown,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            "More",
-                            style: TextStyle(color: Colors.white, fontSize: 12),
-                          ),
-                          SizedBox(width: 5),
-                          Icon(
-                            Icons.arrow_forward,
-                            size: 12,
-                            color: Colors.white,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-            ],
+                  );
+                }),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),
@@ -266,7 +319,7 @@ class SufismHomeScreen extends StatelessWidget {
     BuildContext context,
     String title,
     String sub, {
-    MeditationData? medData,
+    GuidedMeditationData? medData,
   }) {
     return GestureDetector(
       onTap: () {
@@ -274,7 +327,7 @@ class SufismHomeScreen extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => MeditationPlayerScreen(meditation: medData),
+              builder: (_) => MeditationPlayerScreen(guidedMeditation: medData),
             ),
           );
         }
@@ -330,17 +383,42 @@ class SufismHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _teachingCard(BuildContext context, String title, String imgUrl) {
+  Widget _teachingCard(
+    BuildContext context,
+    String title,
+    String imgUrl, {
+    String? teacherId,
+  }) {
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const IslamicTeachersScreen()),
-      ),
+      onTap: () {
+        if (teacherId != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => TeachingDetailsScreen(teacherId: teacherId),
+            ),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const IslamicTeachersScreen()),
+          );
+        }
+      },
       child: Column(
         children: [
-          CircleAvatar(radius: 30, backgroundImage: NetworkImage(imgUrl)),
+          CircleAvatar(
+            radius: 30,
+            backgroundImage: NetworkImage(imgUrl),
+            backgroundColor: Colors.grey.shade200,
+          ),
           const SizedBox(height: 10),
-          Text(title, style: const TextStyle(fontSize: 12, color: kTextGrey)),
+          Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 12, color: kTextGrey),
+          ),
         ],
       ),
     );
@@ -401,6 +479,9 @@ class IslamicTeachersScreen extends StatelessWidget {
               // List
               Expanded(
                 child: Obx(() {
+                  if (sufismController.isTeacherLoading.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
                   if (sufismController.filteredTeacherList.isEmpty) {
                     return const Center(child: Text("No teachers found"));
                   }
@@ -409,11 +490,7 @@ class IslamicTeachersScreen extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final teacher =
                           sufismController.filteredTeacherList[index];
-                      return _teacherCard(
-                        context,
-                        teacher['name']!,
-                        teacher['img']!,
-                      );
+                      return _teacherCard(context, teacher);
                     },
                   );
                 }),
@@ -425,11 +502,13 @@ class IslamicTeachersScreen extends StatelessWidget {
     );
   }
 
-  Widget _teacherCard(BuildContext context, String name, String imgUrl) {
+  Widget _teacherCard(BuildContext context, IslamicTeacherData teacher) {
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => const TeachingDetailsScreen()),
+        MaterialPageRoute(
+          builder: (_) => TeachingDetailsScreen(teacherId: teacher.id!),
+        ),
       ),
       child: Container(
         margin: const EdgeInsets.only(bottom: 15),
@@ -447,23 +526,31 @@ class IslamicTeachersScreen extends StatelessWidget {
         ),
         child: Row(
           children: [
-            CircleAvatar(radius: 28, backgroundImage: NetworkImage(imgUrl)),
+            CircleAvatar(
+              radius: 28,
+              backgroundImage: NetworkImage(teacher.image ?? ""),
+              backgroundColor: Colors.grey.shade200,
+            ),
             const SizedBox(width: 15),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    name,
+                    teacher.title ?? "Untitled",
                     style: GoogleFonts.playfairDisplay(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    "Sufi Scholar + Baghdad",
-                    style: TextStyle(fontSize: 10, color: kTextGrey),
+                  Text(
+                    teacher.subtitle ?? "",
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: kTextGrey,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ],
               ),
@@ -491,11 +578,51 @@ class IslamicTeachersScreen extends StatelessWidget {
 // ==========================================
 // SCREEN 3: TEACHING DETAILS
 // ==========================================
-class TeachingDetailsScreen extends StatelessWidget {
-  const TeachingDetailsScreen({super.key});
+class TeachingDetailsScreen extends StatefulWidget {
+  final String teacherId;
+  const TeachingDetailsScreen({super.key, required this.teacherId});
+
+  @override
+  State<TeachingDetailsScreen> createState() => _TeachingDetailsScreenState();
+}
+
+class _TeachingDetailsScreenState extends State<TeachingDetailsScreen> {
+  IslamicTeacherData? teacherData;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchDetails();
+  }
+
+  Future<void> _fetchDetails() async {
+    final data = await SufismController.instance.fetchTeacherById(
+      widget.teacherId,
+    );
+    if (mounted) {
+      setState(() {
+        teacherData = data;
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Scaffold(
+        backgroundColor: kBackground,
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+    if (teacherData == null) {
+      return const Scaffold(
+        backgroundColor: kBackground,
+        body: Center(child: Text("Teacher details not found")),
+      );
+    }
+
     return Scaffold(
       backgroundColor: kBackground,
       body: SafeArea(
@@ -515,15 +642,14 @@ class TeachingDetailsScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 50,
-                backgroundImage: NetworkImage(
-                  "https://images.unsplash.com/photo-1542358827-046645367332?auto=format&fit=crop&q=80&w=300",
-                ),
+                backgroundImage: NetworkImage(teacherData!.image ?? ""),
+                backgroundColor: Colors.grey.shade200,
               ),
               const SizedBox(height: 15),
               Text(
-                "Spiritual Teaches",
+                teacherData!.title ?? "",
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -531,8 +657,9 @@ class TeachingDetailsScreen extends StatelessWidget {
               ),
               const SizedBox(height: 5),
               Text(
-                "المُرْشِدُونَ الرُّوحِيُّونَ",
-                style: GoogleFonts.amiri(fontSize: 16, color: kTextGrey),
+                teacherData!.subtitle ?? "",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.ebGaramond(fontSize: 16, color: kTextGrey),
               ),
               const SizedBox(height: 25),
 
@@ -540,14 +667,26 @@ class TeachingDetailsScreen extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "His Teaching",
-                  style: GoogleFonts.playfairDisplay(fontSize: 18),
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               const SizedBox(height: 15),
 
-              _teachingContentCard(),
-              _teachingContentCard(),
-              _teachingContentCard(),
+              if (teacherData!.teachings == null ||
+                  teacherData!.teachings!.isEmpty)
+                const Center(child: Text("No special teachings recorded."))
+              else
+                ...teacherData!.teachings!
+                    .map(
+                      (t) => _teachingContentCard(
+                        t.title ?? "",
+                        t.description ?? "",
+                      ),
+                    )
+                    .toList(),
             ],
           ),
         ),
@@ -555,7 +694,7 @@ class TeachingDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _teachingContentCard() {
+  Widget _teachingContentCard(String title, String description) {
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
       padding: const EdgeInsets.all(15),
@@ -571,16 +710,16 @@ class TeachingDetailsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Inner Purification (Tazkiyah al-Nafs)",
+            title,
             style: GoogleFonts.playfairDisplay(
               fontWeight: FontWeight.bold,
-              fontSize: 15,
+              fontSize: 16,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            "A central theme in his teachings was the cleansing of the heart from spiritual maladies such as pride, envy, greed, and heedlessness. He taught that true spirituality begins with...",
-            style: TextStyle(fontSize: 12, color: kTextGrey, height: 1.5),
+          Text(
+            description,
+            style: const TextStyle(fontSize: 13, color: kTextGrey, height: 1.5),
           ),
           const SizedBox(height: 10),
           Align(

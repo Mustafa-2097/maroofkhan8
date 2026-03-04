@@ -32,11 +32,9 @@ class _ProfileListState extends State<ProfileList> {
 
   final Map<String, String> languageMap = {
     'en': 'English (US)',
-    'bn': 'Bangla',
-    'hi': 'हिंदी',
-    'es': 'Español',
-    'fr': 'Français',
     'ar': 'العربية',
+    'hi': 'हिंदी',
+    'ur': 'اردو',
   };
   void _changeLanguage(String? value) {
     if (value != null) {
@@ -52,6 +50,7 @@ class _ProfileListState extends State<ProfileList> {
     Locale locale = Locale(languageCode);
     Get.updateLocale(locale);
   }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -65,28 +64,28 @@ class _ProfileListState extends State<ProfileList> {
             label: 'Personal Data',
             onTap: () => Get.to(() => const PersonalData()),
           ),
-          _DrawerItem(
-            icon: Icons.star_border,
-            label: 'Save',
-            onTap: () => Get.to(
-              () => NamesListScreen(
-                pageTitle: "Save",
-                repository: SaveRepository(),
-                useHeartIcon: false,
-              ),
-            ),
-          ),
-          _DrawerItem(
-            icon: Icons.star_border,
-            label: 'Favourite',
-            onTap: () => Get.to(
-              () => NamesListScreen(
-                pageTitle: "Favourite",
-                repository: FavoriteRepository(),
-                useHeartIcon: true,
-              ),
-            ),
-          ),
+          // _DrawerItem(
+          //   icon: Icons.star_border,
+          //   label: 'Save',
+          //   onTap: () => Get.to(
+          //     () => NamesListScreen(
+          //       pageTitle: "Save",
+          //       repository: SaveRepository(),
+          //       useHeartIcon: false,
+          //     ),
+          //   ),
+          // ),
+          // _DrawerItem(
+          //   icon: Icons.star_border,
+          //   label: 'Favourite',
+          //   onTap: () => Get.to(
+          //     () => NamesListScreen(
+          //       pageTitle: "Favourite",
+          //       repository: FavoriteRepository(),
+          //       useHeartIcon: true,
+          //     ),
+          //   ),
+          // ),
           _DrawerItem(
             icon: Icons.subscriptions_outlined,
             label: 'Subscription',
@@ -98,7 +97,6 @@ class _ProfileListState extends State<ProfileList> {
             label: 'Payment History',
             onTap: () => Get.to(() => const PaymentHistory()),
           ),
-
 
           _DrawerItem(
             icon: Icons.dark_mode_outlined,
@@ -113,9 +111,7 @@ class _ProfileListState extends State<ProfileList> {
                 });
 
                 // Tell GetX to change the theme
-                Get.changeThemeMode(
-                  value ? ThemeMode.dark : ThemeMode.light,
-                );
+                Get.changeThemeMode(value ? ThemeMode.dark : ThemeMode.light);
               },
             ),
           ),
@@ -124,7 +120,7 @@ class _ProfileListState extends State<ProfileList> {
 
           /// General Section
           _SectionHeader(title: 'General'),
-          Divider(color: Colors.grey.shade400,),
+          Divider(color: Colors.grey.shade400),
           _DrawerItem(
             icon: Icons.notifications_outlined,
             label: 'Change Password',
@@ -145,18 +141,17 @@ class _ProfileListState extends State<ProfileList> {
               onChanged: _changeLanguage,
             ),
           ),
+
           // _DrawerItem(
           //   icon: Icons.language_outlined,
           //   label: 'Language',
           //   //onTap: () => Get.to(() => NotificationSettingPage()),
           // ),
-
           SizedBox(height: 18.h),
-
 
           /// About Section
           _SectionHeader(title: 'about'.tr),
-          Divider(color: Colors.grey.shade400,),
+          Divider(color: Colors.grey.shade400),
           _DrawerItem(
             icon: Icons.contact_mail_outlined,
             label: 'Contact Us',
@@ -325,7 +320,9 @@ class _ProfileListState extends State<ProfileList> {
                             onPressed: () {
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (_) =>  SignInSignUpPage()),
+                                MaterialPageRoute(
+                                  builder: (_) => SignInSignUpPage(),
+                                ),
                               );
                               // TODO: handle logout logic
                             },
@@ -382,6 +379,7 @@ class _SectionHeader extends StatelessWidget {
     );
   }
 }
+
 class _DrawerItem extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -406,11 +404,7 @@ class _DrawerItem extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 8.h), // Adjusted padding
         child: Row(
           children: [
-            Icon(
-              icon,
-              size: 24.r,
-              color: Theme.of(context).iconTheme.color,
-            ),
+            Icon(icon, size: 24.r, color: Theme.of(context).iconTheme.color),
             SizedBox(width: 16.w),
             // Expanded column to handle title and subtitle
             Expanded(

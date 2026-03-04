@@ -436,6 +436,11 @@ class QuranController extends GetxController {
     await audioPlayer.stop();
   }
 
+  Future<void> resetAudio() async {
+    await audioPlayer.seek(Duration.zero);
+    await playAudio();
+  }
+
   Future<void> seekAudio(Duration duration) async {
     await audioPlayer.seek(duration);
   }

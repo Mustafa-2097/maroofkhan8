@@ -1,11 +1,11 @@
-class SalawatResponse {
+class AudioResponse {
   bool? success;
   int? statusCode;
   String? message;
   Pagination? pagination;
-  List<SalawatData>? data;
+  List<AudioData>? data;
 
-  SalawatResponse({
+  AudioResponse({
     this.success,
     this.statusCode,
     this.message,
@@ -13,17 +13,17 @@ class SalawatResponse {
     this.data,
   });
 
-  SalawatResponse.fromJson(Map<String, dynamic> json) {
+  AudioResponse.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     statusCode = json['statusCode'];
     message = json['message'];
-    pagination = json['pagination'] != null
+    pagination = json.containsKey('pagination')
         ? Pagination.fromJson(json['pagination'])
         : null;
     if (json['data'] != null) {
-      data = <SalawatData>[];
+      data = <AudioData>[];
       json['data'].forEach((v) {
-        data!.add(SalawatData.fromJson(v));
+        data!.add(AudioData.fromJson(v));
       });
     }
   }
@@ -68,40 +68,44 @@ class Pagination {
   }
 }
 
-class SalawatData {
+class AudioData {
   String? id;
   String? title;
-  String? arabic;
-  String? translation;
-  String? transliteration;
-  String? audio;
+  String? subtitle;
+  String? file;
+  String? category;
+  String? createdAt;
+  String? updatedAt;
 
-  SalawatData({
+  AudioData({
     this.id,
     this.title,
-    this.arabic,
-    this.translation,
-    this.transliteration,
-    this.audio,
+    this.subtitle,
+    this.file,
+    this.category,
+    this.createdAt,
+    this.updatedAt,
   });
 
-  SalawatData.fromJson(Map<String, dynamic> json) {
+  AudioData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
-    arabic = json['arabic'];
-    translation = json['translation'];
-    transliteration = json['transliteration'];
-    audio = json['audio'];
+    subtitle = json['subtitle'];
+    file = json['file'];
+    category = json['category'];
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['title'] = title;
-    data['arabic'] = arabic;
-    data['translation'] = translation;
-    data['transliteration'] = transliteration;
-    data['audio'] = audio;
+    data['subtitle'] = subtitle;
+    data['file'] = file;
+    data['category'] = category;
+    data['createdAt'] = createdAt;
+    data['updatedAt'] = updatedAt;
     return data;
   }
 }

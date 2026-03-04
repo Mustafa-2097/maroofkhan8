@@ -5,6 +5,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import '../controller/meditation_controller.dart';
 import '../model/meditation_model.dart';
+import '../../sufism/model/guided_meditation_model.dart';
 
 // --- Reusable Components ---
 
@@ -162,13 +163,37 @@ class MainMenuScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final med = controller.meditationList[index];
                     return GestureDetector(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (c) =>
-                              MeditationPlayerScreen(meditation: med),
-                        ),
-                      ),
+                      onTap: () async {
+                        if (med.id == null) return;
+
+                        // Show loading
+                        Get.dialog(
+                          const Center(child: CircularProgressIndicator()),
+                          barrierDismissible: false,
+                        );
+
+                        final fullMed = await controller.fetchMeditationById(
+                          med.id!,
+                        );
+
+                        // Close loading
+                        Get.back();
+
+                        if (fullMed != null) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (c) =>
+                                  MeditationPlayerScreen(meditation: fullMed),
+                            ),
+                          );
+                        } else {
+                          Get.snackbar(
+                            "Error",
+                            "Could not fetch meditation details",
+                          );
+                        }
+                      },
                       child: CategoryCard(
                         title: med.title ?? "Untitled",
                         subtitle: med.subtitle ?? "",
@@ -188,9 +213,14 @@ class MainMenuScreen extends StatelessWidget {
 
 // 2. Meditation Player Screen (Matches Screen 5, 6, 7)
 class MeditationPlayerScreen extends StatefulWidget {
-  final MeditationData meditation;
+  final MeditationData? meditation;
+  final GuidedMeditationData? guidedMeditation;
 
-  const MeditationPlayerScreen({super.key, required this.meditation});
+  const MeditationPlayerScreen({
+    super.key,
+    this.meditation,
+    this.guidedMeditation,
+  });
 
   @override
   State<MeditationPlayerScreen> createState() => _MeditationPlayerScreenState();
@@ -208,8 +238,9 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
     player = AudioPlayer();
 
     // Set source
-    if (widget.meditation.file != null) {
-      player.setSourceUrl(widget.meditation.file!);
+    final audioUrl = widget.meditation?.file;
+    if (audioUrl != null) {
+      player.setSourceUrl(audioUrl);
     }
 
     // Listen to player state
@@ -257,17 +288,28 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
     if (playerState == PlayerState.playing) {
       await player.pause();
     } else {
-      if (widget.meditation.file != null) {
-        await player.play(UrlSource(widget.meditation.file!));
+      final audioUrl = widget.meditation?.file;
+      if (audioUrl != null) {
+        await player.play(UrlSource(audioUrl));
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final title =
+        widget.meditation?.title ??
+        widget.guidedMeditation?.name ??
+        "Inner Peace";
+    final subtitle =
+        widget.meditation?.subtitle ??
+        widget.guidedMeditation?.meaning ??
+        "Calm your heart, balance your\nmind";
+    final arabicTitle = widget.guidedMeditation?.nameArabic;
+
     return Scaffold(
       appBar: AppBar(
-        title: HeaderSection(title: widget.meditation.title ?? "Inner Peace"),
+        title: HeaderSection(title: title),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -281,8 +323,7 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
           children: [
             const SizedBox(height: 20),
             Text(
-              widget.meditation.subtitle ??
-                  "Calm your heart, balance your\nmind",
+              subtitle,
               textAlign: TextAlign.center,
               style: GoogleFonts.ebGaramond(
                 fontSize: 18,
@@ -290,6 +331,17 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
                 color: Colors.black87,
               ),
             ),
+            if (arabicTitle != null) ...[
+              const SizedBox(height: 10),
+              Text(
+                arabicTitle,
+                style: GoogleFonts.amiri(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF8D4B33),
+                ),
+              ),
+            ],
             const Spacer(),
             // The Circular Image
             Center(
@@ -322,7 +374,8 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
               textAlign: TextAlign.center,
               style: GoogleFonts.ebGaramond(
                 fontSize: 15,
-                color: Colors.black54,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.withOpacity(0.95),
               ),
             ),
             const Spacer(),

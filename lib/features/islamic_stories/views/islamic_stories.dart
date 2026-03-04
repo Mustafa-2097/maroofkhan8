@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import '../controller/islamic_stories_controller.dart';
 import '../models/islamic_story.dart';
@@ -275,11 +277,11 @@ class _IslamicStoriesDetailScreenState
                   children: [
                     const Align(
                       alignment: Alignment.topRight,
-                      child: Icon(
-                        Icons.favorite_border,
-                        size: 20,
-                        color: Colors.grey,
-                      ),
+                      // child: Icon(
+                      //   Icons.favorite_border,
+                      //   size: 20,
+                      //   color: Colors.grey,
+                      // ),
                     ),
                     const SizedBox(height: 10),
                     Text(
@@ -314,21 +316,47 @@ class _IslamicStoriesDetailScreenState
                       icon: Icons.headset,
                       label: "Listen",
                       isActive: true,
+                      onTap: () {
+                        // TODO: Implement listen functionality
+                      },
                     ),
                     _ActionButton(
                       icon: Icons.auto_awesome,
                       label: "AI Explanation",
                       isActive: false,
+                      onTap: () {
+                        // TODO: Implement AI explanation
+                      },
                     ),
                     _ActionButton(
                       icon: Icons.share_outlined,
                       label: "Share",
                       isActive: false,
+                      onTap: () {
+                        Share.share("${detail.title}\n\n${detail.description}");
+                      },
                     ),
                     _ActionButton(
                       icon: Icons.copy,
                       label: "Copy",
                       isActive: false,
+                      onTap: () {
+                        Clipboard.setData(
+                          ClipboardData(text: detail.description),
+                        );
+                        Get.snackbar(
+                          "Copied",
+                          "Story copied to clipboard",
+                          snackPosition: SnackPosition.BOTTOM,
+                          backgroundColor: const Color.fromARGB(
+                            255,
+                            65,
+                            131,
+                            2,
+                          ),
+                          colorText: Colors.white,
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -385,29 +413,34 @@ class _ActionButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final bool isActive;
+  final VoidCallback? onTap;
 
   const _ActionButton({
     required this.icon,
     required this.label,
     required this.isActive,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 18, color: isActive ? kPrimaryBrown : Colors.black),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: isActive ? kPrimaryBrown : Colors.black,
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 18, color: isActive ? kPrimaryBrown : Colors.black),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: isActive ? kPrimaryBrown : Colors.black,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

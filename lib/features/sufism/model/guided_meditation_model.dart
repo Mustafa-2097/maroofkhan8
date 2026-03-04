@@ -1,11 +1,11 @@
-class MeditationResponse {
+class GuidedMeditationResponse {
   bool? success;
   int? statusCode;
   String? message;
   Pagination? pagination;
-  List<MeditationData>? data;
+  List<GuidedMeditationData>? data;
 
-  MeditationResponse({
+  GuidedMeditationResponse({
     this.success,
     this.statusCode,
     this.message,
@@ -13,7 +13,7 @@ class MeditationResponse {
     this.data,
   });
 
-  MeditationResponse.fromJson(Map<String, dynamic> json) {
+  GuidedMeditationResponse.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     statusCode = json['statusCode'];
     message = json['message'];
@@ -21,9 +21,9 @@ class MeditationResponse {
         ? Pagination.fromJson(json['pagination'])
         : null;
     if (json['data'] != null) {
-      data = <MeditationData>[];
+      data = <GuidedMeditationData>[];
       json['data'].forEach((v) {
-        data!.add(MeditationData.fromJson(v));
+        data!.add(GuidedMeditationData.fromJson(v));
       });
     }
   }
@@ -43,24 +43,26 @@ class MeditationResponse {
   }
 }
 
-class SingleMeditationResponse {
+class SingleGuidedMeditationResponse {
   bool? success;
   int? statusCode;
   String? message;
-  MeditationData? data;
+  GuidedMeditationData? data;
 
-  SingleMeditationResponse({
+  SingleGuidedMeditationResponse({
     this.success,
     this.statusCode,
     this.message,
     this.data,
   });
 
-  SingleMeditationResponse.fromJson(Map<String, dynamic> json) {
+  SingleGuidedMeditationResponse.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     statusCode = json['statusCode'];
     message = json['message'];
-    data = json['data'] != null ? MeditationData.fromJson(json['data']) : null;
+    data = json['data'] != null
+        ? GuidedMeditationData.fromJson(json['data'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -100,41 +102,41 @@ class Pagination {
   }
 }
 
-class MeditationData {
+class GuidedMeditationData {
   String? id;
-  String? title;
-  String? subtitle;
-  String? file;
+  String? name;
+  String? nameArabic;
+  String? meaning;
   String? status;
   String? createdAt;
   String? updatedAt;
 
-  MeditationData({
+  GuidedMeditationData({
     this.id,
-    this.title,
-    this.subtitle,
-    this.file,
+    this.name,
+    this.nameArabic,
+    this.meaning,
     this.status,
     this.createdAt,
     this.updatedAt,
   });
 
-  MeditationData.fromJson(Map<String, dynamic> json) {
+  GuidedMeditationData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    title = json['title'];
-    subtitle = json['subtitle'];
-    file = json['file'];
+    name = json['name'];
+    nameArabic = json['nameArabic'];
+    meaning = json['meaning'];
     status = json['status'];
-    createdAt = json['createdAt']?.toString();
-    updatedAt = json['updatedAt']?.toString();
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
-    data['title'] = title;
-    data['subtitle'] = subtitle;
-    data['file'] = file;
+    data['name'] = name;
+    data['nameArabic'] = nameArabic;
+    data['meaning'] = meaning;
     data['status'] = status;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;

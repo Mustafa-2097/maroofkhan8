@@ -1,6 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../../Islam_meditation/controller/meditation_controller.dart';
 import '../../Islam_meditation/model/meditation_model.dart';
+import '../model/guided_meditation_model.dart';
+import '../model/islamic_teacher_model.dart';
+import '../../../core/network/api_endpoints.dart';
+import '../../../core/network/api_service.dart';
 
 class SufismController extends GetxController {
   static SufismController get instance => Get.find();
@@ -10,37 +15,95 @@ class SufismController extends GetxController {
 
   var searchQuery = "".obs;
   var teacherSearchQuery = "".obs;
+  var guidedMeditationList = <GuidedMeditationData>[].obs;
+  var isMeditationLoading = false.obs;
+  var isMeditationExpanded = false.obs;
 
-  final teachers = [
-    {
-      "name": "Islamic Mentor",
-      "img":
-          "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=200",
-    },
-    {
-      "name": "Islamic Mentor",
-      "img":
-          "https://images.unsplash.com/photo-1542358827-046645367332?auto=format&fit=crop&q=80&w=200",
-    },
-    {
-      "name": "Deen Guide",
-      "img":
-          "https://images.unsplash.com/photo-1519817650390-64a93db51149?auto=format&fit=crop&q=80&w=200",
-    },
-    {
-      "name": "Fiqh Instructor",
-      "img":
-          "https://images.unsplash.com/photo-1545989253-02cc26577f88?auto=format&fit=crop&q=80&w=200",
-    },
-  ];
+  var teacherList = <IslamicTeacherData>[].obs;
+  var isTeacherLoading = false.obs;
 
-  List<Map<String, String>> get filteredTeacherList {
-    if (teacherSearchQuery.value.isEmpty) {
-      return teachers;
+  @override
+  void onInit() {
+    super.onInit();
+    fetchGuidedMeditations();
+    fetchIslamicTeachers();
+  }
+
+  Future<void> fetchGuidedMeditations() async {
+    try {
+      isMeditationLoading.value = true;
+      final response = await ApiService.get(ApiEndpoints.guidedMeditation);
+      debugPrint("Guided Meditation Response: $response");
+      if (response['success'] == true) {
+        final guidedRes = GuidedMeditationResponse.fromJson(response);
+        guidedMeditationList.assignAll(guidedRes.data ?? []);
+        debugPrint(
+          "SufismController: Fetched ${guidedMeditationList.length} meditations",
+        );
+      }
+    } catch (e) {
+      debugPrint("Error fetching guided meditations: $e");
+      Get.snackbar("Notice", "Could not load guided meditations");
+    } finally {
+      isMeditationLoading.value = false;
     }
-    return teachers
+  }
+
+  Future<GuidedMeditationData?> fetchGuidedMeditationById(String id) async {
+    try {
+      final response = await ApiService.get(
+        ApiEndpoints.singleGuidedMeditation(id),
+      );
+      if (response['success'] == true) {
+        final guidedRes = SingleGuidedMeditationResponse.fromJson(response);
+        return guidedRes.data;
+      }
+    } catch (e) {
+      print("Error fetching single guided meditation: $e");
+    }
+    return null;
+  }
+
+  Future<void> fetchIslamicTeachers() async {
+    try {
+      isTeacherLoading.value = true;
+      final response = await ApiService.get(ApiEndpoints.islamicTeacher);
+      debugPrint("Islamic Teacher Response: $response");
+      if (response['success'] == true) {
+        final teacherRes = IslamicTeacherResponse.fromJson(response);
+        teacherList.assignAll(teacherRes.data ?? []);
+        debugPrint("SufismController: Fetched ${teacherList.length} teachers");
+      }
+    } catch (e) {
+      debugPrint("Error fetching Islamic teachers: $e");
+      Get.snackbar("Notice", "Could not load Islamic teachers");
+    } finally {
+      isTeacherLoading.value = false;
+    }
+  }
+
+  Future<IslamicTeacherData?> fetchTeacherById(String id) async {
+    try {
+      final response = await ApiService.get(
+        ApiEndpoints.singleIslamicTeacher(id),
+      );
+      if (response['success'] == true) {
+        final teacherRes = SingleIslamicTeacherResponse.fromJson(response);
+        return teacherRes.data;
+      }
+    } catch (e) {
+      print("Error fetching single Islamic teacher: $e");
+    }
+    return null;
+  }
+
+  List<IslamicTeacherData> get filteredTeacherList {
+    if (teacherSearchQuery.value.isEmpty) {
+      return teacherList;
+    }
+    return teacherList
         .where(
-          (t) => t['name']!.toLowerCase().contains(
+          (t) => t.title!.toLowerCase().contains(
             teacherSearchQuery.value.toLowerCase(),
           ),
         )
