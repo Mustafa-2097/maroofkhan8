@@ -5,6 +5,7 @@ import 'package:maroofkhan8/features/hadis/controller/hadith_controller.dart';
 import 'package:maroofkhan8/features/hadis/models/hadith.dart';
 
 import 'hadish_tafsir_details_screen.dart';
+import 'saved_hadiths_screen.dart';
 
 class HadithListDetailsScreen extends StatefulWidget {
   final String slug;
@@ -124,7 +125,10 @@ class _HadithListDetailsScreenState extends State<HadithListDetailsScreen> {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  _iconContainer(Icons.bookmark_outline),
+                  GestureDetector(
+                    onTap: () => Get.to(() => const SavedHadithsScreen()),
+                    child: _iconContainer(Icons.bookmark_outline),
+                  ),
                 ],
               ),
             ),
@@ -240,11 +244,31 @@ class HadithCard extends StatelessWidget {
           const Divider(height: 30, color: Color(0xFFEEEEEE)),
           Row(
             children: [
-              const Icon(Icons.favorite_border, size: 18, color: Colors.grey),
+              GestureDetector(
+                onTap: () {
+                  HadithController.instance.toggleSaveHadith(
+                    hadithText: hadith.hadith,
+                    book: bookName,
+                    chapterNo: chapterNum,
+                    hadithNo: hadith.number,
+                    currentlySaved: hadith.isSaved,
+                    savedId: hadith.savedId,
+                  );
+                },
+                child: Icon(
+                  hadith.isSaved ? Icons.bookmark : Icons.bookmark_border,
+                  size: 18,
+                  color: hadith.isSaved ? Color(0xFF8D3C1F) : Color(0xFF8D3C1F),
+                ),
+              ),
               const SizedBox(width: 15),
-              const Icon(Icons.share_outlined, size: 18, color: Colors.grey),
+              const Icon(
+                Icons.share_outlined,
+                size: 18,
+                color: Color(0xFF8D3C1F),
+              ),
               const Spacer(),
-              _footerAction(Icons.volume_up_outlined, "Listen"),
+              //  _footerAction(Icons.volume_up_outlined, "Listen"),
               const SizedBox(width: 15),
               GestureDetector(
                 onTap: () {

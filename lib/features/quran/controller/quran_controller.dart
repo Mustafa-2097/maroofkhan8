@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import '../../../core/network/api_Service.dart';
 import 'dart:convert';
 import '../../../core/network/api_endpoints.dart';
+import 'package:maroofkhan8/core/utils/snackbar_utils.dart';
 import '../model/surah_model.dart';
 import '../model/juz_model.dart' as jm;
 import '../model/last_read_model.dart';
@@ -605,7 +606,10 @@ class QuranController extends GetxController {
 
         if (response['success'] == true) {
           surahBookmarkIds.remove(surah.id);
-          Get.snackbar("Success", "${surah.name} removed from bookmarks");
+          SnackbarUtils.showSnackbar(
+            "Success",
+            "${surah.name} removed from bookmarks",
+          );
         }
       } else {
         final response = await ApiService.post(
@@ -616,7 +620,10 @@ class QuranController extends GetxController {
         if (response['success'] == true) {
           final relationId = response['data']['id'].toString();
           surahBookmarkIds[surah.id] = relationId;
-          Get.snackbar("Success", "${surah.name} added to bookmarks");
+          SnackbarUtils.showSnackbar(
+            "Success",
+            "${surah.name} added to bookmarks",
+          );
         }
       }
       _syncSavedSurahs();
@@ -626,7 +633,10 @@ class QuranController extends GetxController {
   }
 
   Future<void> downloadSurahAudio(SurahModel surah) async {
-    Get.snackbar("Download", "Starting download for ${surah.name}...");
+    SnackbarUtils.showSnackbar(
+      "Download",
+      "Starting download for ${surah.name}...",
+    );
   }
 
   void _syncSavedSurahs() {

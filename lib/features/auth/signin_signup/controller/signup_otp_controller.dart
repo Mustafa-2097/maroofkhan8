@@ -1,11 +1,12 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
+
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/network/api_Service.dart';
 import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/offline_storage/shared_pref.dart';
+import '../../../../core/utils/snackbar_utils.dart';
 import '../controller/signin_signup_controller.dart';
 
 class SignupOtpController extends GetxController {
@@ -90,12 +91,9 @@ class SignupOtpController extends GetxController {
       }
 
       // Show snackbar AFTER navigating back so Get.back() doesn't accidentally dismiss the snackbar
-      Get.snackbar(
+      SnackbarUtils.showSnackbar(
         'Success',
         response['message'] ?? 'Email verified successfully',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
       );
     } catch (e) {
       EasyLoading.dismiss();
@@ -118,12 +116,9 @@ class SignupOtpController extends GetxController {
 
       EasyLoading.dismiss();
 
-      Get.snackbar(
+      SnackbarUtils.showSnackbar(
         'Success',
         response['message'] ?? 'OTP resent successfully',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
       );
 
       startTimer();

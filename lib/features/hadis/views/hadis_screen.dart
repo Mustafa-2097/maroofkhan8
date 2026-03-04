@@ -6,6 +6,7 @@ import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import '../controller/hadith_controller.dart';
 import 'hadith_book_details_screen.dart';
 import 'hadish_tafsir_details_screen.dart';
+import 'saved_hadiths_screen.dart';
 
 class HadithScreen extends StatefulWidget {
   final bool hideBack;
@@ -80,17 +81,20 @@ class _HadithScreenState extends State<HadithScreen> {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  Container(
-                    height: 45,
-                    width: 45,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.grey.shade200),
-                    ),
-                    child: Icon(
-                      Icons.bookmark_outline,
-                      color: Colors.grey.shade300,
+                  GestureDetector(
+                    onTap: () => Get.to(() => const SavedHadithsScreen()),
+                    child: Container(
+                      height: 45,
+                      width: 45,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.grey.shade200),
+                      ),
+                      child: Icon(
+                        Icons.bookmark_outline,
+                        color: Colors.grey.shade300,
+                      ),
                     ),
                   ),
                 ],
@@ -288,10 +292,22 @@ class _HadithScreenState extends State<HadithScreen> {
                 const Divider(height: 30),
                 Row(
                   children: [
-                    const Icon(
-                      Icons.favorite_border,
-                      size: 18,
-                      color: Colors.grey,
+                    GestureDetector(
+                      onTap: () {
+                        controller.toggleSaveHadith(
+                          hadithText: item.hadith,
+                          book: item.book ?? item.reference,
+                          chapterNo: item.chapterNo?.toString() ?? "0",
+                          hadithNo: item.hadithNo?.toString() ?? "0",
+                          currentlySaved: item.isSaved,
+                          savedId: item.savedId,
+                        );
+                      },
+                      child: Icon(
+                        item.isSaved ? Icons.favorite : Icons.favorite_border,
+                        size: 18,
+                        color: item.isSaved ? Colors.red : Colors.grey,
+                      ),
                     ),
                     const SizedBox(width: 15),
                     const Icon(
@@ -383,10 +399,22 @@ class _HadithScreenState extends State<HadithScreen> {
                 const Divider(height: 30),
                 Row(
                   children: [
-                    const Icon(
-                      Icons.favorite_border,
-                      size: 18,
-                      color: Colors.grey,
+                    GestureDetector(
+                      onTap: () {
+                        controller.toggleSaveHadith(
+                          hadithText: item.hadith,
+                          book: item.book,
+                          chapterNo: item.chapterNo ?? "0",
+                          hadithNo: item.hadithNo ?? "0",
+                          currentlySaved: item.isSaved,
+                          savedId: item.savedId,
+                        );
+                      },
+                      child: Icon(
+                        item.isSaved ? Icons.favorite : Icons.favorite_border,
+                        size: 18,
+                        color: item.isSaved ? Colors.red : Colors.grey,
+                      ),
                     ),
                     const SizedBox(width: 15),
                     const Icon(

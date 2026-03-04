@@ -13,6 +13,8 @@ class HadithController extends GetxController {
 
   var isLoading = false.obs;
   var hadithBooks = <HadithBook>[].obs;
+  var isSavedLoading = false.obs;
+  var savedHadiths = <Hadith>[].obs;
 
   var isChaptersLoading = false.obs;
   var chapters = <HadithChapter>[].obs;
@@ -86,6 +88,90 @@ class HadithController extends GetxController {
     fetchHadithBooks();
     fetchPopularHadith();
     fetchLastReadHadith();
+    fetchSavedHadiths();
+  }
+
+  String _normalize(String? text) {
+    if (text == null) return '';
+    return text
+        .trim()
+        .replaceAll('\r', '')
+        .replaceAll('\n', ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
+        .toLowerCase();
+  }
+
+  Future<void> fetchSavedHadiths() async {
+    isSavedLoading.value = true;
+    try {
+      final response = await ApiService.get(ApiEndpoints.savedHadith);
+      if (response['success'] == true) {
+        final List<dynamic> data = response['data'];
+        savedHadiths.value = data.map((json) {
+          // The saved record might have 'hadith' field
+          final h = Hadith(
+            id: int.tryParse(json['id']?.toString() ?? '0') ?? 0,
+            number: (json['hadithNo'] ?? json['number'] ?? '').toString(),
+            hadith: json['hadith'] ?? '',
+            heading: json['book'] ?? '',
+          );
+          h.isSaved = true;
+          h.savedId = json['id']?.toString();
+          return h;
+        }).toList();
+        _syncSaveStatus();
+      }
+    } catch (e) {
+    } finally {
+      isSavedLoading.value = false;
+    }
+  }
+
+  void _syncSaveStatus() {
+    if (savedHadiths.isEmpty && !isSavedLoading.value) {
+      // If savedHadiths is empty but not loading, it means none are saved
+      for (var h in hadithList) h.isSaved = false;
+      for (var h in popularHadiths) h.isSaved = false;
+      for (var h in lastReadHadiths) h.isSaved = false;
+    } else {
+      // Normalize saved hadiths once
+      final savedTexts = savedHadiths.map((s) => _normalize(s.hadith)).toSet();
+      final savedMap = {
+        for (var s in savedHadiths) _normalize(s.hadith): s.savedId,
+      };
+
+      for (var h in hadithList) {
+        final norm = _normalize(h.hadith);
+        h.isSaved = savedTexts.contains(norm);
+        h.savedId = savedMap[norm];
+      }
+      for (var h in popularHadiths) {
+        final norm = _normalize(h.hadith);
+        h.isSaved = savedTexts.contains(norm);
+        h.savedId = savedMap[norm];
+      }
+      for (var h in lastReadHadiths) {
+        final norm = _normalize(h.hadith);
+        h.isSaved = savedTexts.contains(norm);
+        h.savedId = savedMap[norm];
+      }
+    }
+
+    hadithList.refresh();
+    popularHadiths.refresh();
+    lastReadHadiths.refresh();
+  }
+
+  bool isHadithSaved(String hadithText) {
+    final norm = _normalize(hadithText);
+    return savedHadiths.any((s) => _normalize(s.hadith) == norm);
+  }
+
+  String? getSavedId(String hadithText) {
+    final norm = _normalize(hadithText);
+    return savedHadiths
+        .firstWhereOrNull((s) => _normalize(s.hadith) == norm)
+        ?.savedId;
   }
 
   Future<void> fetchHadithBooks() async {
@@ -136,6 +222,7 @@ class HadithController extends GetxController {
       if (response['success'] == true) {
         final List<dynamic> data = response['data'];
         hadithList.value = data.map((json) => Hadith.fromJson(json)).toList();
+        _syncSaveStatus();
       }
     } catch (e) {
       // Error is handled in ApiService
@@ -153,6 +240,7 @@ class HadithController extends GetxController {
         popularHadiths.value = data
             .map((json) => PopularHadith.fromJson(json))
             .toList();
+        _syncSaveStatus();
       }
     } catch (e) {
       // Error is handled in ApiService
@@ -170,11 +258,83 @@ class HadithController extends GetxController {
         lastReadHadiths.value = data
             .map((json) => LastReadHadith.fromJson(json))
             .toList();
+        _syncSaveStatus();
       }
     } catch (e) {
       // Error handled in ApiService
     } finally {
       isLastReadLoading.value = false;
+    }
+  }
+
+  Future<void> toggleSaveHadith({
+    required String hadithText,
+    required String book,
+    required String chapterNo,
+    required String hadithNo,
+    required bool currentlySaved,
+    String? savedId,
+  }) async {
+    // Optimistic Update
+    void setLocalStatus(bool status, String? sId) {
+      final normTarget = _normalize(hadithText);
+      for (var h in hadithList) {
+        if (_normalize(h.hadith) == normTarget) {
+          h.isSaved = status;
+          h.savedId = sId;
+        }
+      }
+      for (var h in popularHadiths) {
+        if (_normalize(h.hadith) == normTarget) {
+          h.isSaved = status;
+          h.savedId = sId;
+        }
+      }
+      for (var h in lastReadHadiths) {
+        if (_normalize(h.hadith) == normTarget) {
+          h.isSaved = status;
+          h.savedId = sId;
+        }
+      }
+      hadithList.refresh();
+      popularHadiths.refresh();
+      lastReadHadiths.refresh();
+    }
+
+    final prevSaved = currentlySaved;
+    final prevId = savedId;
+    setLocalStatus(!currentlySaved, currentlySaved ? null : "pending");
+
+    try {
+      if (currentlySaved) {
+        if (savedId == null || savedId == "pending") return;
+        final response = await ApiService.delete(
+          ApiEndpoints.deleteSavedHadith(savedId),
+        );
+        if (response['success'] != true) {
+          setLocalStatus(prevSaved, prevId);
+        } else {
+          fetchSavedHadiths();
+        }
+      } else {
+        final body = {
+          "hadith": hadithText,
+          "book": book,
+          "chapterNo": int.tryParse(chapterNo) ?? 0,
+          "hadithNo": int.tryParse(hadithNo) ?? 0,
+        };
+        final response = await ApiService.post(
+          ApiEndpoints.savedHadith,
+          body: body,
+        );
+        if (response['success'] != true) {
+          setLocalStatus(prevSaved, prevId);
+        } else {
+          fetchSavedHadiths();
+        }
+      }
+    } catch (e) {
+      setLocalStatus(prevSaved, prevId);
     }
   }
 

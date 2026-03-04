@@ -3,6 +3,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import '../../../../core/network/api_Service.dart';
 import '../../../../core/network/api_endpoints.dart';
+import '../../../../core/utils/snackbar_utils.dart';
 import '../view/otp_verification_page.dart';
 
 class ForgotPasswordController extends GetxController {
@@ -32,12 +33,9 @@ class ForgotPasswordController extends GetxController {
 
       EasyLoading.dismiss();
 
-      Get.snackbar(
+      SnackbarUtils.showSnackbar(
         'Success',
         response['message'] ?? 'OTP Sent to your Email',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
       );
 
       Get.to(

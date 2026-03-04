@@ -1,10 +1,11 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
+
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/network/api_Service.dart';
 import '../../../../core/network/api_endpoints.dart';
+import '../../../../core/utils/snackbar_utils.dart';
 import '../view/reset_password.dart';
 
 class VerificationCodeController extends GetxController {
@@ -82,12 +83,9 @@ class VerificationCodeController extends GetxController {
 
       Get.to(() => ResetPassword(), arguments: {"token": token});
 
-      Get.snackbar(
+      SnackbarUtils.showSnackbar(
         'Success',
         response['message'] ?? 'OTP verified successfully',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
       );
     } catch (e) {
       EasyLoading.dismiss();
@@ -110,12 +108,9 @@ class VerificationCodeController extends GetxController {
 
       EasyLoading.dismiss();
 
-      Get.snackbar(
+      SnackbarUtils.showSnackbar(
         'Success',
         response['message'] ?? 'New code sent',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
       );
 
       startTimer();

@@ -4,6 +4,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../../../core/network/api_Service.dart';
 import '../../../core/network/api_endpoints.dart';
 import '../../../core/offline_storage/shared_pref.dart';
+import '../../../core/utils/snackbar_utils.dart';
 import '../../auth/forgot_password/view/password_changed.dart';
 
 class ChangePasswordController extends GetxController {
@@ -45,12 +46,10 @@ class ChangePasswordController extends GetxController {
       final token = await SharedPreferencesHelper.getToken();
       if (token == null || token.isEmpty) {
         EasyLoading.dismiss();
-        Get.snackbar(
+        SnackbarUtils.showSnackbar(
           'Error',
           'Authentication token is missing. Please log in again.',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
+          isError: true,
         );
         return;
       }
@@ -62,12 +61,9 @@ class ChangePasswordController extends GetxController {
 
       EasyLoading.dismiss();
 
-      Get.snackbar(
+      SnackbarUtils.showSnackbar(
         'Success',
         response['message'] ?? 'Password Changed successfully',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
       );
 
       // Clear fields after success

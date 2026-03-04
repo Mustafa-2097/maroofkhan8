@@ -62,6 +62,8 @@ class ApiEndpoints {
       '$baseUrl/hadith/$slug/hadiths?chapter=$chapter';
   static const String popularHadith = '$baseUrl/hadith/popular';
   static const String lastReadHadith = '$baseUrl/hadith/last-read';
+  static const String savedHadith = '$baseUrl/hadith/saved';
+  static String deleteSavedHadith(String id) => '$baseUrl/hadith/saved/$id';
 
   /// Stories
   static const String stories = '$baseUrl/stories';

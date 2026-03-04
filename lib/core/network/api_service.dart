@@ -4,8 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:get/get.dart';
+
 import '../offline_storage/shared_pref.dart';
+import '../utils/snackbar_utils.dart';
 
 class ApiService {
   static const Duration timeout = Duration(seconds: 30);
@@ -76,7 +77,7 @@ class ApiService {
     } catch (e) {
       final friendlyMsg = _friendlyError(e);
       if (friendlyMsg != null) {
-        Get.snackbar("Error", friendlyMsg);
+        SnackbarUtils.showSnackbar("Error", friendlyMsg, isError: true);
       }
       rethrow;
     }
@@ -120,7 +121,7 @@ class ApiService {
     } catch (e) {
       final friendlyMsg = _friendlyError(e);
       if (friendlyMsg != null) {
-        Get.snackbar("Error", friendlyMsg);
+        SnackbarUtils.showSnackbar("Error", friendlyMsg, isError: true);
       }
       rethrow;
     }
@@ -164,7 +165,7 @@ class ApiService {
     } catch (e) {
       final friendlyMsg = _friendlyError(e);
       if (friendlyMsg != null) {
-        Get.snackbar("Error", friendlyMsg);
+        SnackbarUtils.showSnackbar("Error", friendlyMsg, isError: true);
       }
       rethrow;
     }
@@ -212,7 +213,7 @@ class ApiService {
     } catch (e) {
       final friendlyMsg = _friendlyError(e);
       if (friendlyMsg != null) {
-        Get.snackbar("Error", friendlyMsg);
+        SnackbarUtils.showSnackbar("Error", friendlyMsg, isError: true);
       }
       rethrow;
     }
@@ -256,7 +257,7 @@ class ApiService {
     } catch (e) {
       final friendlyMsg = _friendlyError(e);
       if (friendlyMsg != null) {
-        Get.snackbar("Error", friendlyMsg);
+        SnackbarUtils.showSnackbar("Error", friendlyMsg, isError: true);
       }
       rethrow;
     }
@@ -322,7 +323,7 @@ class ApiService {
     } catch (e) {
       final friendlyMsg = _friendlyError(e);
       if (friendlyMsg != null) {
-        Get.snackbar("Error", friendlyMsg);
+        SnackbarUtils.showSnackbar("Error", friendlyMsg, isError: true);
       }
       rethrow;
     }
