@@ -311,7 +311,7 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
                       IconButton(
                         onPressed: () => controller.downloadSurahAudio(surah),
                         icon: const Icon(
-                          Icons.download_for_offline_outlined,
+                          Icons.file_download_outlined,
                           color: kPrimaryBrown,
                           size: 24,
                         ),
@@ -566,10 +566,23 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  GestureDetector(
+                    onLongPress: () =>
+                        controller.seekRelative(const Duration(seconds: -5)),
+                    child: IconButton(
+                      onPressed: () =>
+                          controller.seekRelative(const Duration(seconds: -5)),
+                      icon: Icon(
+                        Icons.skip_previous,
+                        color: isDark ? AppColors.whiteColor : Colors.black87,
+                      ),
+                    ),
+                  ),
                   IconButton(
-                    onPressed: () => controller.stopAudio(),
+                    onPressed: () => controller.resetAudio(),
                     icon: Icon(
-                      Icons.stop,
+                      size: 30,
+                      Icons.restart_alt,
                       color: isDark ? AppColors.whiteColor : Colors.black87,
                     ),
                   ),
@@ -590,6 +603,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                       color: isDark ? AppColors.whiteColor : Colors.black87,
                     ),
                   ),
+
                   const SizedBox(width: 10),
                   GestureDetector(
                     onLongPress: () =>

@@ -14,34 +14,24 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-
   final AiMurshidService aiService = AiMurshidService();
 
   final ScrollController _scrollController = ScrollController();
 
-
   final List<ChatMessage> messages = [];
   bool isTyping = false;
-
 
   final Color rustBrown = const Color(0xFF80381C);
   final Color bgColor = const Color(0xFFF8F9FF);
 
-
-
   Future<void> _addTypingMessage(String fullText) async {
-    final chatMessage = ChatMessage(
-      text: '',
-      isUser: false,
-      isTyping: true,
-    );
+    final chatMessage = ChatMessage(text: '', isUser: false, isTyping: true);
 
     setState(() => messages.add(chatMessage));
     _scrollToBottom();
 
-
     const int chunkSize = 3; // 👈 try 2–5
-    const int delayMs = 16;  // ~60fps
+    const int delayMs = 16; // ~60fps
 
     for (int i = 0; i < fullText.length; i += chunkSize) {
       await Future.delayed(const Duration(milliseconds: delayMs));
@@ -59,7 +49,6 @@ class _ChatScreenState extends State<ChatScreen> {
     chatMessage.isTyping = false;
   }
 
-
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
@@ -72,16 +61,11 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
-
-
-
   @override
-  void dispose(){
-
+  void dispose() {
     _scrollController.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +82,15 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
             child: Row(
               children: [
+                if (Navigator.canPop(context))
+                  IconButton(
+                    icon: const Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.grey,
+                      size: 20,
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  ),
                 // Logo Circle
                 Container(
                   height: 50,
@@ -148,127 +141,137 @@ class _ChatScreenState extends State<ChatScreen> {
           Expanded(
             child: messages.isEmpty && !isTyping
                 ? Center(
-              child: Text(
-                "Learn Islam with AI",
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade400,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            )
-                : ListView.builder(
-              controller: _scrollController,
-              padding: const EdgeInsets.all(20),
-              itemCount: messages.length + (isTyping ? 1 : 0),
-              itemBuilder: (context, index) {
-                if (index == messages.length && isTyping) {
-                  return Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade300,
-                        borderRadius: BorderRadius.circular(15),
+                    child: Text(
+                      "Learn Islam with AI",
+                      style: GoogleFonts.playfairDisplay(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey.shade400,
                       ),
-                      child: const ThreeDotTyping(),
+                      textAlign: TextAlign.center,
                     ),
-                  );
-                }
-
-                final message = messages[index];
-                final isUser = message.isUser;
-
-                return Align(
-                  alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
-                  child: Stack(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 12, top: 8),
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                        decoration: BoxDecoration(
-                          color: isUser ? rustBrown : Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: const Radius.circular(15),
-                            topRight: const Radius.circular(15),
-                            bottomLeft: Radius.circular(isUser ? 15 : 0),
-                            bottomRight: Radius.circular(isUser ? 0 : 15),
+                  )
+                : ListView.builder(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.all(20),
+                    itemCount: messages.length + (isTyping ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index == messages.length && isTyping) {
+                        return Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade300,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: const ThreeDotTyping(),
                           ),
-                          boxShadow: isUser
-                              ? []
-                              : [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 6,
-                              offset: const Offset(0, 3),
-                            )
+                        );
+                      }
+
+                      final message = messages[index];
+                      final isUser = message.isUser;
+
+                      return Align(
+                        alignment: isUser
+                            ? Alignment.centerRight
+                            : Alignment.centerLeft,
+                        child: Stack(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(bottom: 12, top: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 10,
+                              ),
+                              decoration: BoxDecoration(
+                                color: isUser ? rustBrown : Colors.white,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: const Radius.circular(15),
+                                  topRight: const Radius.circular(15),
+                                  bottomLeft: Radius.circular(isUser ? 15 : 0),
+                                  bottomRight: Radius.circular(isUser ? 0 : 15),
+                                ),
+                                boxShadow: isUser
+                                    ? []
+                                    : [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.05),
+                                          blurRadius: 6,
+                                          offset: const Offset(0, 3),
+                                        ),
+                                      ],
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.only(top: isUser ? 0 : 8),
+                                child: RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: message.text,
+                                        style: TextStyle(
+                                          color: isUser
+                                              ? Colors.white
+                                              : Colors.black87,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      if (message.isTyping)
+                                        const TextSpan(
+                                          text: '▍',
+                                          style: TextStyle(
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            // Copy button for AI messages
+                            if (!isUser && !message.isTyping)
+                              Positioned(
+                                right: 4,
+                                top: 12,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Clipboard.setData(
+                                      ClipboardData(text: message.text),
+                                    );
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text("Copied to clipboard"),
+                                        duration: Duration(milliseconds: 800),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade200,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.copy,
+                                      size: 14,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                ),
+                              ),
                           ],
                         ),
-                        child: Padding(
-                          padding: EdgeInsets.only(top: isUser ? 0 : 8),
-                          child: RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: message.text,
-                                  style: TextStyle(
-                                    color: isUser ? Colors.white : Colors.black87,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                if (message.isTyping)
-                                  const TextSpan(
-                                    text: '▍',
-                                    style: TextStyle(color: Colors.black54),
-                                  ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      // Copy button for AI messages
-                      if (!isUser && !message.isTyping)
-                        Positioned(
-                          right: 4,
-                          top: 12,
-                          child: GestureDetector(
-                            onTap: () {
-                              Clipboard.setData(ClipboardData(text: message.text));
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Copied to clipboard"),
-                                  duration: Duration(milliseconds: 800),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade200,
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.copy,
-                                size: 14,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
+                      );
+                    },
                   ),
-                );
-
-              },
-            ),
           ),
-
-
-
 
           VoiceInputBar(
             onSend: (text) async {
@@ -279,17 +282,17 @@ class _ChatScreenState extends State<ChatScreen> {
 
               _scrollToBottom();
 
-
               try {
-                final aiResp = await aiService.sendMessage("test_user_123", text);
+                final aiResp = await aiService.sendMessage(
+                  "test_user_123",
+                  text,
+                );
 
                 setState(() {
                   isTyping = false;
                 });
 
                 await _addTypingMessage(aiResp.explanation);
-
-
               } catch (e) {
                 setState(() {
                   isTyping = false;
@@ -297,15 +300,11 @@ class _ChatScreenState extends State<ChatScreen> {
               }
             },
           ),
-
-
         ],
       ),
     );
   }
 }
-
-
 
 class VoiceInputBar extends StatefulWidget {
   final Function(String) onSend;
@@ -321,7 +320,6 @@ class _VoiceInputBarState extends State<VoiceInputBar> {
 
   late stt.SpeechToText _speech;
   String recognizedText = '';
-
 
   final TextEditingController _controller = TextEditingController();
 
@@ -370,7 +368,6 @@ class _VoiceInputBarState extends State<VoiceInputBar> {
     }
   }
 
-
   void _stopListening() {
     _speech.stop();
     setState(() {
@@ -378,12 +375,9 @@ class _VoiceInputBarState extends State<VoiceInputBar> {
     });
   }
 
-
-
   @override
   void dispose() {
     _controller.dispose();
-
 
     super.dispose();
   }
@@ -420,55 +414,54 @@ class _VoiceInputBarState extends State<VoiceInputBar> {
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 300),
                     transitionBuilder: (child, animation) {
-                      return FadeTransition(
-                        opacity: animation,
-                        child: child,
-                      );
+                      return FadeTransition(opacity: animation, child: child);
                     },
                     child: isListening
                         ? Container(
-                      key: const ValueKey('speakNow'),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF8F9FA),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Text(
-                        "Speak now",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF4A4A4A),
-                        ),
-                      ),
-                    )
+                            key: const ValueKey('speakNow'),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF8F9FA),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: const Text(
+                              "Speak now",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF4A4A4A),
+                              ),
+                            ),
+                          )
                         : TextField(
-                      key: const ValueKey('textField'),
-                      controller: _controller,
-                      enabled: !isListening,
-                      maxLines: null,
-                      minLines: 1,
-                      decoration: const InputDecoration(
-                        hintText: "Type a message...",
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.only(
-                          left: 0,
-                          top: 12,
-                          bottom: 12,
-                          right: 110,
-                        ),
-                      ),
-                      onChanged: (_) {
-                        setState(() {}); // to update send button
-                      },
-                      onTap: () {
-                        if (isListening) {
-                          setState(() => isListening = false);
-                        }
-                      },
-                    ),
+                            key: const ValueKey('textField'),
+                            controller: _controller,
+                            enabled: !isListening,
+                            maxLines: null,
+                            minLines: 1,
+                            decoration: const InputDecoration(
+                              hintText: "Type a message...",
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.only(
+                                left: 0,
+                                top: 12,
+                                bottom: 12,
+                                right: 110,
+                              ),
+                            ),
+                            onChanged: (_) {
+                              setState(() {}); // to update send button
+                            },
+                            onTap: () {
+                              if (isListening) {
+                                setState(() => isListening = false);
+                              }
+                            },
+                          ),
                   ),
                 ),
-
               ],
             ),
           ),
@@ -518,13 +511,13 @@ class _VoiceInputBarState extends State<VoiceInputBar> {
                   onTap: _controller.text.trim().isEmpty || isListening
                       ? null
                       : () {
-                    final text = _controller.text.trim();
+                          final text = _controller.text.trim();
 
-                    widget.onSend(text); // 🔥 SEND TO CHAT
+                          widget.onSend(text); // 🔥 SEND TO CHAT
 
-                    _controller.clear();
-                    setState(() {});
-                  },
+                          _controller.clear();
+                          setState(() {});
+                        },
 
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
@@ -550,13 +543,11 @@ class _VoiceInputBarState extends State<VoiceInputBar> {
                           : Colors.white,
                       size: 20,
                     ),
-
                   ),
                 ),
               ],
             ),
           ),
-
         ],
       ),
     );
@@ -570,7 +561,8 @@ class ThreeDotTyping extends StatefulWidget {
   State<ThreeDotTyping> createState() => _ThreeDotTypingState();
 }
 
-class _ThreeDotTypingState extends State<ThreeDotTyping> with SingleTickerProviderStateMixin {
+class _ThreeDotTypingState extends State<ThreeDotTyping>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _dotOneAnim;
   late Animation<double> _dotTwoAnim;
@@ -585,13 +577,22 @@ class _ThreeDotTypingState extends State<ThreeDotTyping> with SingleTickerProvid
     )..repeat();
 
     _dotOneAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.3, curve: Curves.easeInOut)),
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.3, curve: Curves.easeInOut),
+      ),
     );
     _dotTwoAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.3, 0.6, curve: Curves.easeInOut)),
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.3, 0.6, curve: Curves.easeInOut),
+      ),
     );
     _dotThreeAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.6, 0.9, curve: Curves.easeInOut)),
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.6, 0.9, curve: Curves.easeInOut),
+      ),
     );
   }
 

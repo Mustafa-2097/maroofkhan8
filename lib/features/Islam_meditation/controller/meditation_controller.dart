@@ -44,4 +44,28 @@ class MeditationController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  Future<MeditationData?> fetchMeditationById(String id) async {
+    try {
+      final token = await SharedPreferencesHelper.getToken();
+      final headers = {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': '$token',
+        if (token != null) 'token': '$token',
+        if (token != null) 'access_token': '$token',
+      };
+
+      final url = Uri.parse(ApiEndpoints.singleMeditation(id));
+      final response = await http.get(url, headers: headers);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final decoded = jsonDecode(response.body);
+        final medRes = SingleMeditationResponse.fromJson(decoded);
+        return medRes.data;
+      }
+    } catch (e) {
+      print("Error fetching meditation by id: $e");
+    }
+    return null;
+  }
 }

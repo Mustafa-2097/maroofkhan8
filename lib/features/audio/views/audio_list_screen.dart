@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import 'package:maroofkhan8/features/audio/views/audio_screen.dart';
+import 'package:get/get.dart';
+import 'package:maroofkhan8/features/audio/controller/audio_controller.dart';
+import 'package:maroofkhan8/features/audio/model/audio_model.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class AudioListScreen extends StatefulWidget {
   final String category;
@@ -12,12 +16,16 @@ class AudioListScreen extends StatefulWidget {
 }
 
 class _AudioListScreenState extends State<AudioListScreen> {
+  final controller = Get.put(AudioController());
   late String selectedCategory;
 
   @override
   void initState() {
     super.initState();
     selectedCategory = widget.category;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchAudios(category: selectedCategory);
+    });
   }
 
   final List<String> categories = [
@@ -56,6 +64,7 @@ class _AudioListScreenState extends State<AudioListScreen> {
                       setState(() {
                         selectedCategory = cat;
                       });
+                      controller.fetchAudios(category: selectedCategory);
                     }),
                   ),
                 );
@@ -81,124 +90,224 @@ class _AudioListScreenState extends State<AudioListScreen> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ClipRRect(
-                              borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(16),
+                        child: Obx(() {
+                          if (controller.isLoading.value) {
+                            return const SizedBox(
+                              height: 200,
+                              child: Center(child: CircularProgressIndicator()),
+                            );
+                          }
+                          if (controller.audioList.isEmpty) {
+                            return const SizedBox(
+                              height: 100,
+                              child: Center(child: Text("No audio found")),
+                            );
+                          }
+
+                          // Use the first item as featured if available
+                          final featuredAudio = controller.audioList.first;
+                          final isCurrentlyPlaying =
+                              controller.currentAudioId.value ==
+                              featuredAudio.id;
+
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(16),
+                                ),
+                                child: Image.asset(
+                                  'assets/images/sheikh_image.png',
+                                  width: double.infinity,
+                                  height: 215,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                              child: Image.asset(
-                                'assets/images/sheikh_image.png',
-                                width: double.infinity,
-                                height: 215,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Trust in Allah',
-                                    style: GoogleFonts.amiri(
-                                      fontSize: 26,
-                                      fontWeight: FontWeight.bold,
-                                      height: 1.1,
-                                    ),
-                                  ),
-                                  const Text(
-                                    'Shaykh’s Lecture',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Row(
-                                    children: [
-                                      const Text(
-                                        '02:25',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                              Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      featuredAudio.title ?? 'Trust in Allah',
+                                      style: GoogleFonts.amiri(
+                                        fontSize: 26,
+                                        fontWeight: FontWeight.bold,
+                                        height: 1.1,
                                       ),
-                                      Expanded(
-                                        child: SliderTheme(
-                                          data: SliderThemeData(
-                                            trackHeight: 3,
-                                            thumbShape:
-                                                const RoundSliderThumbShape(
-                                                  enabledThumbRadius: 6,
-                                                ),
-                                            activeTrackColor: const Color(
-                                              0xFF8D3C1F,
+                                    ),
+                                    Text(
+                                      featuredAudio.subtitle ??
+                                          'Shaykh’s Lecture',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          isCurrentlyPlaying
+                                              ? _formatDuration(
+                                                  controller
+                                                      .currentDuration
+                                                      .value,
+                                                )
+                                              : '00:00',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: SliderTheme(
+                                            data: SliderThemeData(
+                                              trackHeight: 3,
+                                              thumbShape:
+                                                  const RoundSliderThumbShape(
+                                                    enabledThumbRadius: 6,
+                                                  ),
+                                              activeTrackColor: const Color(
+                                                0xFF8D3C1F,
+                                              ),
+                                              inactiveTrackColor:
+                                                  Colors.grey.shade300,
+                                              thumbColor: const Color(
+                                                0xFF8D3C1F,
+                                              ),
+                                              overlayColor: const Color(
+                                                0xFF8D3C1F,
+                                              ).withOpacity(0.1),
                                             ),
-                                            inactiveTrackColor:
-                                                Colors.grey.shade300,
-                                            thumbColor: const Color(0xFF8D3C1F),
-                                            overlayColor: const Color(
-                                              0xFF8D3C1F,
-                                            ).withOpacity(0.1),
-                                          ),
-                                          child: Slider(
-                                            value: 2.25,
-                                            max: 10.25,
-                                            onChanged: (val) {},
+                                            child: Slider(
+                                              value:
+                                                  isCurrentlyPlaying &&
+                                                      controller
+                                                              .totalDuration
+                                                              .value
+                                                              .inSeconds >
+                                                          0
+                                                  ? controller
+                                                            .currentDuration
+                                                            .value
+                                                            .inSeconds /
+                                                        controller
+                                                            .totalDuration
+                                                            .value
+                                                            .inSeconds
+                                                  : 0.0,
+                                              onChanged: (val) {
+                                                if (isCurrentlyPlaying) {
+                                                  controller.seekAudio(
+                                                    Duration(
+                                                      seconds:
+                                                          (val *
+                                                                  controller
+                                                                      .totalDuration
+                                                                      .value
+                                                                      .inSeconds)
+                                                              .toInt(),
+                                                    ),
+                                                  );
+                                                }
+                                              },
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      const Text(
-                                        '10:25',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
+                                        Text(
+                                          isCurrentlyPlaying
+                                              ? _formatDuration(
+                                                  controller
+                                                      .totalDuration
+                                                      .value,
+                                                )
+                                              : '00:00',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 24),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      _buildActionButton(
-                                        icon: Icons.play_arrow_rounded,
-                                        label: 'Listen',
-                                        onPressed: () {},
-                                      ),
-                                      const SizedBox(width: 16),
-                                      _buildActionButton(
-                                        icon: Icons.file_download_outlined,
-                                        label: 'Download (Premium)',
-                                        onPressed: () {},
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                      ],
+                                    ),
+                                    const SizedBox(height: 24),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        _buildActionButton(
+                                          icon:
+                                              isCurrentlyPlaying &&
+                                                  controller
+                                                          .playerState
+                                                          .value ==
+                                                      PlayerState.playing
+                                              ? Icons.pause_rounded
+                                              : Icons.play_arrow_rounded,
+                                          label:
+                                              isCurrentlyPlaying &&
+                                                  controller
+                                                          .playerState
+                                                          .value ==
+                                                      PlayerState.playing
+                                              ? 'Pause'
+                                              : 'Listen',
+                                          onPressed: () {
+                                            if (isCurrentlyPlaying &&
+                                                controller.playerState.value ==
+                                                    PlayerState.playing) {
+                                              controller.pauseAudio();
+                                            } else {
+                                              controller.playAudio(
+                                                featuredAudio,
+                                              );
+                                            }
+                                          },
+                                          isLoading:
+                                              isCurrentlyPlaying &&
+                                              controller.isAudioLoading.value,
+                                        ),
+                                        const SizedBox(width: 16),
+                                        _buildActionButton(
+                                          icon: Icons.file_download_outlined,
+                                          label: 'Download (Premium)',
+                                          onPressed: () {
+                                            controller.downloadAudio(
+                                              featuredAudio,
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
+                            ],
+                          );
+                        }),
                       ),
                     ),
                   ),
                 ),
 
                 /// 3. Recent Lectures List
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  sliver: SliverList(
-                    delegate: SliverChildListDelegate([
-                      const AudioCard(),
-                      const AudioCard(),
-                      const AudioCard(),
-                      const AudioCard(),
-                    ]),
+                Obx(
+                  () => SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final audio = controller.audioList[index];
+                        return AudioCard(
+                          audio: audio,
+                          onTap: () {
+                            controller.playAudio(audio);
+                          },
+                        );
+                      }, childCount: controller.audioList.length),
+                    ),
                   ),
                 ),
               ],
@@ -207,6 +316,13 @@ class _AudioListScreenState extends State<AudioListScreen> {
         ],
       ),
     );
+  }
+
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "$twoDigitMinutes:$twoDigitSeconds";
   }
 
   Widget _buildChip(String label, bool isSelected, VoidCallback onTap) {
@@ -239,13 +355,23 @@ class _AudioListScreenState extends State<AudioListScreen> {
     required IconData icon,
     required String label,
     required VoidCallback onPressed,
+    bool isLoading = false,
   }) {
     return Expanded(
       child: ElevatedButton.icon(
-        onPressed: onPressed,
-        icon: Icon(icon, color: Colors.white, size: 16),
+        onPressed: isLoading ? null : onPressed,
+        icon: isLoading
+            ? const SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
+            : Icon(icon, color: Colors.white, size: 16),
         label: Text(
-          label,
+          isLoading ? "Loading..." : label,
           style: const TextStyle(
             color: Colors.white,
             fontSize: 14,
@@ -257,6 +383,7 @@ class _AudioListScreenState extends State<AudioListScreen> {
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 10),
           shape: const StadiumBorder(),
+          disabledBackgroundColor: const Color(0xFF8D3C1F).withOpacity(0.7),
         ),
       ),
     );

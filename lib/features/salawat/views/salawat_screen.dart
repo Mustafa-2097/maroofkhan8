@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import '../controller/salawat_controller.dart';
+import '../model/salawat_model.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -52,8 +53,10 @@ class SalawatListScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: Colors.grey.shade200),
                     ),
-                    child: const TextField(
-                      decoration: InputDecoration(
+                    child: TextField(
+                      onChanged: (value) =>
+                          controller.searchQuery.value = value,
+                      decoration: const InputDecoration(
                         hintText: "Search",
                         hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
                         border: InputBorder.none,
@@ -87,20 +90,20 @@ class SalawatListScreen extends StatelessWidget {
                 if (controller.isLoading.value) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                if (controller.salawatList.isEmpty) {
+                if (controller.filteredSalawat.isEmpty) {
                   return const Center(child: Text("No items found"));
                 }
 
                 return ListView.builder(
-                  itemCount: controller.salawatList.length,
+                  itemCount: controller.filteredSalawat.length,
                   itemBuilder: (context, index) {
-                    final salawat = controller.salawatList[index];
+                    final salawat = controller.filteredSalawat[index];
                     return _SalawatListItem(
                       title: salawat.title ?? "Untitled",
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const SalawatDetailScreen(),
+                          builder: (_) => SalawatDetailScreen(salawat: salawat),
                         ),
                       ),
                     );
@@ -180,8 +183,37 @@ class _SalawatListItem extends StatelessWidget {
 // ==========================================
 // SCREEN 2: SALAWAT DETAIL / PLAYER
 // ==========================================
-class SalawatDetailScreen extends StatelessWidget {
-  const SalawatDetailScreen({super.key});
+class SalawatDetailScreen extends StatefulWidget {
+  final SalawatData salawat;
+  const SalawatDetailScreen({super.key, required this.salawat});
+
+  @override
+  State<SalawatDetailScreen> createState() => _SalawatDetailScreenState();
+}
+
+class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
+  final controller = Get.find<SalawatController>();
+  late SalawatData currentSalawat;
+  bool isFullDataLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    currentSalawat = widget.salawat;
+    _loadFullData();
+  }
+
+  Future<void> _loadFullData() async {
+    if (currentSalawat.id != null) {
+      final details = await controller.fetchSalawatDetails(currentSalawat.id!);
+      if (details != null) {
+        setState(() {
+          currentSalawat = details;
+          isFullDataLoaded = true;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -205,13 +237,13 @@ class SalawatDetailScreen extends StatelessWidget {
             // Tabs
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _TabButton(text: "Salawat", isActive: true),
-                const SizedBox(width: 10),
-                _TabButton(text: "Translation", isActive: false),
-                const SizedBox(width: 10),
-                _TabButton(text: "Tafsir", isActive: false),
-              ],
+              // children: [
+              //   _TabButton(text: "Salawat", isActive: true),
+              //   const SizedBox(width: 10),
+              //   _TabButton(text: "Translation", isActive: false),
+              //   const SizedBox(width: 10),
+              //   _TabButton(text: "Tafsir", isActive: false),
+              // ],
             ),
             const SizedBox(height: 20),
 
@@ -230,7 +262,7 @@ class SalawatDetailScreen extends StatelessWidget {
                 ],
               ),
               child: Text(
-                "Durood Ibrahim (The Most Well-Known Salawat)",
+                currentSalawat.title ?? "Salawat",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 14,
@@ -265,7 +297,7 @@ class SalawatDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، وَبَارِكْ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ إِنَّكَ حَمِيدٌ مَجِيدٌ",
+                    currentSalawat.arabic ?? "ARABIC CONTENT NOT AVAILABLE",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.amiri(
                       fontSize: 20,
@@ -274,9 +306,10 @@ class SalawatDetailScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Text(
-                    "Allahumma salli ‘ala Muhammad wa ‘ala aali Muhammad kama sallayta ‘ala Ibrahim wa ‘ala aali Ibrahim innaka hamidum majid Allahumma barik ‘ala Muhammad wa ‘ala aali Muhammad kama barakta ‘ala Ibrahim wa ‘ala aali Ibrahim innaka hamidum majid",
-                    style: TextStyle(
+                  Text(
+                    currentSalawat.transliteration ??
+                        "TRANSLITERATION NOT AVAILABLE",
+                    style: const TextStyle(
                       fontSize: 12,
                       color: kTextDark,
                       height: 1.5,
@@ -357,24 +390,32 @@ class SalawatDetailScreen extends StatelessWidget {
                     icon: Icons.headset,
                     label: "Listen",
                     isActive: true,
+                    onTap: () {
+                      // Call play logic if needed or just use current player
+                    },
                   ),
                   _VerticalDivider(),
                   _ActionButton(
                     icon: Icons.auto_awesome,
                     label: "AI Explanation",
                     isActive: false,
+                    onTap: () {
+                      // Navigate to AI Explanation
+                    },
                   ),
                   _VerticalDivider(),
                   _ActionButton(
                     icon: Icons.share_outlined,
                     label: "Share",
                     isActive: false,
+                    onTap: () => controller.shareSalawat(currentSalawat),
                   ),
                   _VerticalDivider(),
                   _ActionButton(
                     icon: Icons.download_outlined,
                     label: "Download",
                     isActive: false,
+                    onTap: () => controller.downloadSalawat(currentSalawat),
                   ),
                 ],
               ),
@@ -407,9 +448,9 @@ class SalawatDetailScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 5),
-                  const Text(
-                    "O Allah, send blessings upon Muhammad and the family of Muhammad as You sent blessings upon Ibrahim and his family. Indeed, You are Praiseworthy and Glorious.\nO Allah, bless Muhammad and the family of Muhammad as You blessed Ibrahim and his family.",
-                    style: TextStyle(
+                  Text(
+                    currentSalawat.translation ?? "TRANSLATION NOT AVAILABLE",
+                    style: const TextStyle(
                       fontSize: 12,
                       height: 1.4,
                       color: kTextDark,
@@ -458,29 +499,34 @@ class _ActionButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final bool isActive;
+  final VoidCallback onTap;
 
   const _ActionButton({
     required this.icon,
     required this.label,
     required this.isActive,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 18, color: isActive ? kPrimaryBrown : Colors.black),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
-            color: isActive ? kPrimaryBrown : Colors.black,
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 18, color: isActive ? kPrimaryBrown : Colors.black),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              color: isActive ? kPrimaryBrown : Colors.black,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

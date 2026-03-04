@@ -174,7 +174,7 @@ class SubscriptionBottomSheet extends StatelessWidget {
                         onPressed: () {
                           //Get.back(); // Close bottom sheet
                           // Then process payment
-                          Get.to(() => const PaymentScreen());
+                          // Get.to(() => const PaymentScreen());
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
