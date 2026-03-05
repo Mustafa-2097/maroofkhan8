@@ -9,6 +9,7 @@ import 'package:maroofkhan8/features/zakat_calculator/views/assets_included_scre
 import 'package:maroofkhan8/features/zakat_calculator/views/who_can_receive_zakat_screen.dart';
 import 'package:maroofkhan8/features/zakat_calculator/views/who_cannot_receive_zakat_screen.dart';
 import 'package:maroofkhan8/features/zakat_calculator/controller/zakat_controller.dart';
+import 'package:share_plus/share_plus.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -297,6 +298,7 @@ class ZakatCalculatorScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: kBackground,
+
       appBar: AppBar(
         title: Column(
           children: [
@@ -666,7 +668,7 @@ class ZakatResultScreen extends StatelessWidget {
         ),
       ),
       //appBar: _buildAppBar(context),
-      bottomNavigationBar: _buildBottomNav(0), // Just for visual consistency
+      //  bottomNavigationBar: _buildBottomNav(0), // Just for visual consistency
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -949,9 +951,29 @@ class ZakatResultScreen extends StatelessWidget {
             // Action Buttons
             Row(
               children: [
-                Expanded(child: _outlineButton(Icons.download, "Save")),
+                Expanded(
+                  child: _outlineButton(
+                    Icons.download,
+                    "Save",
+                    onTap: () {}, // Download logic can go here
+                  ),
+                ),
                 const SizedBox(width: 15),
-                Expanded(child: _outlineButton(Icons.share, "Share")),
+                Expanded(
+                  child: _outlineButton(
+                    Icons.share,
+                    "Share",
+                    onTap: () {
+                      final text =
+                          "Zakat Calculator Results:\n"
+                          "Total Assets: \$${controller.totalAssets.value.toStringAsFixed(2)}\n"
+                          "Nisab Threshold: \$${controller.nisabThreshold.value.toStringAsFixed(2)}\n"
+                          "Status: ${controller.isAboveNisab.value ? 'ELIGIBLE' : 'NOT ELIGIBLE'}\n"
+                          "${controller.isAboveNisab.value ? 'Zakat Payable: \$${controller.zakatPayable.value.toStringAsFixed(2)}\n' : ''}";
+                      Share.share(text);
+                    },
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 15),
@@ -1042,26 +1064,29 @@ class ZakatResultScreen extends StatelessWidget {
     );
   }
 
-  Widget _outlineButton(IconData icon, String label) {
-    return Container(
-      height: 40,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 2),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 16, color: kTextDark),
-          const SizedBox(width: 5),
-          Text(
-            label,
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-          ),
-        ],
+  Widget _outlineButton(IconData icon, String label, {VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 40,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 2),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 16, color: kTextDark),
+            const SizedBox(width: 5),
+            Text(
+              label,
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1121,27 +1146,27 @@ BoxDecoration _cardDecoration() {
   );
 }
 
-Widget _buildBottomNav(int index) {
-  return BottomNavigationBar(
-    type: BottomNavigationBarType.fixed,
-    selectedItemColor: kPrimaryBrown,
-    unselectedItemColor: Colors.grey,
-    selectedFontSize: 10,
-    unselectedFontSize: 10,
-    showUnselectedLabels: true,
-    currentIndex: index,
-    items: const [
-      BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "Home"),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.auto_awesome_outlined),
-        label: "AI Murshid",
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.menu_book_outlined),
-        label: "Hadith",
-      ),
-      BottomNavigationBarItem(icon: Icon(Icons.book_outlined), label: "Quran"),
-      BottomNavigationBarItem(icon: Icon(Icons.access_time), label: "Prayer"),
-    ],
-  );
-}
+// Widget _buildBottomNav(int index) {
+//   return BottomNavigationBar(
+//     type: BottomNavigationBarType.fixed,
+//     selectedItemColor: kPrimaryBrown,
+//     unselectedItemColor: Colors.grey,
+//     selectedFontSize: 10,
+//     unselectedFontSize: 10,
+//     showUnselectedLabels: true,
+//     currentIndex: index,
+//     items: const [
+//       BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "Home"),
+//       BottomNavigationBarItem(
+//         icon: Icon(Icons.auto_awesome_outlined),
+//         label: "AI Murshid",
+//       ),
+//       BottomNavigationBarItem(
+//         icon: Icon(Icons.menu_book_outlined),
+//         label: "Hadith",
+//       ),
+//       BottomNavigationBarItem(icon: Icon(Icons.book_outlined), label: "Quran"),
+//       BottomNavigationBarItem(icon: Icon(Icons.access_time), label: "Prayer"),
+//     ],
+//   );
+// }

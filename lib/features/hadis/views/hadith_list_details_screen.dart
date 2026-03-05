@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/features/hadis/controller/hadith_controller.dart';
 import 'package:maroofkhan8/features/hadis/models/hadith.dart';
+import 'package:share_plus/share_plus.dart';
 
 import 'hadish_tafsir_details_screen.dart';
 import 'saved_hadiths_screen.dart';
@@ -262,10 +263,20 @@ class HadithCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 15),
-              const Icon(
-                Icons.share_outlined,
-                size: 18,
-                color: Color(0xFF8D3C1F),
+              GestureDetector(
+                onTap: () {
+                  final shareText =
+                      "${hadith.heading.isNotEmpty ? hadith.heading : ''}\n\n"
+                      "${hadith.hadith}\n\n"
+                      "($bookName, Hadith ${hadith.number})\n\n"
+                      "Shared via Maroof Khan App";
+                  Share.share(shareText);
+                },
+                child: const Icon(
+                  Icons.share_outlined,
+                  size: 18,
+                  color: Color(0xFF8D3C1F),
+                ),
               ),
               const Spacer(),
               //  _footerAction(Icons.volume_up_outlined, "Listen"),

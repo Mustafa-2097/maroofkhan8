@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import '../controller/dua_controller.dart';
 import '../model/dua_model.dart';
 import '../../../core/constant/widgets/header.dart';
+import '../../ai_murshid/views/ai_murshid_screen.dart';
+import 'package:share_plus/share_plus.dart';
 
 // --- Common UI Constants ---
 const Color kBrown = Color(0xFF8D4B33);
@@ -333,8 +335,25 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   _actionIcon(Icons.headset_outlined, "Listen"),
-                  _actionIcon(Icons.auto_awesome_outlined, "AI Explanation"),
-                  _actionIcon(Icons.share_outlined, "Share"),
+                  _actionIcon(
+                    Icons.auto_awesome_outlined,
+                    "AI Explanation",
+                    onTap: () {
+                      Get.to(() => const ChatScreen());
+                    },
+                  ),
+                  _actionIcon(
+                    Icons.share_outlined,
+                    "Share",
+                    onTap: () {
+                      final shareText =
+                          "${widget.dua.title ?? ''}\n\n"
+                          "${widget.dua.arabic ?? ''}\n\n"
+                          "Meaning: ${widget.dua.meaning ?? ''}\n\n"
+                          "Shared via Maroof Khan App";
+                      Share.share(shareText);
+                    },
+                  ),
                   _actionIcon(Icons.download_outlined, "Download"),
                 ],
               ),
@@ -388,13 +407,19 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
     );
   }
 
-  Widget _actionIcon(IconData icon, String label) {
-    return Column(
-      children: [
-        Icon(icon, color: kBrown, size: 22),
-        const SizedBox(height: 4),
-        Text(label, style: GoogleFonts.ebGaramond(fontSize: 10, color: kBrown)),
-      ],
+  Widget _actionIcon(IconData icon, String label, {VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Icon(icon, color: kBrown, size: 22),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: GoogleFonts.ebGaramond(fontSize: 10, color: kBrown),
+          ),
+        ],
+      ),
     );
   }
 }

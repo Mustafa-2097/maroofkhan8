@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import '../controller/sahaba_controller.dart';
 import '../model/sahaba_model.dart';
+import '../../ai_murshid/views/ai_murshid_screen.dart';
+import 'package:share_plus/share_plus.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -430,15 +432,39 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
     return Column(
       children: items
           .map(
-            (item) =>
-                _contentCard(item.title, item.description, isQuote: isQuote),
+            (item) => _ExpandableContentCard(
+              title: item.title,
+              desc: item.description,
+              isQuote: isQuote,
+            ),
           )
           .toList(),
     );
   }
+}
 
-  Widget _contentCard(String title, String desc, {bool isQuote = false}) {
+class _ExpandableContentCard extends StatefulWidget {
+  final String title;
+  final String desc;
+  final bool isQuote;
+
+  const _ExpandableContentCard({
+    required this.title,
+    required this.desc,
+    this.isQuote = false,
+  });
+
+  @override
+  State<_ExpandableContentCard> createState() => _ExpandableContentCardState();
+}
+
+class _ExpandableContentCardState extends State<_ExpandableContentCard> {
+  bool isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
       margin: const EdgeInsets.only(bottom: 15),
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
@@ -450,48 +476,77 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title,
+            widget.title,
             style: GoogleFonts.playfairDisplay(
               fontWeight: FontWeight.bold,
               fontSize: 14,
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            desc,
-            style: TextStyle(
-              fontSize: 11,
-              color: kTextGrey,
-              height: 1.5,
-              fontStyle: isQuote ? FontStyle.italic : FontStyle.normal,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Align(
-            alignment: Alignment.centerRight,
-            child: GestureDetector(
-              onTap: () {
-                Get.to(
-                  () => SahabaAudioScreen(
-                    sahaba: controller.selectedSahaba.value ?? widget.sahaba,
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final textStyle = TextStyle(
+                fontSize: 11,
+                color: kTextGrey,
+                height: 1.5,
+                fontStyle: widget.isQuote ? FontStyle.italic : FontStyle.normal,
+              );
+
+              // Use TextPainter to check if it exceeds 5 lines
+              final span = TextSpan(text: widget.desc, style: textStyle);
+              final tp = TextPainter(
+                text: span,
+                maxLines: 5,
+                textDirection: TextDirection.ltr,
+              );
+              tp.layout(maxWidth: constraints.maxWidth);
+
+              final bool hasMoreThanFiveLines = tp.didExceedMaxLines;
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.desc,
+                    maxLines: isExpanded ? null : 5,
+                    overflow: isExpanded
+                        ? TextOverflow.visible
+                        : TextOverflow.ellipsis,
+                    style: textStyle,
                   ),
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: kPrimaryBrown,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Text(
-                  "Read More",
-                  style: TextStyle(color: Colors.white, fontSize: 10),
-                ),
-              ),
-            ),
+                  if (hasMoreThanFiveLines) ...[
+                    const SizedBox(height: 10),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            isExpanded = !isExpanded;
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: kPrimaryBrown,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            isExpanded ? "Read Less" : "Read More",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              );
+            },
           ),
         ],
       ),
@@ -711,13 +766,33 @@ class SahabaAudioScreen extends StatelessWidget {
                       width: 1,
                       color: Colors.grey.shade300,
                     ),
-                    _bottomAction(Icons.auto_awesome, "AI Explanation", false),
+                    _bottomAction(
+                      Icons.auto_awesome,
+                      "AI Explanation",
+                      false,
+                      onTap: () {
+                        Get.to(() => const ChatScreen());
+                      },
+                    ),
                     Container(
                       height: 30,
                       width: 1,
                       color: Colors.grey.shade300,
                     ),
-                    _bottomAction(Icons.share_outlined, "Share", false),
+                    _bottomAction(
+                      Icons.share_outlined,
+                      "Share",
+                      false,
+                      onTap: () {
+                        final shareText =
+                            "${sahaba.name}\n\n"
+                            "Biography: ${sahaba.name}\n"
+                            "Born: ${sahaba.dateOfBirth ?? 'N/A'}\n"
+                            "Died: ${sahaba.dateOfDeath ?? 'N/A'}\n\n"
+                            "Shared via Maroof Khan App";
+                        Share.share(shareText);
+                      },
+                    ),
                     Container(
                       height: 30,
                       width: 1,
@@ -753,21 +828,29 @@ class SahabaAudioScreen extends StatelessWidget {
     );
   }
 
-  Widget _bottomAction(IconData icon, String label, bool isActive) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 20, color: isActive ? kPrimaryBrown : Colors.black),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 8,
-            color: isActive ? kPrimaryBrown : Colors.black,
-            fontWeight: FontWeight.bold,
+  Widget _bottomAction(
+    IconData icon,
+    String label,
+    bool isActive, {
+    VoidCallback? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 20, color: isActive ? kPrimaryBrown : Colors.black),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 8,
+              color: isActive ? kPrimaryBrown : Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

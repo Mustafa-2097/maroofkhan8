@@ -88,7 +88,7 @@ class ApiEndpoints {
   static const String allahNames = '$baseUrl/names/allah';
   static String toggleAllahNameSave(String id) =>
       '$baseUrl/names/allah/$id/save';
-  static const String savedAllahNames = '$baseUrl/names/allah/save';
+  static const String savedAllahNames = '$baseUrl/names/allah/saved';
   static String deleteSavedAllahName(String id) =>
       '$baseUrl/names/allah/save/$id';
   static const String salawat = '$baseUrl/salawat';
@@ -99,7 +99,7 @@ class ApiEndpoints {
   static const String meditation = '$baseUrl/meditation';
   static String singleMeditation(String id) => '$baseUrl/meditation/$id';
   static const String islamicNames = '$baseUrl/names';
-  static const String savedIslamicNames = '$baseUrl/names/save';
+  static const String savedIslamicNames = '$baseUrl/names/saved';
   static String toggleIslamicNameSave(String id) => '$baseUrl/names/$id/save';
   static String deleteSavedIslamicName(String id) => '$baseUrl/names/save/$id';
   static const String profile = '$baseUrl/me';
@@ -112,5 +112,6 @@ class ApiEndpoints {
   static const String islamicTeacher = '$baseUrl/sufism/islamic-teacher';
   static String singleIslamicTeacher(String id) =>
       '$baseUrl/sufism/islamic-teacher/$id';
-  static const String contactUs = '$baseUrl/contact-us';
+
+  static const String bannerQuote = '$baseUrl/banner-quote';
 }

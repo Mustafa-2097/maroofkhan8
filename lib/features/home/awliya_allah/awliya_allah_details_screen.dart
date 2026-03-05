@@ -216,59 +216,11 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
   }
 
   Widget _actionCard(String title, String body, {bool isQuote = false}) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(bottom: 15),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(width: 1, color: Colors.grey.shade200),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 10,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: GoogleFonts.playfairDisplay(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            body,
-            style: GoogleFonts.playfairDisplay(
-              fontSize: 13,
-              color: Colors.black54,
-              height: 1.4,
-              fontStyle: isQuote ? FontStyle.italic : FontStyle.normal,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              decoration: BoxDecoration(
-                color: primaryBrown,
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: const Text(
-                "Read More",
-                style: TextStyle(color: Colors.white, fontSize: 10),
-              ),
-            ),
-          ),
-        ],
-      ),
+    return _ActionCardWidget(
+      title: title,
+      body: body,
+      isQuote: isQuote,
+      primaryBrown: primaryBrown,
     );
   }
 
@@ -334,6 +286,127 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ActionCardWidget extends StatefulWidget {
+  final String title;
+  final String body;
+  final bool isQuote;
+  final Color primaryBrown;
+
+  const _ActionCardWidget({
+    required this.title,
+    required this.body,
+    this.isQuote = false,
+    required this.primaryBrown,
+  });
+
+  @override
+  State<_ActionCardWidget> createState() => _ActionCardWidgetState();
+}
+
+class _ActionCardWidgetState extends State<_ActionCardWidget> {
+  bool isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 15),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(width: 1, color: Colors.grey.shade200),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 10,
+          ),
+        ],
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final span = TextSpan(
+            text: widget.body,
+            style: GoogleFonts.playfairDisplay(
+              fontSize: 13,
+              color: Colors.black54,
+              height: 1.4,
+              fontStyle: widget.isQuote ? FontStyle.italic : FontStyle.normal,
+            ),
+          );
+
+          final tp = TextPainter(
+            text: span,
+            maxLines: 5,
+            textDirection: TextDirection.ltr,
+          );
+
+          tp.layout(maxWidth: constraints.maxWidth);
+          final bool hasOverflow = tp.didExceedMaxLines;
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.title,
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                widget.body,
+                maxLines: isExpanded ? null : 5,
+                overflow: isExpanded ? null : TextOverflow.ellipsis,
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: 13,
+                  color: Colors.black54,
+                  height: 1.4,
+                  fontStyle: widget.isQuote
+                      ? FontStyle.italic
+                      : FontStyle.normal,
+                ),
+              ),
+              if (hasOverflow) ...[
+                const SizedBox(height: 12),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isExpanded = !isExpanded;
+                      });
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: widget.primaryBrown,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Text(
+                        isExpanded ? "Read Less" : "Read More",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          );
+        },
       ),
     );
   }

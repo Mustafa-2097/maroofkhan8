@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import '../controller/islamic_stories_controller.dart';
 import '../models/islamic_story.dart';
+import '../../ai_murshid/views/ai_murshid_screen.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -325,7 +326,7 @@ class _IslamicStoriesDetailScreenState
                       label: "AI Explanation",
                       isActive: false,
                       onTap: () {
-                        // TODO: Implement AI explanation
+                        Get.to(() => const ChatScreen());
                       },
                     ),
                     _ActionButton(

@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import '../controller/ahle_bait_controller.dart';
 import '../model/ahle_bait_model.dart';
+import '../../ai_murshid/views/ai_murshid_screen.dart';
+import 'package:share_plus/share_plus.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -501,9 +503,29 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
             children: [
               _bottomAction(Icons.headset, "Listen", true),
               Container(height: 30, width: 1, color: Colors.grey.shade300),
-              _bottomAction(Icons.auto_awesome, "AI Explanation", false),
+              _bottomAction(
+                Icons.auto_awesome,
+                "AI Explanation",
+                false,
+                onTap: () {
+                  Get.to(() => const ChatScreen());
+                },
+              ),
               Container(height: 30, width: 1, color: Colors.grey.shade300),
-              _bottomAction(Icons.share_outlined, "Share", false),
+              _bottomAction(
+                Icons.share_outlined,
+                "Share",
+                false,
+                onTap: () {
+                  final shareText =
+                      "${member.name}\n\n"
+                      "Relation: ${member.relation}\n"
+                      "Born: ${member.dateOfBirth ?? 'N/A'}\n"
+                      "Died: ${member.dateOfDeath ?? 'N/A'}\n\n"
+                      "Shared via Maroof Khan App";
+                  Share.share(shareText);
+                },
+              ),
               Container(height: 30, width: 1, color: Colors.grey.shade300),
               _bottomAction(Icons.download_outlined, "Download", false),
             ],
@@ -577,21 +599,29 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
     );
   }
 
-  Widget _bottomAction(IconData icon, String label, bool isActive) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 20, color: isActive ? kPrimaryBrown : Colors.black),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 9,
-            color: isActive ? kPrimaryBrown : Colors.black,
-            fontWeight: FontWeight.bold,
+  Widget _bottomAction(
+    IconData icon,
+    String label,
+    bool isActive, {
+    VoidCallback? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 20, color: isActive ? kPrimaryBrown : Colors.black),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 9,
+              color: isActive ? kPrimaryBrown : Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
