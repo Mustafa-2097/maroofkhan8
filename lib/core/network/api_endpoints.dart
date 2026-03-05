@@ -41,7 +41,7 @@ class ApiEndpoints {
   static const String news = '$baseUrl/news?category=sports';
 
   /// Quran
-  static const String Surah = '$baseUrl/quran/chapters';
+  static const String surah = '$baseUrl/quran/chapters';
   static String surahDetails(String id) => '$baseUrl/quran/chapters/$id/verses';
   static String surahTafsir(String id) => '$baseUrl/quran/chapters/$id/tafsir';
   static String surahAudio(String id) =>
@@ -92,6 +92,9 @@ class ApiEndpoints {
   static String deleteSavedAllahName(String id) =>
       '$baseUrl/names/allah/save/$id';
   static const String salawat = '$baseUrl/salawat';
+  static String toggleSalawatSave(String id) => '$baseUrl/salawat/$id/save';
+  static const String savedSalawat = '$baseUrl/salawat/saved';
+  static String deleteSavedSalawat(String id) => '$baseUrl/salawat/save/$id';
   static const String books = '$baseUrl/books';
   static const String meditation = '$baseUrl/meditation';
   static String singleMeditation(String id) => '$baseUrl/meditation/$id';

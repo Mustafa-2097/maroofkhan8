@@ -17,14 +17,18 @@ class AudioResponse {
     success = json['success'];
     statusCode = json['statusCode'];
     message = json['message'];
-    pagination = json.containsKey('pagination')
+    pagination = json['pagination'] != null
         ? Pagination.fromJson(json['pagination'])
         : null;
     if (json['data'] != null) {
       data = <AudioData>[];
-      json['data'].forEach((v) {
-        data!.add(AudioData.fromJson(v));
-      });
+      if (json['data'] is List) {
+        json['data'].forEach((v) {
+          data!.add(AudioData.fromJson(v));
+        });
+      } else if (json['data'] is Map<String, dynamic>) {
+        data!.add(AudioData.fromJson(json['data']));
+      }
     }
   }
 

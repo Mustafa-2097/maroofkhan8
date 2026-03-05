@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart'; // Add GetX
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import '../controller/book_controller.dart'; // Add Controller
 
 // --- CONSTANTS ---
@@ -97,20 +99,20 @@ class IslamicBooksListScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 10),
-                Container(
-                  height: 45,
-                  width: 45,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.grey.shade200),
-                    color: Colors.white,
-                  ),
-                  child: const Icon(
-                    Icons.bookmark_border,
-                    color: Colors.grey,
-                    size: 20,
-                  ),
-                ),
+                // Container(
+                //   height: 45,
+                //   width: 45,
+                //   decoration: BoxDecoration(
+                //     shape: BoxShape.circle,
+                //     border: Border.all(color: Colors.grey.shade200),
+                //     color: Colors.white,
+                //   ),
+                //   child: const Icon(
+                //     Icons.bookmark_border,
+                //     color: Colors.grey,
+                //     size: 20,
+                //   ),
+                // ),
               ],
             ),
             const SizedBox(height: 20),
@@ -182,7 +184,7 @@ class _BookListItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -283,11 +285,21 @@ class _BookListItem extends StatelessWidget {
 // ==========================================
 // SCREEN 2: BOOK READER SCREEN (PDF View)
 // ==========================================
-class BookReaderScreen extends StatelessWidget {
+class BookReaderScreen extends StatefulWidget {
   final String title;
   final String? pdfUrl;
 
   const BookReaderScreen({super.key, required this.title, this.pdfUrl});
+
+  @override
+  State<BookReaderScreen> createState() => _BookReaderScreenState();
+}
+
+class _BookReaderScreenState extends State<BookReaderScreen> {
+  final PdfViewerController _pdfViewerController = PdfViewerController();
+  int _currentPage = 1;
+  int _pageCount = 1;
+  double _zoomLevel = 1.0;
 
   @override
   Widget build(BuildContext context) {
@@ -320,7 +332,7 @@ class BookReaderScreen extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              title,
+              widget.title,
               style: const TextStyle(fontSize: 12, color: Colors.black54),
             ),
           ],
@@ -341,27 +353,62 @@ class BookReaderScreen extends StatelessWidget {
                 // Page Controls
                 Row(
                   children: [
-                    const Text(
-                      "1/200",
-                      style: TextStyle(
+                    Text(
+                      "$_currentPage/$_pageCount",
+                      style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(width: 15),
-                    const Icon(Icons.remove, size: 16, color: Colors.black),
+                    InkWell(
+                      onTap: () {
+                        _pdfViewerController.zoomLevel = (_zoomLevel - 0.25)
+                            .clamp(1.0, 4.0);
+                      },
+                      child: const Icon(
+                        Icons.remove,
+                        size: 16,
+                        color: Colors.black,
+                      ),
+                    ),
                     const SizedBox(width: 8),
-                    const Text("90%", style: TextStyle(fontSize: 12)),
+                    Text(
+                      "${(_zoomLevel * 100).toInt()}%",
+                      style: const TextStyle(fontSize: 12),
+                    ),
                     const SizedBox(width: 8),
-                    const Icon(Icons.add, size: 16, color: Colors.black),
+                    InkWell(
+                      onTap: () {
+                        _pdfViewerController.zoomLevel = (_zoomLevel + 0.25)
+                            .clamp(1.0, 4.0);
+                      },
+                      child: const Icon(
+                        Icons.add,
+                        size: 16,
+                        color: Colors.black,
+                      ),
+                    ),
                   ],
                 ),
                 // Icons
                 Row(
-                  children: const [
-                    Icon(Icons.favorite_border, size: 20, color: kTextGrey),
-                    SizedBox(width: 15),
-                    Icon(Icons.share_outlined, size: 20, color: kTextGrey),
+                  children: [
+                    // const Icon(Icons.favorite_border, size: 20, color: kTextGrey),
+                    const SizedBox(width: 15),
+                    InkWell(
+                      onTap: () {
+                        if (widget.pdfUrl != null &&
+                            widget.pdfUrl!.isNotEmpty) {
+                          Share.share('Check out this book: ${widget.pdfUrl}');
+                        }
+                      },
+                      child: const Icon(
+                        Icons.share_outlined,
+                        size: 20,
+                        color: kTextGrey,
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -369,188 +416,34 @@ class BookReaderScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            // Note about real PDF integration
-            if (pdfUrl != null)
-              Container(
-                margin: const EdgeInsets.only(bottom: 10),
-                padding: const EdgeInsets.all(8),
-                color: Colors.blue.shade50,
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.info_outline,
-                      color: Colors.blue,
-                      size: 16,
-                    ),
-                    const SizedBox(width: 8),
-                    const Expanded(
-                      child: Text(
-                        "Real PDF viewer can be integrated here.",
-                        style: TextStyle(fontSize: 10),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        // In a real app, use url_launcher or a pdf viewer
-                        print("Opening PDF: $pdfUrl");
-                      },
-                      child: const Text("Open", style: TextStyle(fontSize: 10)),
-                    ),
-                  ],
-                ),
-              ),
-
-            // Page 1: Title Page
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
-              color: Colors.white,
-              child: Column(
-                children: [
-                  const Text(
-                    "Hakikat Kitabevi Publications No: 17",
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 30),
-                  Text(
-                    "ETHICS\nOF\nISLAM",
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.playfairDisplay(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      height: 1.2,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    "Written by",
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Text(
-                        "Ali bin Emrullah",
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(width: 30),
-                      Text(
-                        "Muhammed Hadimi",
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    "Huseyn Hilmi Isik",
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    "Twelfth Edition",
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  // Stamp Mockup
-                  Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.black, width: 1),
-                    ),
-                    child: const Center(
-                      child: Text("SEAL", style: TextStyle(fontSize: 8)),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    "Hakikat Kitabevi\nDarussafaka Cad. No: 57/A P.K. 35\n34083 Fatih-ISTANBUL/TURKEY",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 9, color: Colors.black87),
-                  ),
-                  const SizedBox(height: 5),
-                  const Text(
-                    "NOVEMBER-2006",
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-                  ),
-                ],
+      body: widget.pdfUrl != null && widget.pdfUrl!.isNotEmpty
+          ? SfPdfViewer.network(
+              widget.pdfUrl!,
+              controller: _pdfViewerController,
+              canShowScrollHead: false,
+              canShowScrollStatus: false,
+              onDocumentLoaded: (PdfDocumentLoadedDetails details) {
+                setState(() {
+                  _pageCount = details.document.pages.count;
+                });
+              },
+              onPageChanged: (PdfPageChangedDetails details) {
+                setState(() {
+                  _currentPage = details.newPageNumber;
+                });
+              },
+              onZoomLevelChanged: (PdfZoomDetails details) {
+                setState(() {
+                  _zoomLevel = details.newZoomLevel;
+                });
+              },
+            )
+          : const Center(
+              child: Text(
+                "No PDF file available",
+                style: TextStyle(color: Colors.grey),
               ),
             ),
-            const SizedBox(height: 20),
-
-            // Page 2: Text Content
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(30),
-              color: Colors.white,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    "Publisher's Note:",
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    "Anyone who wishes to print this book in its original form or to translate it into any other language is granted beforehand our permission to do so; and people who undertake this beneficial feat are accredited to the benedictions that we in advance offer to Allahu ta'ala in their name...",
-                    style: TextStyle(
-                      fontSize: 10,
-                      height: 1.4,
-                      color: Colors.black87,
-                    ),
-                    textAlign: TextAlign.justify,
-                  ),
-                  SizedBox(height: 20),
-                  Center(
-                    child: Text(
-                      "----------------------",
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    "A Warning:",
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 5),
-                  Text(
-                    "Missionaries are striving to advertise Christianity; Jews are working to spread the concocted words of Jewish rabbis; Hakikat Kitabevi (Bookstore), in Istanbul, is struggling to publicize Islam; and freemasons are trying to annihilate religions.",
-                    style: TextStyle(
-                      fontSize: 10,
-                      height: 1.4,
-                      color: Colors.black87,
-                    ),
-                    textAlign: TextAlign.justify,
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    "A person with wisdom, knowledge and conscience will identify and adopt the right one among these alternatives and will help to spread the wisest of these choices for salvation of all humanity.",
-                    style: TextStyle(
-                      fontSize: 10,
-                      height: 1.4,
-                      color: Colors.black87,
-                    ),
-                    textAlign: TextAlign.justify,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 40),
-          ],
-        ),
-      ),
     );
   }
 }

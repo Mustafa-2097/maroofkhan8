@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
@@ -24,7 +23,7 @@ class ApiService {
     if (token != null && token.isNotEmpty) {
       if (kDebugMode) print('ApiService: Token found, length: ${token.length}');
 
-      final bearerToken = '$token';
+      final bearerToken = token;
 
       // We send both to be safe, though standard is 'Authorization'
       headers['Authorization'] = bearerToken;
@@ -54,7 +53,11 @@ class ApiService {
       debugPrint('BODY: ${jsonEncode(body)}');
 
       final response = await http
-          .post(Uri.parse(url), headers: finalHeaders, body: jsonEncode(body))
+          .post(
+            Uri.parse(url),
+            headers: finalHeaders,
+            body: body != null ? jsonEncode(body) : null,
+          )
           .timeout(timeout);
 
       debugPrint('🟢🟢🟢 API RESPONSE 🟢🟢🟢');
@@ -142,7 +145,11 @@ class ApiService {
       debugPrint('BODY: ${jsonEncode(body)}');
 
       final response = await http
-          .put(Uri.parse(url), headers: finalHeaders, body: jsonEncode(body))
+          .put(
+            Uri.parse(url),
+            headers: finalHeaders,
+            body: body != null ? jsonEncode(body) : null,
+          )
           .timeout(timeout);
 
       debugPrint('🟢🟢🟢 API RESPONSE 🟢🟢🟢');
@@ -234,7 +241,11 @@ class ApiService {
       debugPrint('BODY: ${jsonEncode(body)}');
 
       final response = await http
-          .patch(Uri.parse(url), headers: finalHeaders, body: jsonEncode(body))
+          .patch(
+            Uri.parse(url),
+            headers: finalHeaders,
+            body: body != null ? jsonEncode(body) : null,
+          )
           .timeout(timeout);
 
       debugPrint('🟢🟢🟢 API RESPONSE 🟢🟢🟢');
@@ -352,7 +363,7 @@ class ApiService {
     if (msg.toLowerCase().contains('invalid credentials'))
       return 'Invalid email or password';
     if (msg.toLowerCase().contains('phone must be a valid phone number')) {
-      return null; // Return null so we can handle it inline in the controller
+      return null;
     }
     if (!msg.contains('Exception:') && !msg.contains('Error:')) return msg;
     return 'Something went wrong.';

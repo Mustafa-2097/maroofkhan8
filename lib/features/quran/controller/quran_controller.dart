@@ -518,7 +518,7 @@ class QuranController extends GetxController {
       };
 
       final body = jsonEncode({"chapter": chapterId});
-      final url = Uri.parse(ApiEndpoints.Surah);
+      final url = Uri.parse(ApiEndpoints.surah);
       final response = await http.post(url, headers: headers, body: body);
 
       print("DEBUG: Post Chapters Status Code: ${response.statusCode}");
