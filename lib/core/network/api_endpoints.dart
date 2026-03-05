@@ -114,4 +114,5 @@ class ApiEndpoints {
       '$baseUrl/sufism/islamic-teacher/$id';
 
   static const String bannerQuote = '$baseUrl/banner-quote';
+  static const String contactUs = '$baseUrl/contact-us';
 }

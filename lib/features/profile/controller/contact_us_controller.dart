@@ -35,8 +35,7 @@ class ContactUsController extends GetxController {
     try {
       EasyLoading.show(status: 'Sending...');
 
-      final response = await ApiService.post(
-        ApiEndpoints.contactUs,
+      final response = await ApiService.post(ApiEndpoints.contactUs,
         body: {'message': messageController.text.trim()},
       );
 

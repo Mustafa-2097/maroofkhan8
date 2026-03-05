@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
+import 'package:maroofkhan8/features/salawat/views/saved_salawat_screen.dart';
 import '../controller/salawat_controller.dart';
 import '../model/salawat_model.dart';
 import '../../ai_murshid/views/ai_murshid_screen.dart';
