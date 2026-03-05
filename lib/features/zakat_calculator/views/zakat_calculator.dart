@@ -297,6 +297,7 @@ class ZakatCalculatorScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: kBackground,
+
       appBar: AppBar(
         title: Column(
           children: [
@@ -666,7 +667,7 @@ class ZakatResultScreen extends StatelessWidget {
         ),
       ),
       //appBar: _buildAppBar(context),
-      bottomNavigationBar: _buildBottomNav(0), // Just for visual consistency
+      //  bottomNavigationBar: _buildBottomNav(0), // Just for visual consistency
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -1121,27 +1122,27 @@ BoxDecoration _cardDecoration() {
   );
 }
 
-Widget _buildBottomNav(int index) {
-  return BottomNavigationBar(
-    type: BottomNavigationBarType.fixed,
-    selectedItemColor: kPrimaryBrown,
-    unselectedItemColor: Colors.grey,
-    selectedFontSize: 10,
-    unselectedFontSize: 10,
-    showUnselectedLabels: true,
-    currentIndex: index,
-    items: const [
-      BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "Home"),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.auto_awesome_outlined),
-        label: "AI Murshid",
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.menu_book_outlined),
-        label: "Hadith",
-      ),
-      BottomNavigationBarItem(icon: Icon(Icons.book_outlined), label: "Quran"),
-      BottomNavigationBarItem(icon: Icon(Icons.access_time), label: "Prayer"),
-    ],
-  );
-}
+// Widget _buildBottomNav(int index) {
+//   return BottomNavigationBar(
+//     type: BottomNavigationBarType.fixed,
+//     selectedItemColor: kPrimaryBrown,
+//     unselectedItemColor: Colors.grey,
+//     selectedFontSize: 10,
+//     unselectedFontSize: 10,
+//     showUnselectedLabels: true,
+//     currentIndex: index,
+//     items: const [
+//       BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "Home"),
+//       BottomNavigationBarItem(
+//         icon: Icon(Icons.auto_awesome_outlined),
+//         label: "AI Murshid",
+//       ),
+//       BottomNavigationBarItem(
+//         icon: Icon(Icons.menu_book_outlined),
+//         label: "Hadith",
+//       ),
+//       BottomNavigationBarItem(icon: Icon(Icons.book_outlined), label: "Quran"),
+//       BottomNavigationBarItem(icon: Icon(Icons.access_time), label: "Prayer"),
+//     ],
+//   );
+// }

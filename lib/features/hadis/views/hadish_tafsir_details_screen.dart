@@ -106,7 +106,10 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
                     child: Text(
                       "${widget.bookName} > Chapter ${widget.chapterNum} > Hadith ${widget.hadithNumber}",
                       textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 11, color: Colors.grey),
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: Color.fromARGB(255, 78, 78, 78),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 20),
@@ -231,7 +234,7 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
                         "${widget.bookName} • Hadith ${widget.hadithNumber}",
                         style: const TextStyle(
                           fontSize: 10,
-                          color: Colors.grey,
+                          color: Color.fromARGB(255, 78, 78, 78),
                         ),
                       ),
                     ),

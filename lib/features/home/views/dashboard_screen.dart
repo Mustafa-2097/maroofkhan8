@@ -170,33 +170,33 @@ class HeaderSection extends StatelessWidget {
         const SizedBox(height: 13),
 
         /// Search bar
-        Container(
-          height: 45,
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          decoration: BoxDecoration(
-            color: isDark ? kDarkBlack : Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: AppColors.stroke),
-          ),
-          child: Row(
-            children: [
-              Icon(Icons.search, color: Theme.of(context).disabledColor),
-              const SizedBox(width: 8),
-              Expanded(
-                child: TextField(
-                  onChanged: (val) {
-                    dashboardController.searchQuery.value = val;
-                  },
-                  decoration: const InputDecoration(
-                    hintText: "Search Features...",
-                    hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+        // Container(
+        //   height: 45,
+        //   padding: const EdgeInsets.symmetric(horizontal: 15),
+        //   decoration: BoxDecoration(
+        //     color: isDark ? kDarkBlack : Colors.white,
+        //     borderRadius: BorderRadius.circular(10),
+        //     border: Border.all(color: AppColors.stroke),
+        //   ),
+        //   child: Row(
+        //     children: [
+        //       Icon(Icons.search, color: Theme.of(context).disabledColor),
+        //       const SizedBox(width: 8),
+        //       Expanded(
+        //         child: TextField(
+        //           onChanged: (val) {
+        //             dashboardController.searchQuery.value = val;
+        //           },
+        //           decoration: const InputDecoration(
+        //             hintText: "Search Features...",
+        //             hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+        //             border: InputBorder.none,
+        //           ),
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
       ],
     );
   }
@@ -268,7 +268,7 @@ class _HeroSectionState extends State<HeroSection> {
     return Obx(() {
       if (dashboardController.isQuoteLoading.value) {
         return const SizedBox(
-          height: 260,
+          height: 210,
           child: Center(child: CircularProgressIndicator()),
         );
       }
@@ -296,7 +296,7 @@ class _HeroSectionState extends State<HeroSection> {
       return Column(
         children: [
           SizedBox(
-            height: 260,
+            height: 210,
             child: PageView.builder(
               controller: _pageController,
               itemCount: slides.length,
@@ -323,6 +323,7 @@ class _HeroSectionState extends State<HeroSection> {
     return Container(
       margin: EdgeInsets.only(right: 8),
       width: double.infinity,
+      height: 210,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         image: DecorationImage(
