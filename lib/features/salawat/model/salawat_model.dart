@@ -75,6 +75,11 @@ class SalawatData {
   String? translation;
   String? transliteration;
   String? audio;
+  String? pronunciation;
+  String? meaning;
+  String? file;
+  String? status;
+  bool? isSaved;
 
   SalawatData({
     this.id,
@@ -83,15 +88,25 @@ class SalawatData {
     this.translation,
     this.transliteration,
     this.audio,
+    this.pronunciation,
+    this.meaning,
+    this.file,
+    this.status,
+    this.isSaved,
   });
 
   SalawatData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
     arabic = json['arabic'];
-    translation = json['translation'];
-    transliteration = json['transliteration'];
-    audio = json['audio'];
+    translation = json['translation'] ?? json['meaning'];
+    transliteration = json['transliteration'] ?? json['pronunciation'];
+    audio = json['audio'] ?? json['file'];
+    pronunciation = json['pronunciation'];
+    meaning = json['meaning'];
+    file = json['file'];
+    status = json['status'];
+    isSaved = json['isSaved'] ?? json['saved'] ?? false;
   }
 
   Map<String, dynamic> toJson() {
@@ -102,6 +117,11 @@ class SalawatData {
     data['translation'] = translation;
     data['transliteration'] = transliteration;
     data['audio'] = audio;
+    data['pronunciation'] = pronunciation;
+    data['meaning'] = meaning;
+    data['file'] = file;
+    data['status'] = status;
+    data['isSaved'] = isSaved;
     return data;
   }
 }

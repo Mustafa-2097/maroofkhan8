@@ -1,9 +1,11 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import '../controller/salawat_controller.dart';
 import '../model/salawat_model.dart';
+import 'saved_salawat_screen.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -66,18 +68,21 @@ class SalawatListScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 10),
-                Container(
-                  height: 45,
-                  width: 45,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.grey.shade200),
-                    color: Colors.white,
-                  ),
-                  child: const Icon(
-                    Icons.bookmark_border,
-                    color: Colors.grey,
-                    size: 20,
+                GestureDetector(
+                  onTap: () => Get.to(() => const SavedSalawatScreen()),
+                  child: Container(
+                    height: 45,
+                    width: 45,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.grey.shade200),
+                      color: Colors.white,
+                    ),
+                    child: const Icon(
+                      Icons.bookmark_border,
+                      color: Colors.grey,
+                      size: 20,
+                    ),
                   ),
                 ),
               ],
@@ -100,6 +105,8 @@ class SalawatListScreen extends StatelessWidget {
                     final salawat = controller.filteredSalawat[index];
                     return _SalawatListItem(
                       title: salawat.title ?? "Untitled",
+                      arabic: salawat.arabic,
+                      isSaved: salawat.isSaved ?? false,
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -120,9 +127,16 @@ class SalawatListScreen extends StatelessWidget {
 
 class _SalawatListItem extends StatelessWidget {
   final String title;
+  final String? arabic;
+  final bool isSaved;
   final VoidCallback onTap;
 
-  const _SalawatListItem({required this.title, required this.onTap});
+  const _SalawatListItem({
+    required this.title,
+    this.arabic,
+    required this.isSaved,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +150,7 @@ class _SalawatListItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -158,19 +172,41 @@ class _SalawatListItem extends StatelessWidget {
             ),
             const SizedBox(width: 15),
             Expanded(
-              child: Text(
-                title,
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: kTextDark,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: kTextDark,
+                    ),
+                  ),
+                  if (arabic != null) ...[
+                    const SizedBox(height: 5),
+                    Text(
+                      arabic!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.amiri(fontSize: 12, color: kTextGrey),
+                    ),
+                  ],
+                ],
               ),
             ),
+            if (isSaved) ...[
+              const SizedBox(width: 10),
+              const Icon(
+                Icons.bookmark,
+                color: Color.fromARGB(255, 146, 35, 27),
+                size: 16,
+              ),
+            ],
             const SizedBox(width: 10),
             Icon(
               Icons.arrow_circle_right_outlined,
-              color: kPrimaryBrown.withOpacity(0.8),
+              color: kPrimaryBrown.withValues(alpha: 0.8),
               size: 22,
             ),
           ],
@@ -256,7 +292,7 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                 borderRadius: BorderRadius.circular(8),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.03),
+                    color: Colors.black.withValues(alpha: 0.03),
                     blurRadius: 5,
                   ),
                 ],
@@ -280,20 +316,39 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                 borderRadius: BorderRadius.circular(15),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
+                    color: Colors.black.withValues(alpha: 0.04),
                     blurRadius: 10,
                   ),
                 ],
               ),
               child: Column(
                 children: [
-                  const Align(
+                  Align(
                     alignment: Alignment.topRight,
-                    child: Icon(
-                      Icons.favorite_border,
-                      size: 20,
-                      color: Colors.grey,
-                    ),
+                    child: Obx(() {
+                      final controllerSalawat =
+                          controller.salawatList.firstWhereOrNull(
+                            (s) => s.id == currentSalawat.id,
+                          ) ??
+                          controller.salawatList.firstWhereOrNull(
+                            (s) => s.title == currentSalawat.title,
+                          );
+                      final isSaved =
+                          controllerSalawat?.isSaved ??
+                          currentSalawat.isSaved ??
+                          false;
+
+                      return GestureDetector(
+                        onTap: () => controller.toggleBookmark(currentSalawat),
+                        child: Icon(
+                          isSaved ? Icons.bookmark : Icons.bookmark_border,
+                          size: 20,
+                          color: isSaved
+                              ? const Color.fromARGB(255, 146, 35, 27)
+                              : Colors.grey,
+                        ), //
+                      );
+                    }),
                   ),
                   const SizedBox(height: 10),
                   Text(
@@ -308,7 +363,8 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                   const SizedBox(height: 20),
                   Text(
                     currentSalawat.transliteration ??
-                        "TRANSLITERATION NOT AVAILABLE",
+                        currentSalawat.pronunciation ??
+                        "PRONUNCIATION NOT AVAILABLE",
                     style: const TextStyle(
                       fontSize: 12,
                       color: kTextDark,
@@ -322,57 +378,131 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
             const SizedBox(height: 25),
 
             // Audio Player
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Text(
-                      "02:25",
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
+            Obx(() {
+              final isPlaying =
+                  controller.playerState.value == PlayerState.playing &&
+                  controller.currentPlayingSalawatId.value == currentSalawat.id;
+              final currentPos = controller.currentDuration.value;
+              final totalPos = controller.totalDuration.value;
+
+              String formatDuration(Duration d) {
+                String twoDigits(int n) => n.toString().padLeft(2, "0");
+                String twoDigitMinutes = twoDigits(d.inMinutes.remainder(60));
+                String twoDigitSeconds = twoDigits(d.inSeconds.remainder(60));
+                return "$twoDigitMinutes:$twoDigitSeconds";
+              }
+
+              return Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        formatDuration(currentPos),
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    Text(
-                      "10:25",
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
+                      Text(
+                        formatDuration(totalPos),
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                SliderTheme(
-                  data: SliderTheme.of(context).copyWith(
-                    activeTrackColor: kPrimaryBrown,
-                    inactiveTrackColor: Colors.grey.shade300,
-                    thumbColor: kPrimaryBrown,
-                    trackHeight: 3,
-                    thumbShape: const RoundSliderThumbShape(
-                      enabledThumbRadius: 4,
-                    ),
-                    overlayShape: SliderComponentShape.noOverlay,
+                    ],
                   ),
-                  child: Slider(value: 0.35, onChanged: (v) {}),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.skip_previous, size: 24, color: Colors.black54),
-                    SizedBox(width: 30),
-                    Icon(
-                      Icons.play_circle_outline,
-                      size: 36,
-                      color: Colors.black,
+                  SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      activeTrackColor: kPrimaryBrown,
+                      inactiveTrackColor: Colors.grey.shade300,
+                      thumbColor: kPrimaryBrown,
+                      trackHeight: 3,
+                      thumbShape: const RoundSliderThumbShape(
+                        enabledThumbRadius: 4,
+                      ),
+                      overlayShape: SliderComponentShape.noOverlay,
                     ),
-                    SizedBox(width: 30),
-                    Icon(Icons.skip_next, size: 24, color: Colors.black54),
-                  ],
-                ),
-              ],
-            ),
+                    child: Slider(
+                      value: totalPos.inMilliseconds > 0
+                          ? currentPos.inMilliseconds / totalPos.inMilliseconds
+                          : 0.0,
+                      onChanged: (v) {
+                        final newPos = Duration(
+                          milliseconds: (v * totalPos.inMilliseconds).toInt(),
+                        );
+                        controller.seekSalawat(newPos);
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.skip_previous,
+                          size: 24,
+                          color: Colors.black54,
+                        ),
+                        onPressed: () {
+                          final prev = controller.getPreviousSalawat(
+                            currentSalawat,
+                          );
+                          if (prev != null) {
+                            setState(() {
+                              currentSalawat = prev;
+                              isFullDataLoaded = false;
+                            });
+                            _loadFullData();
+                            controller.playSalawat(prev);
+                          }
+                        },
+                      ),
+                      const SizedBox(width: 30),
+                      IconButton(
+                        icon: Icon(
+                          isPlaying
+                              ? Icons.pause_circle_outline
+                              : Icons.play_circle_outline,
+                          size: 36,
+                          color: Colors.black,
+                        ),
+                        onPressed: () {
+                          if (isPlaying) {
+                            controller.pauseSalawat();
+                          } else {
+                            controller.playSalawat(currentSalawat);
+                          }
+                        },
+                      ),
+                      const SizedBox(width: 30),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.skip_next,
+                          size: 24,
+                          color: Colors.black54,
+                        ),
+                        onPressed: () {
+                          final next = controller.getNextSalawat(
+                            currentSalawat,
+                          );
+                          if (next != null) {
+                            setState(() {
+                              currentSalawat = next;
+                              isFullDataLoaded = false;
+                            });
+                            _loadFullData();
+                            controller.playSalawat(next);
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            }),
             const SizedBox(height: 25),
 
             // Action Buttons
@@ -381,7 +511,7 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(30),
-                border: Border.all(color: kPrimaryBrown.withOpacity(0.5)),
+                border: Border.all(color: kPrimaryBrown.withValues(alpha: 0.5)),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -431,7 +561,7 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                 borderRadius: BorderRadius.circular(15),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
+                    color: Colors.black.withValues(alpha: 0.04),
                     blurRadius: 10,
                   ),
                 ],
@@ -449,7 +579,9 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    currentSalawat.translation ?? "TRANSLATION NOT AVAILABLE",
+                    currentSalawat.translation ??
+                        currentSalawat.meaning ??
+                        "MEANING NOT AVAILABLE",
                     style: const TextStyle(
                       fontSize: 12,
                       height: 1.4,
@@ -468,32 +600,6 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
 }
 
 // --- HELPER WIDGETS ---
-
-class _TabButton extends StatelessWidget {
-  final String text;
-  final bool isActive;
-
-  const _TabButton({required this.text, required this.isActive});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      decoration: BoxDecoration(
-        color: isActive ? kPrimaryBrown : kDarkButton,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-}
 
 class _ActionButton extends StatelessWidget {
   final IconData icon;

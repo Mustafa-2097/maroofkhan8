@@ -5,12 +5,26 @@ import 'package:maroofkhan8/features/audio/views/audio_list_screen.dart';
 import 'package:maroofkhan8/features/audio/controller/audio_controller.dart';
 import 'package:maroofkhan8/features/audio/model/audio_model.dart';
 
-class AudioScreen extends StatelessWidget {
+class AudioScreen extends StatefulWidget {
   const AudioScreen({super.key});
 
   @override
+  State<AudioScreen> createState() => _AudioScreenState();
+}
+
+class _AudioScreenState extends State<AudioScreen> {
+  final controller = Get.put(AudioController());
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchAudios(category: "All");
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final controller = Get.put(AudioController());
     return Scaffold(
       appBar: AppBar(
         title: HeaderSection(title: "Audio"),
@@ -24,37 +38,57 @@ class AudioScreen extends StatelessWidget {
       ),
       backgroundColor: const Color(0xFFF5F5F5),
       body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 16),
+        child: RefreshIndicator(
+          onRefresh: () => controller.fetchAudios(category: "All"),
+          child: Column(
+            children: [
+              const SizedBox(height: 8),
 
-            /// List
-            Expanded(
-              child: Obx(() {
-                if (controller.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (controller.audioList.isEmpty) {
-                  return const Center(child: Text("No audio found"));
-                }
-                return ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: controller.audioList.length,
-                  itemBuilder: (context, index) {
-                    final audio = controller.audioList[index];
-                    return AudioCard(
-                      audio: audio,
-                      onTap: () => Get.to(
-                        () => AudioListScreen(
-                          category: audio.category ?? "Sufi Lectures",
+              /// List
+              Expanded(
+                child: Obx(() {
+                  if (controller.isLoading.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (controller.audioList.isEmpty) {
+                    return ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.6,
+                          child: const Center(child: Text("No audio found")),
                         ),
-                      ),
+                      ],
                     );
-                  },
-                );
-              }),
-            ),
-          ],
+                  }
+                  return ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: controller.audioList.length,
+                    itemBuilder: (context, index) {
+                      final audio = controller.audioList[index];
+                      return AudioCard(
+                        audio: audio,
+                        onTap: () {
+                          // Correctly map backend category to UI label for AudioListScreen
+                          String categoryToPass =
+                              controller.reverseCategoryMapping[audio
+                                  .category] ??
+                              audio.category ??
+                              "Sufi Lectures";
+                          Get.to(
+                            () => AudioListScreen(
+                              category: categoryToPass,
+                              initialAudioId: audio.id,
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  );
+                }),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -68,6 +102,7 @@ class AudioCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = AudioController.instance;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -88,7 +123,7 @@ class AudioCard extends StatelessWidget {
                 color: Color(0xFF24255B),
                 shape: BoxShape.circle,
               ),
-              child: CircleAvatar(
+              child: const CircleAvatar(
                 radius: 28,
                 backgroundImage: NetworkImage(
                   "https://i.pravatar.cc/150?img=3",
@@ -134,19 +169,41 @@ class AudioCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text(
-                  "00:00", // Dynamic duration if available in model, else placeholder
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
+                Obx(() {
+                  final duration = controller.cachedDurations[audio.id ?? ''];
+                  return Text(
+                    duration ?? "00:00",
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  );
+                }),
                 const SizedBox(width: 8),
-                Icon(
-                  Icons.more_horiz,
-                  size: 18,
-                  color: const Color.fromARGB(255, 0, 0, 0),
+                PopupMenuButton<String>(
+                  onSelected: (value) {
+                    if (value == 'share') {
+                      controller.shareAudio(audio);
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    const PopupMenuItem(
+                      value: 'share',
+                      child: Row(
+                        children: [
+                          Icon(Icons.share, size: 20),
+                          SizedBox(width: 8),
+                          Text('Share'),
+                        ],
+                      ),
+                    ),
+                  ],
+                  child: const Icon(
+                    Icons.more_horiz,
+                    size: 18,
+                    color: Color.fromARGB(255, 0, 0, 0),
+                  ),
                 ),
               ],
             ),
