@@ -33,6 +33,8 @@ dependencies:
   speech_to_text: ^7.3.0
   intl_phone_field: ^3.2.0
   country_picker: ^2.0.26
+  intl: ^0.20.2
+  syncfusion_flutter_pdfviewer: ^32.2.8
 
 
 

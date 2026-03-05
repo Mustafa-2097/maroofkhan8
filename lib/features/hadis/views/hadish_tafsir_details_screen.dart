@@ -61,17 +61,11 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
                 children: [
                   GestureDetector(
                     onTap: () => Get.back(),
-                    child: Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(
-                        Icons.chevron_left,
-                        color: Colors.grey,
-                        size: 20,
-                      ),
+                    child: const Icon(
+                      // Icons.chevron_left,
+                      Icons.arrow_back_ios,
+                      color: Colors.grey,
+                      size: 20,
                     ),
                   ),
                   Flexible(

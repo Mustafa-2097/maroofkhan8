@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:maroofkhan8/core/constant/app_colors.dart';
 import '../../controller/contact_us_controller.dart';
 
 class ContactUs extends StatelessWidget {
@@ -19,9 +17,9 @@ class ContactUs extends StatelessWidget {
         elevation: 0,
         title: Text(
           "CONTACT US",
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -86,9 +84,7 @@ class ContactUs extends StatelessWidget {
                     height: 50,
                     child: ElevatedButton(
                       onPressed: () => controller.contactChange(_formKey),
-                      child: Text(
-                        "Send Message",
-                      ),
+                      child: Text("Send Message"),
                     ),
                   ),
                 ],
@@ -111,9 +107,9 @@ class _Label extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 6),
       child: Text(
         text,
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-          fontWeight: FontWeight.w500,
-        ),
+        style: Theme.of(
+          context,
+        ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500),
       ),
     );
   }
@@ -161,7 +157,9 @@ class _TextField extends StatelessWidget {
         suffixIcon: suffixIcon,
         filled: true,
         fillColor: enabled
-            ? (isDark ? Colors.grey.shade900.withOpacity(0.5) : Colors.grey.shade50)
+            ? (isDark
+                  ? Colors.grey.shade900.withValues(alpha: 0.5)
+                  : Colors.grey.shade50)
             : (isDark ? Colors.grey.shade800 : Colors.grey.shade200),
         contentPadding: EdgeInsets.symmetric(
           horizontal: 16,

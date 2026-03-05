@@ -1,31 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../controller/quran_controller.dart';
-import '../model/surah_model.dart';
-import 'quran_screen.dart';
+import '../controller/salawat_controller.dart';
+import '../model/salawat_model.dart';
+import 'salawat_screen.dart';
 
-class SavedSurasScreen extends StatelessWidget {
-  const SavedSurasScreen({super.key});
+class SavedSalawatScreen extends StatelessWidget {
+  const SavedSalawatScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<QuranController>();
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final controller = Get.find<SalawatController>();
     const Color kPrimaryBrown = Color(0xFF8D3C1F);
+    const Color kBackground = Color(0xFFF9F9FB);
 
     return Scaffold(
-      backgroundColor: isDark
-          ? const Color(0xFF121212)
-          : const Color(0xFFF9F9FC),
+      backgroundColor: kBackground,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
-            Icons.chevron_left,
-            color: isDark ? Colors.white : Colors.black,
-          ),
+          icon: const Icon(Icons.chevron_left, color: Colors.black),
           onPressed: () => Get.back(),
         ),
         title: Container(
@@ -33,11 +28,11 @@ class SavedSurasScreen extends StatelessWidget {
           height: 45,
           margin: const EdgeInsets.only(right: 20),
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 5,
                 offset: const Offset(0, 2),
               ),
@@ -45,9 +40,9 @@ class SavedSurasScreen extends StatelessWidget {
           ),
           alignment: Alignment.center,
           child: Text(
-            "Bookmarked Surahs",
+            "Bookmarked Salawat",
             style: GoogleFonts.playfairDisplay(
-              color: isDark ? Colors.white : const Color(0xFF2E2E2E),
+              color: const Color(0xFF2E2E2E),
               fontWeight: FontWeight.w500,
               fontSize: 18,
             ),
@@ -55,13 +50,13 @@ class SavedSurasScreen extends StatelessWidget {
         ),
       ),
       body: Obx(() {
-        if (controller.isSavedLoading.value && controller.savedSurahs.isEmpty) {
+        if (controller.isLoading.value && controller.savedSalawatList.isEmpty) {
           return const Center(
             child: CircularProgressIndicator(color: kPrimaryBrown),
           );
         }
 
-        final savedItems = controller.savedSurahs;
+        final savedItems = controller.savedSalawatList;
 
         if (savedItems.isEmpty) {
           return Center(
@@ -71,11 +66,11 @@ class SavedSurasScreen extends StatelessWidget {
                 Icon(
                   Icons.bookmark_border,
                   size: 64,
-                  color: Colors.grey.withOpacity(0.5),
+                  color: Colors.grey.withValues(alpha: 0.5),
                 ),
                 const SizedBox(height: 16),
                 const Text(
-                  "No saved surahs yet",
+                  "No saved salawat yet",
                   style: TextStyle(color: Colors.grey, fontSize: 16),
                 ),
               ],
@@ -87,13 +82,8 @@ class SavedSurasScreen extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           itemCount: savedItems.length,
           itemBuilder: (context, index) {
-            final surah = savedItems[index];
-            return SurahCard(
-              num: "${surah.id}",
-              title: surah.name,
-              sub: "${surah.translatedName}  | ${surah.versesCount} Ayah",
-              surah: surah,
-            );
+            final salawat = savedItems[index];
+            return _SavedSalawatCard(salawat: salawat);
           },
         );
       }),
@@ -101,38 +91,29 @@ class SavedSurasScreen extends StatelessWidget {
   }
 }
 
-class SurahCard extends StatelessWidget {
-  final String num;
-  final String title;
-  final String sub;
-  final SurahModel surah;
+class _SavedSalawatCard extends StatelessWidget {
+  final SalawatData salawat;
 
-  const SurahCard({
-    super.key,
-    required this.num,
-    required this.title,
-    required this.sub,
-    required this.surah,
-  });
+  const _SavedSalawatCard({required this.salawat});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<QuranController>();
+    final controller = Get.find<SalawatController>();
     const Color kPrimaryBrown = Color(0xFF8D3C1F);
+    const Color kTextDark = Color(0xFF2E2E2E);
+    const Color kTextGrey = Color(0xFF757575);
 
     return GestureDetector(
-      onTap: () => Get.to(() => QuranDetailsScreen(surah: surah)),
+      onTap: () => Get.to(() => SalawatDetailScreen(salawat: salawat)),
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Theme.of(context).brightness == Brightness.dark
-              ? const Color(0xFF1E1E1E)
-              : Colors.white,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.03),
+              color: Colors.black.withValues(alpha: 0.03),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -144,17 +125,11 @@ class SurahCard extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: kPrimaryBrown.withOpacity(0.1),
+                color: kPrimaryBrown.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: Center(
-                child: Text(
-                  num,
-                  style: const TextStyle(
-                    color: kPrimaryBrown,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+              child: const Center(
+                child: Icon(Icons.auto_awesome, color: kPrimaryBrown, size: 20),
               ),
             ),
             const SizedBox(width: 16),
@@ -163,22 +138,31 @@ class SurahCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    salawat.title ?? "Untitled",
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
+                      color: kTextDark,
                     ),
                   ),
-                  Text(
-                    sub,
-                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                  ),
+                  if (salawat.arabic != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      salawat.arabic!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.amiri(fontSize: 14, color: kTextGrey),
+                    ),
+                  ],
                 ],
               ),
             ),
             IconButton(
-              onPressed: () => controller.toggleSaveSurah(surah),
-              icon: const Icon(Icons.bookmark, color: kPrimaryBrown),
+              onPressed: () => controller.toggleBookmark(salawat),
+              icon: const Icon(
+                Icons.bookmark,
+                color: Color.fromARGB(255, 146, 35, 27),
+              ),
             ),
           ],
         ),

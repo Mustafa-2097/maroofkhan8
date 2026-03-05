@@ -4,12 +4,16 @@ import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import 'package:maroofkhan8/features/audio/views/audio_screen.dart';
 import 'package:get/get.dart';
 import 'package:maroofkhan8/features/audio/controller/audio_controller.dart';
-import 'package:maroofkhan8/features/audio/model/audio_model.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 class AudioListScreen extends StatefulWidget {
   final String category;
-  const AudioListScreen({super.key, this.category = "Sufi Lectures"});
+  final String? initialAudioId;
+  const AudioListScreen({
+    super.key,
+    this.category = "Sufi Lectures",
+    this.initialAudioId,
+  });
 
   @override
   State<AudioListScreen> createState() => _AudioListScreenState();
@@ -22,9 +26,27 @@ class _AudioListScreenState extends State<AudioListScreen> {
   @override
   void initState() {
     super.initState();
-    selectedCategory = widget.category;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchAudios(category: selectedCategory);
+    // Ensure selectedCategory matches the UI label if an enum was passed
+    selectedCategory =
+        controller.reverseCategoryMapping[widget.category] ?? widget.category;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await controller.fetchAudios(category: selectedCategory);
+
+      // If we navigated with a specific audio ID, make it featured and play it
+      if (widget.initialAudioId != null && controller.audioList.isNotEmpty) {
+        int index = controller.audioList.indexWhere(
+          (a) => a.id == widget.initialAudioId,
+        );
+        if (index != -1) {
+          final selectedAudio = controller.audioList.removeAt(index);
+          controller.audioList.insert(0, selectedAudio);
+          controller.playAudio(selectedAudio);
+        }
+      } else if (controller.audioList.isNotEmpty) {
+        // Just play the first one if no specific one was requested
+        // (Optional: remove this if you want it to wait for user to click play)
+        // controller.playAudio(controller.audioList.first);
+      }
     });
   }
 
@@ -72,230 +94,298 @@ class _AudioListScreenState extends State<AudioListScreen> {
             ),
           ),
           Expanded(
-            child: CustomScrollView(
-              slivers: [
-                /// 2. Featured Main Card
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Card(
-                      shadowColor: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        side: BorderSide(color: Colors.grey.shade300),
+            child: Obx(() {
+              if (controller.isLoading.value) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (controller.audioList.isEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.audio_file_outlined,
+                        size: 64,
+                        color: Colors.grey.shade400,
                       ),
-                      child: Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
+                      const SizedBox(height: 16),
+                      Text(
+                        "No audio found in this category",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.grey.shade600,
+                          fontWeight: FontWeight.w500,
                         ),
-                        child: Obx(() {
-                          if (controller.isLoading.value) {
-                            return const SizedBox(
-                              height: 200,
-                              child: Center(child: CircularProgressIndicator()),
-                            );
-                          }
-                          if (controller.audioList.isEmpty) {
-                            return const SizedBox(
-                              height: 100,
-                              child: Center(child: Text("No audio found")),
-                            );
-                          }
+                      ),
+                    ],
+                  ),
+                );
+              }
 
-                          // Use the first item as featured if available
-                          final featuredAudio = controller.audioList.first;
-                          final isCurrentlyPlaying =
-                              controller.currentAudioId.value ==
-                              featuredAudio.id;
+              return CustomScrollView(
+                slivers: [
+                  /// 2. Featured Main Card
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Card(
+                        shadowColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          side: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Obx(() {
+                            // Use the tracked featured audio from controller
+                            final featuredAudio =
+                                controller.featuredAudio.value;
+                            if (featuredAudio == null) {
+                              return const SizedBox(
+                                height: 100,
+                                child: Center(child: Text("No featured audio")),
+                              );
+                            }
+                            final isCurrentlyPlaying =
+                                controller.currentAudioId.value ==
+                                featuredAudio.id;
 
-                          return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ClipRRect(
-                                borderRadius: const BorderRadius.vertical(
-                                  top: Radius.circular(16),
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(16),
+                                  ),
+                                  child: Image.asset(
+                                    'assets/images/sheikh_image.png',
+                                    width: double.infinity,
+                                    height: 215,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                                child: Image.asset(
-                                  'assets/images/sheikh_image.png',
-                                  width: double.infinity,
-                                  height: 215,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(20.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      featuredAudio.title ?? 'Trust in Allah',
-                                      style: GoogleFonts.amiri(
-                                        fontSize: 26,
-                                        fontWeight: FontWeight.bold,
-                                        height: 1.1,
-                                      ),
-                                    ),
-                                    Text(
-                                      featuredAudio.subtitle ??
-                                          'Shaykh’s Lecture',
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.grey,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 16),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          isCurrentlyPlaying
-                                              ? _formatDuration(
-                                                  controller
-                                                      .currentDuration
-                                                      .value,
-                                                )
-                                              : '00:00',
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: SliderTheme(
-                                            data: SliderThemeData(
-                                              trackHeight: 3,
-                                              thumbShape:
-                                                  const RoundSliderThumbShape(
-                                                    enabledThumbRadius: 6,
+                                Padding(
+                                  padding: const EdgeInsets.all(20.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  featuredAudio.title ??
+                                                      'Trust in Allah',
+                                                  style: GoogleFonts.amiri(
+                                                    fontSize: 26,
+                                                    fontWeight: FontWeight.bold,
+                                                    height: 1.1,
                                                   ),
-                                              activeTrackColor: const Color(
-                                                0xFF8D3C1F,
-                                              ),
-                                              inactiveTrackColor:
-                                                  Colors.grey.shade300,
-                                              thumbColor: const Color(
-                                                0xFF8D3C1F,
-                                              ),
-                                              overlayColor: const Color(
-                                                0xFF8D3C1F,
-                                              ).withOpacity(0.1),
+                                                ),
+                                                Text(
+                                                  featuredAudio.subtitle ??
+                                                      'Shaykh’s Lecture',
+                                                  style: const TextStyle(
+                                                    fontSize: 16,
+                                                    color: Colors.grey,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            child: Slider(
-                                              value:
-                                                  isCurrentlyPlaying &&
-                                                      controller
+                                          ),
+                                          PopupMenuButton<String>(
+                                            onSelected: (value) {
+                                              if (value == 'share') {
+                                                controller.shareAudio(
+                                                  featuredAudio,
+                                                );
+                                              }
+                                            },
+                                            itemBuilder: (context) => [
+                                              const PopupMenuItem(
+                                                value: 'share',
+                                                child: Row(
+                                                  children: [
+                                                    Icon(Icons.share, size: 20),
+                                                    SizedBox(width: 8),
+                                                    Text('Share'),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                            child: const Icon(
+                                              Icons.more_horiz,
+                                              size: 24,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 16),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            isCurrentlyPlaying
+                                                ? _formatDuration(
+                                                    controller
+                                                        .currentDuration
+                                                        .value,
+                                                  )
+                                                : '00:00',
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: SliderTheme(
+                                              data: SliderThemeData(
+                                                trackHeight: 3,
+                                                thumbShape:
+                                                    const RoundSliderThumbShape(
+                                                      enabledThumbRadius: 6,
+                                                    ),
+                                                activeTrackColor: const Color(
+                                                  0xFF8D3C1F,
+                                                ),
+                                                inactiveTrackColor:
+                                                    Colors.grey.shade300,
+                                                thumbColor: const Color(
+                                                  0xFF8D3C1F,
+                                                ),
+                                                overlayColor: const Color(
+                                                  0xFF8D3C1F,
+                                                ).withValues(alpha: 0.1),
+                                              ),
+                                              child: Slider(
+                                                value:
+                                                    isCurrentlyPlaying &&
+                                                        controller
+                                                                .totalDuration
+                                                                .value
+                                                                .inSeconds >
+                                                            0
+                                                    ? controller
+                                                              .currentDuration
+                                                              .value
+                                                              .inSeconds /
+                                                          controller
                                                               .totalDuration
                                                               .value
-                                                              .inSeconds >
-                                                          0
-                                                  ? controller
-                                                            .currentDuration
-                                                            .value
-                                                            .inSeconds /
-                                                        controller
-                                                            .totalDuration
-                                                            .value
-                                                            .inSeconds
-                                                  : 0.0,
-                                              onChanged: (val) {
-                                                if (isCurrentlyPlaying) {
-                                                  controller.seekAudio(
-                                                    Duration(
-                                                      seconds:
-                                                          (val *
-                                                                  controller
-                                                                      .totalDuration
-                                                                      .value
-                                                                      .inSeconds)
-                                                              .toInt(),
-                                                    ),
-                                                  );
-                                                }
-                                              },
+                                                              .inSeconds
+                                                    : 0.0,
+                                                onChanged: (val) {
+                                                  if (isCurrentlyPlaying) {
+                                                    controller.seekAudio(
+                                                      Duration(
+                                                        seconds:
+                                                            (val *
+                                                                    controller
+                                                                        .totalDuration
+                                                                        .value
+                                                                        .inSeconds)
+                                                                .toInt(),
+                                                      ),
+                                                    );
+                                                  }
+                                                },
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        Text(
-                                          isCurrentlyPlaying
-                                              ? _formatDuration(
-                                                  controller
-                                                      .totalDuration
-                                                      .value,
-                                                )
-                                              : '00:00',
-                                          style: const TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
+                                          Text(
+                                            isCurrentlyPlaying
+                                                ? _formatDuration(
+                                                    controller
+                                                        .totalDuration
+                                                        .value,
+                                                  )
+                                                : '00:00',
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 24),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        _buildActionButton(
-                                          icon:
-                                              isCurrentlyPlaying &&
+                                        ],
+                                      ),
+                                      const SizedBox(height: 24),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          _buildActionButton(
+                                            icon:
+                                                isCurrentlyPlaying &&
+                                                    controller
+                                                            .playerState
+                                                            .value ==
+                                                        PlayerState.playing
+                                                ? Icons.pause_rounded
+                                                : Icons.play_arrow_rounded,
+                                            label:
+                                                isCurrentlyPlaying &&
+                                                    controller
+                                                            .playerState
+                                                            .value ==
+                                                        PlayerState.playing
+                                                ? 'Pause'
+                                                : 'Listen',
+                                            onPressed: () {
+                                              if (isCurrentlyPlaying &&
                                                   controller
                                                           .playerState
                                                           .value ==
-                                                      PlayerState.playing
-                                              ? Icons.pause_rounded
-                                              : Icons.play_arrow_rounded,
-                                          label:
-                                              isCurrentlyPlaying &&
-                                                  controller
-                                                          .playerState
-                                                          .value ==
-                                                      PlayerState.playing
-                                              ? 'Pause'
-                                              : 'Listen',
-                                          onPressed: () {
-                                            if (isCurrentlyPlaying &&
-                                                controller.playerState.value ==
-                                                    PlayerState.playing) {
-                                              controller.pauseAudio();
-                                            } else {
-                                              controller.playAudio(
+                                                      PlayerState.playing) {
+                                                controller.pauseAudio();
+                                              } else {
+                                                controller.playAudio(
+                                                  featuredAudio,
+                                                );
+                                              }
+                                            },
+                                            isLoading:
+                                                isCurrentlyPlaying &&
+                                                controller.isAudioLoading.value,
+                                          ),
+                                          const SizedBox(width: 16),
+                                          _buildActionButton(
+                                            icon: Icons.file_download_outlined,
+                                            label: 'Download (Premium)',
+                                            onPressed: () {
+                                              controller.downloadAudio(
                                                 featuredAudio,
                                               );
-                                            }
-                                          },
-                                          isLoading:
-                                              isCurrentlyPlaying &&
-                                              controller.isAudioLoading.value,
-                                        ),
-                                        const SizedBox(width: 16),
-                                        _buildActionButton(
-                                          icon: Icons.file_download_outlined,
-                                          label: 'Download (Premium)',
-                                          onPressed: () {
-                                            controller.downloadAudio(
-                                              featuredAudio,
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          );
-                        }),
+                              ],
+                            );
+                          }),
+                        ),
                       ),
                     ),
                   ),
-                ),
 
-                /// 3. Recent Lectures List
-                Obx(
-                  () => SliverPadding(
+                  /// 3. Recent Lectures List
+                  SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
@@ -309,9 +399,9 @@ class _AudioListScreenState extends State<AudioListScreen> {
                       }, childCount: controller.audioList.length),
                     ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              );
+            }),
           ),
         ],
       ),
@@ -383,7 +473,9 @@ class _AudioListScreenState extends State<AudioListScreen> {
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 10),
           shape: const StadiumBorder(),
-          disabledBackgroundColor: const Color(0xFF8D3C1F).withOpacity(0.7),
+          disabledBackgroundColor: const Color(
+            0xFF8D3C1F,
+          ).withValues(alpha: 0.7),
         ),
       ),
     );
