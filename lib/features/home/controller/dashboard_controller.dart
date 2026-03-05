@@ -7,7 +7,8 @@ import '../../dua/views/dua_screen.dart';
 import '../../islamic_stories/views/islamic_stories.dart';
 import '../../prayer_tracker/views/prayer_tracker_screen.dart';
 import '../../zakat_calculator/views/zakat_calculator.dart';
-// removed unused import
+import '../../../core/network/api_Service.dart';
+import '../../../core/network/api_endpoints.dart';
 
 class QuickStartFeature {
   final String title;
@@ -27,6 +28,28 @@ class QuickStartFeature {
 
 class DashboardController extends GetxController {
   var searchQuery = ''.obs;
+  var bannerQuote = {}.obs;
+  var isQuoteLoading = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchBannerQuote();
+  }
+
+  Future<void> fetchBannerQuote() async {
+    isQuoteLoading.value = true;
+    try {
+      final response = await ApiService.get(ApiEndpoints.bannerQuote);
+      if (response['success'] == true) {
+        bannerQuote.value = response['data'] ?? {};
+      }
+    } catch (e) {
+      print("Error fetching banner quote: $e");
+    } finally {
+      isQuoteLoading.value = false;
+    }
+  }
 
   final List<QuickStartFeature> allFeatures = [
     QuickStartFeature(

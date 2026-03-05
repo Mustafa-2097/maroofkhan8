@@ -5,8 +5,6 @@ import 'package:get/get.dart';
 import 'package:maroofkhan8/features/profile/view/profile_screen.dart';
 import 'package:maroofkhan8/features/quran/views/quran_screen.dart';
 import '../../../core/constant/app_colors.dart';
-import '../awliya_allah/awliya_allah_list_screen.dart';
-import '../dhikr/dhikr_screen.dart';
 import '../../profile/controller/profile_controller.dart';
 import '../controller/dashboard_controller.dart';
 import 'custom_app_drawer.dart';
@@ -223,8 +221,12 @@ class _HeroSectionState extends State<HeroSection> {
   }
 
   void _startTimer() {
+    final dashboardController = Get.find<DashboardController>();
     _timer = Timer.periodic(const Duration(seconds: 4), (timer) {
-      if (_currentIndex < _slides.length - 1) {
+      final slidesCount = dashboardController.bannerQuote.isNotEmpty
+          ? 1
+          : 1; // Currently only 1 from API
+      if (_currentIndex < slidesCount - 1) {
         _currentIndex++;
       } else {
         _currentIndex = 0;
@@ -246,67 +248,71 @@ class _HeroSectionState extends State<HeroSection> {
     super.dispose();
   }
 
-  final List<Map<String, dynamic>> _slides = [
+  // Fallback slides if API fails or for other types
+  final List<Map<String, dynamic>> _fallbackSlides = [
     {
-      "title": "Daily Story",
-      "nameEn": "Abdul Qadir al-Jilani",
-      "nameAr": "شيخ عبدالقادر جيلاني",
-      "quoteEn": "He who knows self\nknows his Lord.",
-      "quoteAr": "من عرف نفسه فقد عرف ربه",
+      "type": "Daily Story",
+      "title": "شيخ عبدالقادر جيلاني",
+      "description": "He who knows self\nknows his Lord.",
       "image":
           "https://img.freepik.com/free-vector/islamic-pattern-background-luxury-green-gold_1017-30814.jpg",
-      "progress": 0.3,
-      "time": "58 sec",
     },
-    // {
-    //   "title": "Daily Wisdom",
-    //   "nameEn": "Jalaluddin Rumi",
-    //   "nameAr": "جلال الدين الرومي",
-    //   "quoteEn": "What you seek is\nseeking you.",
-    //   "quoteAr": "ما تبحث عنه يبحث عنك",
-    //   "image":
-    //       "https://img.freepik.com/free-vector/gradient-islamic-new-year-background_23-2148967924.jpg",
-    //   "progress": 0.7,
-    //   "time": "1 min 20 sec",
-    // },
-    // {
-    //   "title": "Hadith of the Day",
-    //   "nameEn": "Imam Ali (AS)",
-    //   "nameAr": "الإمام علي",
-    //   "quoteEn":
-    //       "Patience is of two kinds: patience over what pains you, and patience against what you covet.",
-    //   "quoteAr": "الصبر صبران: صبر على ما تكره وصبر عما تحب",
-    //   "image":
-    //       "https://img.freepik.com/free-vector/golden-islamic-pattern-dark-background_1017-31354.jpg",
-    //   "progress": 0.1,
-    //   "time": "45 sec",
-    // },
   ];
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
+    final dashboardController = Get.find<DashboardController>();
 
-    return Column(
-      children: [
-        SizedBox(
+    return Obx(() {
+      if (dashboardController.isQuoteLoading.value) {
+        return const SizedBox(
           height: 260,
-          child: PageView.builder(
-            controller: _pageController,
-            itemCount: _slides.length,
-            onPageChanged: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-            itemBuilder: (context, index) {
-              return _buildSlideCard(_slides[index], isDark, primaryColor);
-            },
+          child: Center(child: CircularProgressIndicator()),
+        );
+      }
+
+      final quoteData = dashboardController.bannerQuote;
+      final List<Map<String, dynamic>> slides = [];
+
+      if (quoteData.isNotEmpty) {
+        slides.add({
+          "type": "Daily Story",
+          "title": quoteData['title'] ?? "",
+          "description": quoteData['description'] ?? "",
+          "image":
+              "https://img.freepik.com/free-vector/islamic-pattern-background-luxury-green-gold_1017-30814.jpg",
+        });
+      } else {
+        slides.addAll(_fallbackSlides);
+      }
+
+      // Update timer if slides length changed
+      if (_timer == null || slides.length != 1) {
+        // Simple one slide doesn't need complex timer but keeping for future expansion
+      }
+
+      return Column(
+        children: [
+          SizedBox(
+            height: 260,
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: slides.length,
+              onPageChanged: (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              itemBuilder: (context, index) {
+                return _buildSlideCard(slides[index], isDark, primaryColor);
+              },
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    });
   }
 
   Widget _buildSlideCard(
@@ -360,7 +366,7 @@ class _HeroSectionState extends State<HeroSection> {
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
-                  data['title'],
+                  data['type'] ?? "Daily Story",
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 10,
@@ -388,38 +394,28 @@ class _HeroSectionState extends State<HeroSection> {
             //     ],
             //   ),
             // ),
-
-            // Content (Center)
             Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    data['nameEn'],
+                    data['title'] ?? "",
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 18,
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
                     ),
-                  ),
-                  Text(
-                    data['nameAr'],
-                    style: const TextStyle(color: Colors.white70, fontSize: 14),
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    data['quoteEn'],
+                    data['description'] ?? "",
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Colors.amber,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    data['quoteAr'],
-                    style: const TextStyle(color: Colors.white70, fontSize: 16),
                   ),
                 ],
               ),

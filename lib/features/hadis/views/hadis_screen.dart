@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../controller/hadith_controller.dart';
 import 'hadith_book_details_screen.dart';
@@ -310,10 +311,20 @@ class _HadithScreenState extends State<HadithScreen> {
                       ),
                     ),
                     const SizedBox(width: 15),
-                    const Icon(
-                      Icons.share_outlined,
-                      size: 18,
-                      color: Colors.grey,
+                    GestureDetector(
+                      onTap: () {
+                        final shareText =
+                            "${item.book ?? 'Popular Hadith'}\n\n"
+                            "${item.hadith}\n\n"
+                            "(${item.reference.isNotEmpty ? item.reference : 'Hadith ' + (item.hadithNo?.toString() ?? 'N/A')})\n\n"
+                            "Shared via Maroof Khan App";
+                        Share.share(shareText);
+                      },
+                      child: const Icon(
+                        Icons.share_outlined,
+                        size: 18,
+                        color: Colors.grey,
+                      ),
                     ),
                     const Spacer(),
                     _iconLabel(Icons.volume_up_outlined, "Listen"),
@@ -417,10 +428,20 @@ class _HadithScreenState extends State<HadithScreen> {
                       ),
                     ),
                     const SizedBox(width: 15),
-                    const Icon(
-                      Icons.share_outlined,
-                      size: 18,
-                      color: Colors.grey,
+                    GestureDetector(
+                      onTap: () {
+                        final shareText =
+                            "${item.book}\n\n"
+                            "${item.hadith}\n\n"
+                            "(Hadith ${item.hadithNo ?? 'N/A'})\n\n"
+                            "Shared via Maroof Khan App";
+                        Share.share(shareText);
+                      },
+                      child: const Icon(
+                        Icons.share_outlined,
+                        size: 18,
+                        color: Colors.grey,
+                      ),
                     ),
                     const Spacer(),
                     _iconLabel(Icons.volume_up_outlined, "Listen"),

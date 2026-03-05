@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import '../controller/salawat_controller.dart';
 import '../model/salawat_model.dart';
+import '../../ai_murshid/views/ai_murshid_screen.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -400,7 +401,7 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                     label: "AI Explanation",
                     isActive: false,
                     onTap: () {
-                      // Navigate to AI Explanation
+                      Get.to(() => const ChatScreen());
                     },
                   ),
                   _VerticalDivider(),

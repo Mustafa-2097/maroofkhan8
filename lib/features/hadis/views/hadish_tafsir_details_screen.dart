@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/features/hadis/controller/hadith_controller.dart';
 import 'package:maroofkhan8/features/hadis/models/last_read_hadith.dart';
+import '../../ai_murshid/views/ai_murshid_screen.dart';
+import 'package:share_plus/share_plus.dart';
 
 class HadishTafsirDetailsScreen extends StatefulWidget {
   final String hadithText;
@@ -250,8 +252,25 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _actionIcon(Icons.headphones_outlined, "Listen"),
-                    _actionIcon(Icons.auto_awesome_outlined, "AI Explanation"),
-                    _actionIcon(Icons.share_outlined, "Share"),
+                    _actionIcon(
+                      Icons.auto_awesome_outlined,
+                      "AI Explanation",
+                      onTap: () {
+                        Get.to(() => const ChatScreen());
+                      },
+                    ),
+                    _actionIcon(
+                      Icons.share_outlined,
+                      "Share",
+                      onTap: () {
+                        final shareText =
+                            "${widget.heading ?? ''}\n\n"
+                            "${widget.hadithText}\n\n"
+                            "(${widget.bookName}, Hadith ${widget.hadithNumber})\n\n"
+                            "Shared via Maroof Khan App";
+                        Share.share(shareText);
+                      },
+                    ),
                     _actionIcon(Icons.download_outlined, "Download"),
                   ],
                 ),
@@ -318,21 +337,24 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
     );
   }
 
-  Widget _actionIcon(IconData icon, String label) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, color: primaryBrown, size: 22),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            color: primaryBrown,
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
+  Widget _actionIcon(IconData icon, String label, {VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: primaryBrown, size: 22),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              color: primaryBrown,
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

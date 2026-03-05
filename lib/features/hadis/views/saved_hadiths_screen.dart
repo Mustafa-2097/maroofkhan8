@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controller/hadith_controller.dart';
 import 'hadish_tafsir_details_screen.dart';
+import 'package:share_plus/share_plus.dart';
 
 class SavedHadithsScreen extends StatelessWidget {
   const SavedHadithsScreen({super.key});
@@ -137,6 +138,22 @@ class SavedHadithsScreen extends StatelessWidget {
                           Icons.bookmark,
                           color: Color(0xFF8D3C1F),
                           size: 18,
+                        ),
+                      ),
+                      const SizedBox(width: 15),
+                      GestureDetector(
+                        onTap: () {
+                          final shareText =
+                              "${hadith.heading.isNotEmpty ? hadith.heading : ''}\n\n"
+                              "${hadith.hadith}\n\n"
+                              "(Hadith ${hadith.number})\n\n"
+                              "Shared via Maroof Khan App";
+                          Share.share(shareText);
+                        },
+                        child: const Icon(
+                          Icons.share_outlined,
+                          size: 18,
+                          color: Color(0xFF8D3C1F),
                         ),
                       ),
                       const SizedBox(width: 15),
