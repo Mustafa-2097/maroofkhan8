@@ -23,22 +23,9 @@ class IslamicNamesScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(
-                Icons.chevron_left,
-                color: Colors.grey,
-                size: 20,
-              ),
-            ),
-          ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
         title: Text(
@@ -85,7 +72,7 @@ class IslamicNamesScreen extends StatelessWidget {
             // Horizontal Info Cards
             _infoCard(
               "The Importance of Giving a Beautiful Name to a Child in Islam",
-              Icons.people_outline,
+              imagePath: "assets/icons/children.png",
               onTap: () {
                 Get.to(() => const NameImportanceScreen());
               },
@@ -93,7 +80,7 @@ class IslamicNamesScreen extends StatelessWidget {
             const SizedBox(height: 15),
             _infoCard(
               "Islamic Guidelines for Choosing a Name",
-              Icons.child_care,
+              imagePath: "assets/icons/baby.png",
               onTap: () {
                 Get.to(() => const NameGuidelinesScreen());
               },
@@ -133,14 +120,18 @@ class IslamicNamesScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 70, color: Colors.grey.shade400),
+            Icon(
+              icon,
+              size: 50,
+              color: const Color.fromARGB(255, 113, 113, 113),
+            ),
             const SizedBox(height: 12),
             Text(
               text,
               textAlign: TextAlign.center,
               style: GoogleFonts.ebGaramond(
                 fontSize: 14,
-                color: kTextDark,
+                color: const Color.fromARGB(255, 0, 0, 0),
                 height: 1.3,
               ),
             ),
@@ -150,7 +141,12 @@ class IslamicNamesScreen extends StatelessWidget {
     );
   }
 
-  Widget _infoCard(String text, IconData icon, {VoidCallback? onTap}) {
+  Widget _infoCard(
+    String text, {
+    IconData? icon,
+    String? imagePath,
+    VoidCallback? onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -169,7 +165,10 @@ class IslamicNamesScreen extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(icon, size: 45, color: Colors.grey.shade400),
+            if (imagePath != null)
+              Image.asset(imagePath, width: 45, height: 45)
+            else if (icon != null)
+              Icon(icon, size: 45, color: Colors.grey.shade400),
             const SizedBox(width: 16),
             Expanded(
               child: Text(

@@ -104,36 +104,34 @@ class AwliyaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(15),
+    return GestureDetector(
       onTap: () {
         Get.to(() => AwliyaAllahDetailsScreen(awliya: awliya));
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 15),
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.15),
-              spreadRadius: 1,
-              blurRadius: 8,
-              offset: const Offset(0, 3), // vertical shadow
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
             ),
           ],
         ),
         child: Row(
           children: [
             CircleAvatar(
-              radius: 35,
+              radius: 28,
               backgroundImage: awliya.image.isNotEmpty
                   ? NetworkImage(awliya.image)
                   : null,
               backgroundColor: Colors.grey.shade200,
               child: awliya.image.isEmpty
-                  ? const Icon(Icons.person, size: 35, color: Colors.grey)
+                  ? const Icon(Icons.person, color: Colors.grey)
                   : null,
             ),
             const SizedBox(width: 15),
@@ -144,27 +142,32 @@ class AwliyaCard extends StatelessWidget {
                   Text(
                     awliya.name,
                     style: GoogleFonts.playfairDisplay(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      height: 1.2,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     awliya.title,
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    style: const TextStyle(fontSize: 11, color: Colors.grey),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
             ),
             Container(
-              height: 45,
-              width: 45,
+              height: 30,
+              width: 30,
               decoration: BoxDecoration(
                 color: buttonColor,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(Icons.arrow_forward, color: Colors.white),
+              child: const Icon(
+                Icons.arrow_forward,
+                color: Colors.white,
+                size: 16,
+              ),
             ),
           ],
         ),
