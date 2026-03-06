@@ -5,6 +5,9 @@ import '../controller/dua_controller.dart';
 import '../model/dua_model.dart';
 import '../../../core/constant/widgets/header.dart';
 import '../../ai_murshid/views/ai_murshid_screen.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 
 // --- Common UI Constants ---
@@ -237,6 +240,56 @@ class DuaDetailScreen extends StatefulWidget {
 }
 
 class _DuaDetailScreenState extends State<DuaDetailScreen> {
+  Future<void> _downloadDua() async {
+    try {
+      if (Platform.isAndroid) {
+        await Permission.storage.request();
+      }
+
+      Directory? directory;
+      if (Platform.isAndroid) {
+        final dirs = await getExternalStorageDirectories(
+          type: StorageDirectory.downloads,
+        );
+        if (dirs != null && dirs.isNotEmpty) {
+          directory = dirs.first;
+        } else {
+          directory = await getExternalStorageDirectory();
+        }
+      } else {
+        directory = await getApplicationDocumentsDirectory();
+      }
+
+      if (directory != null) {
+        if (!await directory.exists()) {
+          await directory.create(recursive: true);
+        }
+
+        final timestamp = DateTime.now().millisecondsSinceEpoch;
+        final fileName =
+            'Dua_${widget.dua.title?.replaceAll(' ', '_') ?? 'Unnamed'}_$timestamp.txt';
+        final filePath = '${directory.path}/$fileName';
+        final file = File(filePath);
+
+        final textToSave =
+            "${widget.dua.title ?? ''}\n\nArabic: ${widget.dua.arabic ?? ''}\n\nPronunciation: ${widget.dua.pronunciation ?? ''}\n\nMeaning: ${widget.dua.meaning ?? ''}\n\nShared via Maroof Khan App";
+
+        await file.writeAsString(textToSave);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Dua downloaded successfully!\nPath: $filePath"),
+            backgroundColor: kBrown,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error: $e")));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -354,7 +407,11 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
                       Share.share(shareText);
                     },
                   ),
-                  _actionIcon(Icons.download_outlined, "Download"),
+                  _actionIcon(
+                    Icons.download_outlined,
+                    "Download",
+                    onTap: _downloadDua,
+                  ),
                 ],
               ),
             ),

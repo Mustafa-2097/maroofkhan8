@@ -117,11 +117,7 @@ class SavedIslamicNamesScreen extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () => controller.toggleSaveStatus(name),
-                    child: const Icon(
-                      Icons.favorite,
-                      color: Colors.red,
-                      size: 20,
-                    ),
+                    child: Icon(Icons.bookmark, color: kPrimaryBrown, size: 20),
                   ),
                 ],
               ),

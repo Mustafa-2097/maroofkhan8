@@ -159,10 +159,10 @@ class GirlNamesScreen extends StatelessWidget {
                                 onTap: () => controller.toggleSaveStatus(name),
                                 child: Icon(
                                   name.isSaved
-                                      ? Icons.favorite
-                                      : Icons.favorite_border,
+                                      ? Icons.bookmark
+                                      : Icons.bookmark_border,
                                   color: name.isSaved
-                                      ? Colors.red
+                                      ? kPrimaryBrown
                                       : Colors.grey,
                                   size: 20,
                                 ),

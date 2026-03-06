@@ -305,9 +305,9 @@ class _HadithScreenState extends State<HadithScreen> {
                         );
                       },
                       child: Icon(
-                        item.isSaved ? Icons.favorite : Icons.favorite_border,
+                        item.isSaved ? Icons.bookmark : Icons.bookmark_border,
                         size: 18,
-                        color: item.isSaved ? Colors.red : Colors.grey,
+                        color: item.isSaved ? primaryBrown : Colors.grey,
                       ),
                     ),
                     const SizedBox(width: 15),
@@ -422,9 +422,9 @@ class _HadithScreenState extends State<HadithScreen> {
                         );
                       },
                       child: Icon(
-                        item.isSaved ? Icons.favorite : Icons.favorite_border,
+                        item.isSaved ? Icons.bookmark : Icons.bookmark_border,
                         size: 18,
-                        color: item.isSaved ? Colors.red : Colors.grey,
+                        color: item.isSaved ? primaryBrown : Colors.grey,
                       ),
                     ),
                     const SizedBox(width: 15),

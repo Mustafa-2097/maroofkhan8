@@ -249,7 +249,7 @@ class _DonationScreenState extends State<DonationScreen> {
                             ),
                           ),
                           Icon(
-                            Icons.favorite_border,
+                            Icons.bookmark_border,
                             color: Colors.white,
                             size: 20.sp,
                           ),
