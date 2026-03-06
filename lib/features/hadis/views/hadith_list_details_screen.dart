@@ -5,7 +5,7 @@ import 'package:maroofkhan8/features/hadis/controller/hadith_controller.dart';
 import 'package:maroofkhan8/features/hadis/models/hadith.dart';
 import 'package:share_plus/share_plus.dart';
 
-import 'hadish_tafsir_details_screen.dart';
+import 'hadith_tafsir_details_screen.dart';
 import 'saved_hadiths_screen.dart';
 
 class HadithListDetailsScreen extends StatefulWidget {

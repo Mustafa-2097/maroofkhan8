@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controller/hadith_controller.dart';
-import 'hadish_tafsir_details_screen.dart';
+import 'hadith_tafsir_details_screen.dart';
 import 'package:share_plus/share_plus.dart';
 
 class SavedHadithsScreen extends StatelessWidget {

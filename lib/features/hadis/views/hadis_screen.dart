@@ -6,7 +6,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../controller/hadith_controller.dart';
 import 'hadith_book_details_screen.dart';
-import 'hadish_tafsir_details_screen.dart';
+import 'hadith_tafsir_details_screen.dart';
 import 'saved_hadiths_screen.dart';
 
 class HadithScreen extends StatefulWidget {
