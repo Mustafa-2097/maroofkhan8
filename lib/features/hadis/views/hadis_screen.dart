@@ -6,7 +6,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../controller/hadith_controller.dart';
 import 'hadith_book_details_screen.dart';
-import 'hadish_tafsir_details_screen.dart';
+import 'hadith_tafsir_details_screen.dart';
 import 'saved_hadiths_screen.dart';
 
 class HadithScreen extends StatefulWidget {
@@ -305,9 +305,9 @@ class _HadithScreenState extends State<HadithScreen> {
                         );
                       },
                       child: Icon(
-                        item.isSaved ? Icons.favorite : Icons.favorite_border,
+                        item.isSaved ? Icons.bookmark : Icons.bookmark_border,
                         size: 18,
-                        color: item.isSaved ? Colors.red : Colors.grey,
+                        color: item.isSaved ? primaryBrown : Colors.grey,
                       ),
                     ),
                     const SizedBox(width: 15),
@@ -422,9 +422,9 @@ class _HadithScreenState extends State<HadithScreen> {
                         );
                       },
                       child: Icon(
-                        item.isSaved ? Icons.favorite : Icons.favorite_border,
+                        item.isSaved ? Icons.bookmark : Icons.bookmark_border,
                         size: 18,
-                        color: item.isSaved ? Colors.red : Colors.grey,
+                        color: item.isSaved ? primaryBrown : Colors.grey,
                       ),
                     ),
                     const SizedBox(width: 15),

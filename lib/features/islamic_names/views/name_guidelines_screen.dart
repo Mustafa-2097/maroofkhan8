@@ -16,22 +16,9 @@ class NameGuidelinesScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(
-                Icons.chevron_left,
-                color: Colors.grey,
-                size: 20,
-              ),
-            ),
-          ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
         title: Text(

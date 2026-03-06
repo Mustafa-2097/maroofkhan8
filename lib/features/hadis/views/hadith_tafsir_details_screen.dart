@@ -1,6 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:maroofkhan8/features/hadis/controller/hadith_controller.dart';
 import 'package:maroofkhan8/features/hadis/models/last_read_hadith.dart';
 import '../../ai_murshid/views/ai_murshid_screen.dart';
@@ -46,6 +49,54 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
         hadithNo: widget.hadithNumber,
       ),
     );
+  }
+
+  Future<void> _downloadHadith() async {
+    try {
+      if (Platform.isAndroid) {
+        await Permission.storage.request();
+      }
+
+      Directory? directory;
+      if (Platform.isAndroid) {
+        final dirs = await getExternalStorageDirectories(
+          type: StorageDirectory.downloads,
+        );
+        if (dirs != null && dirs.isNotEmpty) {
+          directory = dirs.first;
+        } else {
+          directory = await getExternalStorageDirectory();
+        }
+      } else {
+        directory = await getApplicationDocumentsDirectory();
+      }
+
+      if (directory != null) {
+        final timestamp = DateTime.now().millisecondsSinceEpoch;
+        final fileName =
+            'Hadith_${widget.bookName}_${widget.hadithNumber}_$timestamp.txt';
+        final filePath = '${directory.path}/$fileName';
+        final file = File(filePath);
+
+        final textToSave =
+            "${widget.heading != null && widget.heading!.isNotEmpty ? '${widget.heading}\n\n' : ''}${widget.hadithText}\n\n(${widget.bookName}, Chapter ${widget.chapterNum}, Hadith ${widget.hadithNumber})";
+
+        await file.writeAsString(textToSave);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "Downloaded perfectly on this device's memory \n\nPath: $filePath",
+            ),
+            backgroundColor: primaryBrown,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error: $e")));
+    }
   }
 
   @override
@@ -268,7 +319,11 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
                         Share.share(shareText);
                       },
                     ),
-                    _actionIcon(Icons.download_outlined, "Download"),
+                    _actionIcon(
+                      Icons.download_outlined,
+                      "Download",
+                      onTap: _downloadHadith,
+                    ),
                   ],
                 ),
               ),

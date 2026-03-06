@@ -63,7 +63,7 @@ class _AhleBaitListScreenState extends State<AhleBaitListScreen> {
                   ),
                   children: [
                     const TextSpan(
-                      text: "refers to the household and family members of ",
+                      text: "Refers to the household and family members of ",
                     ),
                     // TextSpan(
                     //   text: "أهل البيت",
@@ -256,7 +256,7 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
                 // Profile Header
                 const SizedBox(height: 10),
                 CircleAvatar(
-                  radius: 50,
+                  radius: 85,
                   backgroundImage: member.image.isNotEmpty
                       ? NetworkImage(member.image)
                       : null,

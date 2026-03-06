@@ -9,6 +9,9 @@ import 'package:maroofkhan8/features/zakat_calculator/views/assets_included_scre
 import 'package:maroofkhan8/features/zakat_calculator/views/who_can_receive_zakat_screen.dart';
 import 'package:maroofkhan8/features/zakat_calculator/views/who_cannot_receive_zakat_screen.dart';
 import 'package:maroofkhan8/features/zakat_calculator/controller/zakat_controller.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 
 // --- CONSTANTS ---
@@ -651,6 +654,83 @@ class ZakatCalculatorScreen extends StatelessWidget {
 class ZakatResultScreen extends StatelessWidget {
   const ZakatResultScreen({super.key});
 
+  Future<void> _downloadZakatDetails(
+    BuildContext context,
+    ZakatController controller,
+  ) async {
+    try {
+      if (Platform.isAndroid) {
+        await Permission.storage.request();
+      }
+
+      Directory? directory;
+      if (Platform.isAndroid) {
+        final dirs = await getExternalStorageDirectories(
+          type: StorageDirectory.downloads,
+        );
+        if (dirs != null && dirs.isNotEmpty) {
+          directory = dirs.first;
+        } else {
+          directory = await getExternalStorageDirectory();
+        }
+      } else {
+        directory = await getApplicationDocumentsDirectory();
+      }
+
+      if (directory != null) {
+        if (!await directory.exists()) {
+          await directory.create(recursive: true);
+        }
+
+        final timestamp = DateTime.now().millisecondsSinceEpoch;
+        final fileName = 'Zakat_Calculation_$timestamp.txt';
+        final filePath = '${directory.path}/$fileName';
+        final file = File(filePath);
+
+        final breakdown =
+            """
+Cash: \$${double.tryParse(controller.cashController.text)?.toStringAsFixed(2) ?? "0.00"}
+Gold (${controller.goldGramsController.text}g): \$${((double.tryParse(controller.goldGramsController.text) ?? 0) * (double.tryParse(controller.goldPriceController.text) ?? 0)).toStringAsFixed(2)}
+Silver (${controller.silverGramsController.text}g): \$${((double.tryParse(controller.silverGramsController.text) ?? 0) * (double.tryParse(controller.silverPriceController.text) ?? 0)).toStringAsFixed(2)}
+Business Assets: \$${double.tryParse(controller.businessAssetsController.text)?.toStringAsFixed(2) ?? "0.00"}
+Savings & Investments: \$${double.tryParse(controller.savingsInvestmentsController.text)?.toStringAsFixed(2) ?? "0.00"}
+Less: Debts: \$${double.tryParse(controller.liabilitiesController.text)?.toStringAsFixed(2) ?? "0.00"}
+--------------------------------
+Total Assets: \$${controller.totalAssets.value.toStringAsFixed(2)}
+Nisab Threshold: \$${controller.nisabThreshold.value.toStringAsFixed(2)}
+Status: ${controller.isAboveNisab.value ? 'ELIGIBLE' : 'NOT ELIGIBLE'}
+""";
+
+        final zakatPayableStr = controller.isAboveNisab.value
+            ? "\nZakat Payable (2.5%): \$${controller.zakatPayable.value.toStringAsFixed(2)}"
+            : "";
+
+        final textToSave =
+            """
+Zakat Calculator Results
+Date: ${DateTime.now().toString()}
+
+$breakdown$zakatPayableStr
+
+Shared via Maroof Khan App
+""";
+
+        await file.writeAsString(textToSave);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Zakat results saved successfully!\nPath: $filePath"),
+            backgroundColor: kPrimaryBrown,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error: $e")));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<ZakatController>();
@@ -955,7 +1035,7 @@ class ZakatResultScreen extends StatelessWidget {
                   child: _outlineButton(
                     Icons.download,
                     "Save",
-                    onTap: () {}, // Download logic can go here
+                    onTap: () => _downloadZakatDetails(context, controller),
                   ),
                 ),
                 const SizedBox(width: 15),

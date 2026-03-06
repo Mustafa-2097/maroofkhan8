@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controller/hadith_controller.dart';
-import 'hadish_tafsir_details_screen.dart';
+import 'hadith_tafsir_details_screen.dart';
 import 'package:share_plus/share_plus.dart';
 
 class SavedHadithsScreen extends StatelessWidget {
@@ -21,22 +21,9 @@ class SavedHadithsScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(
-                Icons.chevron_left,
-                color: Colors.grey,
-                size: 20,
-              ),
-            ),
-          ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
         title: Text(
