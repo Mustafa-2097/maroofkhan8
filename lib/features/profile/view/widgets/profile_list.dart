@@ -11,6 +11,7 @@ import 'package:maroofkhan8/features/profile/view/pages/subscription/view/Premiu
 import 'package:maroofkhan8/features/profile/view/pages/subscription/view/subscription_screen.dart';
 import 'package:maroofkhan8/features/profile/view/pages/support_center.dart';
 import 'package:maroofkhan8/features/profile/view/pages/terms_conditions.dart';
+import 'package:maroofkhan8/features/profile/view/pages/donation_screen.dart';
 import 'package:maroofkhan8/splash/view/splash_screen.dart';
 
 class ProfileList extends StatefulWidget {
@@ -91,6 +92,11 @@ class _ProfileListState extends State<ProfileList> {
             label: 'Subscription',
             onTap: () => Get.to(() => SubscriptionPage()),
             //onTap: () => Get.to(() => PremiumSubscriptionPage()),
+          ),
+          _DrawerItem(
+            icon: Icons.volunteer_activism_outlined,
+            label: 'Donation',
+            onTap: () => Get.to(() => const DonationScreen()),
           ),
           _DrawerItem(
             icon: Icons.payment_outlined,
