@@ -582,5 +582,15 @@
   "all": "تمام",
   "with_audio": "آڈیو کے ساتھ",
   "no_names_found": "کوئی نام نہیں ملا",
-  "no_saved_names_yet": "ابھی تک کوئی نام محفوظ نہیں ہوا"
+  "no_saved_names_yet": "ابھی تک کوئی نام محفوظ نہیں ہوا",
+  "islaah_meditation_title": "اصلاح اور مراقبہ",
+  "no_meditation_records": "مراقبہ کا کوئی ریکارڈ نہیں ملا",
+  "fetch_meditation_error": "مراقبہ کی تفصیلات حاصل نہیں کی جا سکیں",
+  "inner_peace": "اندرونی سکون",
+  "calm_heart_placeholder": "اپنے دل کو پرسکون رکھیں، اپنے ذہن کو متوازن رکھیں",
+  "remember_allah_placeholder": "گرا سانس لیں اور اللہ کو یاد کریں۔\nاگر ضرورت ہو تو رک جائیں۔ اپنے دل پر توجہ دیں",
+  "start_session": "سیشن شروع کریں",
+  "keep_breathing": "سانس لیتے رہیں",
+  "end_session": "سیشن ختم کریں",
+  "al_murshid": "المرشد"
 }

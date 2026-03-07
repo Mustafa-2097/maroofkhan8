@@ -366,5 +366,15 @@
   "all": "All",
   "with_audio": "With Audio",
   "no_names_found": "No names found",
-  "no_saved_names_yet": "No saved names yet"
+  "no_saved_names_yet": "No saved names yet",
+  "islaah_meditation_title": "Islaah & Meditation",
+  "no_meditation_records": "No meditation records found",
+  "fetch_meditation_error": "Could not fetch meditation details",
+  "inner_peace": "Inner Peace",
+  "calm_heart_placeholder": "Calm your heart, balance your\nmind",
+  "remember_allah_placeholder": "Take a deep breath and remember Allah.\nPause if needed. Focus on your heart",
+  "start_session": "Start Session",
+  "keep_breathing": "Keep Breathing",
+  "end_session": "End Session",
+  "al_murshid": "Al Murshid"
 }

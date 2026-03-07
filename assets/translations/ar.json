@@ -582,5 +582,15 @@
   "all": "الكل",
   "with_audio": "مع الصوت",
   "no_names_found": "لم يتم العثور على أسماء",
-  "no_saved_names_yet": "لا توجد أسماء محفوظة بعد"
+  "no_saved_names_yet": "لا توجد أسماء محفوظة بعد",
+  "islaah_meditation_title": "الإصلاح والتامل",
+  "no_meditation_records": "لم يتم العثور على سجلات تأمل",
+  "fetch_meditation_error": "تعذر جلب تفاصيل التأمل",
+  "inner_peace": "سلام داخلي",
+  "calm_heart_placeholder": "طمئن قلبك، وازن عقلك",
+  "remember_allah_placeholder": "خذ نفسًا عميقًا واذكر الله.\nتوقف إذا لزم الأمر. ركز على قلبك",
+  "start_session": "بدء الجلسة",
+  "keep_breathing": "استمر في التنفس",
+  "end_session": "إنهاء الجلسة",
+  "al_murshid": "المرشد"
 }

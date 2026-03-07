@@ -6,6 +6,8 @@ import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import '../controller/meditation_controller.dart';
 import '../model/meditation_model.dart';
 import '../../sufism/model/guided_meditation_model.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 
 // --- Reusable Components ---
 
@@ -134,7 +136,7 @@ class MainMenuScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const HeaderSection(title: "Islaah & Meditation"),
+        title: HeaderSection(title: tr("islaah_meditation_title")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -153,9 +155,7 @@ class MainMenuScreen extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (controller.meditationList.isEmpty) {
-                  return const Center(
-                    child: Text("No meditation records found"),
-                  );
+                  return Center(child: Text(tr("no_meditation_records")));
                 }
 
                 return ListView.builder(
@@ -189,13 +189,13 @@ class MainMenuScreen extends StatelessWidget {
                           );
                         } else {
                           Get.snackbar(
-                            "Error",
-                            "Could not fetch meditation details",
+                            tr("error"),
+                            tr("fetch_meditation_error"),
                           );
                         }
                       },
                       child: CategoryCard(
-                        title: med.title ?? "Untitled",
+                        title: med.title ?? tr("untitled"),
                         subtitle: med.subtitle ?? "",
                         icon: Icons.self_improvement,
                       ),
@@ -281,7 +281,7 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
     String twoDigits(int n) => n.toString().padLeft(2, "0");
     String twoDigitMinutes = twoDigits(d.inMinutes.remainder(60));
     String twoDigitSeconds = twoDigits(d.inSeconds.remainder(60));
-    return "$twoDigitMinutes:$twoDigitSeconds";
+    return localizeDigits("$twoDigitMinutes:$twoDigitSeconds", context);
   }
 
   void _togglePlay() async {
@@ -300,11 +300,11 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
     final title =
         widget.meditation?.title ??
         widget.guidedMeditation?.name ??
-        "Inner Peace";
+        tr("inner_peace");
     final subtitle =
         widget.meditation?.subtitle ??
         widget.guidedMeditation?.meaning ??
-        "Calm your heart, balance your\nmind";
+        tr("calm_heart_placeholder");
     final arabicTitle = widget.guidedMeditation?.nameArabic;
 
     return Scaffold(
@@ -362,7 +362,7 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
             ),
             const SizedBox(height: 30),
             Text(
-              "Al Murshid",
+              tr("al_murshid"),
               style: GoogleFonts.playfairDisplay(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -370,7 +370,7 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
             ),
             const SizedBox(height: 10),
             Text(
-              "Take a deep breath and remember Allah.\nPause if needed. Focus on your heart",
+              tr("remember_allah_placeholder"),
               textAlign: TextAlign.center,
               style: GoogleFonts.ebGaramond(
                 fontSize: 15,
@@ -446,11 +446,14 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildBottomBtn("Start Session", const Color(0xFF0D5D4E)),
+                  _buildBottomBtn(tr("start_session"), const Color(0xFF0D5D4E)),
                   const SizedBox(width: 8),
-                  _buildBottomBtn("Keep Breathing", const Color(0xFF8D4B33)),
+                  _buildBottomBtn(
+                    tr("keep_breathing"),
+                    const Color(0xFF8D4B33),
+                  ),
                   const SizedBox(width: 8),
-                  _buildBottomBtn("End Session", const Color(0xFF1B2344)),
+                  _buildBottomBtn(tr("end_session"), const Color(0xFF1B2344)),
                 ],
               ),
             ),

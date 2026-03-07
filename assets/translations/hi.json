@@ -582,5 +582,15 @@
   "all": "सभी",
   "with_audio": "ऑडियो के साथ",
   "no_names_found": "कोई नाम नहीं मिला",
-  "no_saved_names_yet": "अभी तक कोई नाम सुरक्षित नहीं है"
+  "no_saved_names_yet": "अभी तक कोई नाम सुरक्षित नहीं है",
+  "islaah_meditation_title": "इसलाह और ध्यान",
+  "no_meditation_records": "कोई ध्यान रिकॉर्ड नहीं मिला",
+  "fetch_meditation_error": "ध्यान विवरण प्राप्त नहीं किया जा सका",
+  "inner_peace": "आंतरिक शांति",
+  "calm_heart_placeholder": "अपने हृदय को शांत करें, अपने मन को संतुलित करें",
+  "remember_allah_placeholder": "गहरी सांस लें और अल्लाह को याद करें।\nजरूरत पड़ने पर रुकें। अपने दिल पर ध्यान दें",
+  "start_session": "सत्र शुरू करें",
+  "keep_breathing": "सांस लेते रहें",
+  "end_session": "सत्र समाप्त करें",
+  "al_murshid": "अल मुर्शिद"
 }
