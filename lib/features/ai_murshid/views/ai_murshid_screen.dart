@@ -5,6 +5,7 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 import '../controller/service/ai_murshid_service.dart';
 import '../model/chat_message_model.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -69,6 +70,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    context.locale; // Force rebuild on locale change
     return Scaffold(
       backgroundColor: bgColor,
       appBar: PreferredSize(
@@ -112,7 +114,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Al Murshid",
+                      tr("nav_al_murshid"),
                       style: GoogleFonts.playfairDisplay(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -120,7 +122,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                     ),
                     Text(
-                      "Your Spiritual Guide",
+                      tr("your_spiritual_guide"),
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.grey.shade500,
@@ -142,7 +144,7 @@ class _ChatScreenState extends State<ChatScreen> {
             child: messages.isEmpty && !isTyping
                 ? Center(
                     child: Text(
-                      "Learn Islam with AI",
+                      tr("learn_islam_ai"),
                       style: GoogleFonts.playfairDisplay(
                         fontSize: 22,
                         fontWeight: FontWeight.w600,
@@ -246,9 +248,13 @@ class _ChatScreenState extends State<ChatScreen> {
                                     );
 
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text("Copied to clipboard"),
-                                        duration: Duration(milliseconds: 800),
+                                      SnackBar(
+                                        content: Text(
+                                          tr("copied_to_clipboard"),
+                                        ),
+                                        duration: const Duration(
+                                          milliseconds: 800,
+                                        ),
                                       ),
                                     );
                                   },
@@ -384,6 +390,7 @@ class _VoiceInputBarState extends State<VoiceInputBar> {
 
   @override
   Widget build(BuildContext context) {
+    context.locale; // Force rebuild on locale change
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20, bottom: 120),
       child: Stack(
@@ -427,9 +434,9 @@ class _VoiceInputBarState extends State<VoiceInputBar> {
                               color: const Color(0xFFF8F9FA),
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            child: const Text(
-                              "Speak now",
-                              style: TextStyle(
+                            child: Text(
+                              tr("speak_now"),
+                              style: const TextStyle(
                                 fontSize: 12,
                                 color: Color(0xFF4A4A4A),
                               ),
@@ -441,10 +448,10 @@ class _VoiceInputBarState extends State<VoiceInputBar> {
                             enabled: !isListening,
                             maxLines: null,
                             minLines: 1,
-                            decoration: const InputDecoration(
-                              hintText: "Type a message...",
+                            decoration: InputDecoration(
+                              hintText: tr("type_a_message"),
                               border: InputBorder.none,
-                              contentPadding: EdgeInsets.only(
+                              contentPadding: const EdgeInsets.only(
                                 left: 0,
                                 top: 12,
                                 bottom: 12,
