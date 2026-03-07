@@ -161,21 +161,22 @@ class SufismHomeScreen extends StatelessWidget {
                   if (sufismController.guidedMeditationList.isEmpty) {
                     return const Center(child: Text("No records found"));
                   }
-                  final displayList =
-                      sufismController.isMeditationExpanded.value
-                      ? sufismController.guidedMeditationList
-                      : sufismController.guidedMeditationList.take(2);
+                  final fullList = sufismController.guidedMeditationList
+                      .toList();
+                  final displayList = fullList.take(2).toList();
                   return Column(
-                    children: displayList
-                        .map(
-                          (med) => _meditationTile(
-                            context,
-                            med.name ?? "Untitled",
-                            med.meaning ?? "",
-                            medData: med,
-                          ),
-                        )
-                        .toList(),
+                    children: List.generate(
+                      displayList.length,
+                      (i) => _meditationTile(
+                        context,
+                        displayList[i].name ?? "Untitled",
+                        displayList[i].nameArabic ?? "",
+                        displayList[i].meaning ?? "",
+                        medData: displayList[i],
+                        allMeditations: fullList,
+                        index: i,
+                      ),
+                    ),
                   );
                 }),
 
@@ -185,17 +186,35 @@ class SufismHomeScreen extends StatelessWidget {
                     return const SizedBox.shrink();
                   }
                   return GestureDetector(
-                    onTap: () => sufismController.isMeditationExpanded.value =
-                        !sufismController.isMeditationExpanded.value,
+                    onTap: () =>
+                        Get.to(() => const GuidedMeditationListScreen()),
                     child: Center(
-                      child: Text(
-                        sufismController.isMeditationExpanded.value
-                            ? "Show less"
-                            : "See more",
-                        style: const TextStyle(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
                           color: kPrimaryBrown,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "More",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
+                            ),
+                            SizedBox(width: 5),
+                            Icon(
+                              Icons.arrow_forward,
+                              size: 12,
+                              color: Colors.white,
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -318,8 +337,11 @@ class SufismHomeScreen extends StatelessWidget {
   Widget _meditationTile(
     BuildContext context,
     String title,
+    String titleArabic,
     String sub, {
     GuidedMeditationData? medData,
+    List<GuidedMeditationData> allMeditations = const [],
+    int index = 0,
   }) {
     return GestureDetector(
       onTap: () {
@@ -327,7 +349,11 @@ class SufismHomeScreen extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => MeditationPlayerScreen(guidedMeditation: medData),
+              builder: (_) => MeditationPlayerScreen(
+                guidedMeditation: medData,
+                allGuidedMeditations: allMeditations,
+                initialIndex: index,
+              ),
             ),
           );
         }
@@ -359,7 +385,7 @@ class SufismHomeScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    titleArabic.isNotEmpty ? '$title ($titleArabic)' : title,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
@@ -420,6 +446,169 @@ class SufismHomeScreen extends StatelessWidget {
             style: const TextStyle(fontSize: 12, color: kTextGrey),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ==========================================
+// SCREEN 1A: GUIDED MEDITATION LIST
+// ==========================================
+class GuidedMeditationListScreen extends StatelessWidget {
+  const GuidedMeditationListScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final sufismController = SufismController.instance;
+    return Scaffold(
+      backgroundColor: kBackground,
+      appBar: AppBar(
+        title: const HeaderSection(title: "Guided Meditation"),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+        ),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              // Simple Border Search
+              Container(
+                height: 45,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: TextField(
+                  onChanged: (val) =>
+                      sufismController.guidedMeditationSearchQuery.value = val,
+                  decoration: const InputDecoration(
+                    hintText: "Search",
+                    hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
+                    border: InputBorder.none,
+                    prefixIcon: Icon(
+                      Icons.search,
+                      size: 20,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              // List
+              Expanded(
+                child: Obx(() {
+                  if (sufismController.isMeditationLoading.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (sufismController.filteredGuidedMeditationList.isEmpty) {
+                    return const Center(child: Text("No records found"));
+                  }
+                  return ListView.builder(
+                    itemCount:
+                        sufismController.filteredGuidedMeditationList.length,
+                    itemBuilder: (context, index) {
+                      final list =
+                          sufismController.filteredGuidedMeditationList;
+                      final med = list[index];
+                      return _meditationTile(
+                        context,
+                        med.name ?? "Untitled",
+                        med.nameArabic ?? "",
+                        med.meaning ?? "",
+                        medData: med,
+                        allMeditations: list,
+                        index: index,
+                      );
+                    },
+                  );
+                }),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _meditationTile(
+    BuildContext context,
+    String title,
+    String titleArabic,
+    String sub, {
+    GuidedMeditationData? medData,
+    List<GuidedMeditationData> allMeditations = const [],
+    int index = 0,
+  }) {
+    return GestureDetector(
+      onTap: () {
+        if (medData != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => MeditationPlayerScreen(
+                guidedMeditation: medData,
+                allGuidedMeditations: allMeditations,
+                initialIndex: index,
+              ),
+            ),
+          );
+        }
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 5,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            const CircleAvatar(
+              radius: 18,
+              backgroundColor: kPrimaryBrown,
+              child: Icon(Icons.donut_large, color: Colors.white, size: 18),
+            ),
+            const SizedBox(width: 15),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    titleArabic.isNotEmpty ? '$title ($titleArabic)' : title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ),
+                  Text(
+                    sub,
+                    style: const TextStyle(fontSize: 10, color: kTextGrey),
+                  ),
+                ],
+              ),
+            ),
+            const CircleAvatar(
+              radius: 12,
+              backgroundColor: kPrimaryBrown,
+              child: Icon(Icons.chevron_right, color: Colors.white, size: 16),
+            ),
+          ],
+        ),
       ),
     );
   }

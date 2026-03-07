@@ -107,6 +107,7 @@ class GuidedMeditationData {
   String? name;
   String? nameArabic;
   String? meaning;
+  String? file;
   String? status;
   String? createdAt;
   String? updatedAt;
@@ -116,6 +117,7 @@ class GuidedMeditationData {
     this.name,
     this.nameArabic,
     this.meaning,
+    this.file,
     this.status,
     this.createdAt,
     this.updatedAt,
@@ -126,6 +128,7 @@ class GuidedMeditationData {
     name = json['name'];
     nameArabic = json['nameArabic'];
     meaning = json['meaning'];
+    file = json['file'];
     status = json['status'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
@@ -137,6 +140,7 @@ class GuidedMeditationData {
     data['name'] = name;
     data['nameArabic'] = nameArabic;
     data['meaning'] = meaning;
+    data['file'] = file;
     data['status'] = status;
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;

@@ -50,6 +50,12 @@ class _AudioListScreenState extends State<AudioListScreen> {
     });
   }
 
+  @override
+  void dispose() {
+    controller.stopAudio();
+    super.dispose();
+  }
+
   final List<String> categories = [
     "Sufi Lectures",
     "Malfuzat",
@@ -314,7 +320,11 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                                         .totalDuration
                                                         .value,
                                                   )
-                                                : '00:00',
+                                                : (controller
+                                                          .cachedDurations[featuredAudio
+                                                              .id ??
+                                                          ''] ??
+                                                      '00:00'),
                                             style: const TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w500,
