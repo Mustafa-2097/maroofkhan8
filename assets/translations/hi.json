@@ -526,5 +526,19 @@
   "who_cannot_receive_zakat_sub": "वे लोग जो जकात के पात्र नहीं हैं",
   "cond_hawl": "धन एक पूरे चंद्र वर्ष (हौल) के लिए कब्जे में होना चाहिए",
   "wealth_fluctuation": "वर्ष के दौरान धन में उतार-चढ़ाव",
-  "date_colon": "तारीख:"
+  "date_colon": "तारीख:",
+  "audio_list_title": "ऑडियो सूची",
+  "audio_title": "ऑडियो",
+  "cat_sufi_lectures": "सूफी व्याख्यान",
+  "cat_malfuzat": "मलफूज़ात",
+  "cat_naats_manqabats": "नाअत और मनकबत",
+  "no_audio_found": "कोई ऑडियो नहीं मिला",
+  "no_audio_found_category": "इस श्रेणी में कोई ऑडियो नहीं मिला",
+  "no_featured_audio": "कोई मुख्य ऑडियो नहीं है",
+  "untitled": "बिना शीर्षक",
+  "shaykh_lecture": "शेख का व्याख्यान",
+  "pause": "रोकें",
+  "download_premium": "डाउनलोड (प्रीमियम)",
+  "loading_dots": "लोड हो रहा है...",
+  "trust_in_allah": "अल्लाह पर भरोसा"
 }

@@ -310,5 +310,19 @@
   "who_cannot_receive_zakat_sub": "People who are not eligible for Zakat",
   "cond_hawl": "The wealth must be in possession for one full lunar year (Hawl)",
   "wealth_fluctuation": "Wealth Fluctuation during the Year",
-  "date_colon": "Date:"
+  "date_colon": "Date:",
+  "audio_list_title": "Audio List",
+  "audio_title": "Audio",
+  "cat_sufi_lectures": "Sufi Lectures",
+  "cat_malfuzat": "Malfuzat",
+  "cat_naats_manqabats": "Naats & Manqabats",
+  "no_audio_found": "No audio found",
+  "no_audio_found_category": "No audio found in this category",
+  "no_featured_audio": "No featured audio",
+  "untitled": "Untitled",
+  "shaykh_lecture": "Shaykh's Lecture",
+  "pause": "Pause",
+  "download_premium": "Download (Premium)",
+  "loading_dots": "Loading...",
+  "trust_in_allah": "Trust in Allah"
 }

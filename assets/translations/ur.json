@@ -526,5 +526,19 @@
   "who_cannot_receive_zakat_sub": "وہ لوگ جو زکوٰۃ کے اہل نہیں ہیں",
   "cond_hawl": "مال مکل ایک پورے قمری سال (حول) تک ملکیت میں رہنا ضروری ہے",
   "wealth_fluctuation": "سال کے دوران مال میں اتار چڑھاؤ",
-  "date_colon": "تاریخ:"
+  "date_colon": "تاریخ:",
+  "audio_list_title": "آڈیو لسٹ",
+  "audio_title": "آڈیو",
+  "cat_sufi_lectures": "صوفی بیانات",
+  "cat_malfuzat": "ملفوظات",
+  "cat_naats_manqabats": "نعت و منقبت",
+  "no_audio_found": "کوئی آڈیو نہیں ملی",
+  "no_audio_found_category": "اس زمرے میں کوئی آڈیو نہیں ملی",
+  "no_featured_audio": "کوئی نمایاں آڈیو نہیں ہے",
+  "untitled": "بغیر عنوان",
+  "shaykh_lecture": "شیخ کا بیان",
+  "pause": "روکیں",
+  "download_premium": "ڈاؤن لوڈ (پریمیم)",
+  "loading_dots": "لوڈنگ...",
+  "trust_in_allah": "اللہ پر بھروسہ"
 }

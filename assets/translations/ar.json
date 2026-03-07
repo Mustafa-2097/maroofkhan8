@@ -526,5 +526,19 @@
   "who_cannot_receive_zakat_sub": "الأشخاص غير المؤهلين للزكاة",
   "cond_hawl": "يجب أن يكون المال في الحوزة لمدة عام قمري كامل (الحول)",
   "wealth_fluctuation": "تقلب الثروة خلال العام",
-  "date_colon": "التاريخ:"
+  "date_colon": "التاريخ:",
+  "audio_list_title": "قائمة الصوت",
+  "audio_title": "صوت",
+  "cat_sufi_lectures": "محاضرات صوفية",
+  "cat_malfuzat": "ملفوظات",
+  "cat_naats_manqabats": "نعت ومنقبات",
+  "no_audio_found": "لم يتم العثور على صوت",
+  "no_audio_found_category": "لم يتم العثور على صوت في هذه الفئة",
+  "no_featured_audio": "لا يوجد صوت مميز",
+  "untitled": "بدون عنوان",
+  "shaykh_lecture": "محاضرة الشيخ",
+  "pause": "ایقاف مؤقت",
+  "download_premium": "تنزيل (مميز)",
+  "loading_dots": "جاري التحميل...",
+  "trust_in_allah": "التوكل على الله"
 }
