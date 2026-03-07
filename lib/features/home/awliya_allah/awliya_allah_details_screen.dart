@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'models/awliya_allah_model.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 import 'controllers/awliya_allah_controller.dart';
 
 class AwliyaAllahDetailsScreen extends StatefulWidget {
@@ -98,10 +100,10 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      _tabButton("Biography", 0),
-                      _tabButton("Teachings", 1),
-                      _tabButton("Karamat", 2),
-                      _tabButton("Quotes", 3),
+                      _tabButton(tr("biography"), 0),
+                      _tabButton(tr("teachings"), 1),
+                      _tabButton(tr("karamat"), 2),
+                      _tabButton(tr("quotes"), 3),
                     ],
                   ),
                 ),
@@ -135,24 +137,24 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
   String _getTabTitle() {
     switch (selectedTabIndex) {
       case 1:
-        return "His Teaching";
+        return tr("his_teachings");
       case 2:
-        return "Verified Karamat";
+        return tr("verified_karamat");
       case 3:
-        return "His Quotes";
+        return tr("his_quotes");
       default:
-        return "Biography";
+        return tr("biography");
     }
   }
 
   Widget _buildTabBody(AwliyaAllah awliya) {
     switch (selectedTabIndex) {
       case 1:
-        return _contentListTab(awliya.teachings, "Teachings");
+        return _contentListTab(awliya.teachings, tr("teachings"));
       case 2:
-        return _contentListTab(awliya.karamats, "Karamat");
+        return _contentListTab(awliya.karamats, tr("karamat"));
       case 3:
-        return _contentListTab(awliya.quotes, "Quotes", isQuote: true);
+        return _contentListTab(awliya.quotes, tr("quotes"), isQuote: true);
       default:
         return _biographyTab(awliya);
     }
@@ -175,13 +177,28 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
       ),
       child: Column(
         children: [
-          _infoRow("Name :", awliya.name),
-          _infoRow("Born :", awliya.dateOfBirth ?? "N/A"),
-          _infoRow("Passed Away :", awliya.dateOfDeath ?? "N/A"),
-          _infoRow("Position :", awliya.position ?? "N/A"),
-          _infoRow("Institution :", awliya.institution ?? "N/A"),
-          _infoRow("Works :", awliya.works ?? "N/A"),
-          _infoRow("Known For :", awliya.knownFor ?? "N/A"),
+          _infoRow(tr("label_name"), awliya.name),
+          _infoRow(
+            tr("label_born"),
+            localizeDigits(awliya.dateOfBirth ?? tr("not_available"), context),
+          ),
+          _infoRow(
+            tr("label_passed_away"),
+            localizeDigits(awliya.dateOfDeath ?? tr("not_available"), context),
+          ),
+          _infoRow(
+            tr("label_position"),
+            awliya.position ?? tr("not_available"),
+          ),
+          _infoRow(
+            tr("label_institution"),
+            awliya.institution ?? tr("not_available"),
+          ),
+          _infoRow(tr("label_works"), awliya.works ?? tr("not_available")),
+          _infoRow(
+            tr("label_known_for"),
+            awliya.knownFor ?? tr("not_available"),
+          ),
         ],
       ),
     );
@@ -197,7 +214,7 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
         child: Padding(
           padding: const EdgeInsets.only(top: 20),
           child: Text(
-            "Information about $type will be updated soon.",
+            tr("info_updated_soon", args: [type]),
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 14, color: Colors.grey),
           ),
@@ -343,7 +360,7 @@ class _ActionCardWidgetState extends State<_ActionCardWidget> {
           final tp = TextPainter(
             text: span,
             maxLines: 5,
-            textDirection: TextDirection.ltr,
+            textDirection: Directionality.of(context),
           );
 
           tp.layout(maxWidth: constraints.maxWidth);
@@ -394,7 +411,7 @@ class _ActionCardWidgetState extends State<_ActionCardWidget> {
                         borderRadius: BorderRadius.circular(15),
                       ),
                       child: Text(
-                        isExpanded ? "Read Less" : "Read More",
+                        isExpanded ? tr("show_less") : tr("see_more"),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 10,

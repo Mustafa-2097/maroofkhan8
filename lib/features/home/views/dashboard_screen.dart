@@ -8,12 +8,15 @@ import '../../../core/constant/app_colors.dart';
 import '../../profile/controller/profile_controller.dart';
 import '../controller/dashboard_controller.dart';
 import 'custom_app_drawer.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Listen to locale changes
+    context.locale;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = Theme.of(context).colorScheme.background;
 
@@ -53,14 +56,14 @@ class DashboardScreen extends StatelessWidget {
                 SizedBox(height: 30.h),
 
                 // 1. Your Journey Section
-                const SectionHeader(title: "Your Journey"),
+                SectionHeader(title: tr("your_journey")),
                 SizedBox(height: 15.h),
                 const YourJourneyRow(),
 
                 SizedBox(height: 30.h),
 
                 // 2. Quick Start Section
-                const SectionHeader(title: "Quick Start"),
+                SectionHeader(title: tr("quick_start")),
                 SizedBox(height: 15.h),
                 const QuickStartGrid(),
 
@@ -79,6 +82,7 @@ class HeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
 
@@ -114,7 +118,7 @@ class HeaderSection extends StatelessWidget {
                 ),
                 SizedBox(width: 10),
                 Text(
-                  "Digital Khanqah",
+                  tr("digital_khanqah"),
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ],
@@ -149,7 +153,7 @@ class HeaderSection extends StatelessWidget {
 
         /// Greeting
         Text(
-          "Assalamu Alaikum",
+          tr("greeting"),
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
             color: Theme.of(context).disabledColor.withValues(alpha: 0.6),
             fontSize: 20.sp,
@@ -159,7 +163,7 @@ class HeaderSection extends StatelessWidget {
 
         /// Main message
         Text(
-          "May your heart find peace today",
+          tr("greeting_subtitle"),
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.w700,
             color: isDark ? Colors.white : Colors.black87,
@@ -251,7 +255,7 @@ class _HeroSectionState extends State<HeroSection> {
   // Fallback slides if API fails or for other types
   final List<Map<String, dynamic>> _fallbackSlides = [
     {
-      "type": "Daily Story",
+      "type": "daily_story",
       "title": "شيخ عبدالقادر جيلاني",
       "description": "He who knows self\nknows his Lord.",
       "image":
@@ -261,6 +265,7 @@ class _HeroSectionState extends State<HeroSection> {
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
     final dashboardController = Get.find<DashboardController>();
@@ -278,7 +283,7 @@ class _HeroSectionState extends State<HeroSection> {
 
       if (quoteData.isNotEmpty) {
         slides.add({
-          "type": "Daily Story",
+          "type": "daily_story",
           "title": quoteData['title'] ?? "",
           "description": quoteData['description'] ?? "",
           "image":
@@ -367,7 +372,7 @@ class _HeroSectionState extends State<HeroSection> {
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
-                  data['type'] ?? "Daily Story",
+                  tr(data['type'] ?? "daily_story"),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 10,
@@ -475,6 +480,7 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Text(
@@ -492,6 +498,7 @@ class YourJourneyRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
 
@@ -500,8 +507,8 @@ class YourJourneyRow extends StatelessWidget {
         // Card 1: 5 Day Streak (Purple)
         Expanded(
           child: _JourneyCard(
-            topText: "5",
-            bottomText: "Day\nStreak",
+            topText: tr("num_5"),
+            bottomText: tr("day_streak"),
             color: isDark
                 ? primaryColor.withOpacity(0.15)
                 : const Color(0xFFDCD6FF),
@@ -514,8 +521,8 @@ class YourJourneyRow extends StatelessWidget {
         // Card 2: 1 Surah (Peach)
         Expanded(
           child: _JourneyCard(
-            topText: "1",
-            bottomText: "Surah",
+            topText: tr("num_1"),
+            bottomText: tr("surah"),
             color: isDark
                 ? Colors.orange.withOpacity(0.15)
                 : const Color(0xFFFFD6CA),
@@ -528,8 +535,8 @@ class YourJourneyRow extends StatelessWidget {
         // Card 3: 2h 15 min Surah (Green)
         Expanded(
           child: _JourneyCard(
-            topText: "2h 15\nmin",
-            bottomText: "Surah",
+            topText: tr("time_2h_15m"),
+            bottomText: tr("surah"),
             color: isDark
                 ? Colors.green.withOpacity(0.15)
                 : const Color(0xFFE6F5D8),
@@ -542,8 +549,8 @@ class YourJourneyRow extends StatelessWidget {
         // Card 4: 8 Saved (Pink)
         Expanded(
           child: _JourneyCard(
-            topText: "8",
-            bottomText: "Saved",
+            topText: tr("num_8"),
+            bottomText: tr("saved"),
             color: isDark
                 ? Colors.pink.withOpacity(0.15)
                 : const Color(0xFFE94E77),
@@ -635,6 +642,7 @@ class QuickStartGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
     final DashboardController controller = Get.find<DashboardController>();
@@ -671,8 +679,9 @@ class QuickStartGrid extends StatelessWidget {
               Get.to(feature.destination());
             },
             child: _GridCard(
-              title: feature.title,
+              title: tr(feature.titleKey),
               icon: feature.icon,
+              imagePath: feature.imagePath,
               color: feature.colorBuilder(isDark, primaryColor),
               isPinkCard: feature.isPinkCard,
               textColor: isDark ? Colors.white : Colors.white,
@@ -687,7 +696,8 @@ class QuickStartGrid extends StatelessWidget {
 
 class _GridCard extends StatelessWidget {
   final String title;
-  final IconData icon;
+  final IconData? icon;
+  final String? imagePath;
   final Color color;
   final bool isPinkCard;
   final Color? textColor;
@@ -695,7 +705,8 @@ class _GridCard extends StatelessWidget {
 
   const _GridCard({
     required this.title,
-    required this.icon,
+    this.icon,
+    this.imagePath,
     required this.color,
     this.isPinkCard = false,
     this.textColor,
@@ -720,11 +731,16 @@ class _GridCard extends StatelessWidget {
           CircleAvatar(
             radius: 16,
             backgroundColor: isDark ? Colors.grey.shade800 : Colors.white,
-            child: Icon(
-              icon,
-              size: 18,
-              color: isDark ? Colors.white : Colors.black87,
-            ),
+            child: imagePath != null
+                ? Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Image.asset(imagePath!, fit: BoxFit.contain),
+                  )
+                : Icon(
+                    icon,
+                    size: 18,
+                    color: isDark ? Colors.white : Colors.black87,
+                  ),
           ),
           const SizedBox(height: 4),
           FittedBox(

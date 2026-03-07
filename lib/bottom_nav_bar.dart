@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'features/ai_murshid/views/ai_murshid_screen.dart';
 import 'features/hadis/views/hadis_screen.dart';
 import 'features/home/views/dashboard_screen.dart';
@@ -36,6 +37,7 @@ class _UserNavBarState extends State<CustomBottomNavBar> {
 
   @override
   Widget build(BuildContext context) {
+    context.locale; // Register dependency
     final keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Scaffold(
@@ -86,27 +88,27 @@ class _UserNavBarState extends State<CustomBottomNavBar> {
                 children: [
                   _buildNavItem(
                     icon: Icons.home_outlined,
-                    label: "Home",
+                    labelKey: "nav_home",
                     index: 0,
                   ),
                   _buildNavItem(
                     icon: Icons.auto_awesome_outlined,
-                    label: "Al Murshid",
+                    labelKey: "nav_al_murshid",
                     index: 1,
                   ),
                   _buildNavItem(
                     icon: Icons.menu_book_outlined,
-                    label: "Quran",
+                    labelKey: "nav_quran",
                     index: 2,
                   ),
                   _buildNavItem(
                     icon: Icons.import_contacts, // Quran Icon
-                    label: "Hadith",
+                    labelKey: "nav_hadith",
                     index: 3,
                   ),
                   _buildNavItem(
                     icon: Icons.man_outlined,
-                    label: "Sufism",
+                    labelKey: "nav_sufism",
                     index: 4,
                   ),
                 ],
@@ -120,7 +122,7 @@ class _UserNavBarState extends State<CustomBottomNavBar> {
 
   Widget _buildNavItem({
     required IconData icon,
-    required String label,
+    required String labelKey,
     required int index,
   }) {
     return Expanded(
@@ -138,7 +140,7 @@ class _UserNavBarState extends State<CustomBottomNavBar> {
               Icon(icon, color: color, size: 26),
               const SizedBox(height: 4),
               Text(
-                label,
+                tr(labelKey),
                 style: TextStyle(
                   color: color,
                   fontSize: 10,

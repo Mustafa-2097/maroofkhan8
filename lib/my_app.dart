@@ -1,7 +1,9 @@
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:maroofkhan8/features/home/views/dashboard_screen.dart';
 import 'package:maroofkhan8/splash/view/splash_screen.dart';
 import 'bottom_nav_bar.dart';
@@ -18,14 +20,25 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       builder: (context, child) {
         /// Override system text scaling globally
-        final fixedMediaQuery = MediaQuery.of(context).copyWith(
-          textScaler: const TextScaler.linear(1.0),
-        );
+        final fixedMediaQuery = MediaQuery.of(
+          context,
+        ).copyWith(textScaler: const TextScaler.linear(1.0));
         return MediaQuery(
           data: fixedMediaQuery,
           child: GetMaterialApp(
             debugShowCheckedModeBanner: false,
-            builder: EasyLoading.init(),
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            builder: (context, child) {
+              final easyLoading = EasyLoading.init();
+              child = easyLoading(context, child);
+              return Directionality(
+                textDirection:
+                    ui.TextDirection.ltr, // Enforce LTR for all languages
+                child: child,
+              );
+            },
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: ThemeMode.system,
@@ -34,6 +47,5 @@ class MyApp extends StatelessWidget {
         );
       },
     );
-
   }
 }

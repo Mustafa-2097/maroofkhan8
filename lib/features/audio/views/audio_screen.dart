@@ -4,6 +4,8 @@ import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import 'package:maroofkhan8/features/audio/views/audio_list_screen.dart';
 import 'package:maroofkhan8/features/audio/controller/audio_controller.dart';
 import 'package:maroofkhan8/features/audio/model/audio_model.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 
 class AudioScreen extends StatefulWidget {
   const AudioScreen({super.key});
@@ -27,7 +29,7 @@ class _AudioScreenState extends State<AudioScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: HeaderSection(title: "Audio"),
+        title: HeaderSection(title: tr("audio_title")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -56,7 +58,7 @@ class _AudioScreenState extends State<AudioScreen> {
                       children: [
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.6,
-                          child: const Center(child: Text("No audio found")),
+                          child: Center(child: Text(tr("no_audio_found"))),
                         ),
                       ],
                     );
@@ -141,7 +143,7 @@ class AudioCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    audio.title ?? "Untitled",
+                    audio.title ?? tr("untitled"),
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w400,
@@ -151,7 +153,7 @@ class AudioCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    audio.subtitle ?? "Shaykh’s Lecture",
+                    audio.subtitle ?? tr("shaykh_lecture"),
                     style: const TextStyle(
                       fontSize: 16,
                       color: Color(0xFFA6A6A6),
@@ -172,7 +174,7 @@ class AudioCard extends StatelessWidget {
                 Obx(() {
                   final duration = controller.cachedDurations[audio.id ?? ''];
                   return Text(
-                    duration ?? "00:00",
+                    localizeDigits(duration ?? "00:00", context),
                     style: const TextStyle(
                       fontSize: 12,
                       color: Colors.black,
@@ -188,13 +190,13 @@ class AudioCard extends StatelessWidget {
                     }
                   },
                   itemBuilder: (context) => [
-                    const PopupMenuItem(
+                    PopupMenuItem(
                       value: 'share',
                       child: Row(
                         children: [
-                          Icon(Icons.share, size: 20),
-                          SizedBox(width: 8),
-                          Text('Share'),
+                          const Icon(Icons.share, size: 20),
+                          const SizedBox(width: 8),
+                          Text(tr('share')),
                         ],
                       ),
                     ),

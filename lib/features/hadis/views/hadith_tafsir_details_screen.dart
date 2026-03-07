@@ -8,6 +8,8 @@ import 'package:maroofkhan8/features/hadis/controller/hadith_controller.dart';
 import 'package:maroofkhan8/features/hadis/models/last_read_hadith.dart';
 import '../../ai_murshid/views/ai_murshid_screen.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 
 class HadishTafsirDetailsScreen extends StatefulWidget {
   final String hadithText;
@@ -79,14 +81,14 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
         final file = File(filePath);
 
         final textToSave =
-            "${widget.heading != null && widget.heading!.isNotEmpty ? '${widget.heading}\n\n' : ''}${widget.hadithText}\n\n(${widget.bookName}, Chapter ${widget.chapterNum}, Hadith ${widget.hadithNumber})";
+            "${widget.heading != null && widget.heading!.isNotEmpty ? '${widget.heading}\n\n' : ''}${widget.hadithText}\n\n(${widget.bookName}, ${tr('chapters')} ${localizeDigits(widget.chapterNum, context)}, ${tr('hadith')} ${localizeDigits(widget.hadithNumber, context)})";
 
         await file.writeAsString(textToSave);
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              "Downloaded perfectly on this device's memory \n\nPath: $filePath",
+              "${tr('download_success')} \n\n${tr('path')}: $filePath",
             ),
             backgroundColor: primaryBrown,
           ),
@@ -101,6 +103,7 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -133,7 +136,8 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
                         children: [
                           TextSpan(text: "${widget.bookName}-"),
                           TextSpan(
-                            text: "(Chapter-${widget.chapterNum})",
+                            text:
+                                "(${tr('chapters')}-${localizeDigits(widget.chapterNum, context)})",
                             style: TextStyle(color: primaryBrown),
                           ),
                         ],
@@ -149,7 +153,7 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
                 children: [
                   Flexible(
                     child: Text(
-                      "${widget.bookName} > Chapter ${widget.chapterNum} > Hadith ${widget.hadithNumber}",
+                      "${widget.bookName} > ${tr('chapters')} ${localizeDigits(widget.chapterNum, context)} > ${tr('hadith')} ${localizeDigits(widget.hadithNumber, context)}",
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 11,
@@ -198,7 +202,9 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
               const SizedBox(height: 20),
 
               // --- TABS ---
-              Row(children: [_tabButton("Tafsir", darkBlack, Colors.white)]),
+              Row(
+                children: [_tabButton(tr("tafsir"), darkBlack, Colors.white)],
+              ),
 
               const SizedBox(height: 25),
 
@@ -276,7 +282,7 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
                     const SizedBox(height: 20),
                     Center(
                       child: Text(
-                        "${widget.bookName} • Hadith ${widget.hadithNumber}",
+                        "${widget.bookName} • ${tr('hadith')} ${localizeDigits(widget.hadithNumber, context)}",
                         style: const TextStyle(
                           fontSize: 10,
                           color: Color.fromARGB(255, 78, 78, 78),
@@ -299,29 +305,29 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _actionIcon(Icons.headphones_outlined, "Listen"),
+                    _actionIcon(Icons.headphones_outlined, tr("listen")),
                     _actionIcon(
                       Icons.auto_awesome_outlined,
-                      "AI Explanation",
+                      tr("ai_explanation"),
                       onTap: () {
                         Get.to(() => const ChatScreen());
                       },
                     ),
                     _actionIcon(
                       Icons.share_outlined,
-                      "Share",
+                      tr("share"),
                       onTap: () {
                         final shareText =
                             "${widget.heading ?? ''}\n\n"
                             "${widget.hadithText}\n\n"
-                            "(${widget.bookName}, Hadith ${widget.hadithNumber})\n\n"
+                            "(${widget.bookName}, ${tr('hadith')} ${localizeDigits(widget.hadithNumber, context)})\n\n"
                             "Shared via Maroof Khan App";
                         Share.share(shareText);
                       },
                     ),
                     _actionIcon(
                       Icons.download_outlined,
-                      "Download",
+                      tr("download"),
                       onTap: _downloadHadith,
                     ),
                   ],
@@ -341,16 +347,16 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Simple Explanation",
-                      style: TextStyle(
+                    Text(
+                      tr("simple_explanation"),
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 15),
                     Text(
-                      "Explanation not available from API yet.",
+                      tr("no_explanation_available"),
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.grey.shade600,

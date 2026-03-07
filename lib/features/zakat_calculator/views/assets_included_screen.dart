@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
 const Color kBackground = Color(0xFFF8F9FB);
@@ -11,6 +12,7 @@ class AssetsIncludedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
@@ -24,7 +26,7 @@ class AssetsIncludedScreen extends StatelessWidget {
         title: Column(
           children: [
             Text(
-              "Zakat",
+              tr("zakat"),
               style: GoogleFonts.ebGaramond(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
@@ -32,7 +34,7 @@ class AssetsIncludedScreen extends StatelessWidget {
               ),
             ),
             Text(
-              "Purify your wealth with ease and accuracy",
+              tr("purify_wealth_sub"),
               style: GoogleFonts.ebGaramond(fontSize: 12, color: kTextGrey),
             ),
           ],
@@ -78,7 +80,7 @@ class AssetsIncludedScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Assets Included in Zakat",
+                          tr("assets_included_title"),
                           style: GoogleFonts.ebGaramond(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -87,7 +89,7 @@ class AssetsIncludedScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          "What types of wealth are subject to Zakat",
+                          tr("assets_included_sub"),
                           style: GoogleFonts.ebGaramond(
                             fontSize: 13,
                             color: kTextGrey,
@@ -120,7 +122,7 @@ class AssetsIncludedScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "The following assets are included when calculating Zakat:",
+                    tr("assets_list_title"),
                     style: GoogleFonts.ebGaramond(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -130,26 +132,18 @@ class AssetsIncludedScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
 
-                  _checkListItem("Cash in hand and in bank accounts"),
-                  _checkListItem("Gold and silver (jewelry, coins, bars)"),
-                  _checkListItem("Stocks, shares, and investment certificates"),
-                  _checkListItem("Business inventory and merchandise"),
-                  _checkListItem(
-                    "Money lent to others (expected to be returned)",
-                  ),
-                  _checkListItem("Retirement funds (if accessible)"),
-                  _checkListItem(
-                    "Agricultural produce (with different percentage)",
-                  ),
-                  _checkListItem("Livestock (with specific conditions)"),
+                  _checkListItem(tr("asset_cash")),
+                  _checkListItem(tr("asset_gold_silver")),
+                  _checkListItem(tr("asset_stocks")),
+                  _checkListItem(tr("asset_inventory")),
+                  _checkListItem(tr("asset_loans")),
+                  _checkListItem(tr("asset_retirement")),
+                  _checkListItem(tr("asset_produce")),
+                  _checkListItem(tr("asset_livestock")),
 
                   const SizedBox(height: 24),
-                  _bulletItem(
-                    "Personal items like your home, car, clothing, and furniture are NOT subject to Zakat.",
-                  ),
-                  _bulletItem(
-                    "Gold/silver jewelry regularly worn by women has a difference of opinion—consult a scholar.",
-                  ),
+                  _bulletItem(tr("non_zakat_notice")),
+                  _bulletItem(tr("jewelry_dispute_notice")),
                 ],
               ),
             ),
@@ -189,7 +183,7 @@ class AssetsIncludedScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Need More Guidance?",
+                          tr("need_more_guidance"),
                           style: GoogleFonts.ebGaramond(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -198,7 +192,7 @@ class AssetsIncludedScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          "For specific questions about your situation, consult with a knowledgeable Islamic scholar or imam in your community. They can provide personalized guidance based on authentic sources.",
+                          tr("guidance_desc"),
                           style: GoogleFonts.ebGaramond(
                             fontSize: 13,
                             color: kTextGrey,

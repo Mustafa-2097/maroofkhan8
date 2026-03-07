@@ -6,6 +6,8 @@ import '../controller/ahle_bait_controller.dart';
 import '../model/ahle_bait_model.dart';
 import '../../ai_murshid/views/ai_murshid_screen.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -32,7 +34,7 @@ class _AhleBaitListScreenState extends State<AhleBaitListScreen> {
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
-        title: const HeaderSection(title: "Ahle Bait  أهل البيت"),
+        title: HeaderSection(title: tr("ahle_bait_title")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -61,16 +63,7 @@ class _AhleBaitListScreenState extends State<AhleBaitListScreen> {
                     fontSize: 14,
                     color: Colors.black87,
                   ),
-                  children: [
-                    const TextSpan(
-                      text: "Refers to the household and family members of ",
-                    ),
-                    // TextSpan(
-                    //   text: "أهل البيت",
-                    //   style: GoogleFonts.amiri(fontWeight: FontWeight.bold),
-                    // ),
-                    const TextSpan(text: "\nProphet Muhammad"),
-                  ],
+                  children: [TextSpan(text: tr("ahle_bait_desc"))],
                 ),
               ),
               const SizedBox(height: 20),
@@ -86,11 +79,14 @@ class _AhleBaitListScreenState extends State<AhleBaitListScreen> {
                 ),
                 child: TextField(
                   onChanged: (val) => controller.searchQuery.value = val,
-                  decoration: const InputDecoration(
-                    hintText: "Search",
-                    hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
+                  decoration: InputDecoration(
+                    hintText: tr("search"),
+                    hintStyle: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey,
+                    ),
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.only(bottom: 8),
+                    contentPadding: const EdgeInsets.only(bottom: 8),
                   ),
                 ),
               ),
@@ -105,10 +101,10 @@ class _AhleBaitListScreenState extends State<AhleBaitListScreen> {
                     );
                   }
                   if (controller.filteredAhlalbaytList.isEmpty) {
-                    return const Center(
+                    return Center(
                       child: Text(
-                        "No records found",
-                        style: TextStyle(color: kTextGrey),
+                        tr("no_records_found"),
+                        style: const TextStyle(color: kTextGrey),
                       ),
                     );
                   }
@@ -279,11 +275,11 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _tabButton("Biography", 0),
+                    _tabButton(tr("biography"), 0),
                     const SizedBox(width: 10),
-                    _tabButton("Story", 1),
+                    _tabButton(tr("story"), 1),
                     const SizedBox(width: 10),
-                    _tabButton("Quotes", 2),
+                    _tabButton(tr("quotes"), 2),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -328,7 +324,7 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Biography",
+          tr("biography"),
           style: GoogleFonts.playfairDisplay(
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -349,14 +345,35 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
           ),
           child: Column(
             children: [
-              _bioRow("Name :", member.name),
-              _bioRow("Relation :", member.relation),
-              _bioRow("Born :", member.dateOfBirth ?? "N/A"),
-              _bioRow("Died :", member.dateOfDeath ?? "N/A"),
-              _bioRow("Position :", member.position ?? "N/A"),
-              _bioRow("Institution :", member.institution ?? "N/A"),
-              _bioRow("Works :", member.work ?? "N/A"),
-              _bioRow("Known For :", member.knownFor ?? "N/A"),
+              _bioRow(tr("label_name"), member.name),
+              _bioRow(tr("label_relation"), member.relation),
+              _bioRow(
+                tr("label_born"),
+                localizeDigits(
+                  member.dateOfBirth ?? tr("not_available"),
+                  context,
+                ),
+              ),
+              _bioRow(
+                tr("label_died"),
+                localizeDigits(
+                  member.dateOfDeath ?? tr("not_available"),
+                  context,
+                ),
+              ),
+              _bioRow(
+                tr("label_position"),
+                member.position ?? tr("not_available"),
+              ),
+              _bioRow(
+                tr("label_institution"),
+                member.institution ?? tr("not_available"),
+              ),
+              _bioRow(tr("label_works"), member.work ?? tr("not_available")),
+              _bioRow(
+                tr("label_known_for"),
+                member.knownFor ?? tr("not_available"),
+              ),
             ],
           ),
         ),
@@ -398,7 +415,7 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Story",
+          tr("story"),
           style: GoogleFonts.playfairDisplay(
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -432,7 +449,7 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
               Text(
                 (member.story != null && member.story!.trim().isNotEmpty)
                     ? member.story!
-                    : "The full story for ${member.name} will be added here once it is available in the database.",
+                    : tr("story_placeholder", args: [member.name]),
                 textAlign: TextAlign.left,
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 14,
@@ -451,14 +468,20 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
+              children: [
                 Text(
-                  "00:00",
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                  localizeDigits("00:00", context),
+                  style: const TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Text(
-                  "00:00",
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                  localizeDigits("00:00", context),
+                  style: const TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
@@ -501,11 +524,11 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _bottomAction(Icons.headset, "Listen", true),
+              _bottomAction(Icons.headset, tr("listen"), true),
               Container(height: 30, width: 1, color: Colors.grey.shade300),
               _bottomAction(
                 Icons.auto_awesome,
-                "AI Explanation",
+                tr("ai_explanation"),
                 false,
                 onTap: () {
                   Get.to(() => const ChatScreen());
@@ -514,7 +537,7 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
               Container(height: 30, width: 1, color: Colors.grey.shade300),
               _bottomAction(
                 Icons.share_outlined,
-                "Share",
+                tr("share"),
                 false,
                 onTap: () {
                   final shareText =
@@ -522,12 +545,12 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
                       "Relation: ${member.relation}\n"
                       "Born: ${member.dateOfBirth ?? 'N/A'}\n"
                       "Died: ${member.dateOfDeath ?? 'N/A'}\n\n"
-                      "Shared via Maroof Khan App";
+                      "${tr("shared_via")}";
                   Share.share(shareText);
                 },
               ),
               Container(height: 30, width: 1, color: Colors.grey.shade300),
-              _bottomAction(Icons.download_outlined, "Download", false),
+              _bottomAction(Icons.download_outlined, tr("download"), false),
             ],
           ),
         ),
@@ -541,7 +564,7 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Quotes",
+          tr("quotes"),
           style: GoogleFonts.playfairDisplay(
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -549,10 +572,10 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
         ),
         const SizedBox(height: 15),
         if (member.quotes == null || member.quotes!.isEmpty)
-          const Center(
+          Center(
             child: Text(
-              "Quotes coming soon...",
-              style: TextStyle(color: kTextGrey),
+              tr("quotes_coming_soon"),
+              style: const TextStyle(color: kTextGrey),
             ),
           )
         else

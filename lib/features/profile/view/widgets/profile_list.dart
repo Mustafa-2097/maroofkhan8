@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:maroofkhan8/features/auth/signin_signup/view/signin_signup_page.dart';
 import 'package:maroofkhan8/features/profile/view/pages/change_password.dart';
 import 'package:maroofkhan8/features/profile/view/pages/contact_us.dart';
@@ -29,6 +30,8 @@ class _ProfileListState extends State<ProfileList> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     isDark = Theme.of(context).brightness == Brightness.dark;
+    // Sync UI with current locale on open
+    selectedLanguage = context.locale.languageCode;
   }
 
   final Map<String, String> languageMap = {
@@ -42,13 +45,14 @@ class _ProfileListState extends State<ProfileList> {
       setState(() {
         selectedLanguage = value;
       });
-      // TODO: Apply language change using GetX
+      // Apply language change using GetX and EasyLocalization
       _applyLanguage(value);
     }
   }
 
-  void _applyLanguage(String languageCode) {
+  Future<void> _applyLanguage(String languageCode) async {
     Locale locale = Locale(languageCode);
+    await context.setLocale(locale);
     Get.updateLocale(locale);
   }
 
@@ -59,7 +63,7 @@ class _ProfileListState extends State<ProfileList> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           /// Personal Info Section
-          _SectionHeader(title: 'personal_info'.tr),
+          _SectionHeader(title: tr('personal_info')),
           _DrawerItem(
             icon: Icons.person_outline,
             label: 'Personal Data',
@@ -156,7 +160,7 @@ class _ProfileListState extends State<ProfileList> {
           SizedBox(height: 18.h),
 
           /// About Section
-          _SectionHeader(title: 'about'.tr),
+          _SectionHeader(title: tr('about')),
           Divider(color: Colors.grey.shade400),
           _DrawerItem(
             icon: Icons.contact_mail_outlined,
@@ -418,7 +422,7 @@ class _DrawerItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    label.tr,
+                    tr(label),
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.w400,
                     ),
@@ -426,7 +430,7 @@ class _DrawerItem extends StatelessWidget {
                   if (subtitle != null) ...[
                     SizedBox(height: 2.h),
                     Text(
-                      subtitle!.tr,
+                      tr(subtitle!),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Colors.grey.shade600,
                       ),

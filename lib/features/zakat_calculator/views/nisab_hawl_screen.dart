@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
 const Color kBackground = Color(0xFFF8F9FB);
@@ -11,6 +13,7 @@ class NisabHawlScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
@@ -24,7 +27,7 @@ class NisabHawlScreen extends StatelessWidget {
         title: Column(
           children: [
             Text(
-              "Zakat",
+              tr("zakat"),
               style: GoogleFonts.ebGaramond(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
@@ -32,7 +35,7 @@ class NisabHawlScreen extends StatelessWidget {
               ),
             ),
             Text(
-              "Purify your wealth with ease and accuracy",
+              tr("purify_wealth_sub"),
               style: GoogleFonts.ebGaramond(fontSize: 12, color: kTextGrey),
             ),
           ],
@@ -78,7 +81,7 @@ class NisabHawlScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Nisab & Hawl",
+                          tr("nisab_hawl_title"),
                           style: GoogleFonts.ebGaramond(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -87,7 +90,7 @@ class NisabHawlScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          "Understanding the minimum threshold and time period",
+                          tr("nisab_hawl_sub"),
                           style: GoogleFonts.ebGaramond(
                             fontSize: 13,
                             color: kTextGrey,
@@ -120,7 +123,7 @@ class NisabHawlScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Nisab is the minimum amount of wealth a Muslim must possess before Zakat becomes obligatory.",
+                    tr("nisab_desc"),
                     style: GoogleFonts.ebGaramond(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -130,7 +133,7 @@ class NisabHawlScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    "There are two Nisab values:",
+                    tr("nisab_values_title"),
                     style: GoogleFonts.ebGaramond(
                       fontSize: 15,
                       color: kTextDark,
@@ -139,24 +142,18 @@ class NisabHawlScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   _checkListItem(
-                    "Gold Nisab: 87.48 gm (approximately 7.5 tola)",
+                    localizeDigits(tr("gold_nisab_value"), context),
                   ),
                   _checkListItem(
-                    "Silver Nisab: 612.36 gm (approximately 52.5 tola)",
+                    localizeDigits(tr("silver_nisab_value"), context),
                   ),
-                  const SizedBox(height: 8),
-                  _bulletItem(
-                    "Most scholars recommend using the Silver Nisab as it benefits more poor people.",
+                  _checkListItem(
+                    localizeDigits(tr("hawl_meaning_lunar_year"), context),
                   ),
-                  _bulletItem(
-                    "Hawl means one full lunar year (354-355 days). Your wealth must remain above Nisab for this entire period.",
-                  ),
-                  _bulletItem(
-                    "If wealth fluctuates but stays above Nisab at the start and end of the year, Zakat is still due.",
-                  ),
-                  _bulletItem(
-                    "The Nisab value changes based on current gold/silver market prices, so check regularly.",
-                  ),
+                  _checkListItem(tr("wealth_fluctuation")),
+                  _bulletItem(tr("hawl_meaning_lunar_year")),
+                  _bulletItem(tr("wealth_fluctuation_notice")),
+                  _bulletItem(tr("price_change_notice")),
                 ],
               ),
             ),
@@ -196,7 +193,7 @@ class NisabHawlScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Need More Guidance?",
+                          tr("need_more_guidance"),
                           style: GoogleFonts.ebGaramond(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -205,7 +202,7 @@ class NisabHawlScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          "For specific questions about your situation, consult with a knowledgeable Islamic scholar or imam in your community. They can provide personalized guidance based on authentic sources.",
+                          tr("guidance_desc"),
                           style: GoogleFonts.ebGaramond(
                             fontSize: 13,
                             color: kTextGrey,

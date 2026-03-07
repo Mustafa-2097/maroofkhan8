@@ -7,7 +7,12 @@ class NamesListScreen extends StatelessWidget {
   final String pageTitle;
   final NameRepository repository;
   final bool useHeartIcon;
-  const NamesListScreen({super.key, required this.pageTitle, required this.repository, required this.useHeartIcon});
+  const NamesListScreen({
+    super.key,
+    required this.pageTitle,
+    required this.repository,
+    required this.useHeartIcon,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +30,9 @@ class NamesListScreen extends StatelessWidget {
         ),
         title: Text(
           pageTitle,
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -42,7 +47,10 @@ class NamesListScreen extends StatelessWidget {
 
         if (controller.names.isEmpty) {
           return Center(
-            child: Text("No items found", style: Theme.of(context).textTheme.bodyLarge),
+            child: Text(
+              "No items found",
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
           );
         }
 
@@ -67,12 +75,15 @@ class NamesListScreen extends StatelessWidget {
   }
 }
 
-
 class NameCard extends StatelessWidget {
   final AllahName nameData;
   final bool isFavoriteMode;
 
-  const NameCard({super.key, required this.nameData, required this.isFavoriteMode});
+  const NameCard({
+    super.key,
+    required this.nameData,
+    required this.isFavoriteMode,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -81,19 +92,23 @@ class NameCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(12.r),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface, // Matches your Toggle/Status box style
+        color: Theme.of(
+          context,
+        ).colorScheme.surface, // Matches your Toggle/Status box style
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: isDark ? Colors.white10 : Colors.black12,
           width: 1,
         ),
-        boxShadow: isDark ? [] : [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: isDark
+            ? []
+            : [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.03),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -103,29 +118,31 @@ class NameCard extends StatelessWidget {
             children: [
               Icon(
                 isFavoriteMode ? Icons.favorite : Icons.bookmark,
-                color: Theme.of(context).colorScheme.primary, // Brand color (Brown/Orange)
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary, // Brand color (Brown/Orange)
                 size: 20.r,
               ),
               // Use your Amiri font logic through headlineSmall/Medium
               Text(
                 nameData.arabic,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontSize: 20.sp,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.headlineSmall?.copyWith(fontSize: 20.sp),
               ),
               Icon(
-                  Icons.volume_up_outlined,
-                  color: Theme.of(context).disabledColor,
-                  size: 18.r
+                Icons.volume_up_outlined,
+                color: Theme.of(context).disabledColor,
+                size: 18.r,
               ),
             ],
           ),
           SizedBox(height: 12.h),
           Text(
             nameData.transliteration,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
           Text(
@@ -152,10 +169,20 @@ class SaveRepository implements NameRepository {
   Future<List<AllahName>> fetchNames() async {
     // In the future, this is where your API code goes:
     // var response = await http.get('api/saved');
-    await Future.delayed(const Duration(seconds: 1)); // Simulating network delay
+    await Future.delayed(
+      const Duration(seconds: 1),
+    ); // Simulating network delay
     return [
-      AllahName(arabic: "الرَّحْمَنُ", transliteration: "Ar-Rahman", meaning: "The Most Merciful"),
-      AllahName(arabic: "الْمَلِكُ", transliteration: "Al-Malik", meaning: "The King, Absolute Owner"),
+      AllahName(
+        arabic: "الرَّحْمَنُ",
+        transliteration: "Ar-Rahman",
+        meaning: "The Most Merciful",
+      ),
+      AllahName(
+        arabic: "الْمَلِكُ",
+        transliteration: "Al-Malik",
+        meaning: "The King, Absolute Owner",
+      ),
     ];
   }
 }
@@ -166,8 +193,16 @@ class FavoriteRepository implements NameRepository {
   Future<List<AllahName>> fetchNames() async {
     await Future.delayed(const Duration(seconds: 1));
     return [
-      AllahName(arabic: "الرَّحِيمُ", transliteration: "Ar-Rahim", meaning: "The Most Compassionate"),
-      AllahName(arabic: "الْقُدُّوسُ", transliteration: "Al-Quddus", meaning: "The Most Pure"),
+      AllahName(
+        arabic: "الرَّحِيمُ",
+        transliteration: "Ar-Rahim",
+        meaning: "The Most Compassionate",
+      ),
+      AllahName(
+        arabic: "الْقُدُّوسُ",
+        transliteration: "Al-Quddus",
+        meaning: "The Most Pure",
+      ),
     ];
   }
 }

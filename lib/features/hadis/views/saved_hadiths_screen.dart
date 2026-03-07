@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../controller/hadith_controller.dart';
 import 'hadith_tafsir_details_screen.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 
 class SavedHadithsScreen extends StatelessWidget {
   const SavedHadithsScreen({super.key});
@@ -27,7 +29,7 @@ class SavedHadithsScreen extends StatelessWidget {
         ),
         centerTitle: true,
         title: Text(
-          "Saved Hadiths",
+          tr("saved_hadiths"),
           style: GoogleFonts.ebGaramond(
             color: Colors.black,
             fontWeight: FontWeight.bold,
@@ -57,7 +59,7 @@ class SavedHadithsScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  "No saved hadiths yet",
+                  tr("no_saved_hadiths_yet"),
                   style: GoogleFonts.ebGaramond(fontSize: 18, color: textGrey),
                 ),
               ],
@@ -102,7 +104,9 @@ class SavedHadithsScreen extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        hadith.heading.isNotEmpty ? hadith.heading : "Hadith",
+                        hadith.heading.isNotEmpty
+                            ? hadith.heading
+                            : tr("hadith"),
                         style: const TextStyle(
                           fontSize: 11,
                           color: textGrey,
@@ -131,9 +135,9 @@ class SavedHadithsScreen extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           final shareText =
-                              "${hadith.heading.isNotEmpty ? hadith.heading : ''}\n\n"
+                              "(${hadith.heading.isNotEmpty ? hadith.heading : ''})\n\n"
                               "${hadith.hadith}\n\n"
-                              "(Hadith ${hadith.number})\n\n"
+                              "(${tr('hadith')} ${localizeDigits(hadith.number, context)})\n\n"
                               "Shared via Maroof Khan App";
                           Share.share(shareText);
                         },

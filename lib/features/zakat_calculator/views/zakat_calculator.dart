@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import 'package:maroofkhan8/features/zakat_calculator/views/what_is_zakat_screen.dart';
 import 'package:maroofkhan8/features/zakat_calculator/views/who_must_pay_zakat_screen.dart';
@@ -32,10 +34,11 @@ class ZakatCalculator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
-        title: const HeaderSection(title: "Zakat"),
+        title: HeaderSection(title: tr("zakat")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -84,15 +87,18 @@ class ZakatCalculator extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Calculate Zakat",
+                          tr("calculate_zakat"),
                           style: GoogleFonts.playfairDisplay(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
                         ),
-                        const Text(
-                          "Calculate your zakat easily &\naccurately",
-                          style: TextStyle(fontSize: 11, color: kTextGrey),
+                        Text(
+                          tr("calculate_zakat_sub"),
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: kTextGrey,
+                          ),
                         ),
                       ],
                     ),
@@ -130,7 +136,7 @@ class ZakatCalculator extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        "Hadith on Zakat",
+                        tr("hadith_on_zakat"),
                         style: TextStyle(
                           color: Colors.green[800],
                           fontWeight: FontWeight.bold,
@@ -140,18 +146,18 @@ class ZakatCalculator extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    "\"The believer's shade on the Day of Resurrection will be his charity.\"",
+                    tr("zakat_hadith_quote"),
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 14,
                       fontStyle: FontStyle.italic,
                     ),
                   ),
                   const SizedBox(height: 5),
-                  const Align(
+                  Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      "— Prophet Muhammad (ﷺ), Tirmidhi",
-                      style: TextStyle(fontSize: 10, color: kTextGrey),
+                      tr("zakat_hadith_source"),
+                      style: const TextStyle(fontSize: 10, color: kTextGrey),
                     ),
                   ),
                 ],
@@ -161,15 +167,15 @@ class ZakatCalculator extends StatelessWidget {
 
             // 3. Rules & Guidelines Header
             Text(
-              "Zakat Rules & Guidelines",
+              tr("zakat_rules_guidelines"),
               style: GoogleFonts.playfairDisplay(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
               ),
             ),
-            const Text(
-              "Learn about the fundamentals of Zakat in Islam",
-              style: TextStyle(fontSize: 11, color: kTextGrey),
+            Text(
+              tr("zakat_rules_sub"),
+              style: const TextStyle(fontSize: 11, color: kTextGrey),
             ),
             const SizedBox(height: 15),
 
@@ -180,8 +186,8 @@ class ZakatCalculator extends StatelessWidget {
               },
               child: _ruleItem(
                 Icons.library_books,
-                "What is Zakat?",
-                "Learn the fundamental meaning and importance of Zakat",
+                tr("what_is_zakat"),
+                tr("what_is_zakat_sub"),
                 kPrimaryBrown,
               ),
             ),
@@ -191,8 +197,8 @@ class ZakatCalculator extends StatelessWidget {
               },
               child: _ruleItem(
                 Icons.people,
-                "Who Must Pay Zakat?",
-                "Understand the conditions for Zakat obligation",
+                tr("who_must_pay_zakat"),
+                tr("who_must_pay_zakat_sub"),
                 kPrimaryBrown,
               ),
             ),
@@ -202,8 +208,8 @@ class ZakatCalculator extends StatelessWidget {
               },
               child: _ruleItem(
                 Icons.balance,
-                "Nisab & Hawl",
-                "Understanding the minimum threshold and time period",
+                tr("nisab_hawl"),
+                tr("nisab_hawl_sub"),
                 kPrimaryBrown,
               ),
             ),
@@ -213,8 +219,8 @@ class ZakatCalculator extends StatelessWidget {
               },
               child: _ruleItem(
                 Icons.pie_chart,
-                "Assets Included In Zakat",
-                "What types of wealth are subject to Zakat",
+                tr("assets_included"),
+                tr("assets_included_sub"),
                 kPrimaryBrown,
               ),
             ),
@@ -224,8 +230,8 @@ class ZakatCalculator extends StatelessWidget {
               },
               child: _ruleItem(
                 Icons.volunteer_activism,
-                "Who Can Receive Zakat?",
-                "The eight categories of Zakat recipients",
+                tr("who_can_receive"),
+                tr("who_can_receive_sub"),
                 kPrimaryBrown,
               ),
             ),
@@ -235,8 +241,8 @@ class ZakatCalculator extends StatelessWidget {
               },
               child: _ruleItem(
                 Icons.block,
-                "Who Cannot Receive Zakat?",
-                "People who are not eligible for Zakat",
+                tr("who_cannot_receive"),
+                tr("who_cannot_receive_sub"),
                 kPrimaryBrown,
               ),
             ),
@@ -297,6 +303,7 @@ class ZakatCalculatorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     final controller = Get.put(ZakatController());
 
     return Scaffold(
@@ -305,10 +312,10 @@ class ZakatCalculatorScreen extends StatelessWidget {
       appBar: AppBar(
         title: Column(
           children: [
-            const HeaderSection(title: "Zakat Calculator"),
-            const Text(
-              "Purify your wealth with ease and accuracy",
-              style: TextStyle(fontSize: 10, color: kTextGrey),
+            HeaderSection(title: tr("zakat_calculator_title")),
+            Text(
+              tr("purify_wealth_sub"),
+              style: const TextStyle(fontSize: 10, color: kTextGrey),
             ),
           ],
         ),
@@ -348,15 +355,15 @@ class ZakatCalculatorScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Zakat Calculator",
+                        tr("zakat_calculator_title"),
                         style: GoogleFonts.playfairDisplay(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
                       ),
-                      const Text(
-                        "Enter your assets below",
-                        style: TextStyle(fontSize: 12, color: kTextGrey),
+                      Text(
+                        tr("enter_assets_below"),
+                        style: const TextStyle(fontSize: 12, color: kTextGrey),
                       ),
                     ],
                   ),
@@ -378,19 +385,28 @@ class ZakatCalculatorScreen extends StatelessWidget {
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
-                        "Nisab Based On:",
-                        style: TextStyle(color: Colors.white70, fontSize: 12),
+                        tr("nisab_based_on"),
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 12,
+                        ),
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(
-                        "✓ Silver Nisab (612.36g) or = Balance",
-                        style: TextStyle(color: Colors.white, fontSize: 11),
+                        localizeDigits(tr("silver_nisab_text"), context),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 11,
+                        ),
                       ),
                       Text(
-                        "✓ Gold Nisab (87.48g) or = Balance",
-                        style: TextStyle(color: Colors.white, fontSize: 11),
+                        localizeDigits(tr("gold_nisab_text"), context),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 11,
+                        ),
                       ),
                     ],
                   ),
@@ -401,11 +417,14 @@ class ZakatCalculatorScreen extends StatelessWidget {
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 1),
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Text(
-                        "2.5%\nor\n40/1",
+                        localizeDigits("2.5%\nor\n40/1", context),
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white, fontSize: 8),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 8,
+                        ),
                       ),
                     ),
                   ),
@@ -417,51 +436,51 @@ class ZakatCalculatorScreen extends StatelessWidget {
             // Inputs
             _inputField(
               Icons.attach_money,
-              "Cash in Hand & Bank",
+              tr("cash_in_hand"),
               controller.cashController,
-              "USD",
+              tr("usd"),
             ),
             _inputField(
               Icons.trending_up,
-              "Gold Price per Gram",
+              tr("gold_price_per_gram"),
               controller.goldPriceController,
-              "USD",
+              tr("usd"),
             ),
             _inputField(
               Icons.diamond_outlined,
-              "Gold",
+              tr("gold_label"),
               controller.goldGramsController,
-              "grams",
+              tr("grams"),
             ),
             _inputField(
               Icons.trending_up,
-              "Silver Price per Gram",
+              tr("silver_price_per_gram"),
               controller.silverPriceController,
-              "USD",
+              tr("usd"),
             ),
             _inputField(
               Icons.link,
-              "Silver",
+              tr("silver_label"),
               controller.silverGramsController,
-              "grams",
+              tr("grams"),
             ),
             _inputField(
               Icons.store,
-              "Business Assets",
+              tr("business_assets"),
               controller.businessAssetsController,
-              "USD",
+              tr("usd"),
             ),
             _inputField(
               Icons.credit_card,
-              "Savings & Investments",
+              tr("savings_investments"),
               controller.savingsInvestmentsController,
-              "USD",
+              tr("usd"),
             ),
             _inputField(
               Icons.money_off,
-              "Liabilities / Debts",
+              tr("liabilities_debts"),
               controller.liabilitiesController,
-              "USD",
+              tr("usd"),
             ),
 
             const SizedBox(height: 20),
@@ -476,29 +495,34 @@ class ZakatCalculatorScreen extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    const Align(
+                    Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Summary",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        tr("summary"),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
                     const SizedBox(height: 10),
                     _summaryRow(
-                      "Total Assets:",
-                      "\$${controller.totalAssets.value.toStringAsFixed(2)}",
+                      tr("total_assets_colon"),
+                      "${localizeDigits("\$", context)}${localizeDigits(controller.totalAssets.value.toStringAsFixed(2), context)}",
                     ),
                     _summaryRow(
-                      "Nisab Threshold:",
-                      "\$${controller.nisabThreshold.value.toStringAsFixed(2)}",
+                      tr("nisab_threshold_colon"),
+                      "${localizeDigits("\$", context)}${localizeDigits(controller.nisabThreshold.value.toStringAsFixed(2), context)}",
                     ),
                     const Divider(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text("Status:", style: TextStyle(fontSize: 12)),
                         Text(
-                          controller.status.value,
+                          "${tr("status_colon")} ",
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                        Text(
+                          controller.isAboveNisab.value
+                              ? tr("eligible")
+                              : tr("not_eligible"),
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -534,9 +558,9 @@ class ZakatCalculatorScreen extends StatelessWidget {
                     ),
                   );
                 },
-                child: const Text(
-                  "View Detailed Results",
-                  style: TextStyle(
+                child: Text(
+                  tr("view_detailed_results"),
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
@@ -689,37 +713,39 @@ class ZakatResultScreen extends StatelessWidget {
 
         final breakdown =
             """
-Cash: \$${double.tryParse(controller.cashController.text)?.toStringAsFixed(2) ?? "0.00"}
-Gold (${controller.goldGramsController.text}g): \$${((double.tryParse(controller.goldGramsController.text) ?? 0) * (double.tryParse(controller.goldPriceController.text) ?? 0)).toStringAsFixed(2)}
-Silver (${controller.silverGramsController.text}g): \$${((double.tryParse(controller.silverGramsController.text) ?? 0) * (double.tryParse(controller.silverPriceController.text) ?? 0)).toStringAsFixed(2)}
-Business Assets: \$${double.tryParse(controller.businessAssetsController.text)?.toStringAsFixed(2) ?? "0.00"}
-Savings & Investments: \$${double.tryParse(controller.savingsInvestmentsController.text)?.toStringAsFixed(2) ?? "0.00"}
-Less: Debts: \$${double.tryParse(controller.liabilitiesController.text)?.toStringAsFixed(2) ?? "0.00"}
+${tr("cash")}: ${localizeDigits("\$", context)}${localizeDigits(double.tryParse(controller.cashController.text)?.toStringAsFixed(2) ?? "0.00", context)}
+${tr("gold_label")} (${localizeDigits(controller.goldGramsController.text, context)}${tr("grams_abbr")}): ${localizeDigits("\$", context)}${localizeDigits(((double.tryParse(controller.goldGramsController.text) ?? 0) * (double.tryParse(controller.goldPriceController.text) ?? 0)).toStringAsFixed(2), context)}
+${tr("silver_label")} (${localizeDigits(controller.silverGramsController.text, context)}${tr("grams_abbr")}): ${localizeDigits("\$", context)}${localizeDigits(((double.tryParse(controller.silverGramsController.text) ?? 0) * (double.tryParse(controller.silverPriceController.text) ?? 0)).toStringAsFixed(2), context)}
+${tr("business_assets")}: ${localizeDigits("\$", context)}${localizeDigits(double.tryParse(controller.businessAssetsController.text)?.toStringAsFixed(2) ?? "0.00", context)}
+${tr("savings_investments")}: ${localizeDigits("\$", context)}${localizeDigits(double.tryParse(controller.savingsInvestmentsController.text)?.toStringAsFixed(2) ?? "0.00", context)}
+${tr("less_debts")}: ${localizeDigits("\$", context)}${localizeDigits(double.tryParse(controller.liabilitiesController.text)?.toStringAsFixed(2) ?? "0.00", context)}
 --------------------------------
-Total Assets: \$${controller.totalAssets.value.toStringAsFixed(2)}
-Nisab Threshold: \$${controller.nisabThreshold.value.toStringAsFixed(2)}
-Status: ${controller.isAboveNisab.value ? 'ELIGIBLE' : 'NOT ELIGIBLE'}
+${tr("total_assets_colon")} ${localizeDigits("\$", context)}${localizeDigits(controller.totalAssets.value.toStringAsFixed(2), context)}
+${tr("nisab_threshold_colon")} ${localizeDigits("\$", context)}${localizeDigits(controller.nisabThreshold.value.toStringAsFixed(2), context)}
+${tr("status_colon")} ${controller.isAboveNisab.value ? tr("eligible") : tr("not_eligible")}
 """;
 
         final zakatPayableStr = controller.isAboveNisab.value
-            ? "\nZakat Payable (2.5%): \$${controller.zakatPayable.value.toStringAsFixed(2)}"
+            ? "\n${tr("zakat_payable_colon")} ${localizeDigits("\$", context)}${localizeDigits(controller.zakatPayable.value.toStringAsFixed(2), context)}"
             : "";
 
         final textToSave =
             """
-Zakat Calculator Results
-Date: ${DateTime.now().toString()}
+${tr("zakat_calculator_title")} ${tr("summary")}
+${tr("date_colon")} ${localizeDigits(DateTime.now().toString(), context)}
 
 $breakdown$zakatPayableStr
 
-Shared via Maroof Khan App
+${tr("shared_via")}
 """;
 
         await file.writeAsString(textToSave);
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Zakat results saved successfully!\nPath: $filePath"),
+            content: Text(
+              "${tr("zakat_results_saved")}\n${tr("path_colon")} $filePath",
+            ),
             backgroundColor: kPrimaryBrown,
           ),
         );
@@ -727,18 +753,19 @@ Shared via Maroof Khan App
     } catch (e) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text("Error: $e")));
+      ).showSnackBar(SnackBar(content: Text("${tr("error_colon")} $e")));
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     final controller = Get.find<ZakatController>();
 
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
-        title: const HeaderSection(title: "Zakat Calculator"),
+        title: HeaderSection(title: tr("zakat_calculator_title")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -772,9 +799,9 @@ Shared via Maroof Khan App
                     ),
                   ),
                   const SizedBox(width: 15),
-                  const Text(
-                    "Zakat Calculator\nTotal your assets below",
-                    style: TextStyle(fontSize: 12),
+                  Text(
+                    "${tr("zakat_calculator_title")}\n${tr("enter_assets_below")}",
+                    style: const TextStyle(fontSize: 12),
                   ),
                 ],
               ),
@@ -793,18 +820,27 @@ Shared via Maroof Khan App
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
-                        "Nisab Based On:",
-                        style: TextStyle(color: Colors.white70, fontSize: 10),
+                        tr("nisab_based_on"),
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 10,
+                        ),
                       ),
                       Text(
-                        "✓ Silver Nisab (612.36g) or = Balance",
-                        style: TextStyle(color: Colors.white, fontSize: 10),
+                        localizeDigits(tr("silver_nisab_text"), context),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                        ),
                       ),
                       Text(
-                        "✓ Gold Nisab (87.48g) or = Balance",
-                        style: TextStyle(color: Colors.white, fontSize: 10),
+                        localizeDigits(tr("gold_nisab_text"), context),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                        ),
                       ),
                     ],
                   ),
@@ -815,10 +851,13 @@ Shared via Maroof Khan App
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white),
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Text(
-                        "2.5%",
-                        style: TextStyle(color: Colors.white, fontSize: 8),
+                        localizeDigits("2.5%", context),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 8,
+                        ),
                       ),
                     ),
                   ),
@@ -836,14 +875,14 @@ Shared via Maroof Khan App
                 child: Column(
                   children: [
                     Text(
-                      "Zakat Status: ${controller.isAboveNisab.value ? "ELIGIBLE" : "NOT ELIGIBLE"}",
+                      "${tr("zakat_status_colon")} ${controller.isAboveNisab.value ? tr("eligible") : tr("not_eligible")}",
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
                       ),
                     ),
                     Text(
-                      "Nisab threshold (silver): \$${controller.nisabThreshold.value.toStringAsFixed(2)}",
+                      "${tr("nisab_threshold_silver")} ${localizeDigits("\$", context)}${localizeDigits(controller.nisabThreshold.value.toStringAsFixed(2), context)}",
                       style: const TextStyle(fontSize: 11, color: kTextGrey),
                     ),
                     const SizedBox(height: 10),
@@ -859,12 +898,15 @@ Shared via Maroof Khan App
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            "Total Zakat Assets:",
-                            style: TextStyle(fontSize: 12, color: kTextGrey),
+                          Text(
+                            tr("total_zakat_assets_colon"),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: kTextGrey,
+                            ),
                           ),
                           Text(
-                            "\$${controller.totalAssets.value.toStringAsFixed(2)}",
+                            "${localizeDigits("\$", context)}${localizeDigits(controller.totalAssets.value.toStringAsFixed(2), context)}",
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 12,
@@ -875,32 +917,38 @@ Shared via Maroof Khan App
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      controller.isAboveNisab.value
-                          ? "Your wealth is above the Nisab threshold. Zakat of 2.5% is obligatory on your total assets."
-                          : "Your wealth is below the Nisab threshold. Zakat is not obligatory at this time, but voluntary charity (Sadaqah) is always encouraged.",
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 10, color: kTextGrey),
+                      localizeDigits(
+                        controller.isAboveNisab.value
+                            ? tr("above_nisab_msg")
+                            : tr("below_nisab_msg"),
+                        context,
+                      ),
+                      style: GoogleFonts.ebGaramond(
+                        fontSize: 13,
+                        color: kTextGrey,
+                        height: 1.4,
+                      ),
                     ),
                     if (controller.isAboveNisab.value) ...[
                       const SizedBox(height: 10),
                       Container(
                         padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Colors.green[50],
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                        decoration: BoxDecoration(color: Colors.green[50]),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
-                              "Zakat Payable (2.5%):",
-                              style: TextStyle(
+                            Text(
+                              localizeDigits(
+                                tr("zakat_payable_colon"),
+                                context,
+                              ),
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.green,
                               ),
                             ),
                             Text(
-                              "\$${controller.zakatPayable.value.toStringAsFixed(2)}",
+                              "${localizeDigits("\$", context)}${localizeDigits(controller.zakatPayable.value.toStringAsFixed(2), context)}",
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
@@ -925,51 +973,51 @@ Shared via Maroof Khan App
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Breakdown",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    Text(
+                      tr("breakdown"),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 15),
                     _breakdownRow(
                       Icons.attach_money,
-                      "Cash",
-                      "\$${double.tryParse(controller.cashController.text)?.toStringAsFixed(2) ?? "0.00"}",
+                      tr("cash"),
+                      "${localizeDigits("\$", context)}${localizeDigits(double.tryParse(controller.cashController.text)?.toStringAsFixed(2) ?? "0.00", context)}",
                     ),
                     _breakdownRow(
                       Icons.diamond_outlined,
-                      "Gold\n${controller.goldGramsController.text}g x \$${controller.goldPriceController.text}",
-                      "\$${((double.tryParse(controller.goldGramsController.text) ?? 0) * (double.tryParse(controller.goldPriceController.text) ?? 0)).toStringAsFixed(2)}",
+                      "${tr("gold_label")}\n${localizeDigits(controller.goldGramsController.text, context)}${tr("grams_abbr")} x ${localizeDigits("\$", context)}${localizeDigits(controller.goldPriceController.text, context)}",
+                      "${localizeDigits("\$", context)}${localizeDigits(((double.tryParse(controller.goldGramsController.text) ?? 0) * (double.tryParse(controller.goldPriceController.text) ?? 0)).toStringAsFixed(2), context)}",
                     ),
                     _breakdownRow(
                       Icons.link,
-                      "Silver\n${controller.silverGramsController.text}g x \$${controller.silverPriceController.text}",
-                      "\$${((double.tryParse(controller.silverGramsController.text) ?? 0) * (double.tryParse(controller.silverPriceController.text) ?? 0)).toStringAsFixed(2)}",
+                      "${tr("silver_label")}\n${localizeDigits(controller.silverGramsController.text, context)}${tr("grams_abbr")} x ${localizeDigits("\$", context)}${localizeDigits(controller.silverPriceController.text, context)}",
+                      "${localizeDigits("\$", context)}${localizeDigits(((double.tryParse(controller.silverGramsController.text) ?? 0) * (double.tryParse(controller.silverPriceController.text) ?? 0)).toStringAsFixed(2), context)}",
                     ),
                     _breakdownRow(
                       Icons.store,
-                      "Business Assets",
-                      "\$${double.tryParse(controller.businessAssetsController.text)?.toStringAsFixed(2) ?? "0.00"}",
+                      tr("business_assets"),
+                      "${localizeDigits("\$", context)}${localizeDigits(double.tryParse(controller.businessAssetsController.text)?.toStringAsFixed(2) ?? "0.00", context)}",
                     ),
                     _breakdownRow(
                       Icons.credit_card,
-                      "Savings & Investments",
-                      "\$${double.tryParse(controller.savingsInvestmentsController.text)?.toStringAsFixed(2) ?? "0.00"}",
+                      tr("savings_investments"),
+                      "${localizeDigits("\$", context)}${localizeDigits(double.tryParse(controller.savingsInvestmentsController.text)?.toStringAsFixed(2) ?? "0.00", context)}",
                     ),
                     _breakdownRow(
                       Icons.money_off,
-                      "Less: Debts",
-                      "\$${double.tryParse(controller.liabilitiesController.text)?.toStringAsFixed(2) ?? "0.00"}",
+                      tr("less_debts"),
+                      "${localizeDigits("\$", context)}${localizeDigits(double.tryParse(controller.liabilitiesController.text)?.toStringAsFixed(2) ?? "0.00", context)}",
                     ),
                     const Divider(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          "Total:",
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                        Text(
+                          tr("total_colon"),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          "\$${controller.totalAssets.value.toStringAsFixed(2)}",
+                          "${localizeDigits("\$", context)}${localizeDigits(controller.totalAssets.value.toStringAsFixed(2), context)}",
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: kPrimaryBrown,
@@ -1002,27 +1050,19 @@ Shared via Maroof Khan App
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "Important Reminders:",
-                    style: TextStyle(
+                  Text(
+                    tr("important_reminders"),
+                    style: const TextStyle(
                       color: kPrimaryBrown,
                       fontWeight: FontWeight.bold,
                       fontSize: 12,
                     ),
                   ),
                   const SizedBox(height: 8),
-                  _reminderText(
-                    "Zakat is due only if wealth has been in possession for one lunar year (Hawl)",
-                  ),
-                  _reminderText(
-                    "Ensure gold and silver prices are updated to current market rates",
-                  ),
-                  _reminderText(
-                    "Consult a scholar regarding jewelry worn regularly by women",
-                  ),
-                  _reminderText(
-                    "Distribute Zakat to eligible recipients as defined in the Quran (9:60)",
-                  ),
+                  _reminderText(localizeDigits(tr("reminder_1"), context)),
+                  _reminderText(localizeDigits(tr("reminder_2"), context)),
+                  _reminderText(localizeDigits(tr("reminder_3"), context)),
+                  _reminderText(localizeDigits(tr("reminder_4"), context)),
                 ],
               ),
             ),
@@ -1034,7 +1074,7 @@ Shared via Maroof Khan App
                 Expanded(
                   child: _outlineButton(
                     Icons.download,
-                    "Save",
+                    tr("save"),
                     onTap: () => _downloadZakatDetails(context, controller),
                   ),
                 ),
@@ -1042,15 +1082,15 @@ Shared via Maroof Khan App
                 Expanded(
                   child: _outlineButton(
                     Icons.share,
-                    "Share",
+                    tr("share"),
                     onTap: () {
                       final text =
-                          "Zakat Calculator Results:\n"
-                          "Total Assets: \$${controller.totalAssets.value.toStringAsFixed(2)}\n"
-                          "Nisab Threshold: \$${controller.nisabThreshold.value.toStringAsFixed(2)}\n"
-                          "Status: ${controller.isAboveNisab.value ? 'ELIGIBLE' : 'NOT ELIGIBLE'}\n"
-                          "${controller.isAboveNisab.value ? 'Zakat Payable: \$${controller.zakatPayable.value.toStringAsFixed(2)}\n' : ''}";
-                      Share.share(text);
+                          "${tr("zakat_calculator_title")} ${tr("summary")}:\n"
+                          "${tr("total_assets_colon")} ${localizeDigits("\$", context)}${localizeDigits(controller.totalAssets.value.toStringAsFixed(2), context)}\n"
+                          "${tr("nisab_threshold_colon")} ${localizeDigits("\$", context)}${localizeDigits(controller.nisabThreshold.value.toStringAsFixed(2), context)}\n"
+                          "${tr("status_colon")} ${controller.isAboveNisab.value ? tr("eligible") : tr("not_eligible")}\n"
+                          "${controller.isAboveNisab.value ? '${tr("zakat_payable_colon")} ${localizeDigits("\$", context)}${localizeDigits(controller.zakatPayable.value.toStringAsFixed(2), context)}\n' : ''}";
+                      Share.share(localizeDigits(text, context));
                     },
                   ),
                 ),
@@ -1068,12 +1108,12 @@ Shared via Maroof Khan App
                   ),
                 ),
                 onPressed: () => Navigator.pop(context),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.refresh, size: 18),
-                    SizedBox(width: 8),
-                    Text("Recalculate"),
+                    const Icon(Icons.refresh, size: 18),
+                    const SizedBox(width: 8),
+                    Text(tr("recalculate")),
                   ],
                 ),
               ),
@@ -1083,9 +1123,9 @@ Shared via Maroof Khan App
               child: TextButton(
                 onPressed: () =>
                     Navigator.popUntil(context, (route) => route.isFirst),
-                child: const Text(
-                  "Back to Home",
-                  style: TextStyle(
+                child: Text(
+                  tr("back_to_home"),
+                  style: const TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
                   ),

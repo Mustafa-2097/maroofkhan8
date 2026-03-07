@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import '../controller/islamic_stories_controller.dart';
 import '../models/islamic_story.dart';
@@ -22,12 +23,13 @@ class IslamicStoriesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     final controller = Get.put(IslamicStoriesController());
 
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
-        title: const HeaderSection(title: "Islamic Stories"),
+        title: HeaderSection(title: tr("islamic_stories")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -78,9 +80,12 @@ class IslamicStoriesScreen extends StatelessWidget {
                 ),
                 child: TextField(
                   onChanged: (val) => controller.searchQuery.value = val,
-                  decoration: const InputDecoration(
-                    hintText: "Search",
-                    hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
+                  decoration: InputDecoration(
+                    hintText: tr("search_stories"),
+                    hintStyle: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey,
+                    ),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.only(bottom: 8),
                   ),
@@ -95,7 +100,7 @@ class IslamicStoriesScreen extends StatelessWidget {
                     return const Center(child: CircularProgressIndicator());
                   }
                   if (controller.filteredStories.isEmpty) {
-                    return const Center(child: Text("No stories available."));
+                    return Center(child: Text(tr("no_stories_available")));
                   }
                   return ListView.builder(
                     itemCount: controller.filteredStories.length,
@@ -204,10 +209,11 @@ class _IslamicStoriesDetailScreenState
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
-        title: const HeaderSection(title: "Islamic Stories"),
+        title: HeaderSection(title: tr("islamic_stories")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -224,7 +230,7 @@ class _IslamicStoriesDetailScreenState
 
         final detail = controller.storyDetail.value;
         if (detail == null) {
-          return const Center(child: Text("Failed to load story details."));
+          return Center(child: Text(tr("failed_load_story")));
         }
 
         return SingleChildScrollView(
@@ -315,7 +321,7 @@ class _IslamicStoriesDetailScreenState
                   children: [
                     _ActionButton(
                       icon: Icons.headset,
-                      label: "Listen",
+                      label: tr("listen"),
                       isActive: true,
                       onTap: () {
                         // TODO: Implement listen functionality
@@ -323,7 +329,7 @@ class _IslamicStoriesDetailScreenState
                     ),
                     _ActionButton(
                       icon: Icons.auto_awesome,
-                      label: "AI Explanation",
+                      label: tr("ai_explanation"),
                       isActive: false,
                       onTap: () {
                         Get.to(() => const ChatScreen());
@@ -331,7 +337,7 @@ class _IslamicStoriesDetailScreenState
                     ),
                     _ActionButton(
                       icon: Icons.share_outlined,
-                      label: "Share",
+                      label: tr("share"),
                       isActive: false,
                       onTap: () {
                         Share.share("${detail.title}\n\n${detail.description}");
@@ -339,15 +345,15 @@ class _IslamicStoriesDetailScreenState
                     ),
                     _ActionButton(
                       icon: Icons.copy,
-                      label: "Copy",
+                      label: tr("copy"),
                       isActive: false,
                       onTap: () {
                         Clipboard.setData(
                           ClipboardData(text: detail.description),
                         );
                         Get.snackbar(
-                          "Copied",
-                          "Story copied to clipboard",
+                          tr("copied"),
+                          tr("story_copied"),
                           snackPosition: SnackPosition.BOTTOM,
                           backgroundColor: const Color.fromARGB(
                             255,
@@ -382,7 +388,7 @@ class _IslamicStoriesDetailScreenState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Simple Explanation:",
+                      tr("simple_explanation_colon"),
                       style: GoogleFonts.playfairDisplay(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -390,8 +396,8 @@ class _IslamicStoriesDetailScreenState
                       ),
                     ),
                     const SizedBox(height: 5),
-                    const Text(
-                      "This story teaches us about faith and values in Islam.",
+                    Text(
+                      tr("story_teachings_placeholder"),
                       style: TextStyle(
                         fontSize: 14,
                         height: 1.4,

@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import 'controllers/dhikr_controller.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 
 const Color primaryBrown = Color(0xFF8D3C1F);
 
@@ -23,7 +25,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FE),
       appBar: AppBar(
-        title: HeaderSection(title: "Dhikr"),
+        title: HeaderSection(title: tr("dhikr")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -45,7 +47,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
           );
         }
         if (controller.tasbihList.isEmpty) {
-          return const Center(child: Text("No Dhikr found"));
+          return Center(child: Text(tr("no_dhikr_found")));
         }
         return ListView.builder(
           padding: const EdgeInsets.all(20),
@@ -149,7 +151,7 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
   @override
   Widget build(BuildContext context) {
     if (controller.tasbihList.isEmpty) {
-      return const Scaffold(body: Center(child: Text("Empty list")));
+      return Scaffold(body: Center(child: Text(tr("empty_list"))));
     }
     final dhikr = controller.tasbihList[currentIndex];
     final int target = dhikr.count;
@@ -157,7 +159,7 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FE),
       appBar: AppBar(
-        title: HeaderSection(title: "Dhikr"),
+        title: HeaderSection(title: tr("dhikr")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -216,7 +218,7 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
                           ),
                         ),
                         Text(
-                          "Meaning : ${dhikr.meaning}",
+                          "${tr("meaning_colon")} ${dhikr.meaning}",
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 12,
@@ -252,12 +254,12 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       _pillButton(
-                        "Reset Counter",
+                        tr("reset_counter"),
                         Icons.refresh,
                         () => setState(() => count = 0),
                       ),
                       const SizedBox(width: 15),
-                      _pillButton("Listen", Icons.volume_up_outlined),
+                      _pillButton(tr("listen"), Icons.volume_up_outlined),
                     ],
                   ),
                   const SizedBox(height: 50),
@@ -280,14 +282,14 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            "$count",
+                            localizeDigits("$count", context),
                             style: GoogleFonts.playfairDisplay(
                               fontSize: 70,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const Text(
-                            "of",
+                          Text(
+                            tr("of"),
                             style: TextStyle(
                               color: primaryBrown,
                               fontWeight: FontWeight.bold,
@@ -295,7 +297,7 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
                             ),
                           ),
                           Text(
-                            "$target",
+                            localizeDigits("$target", context),
                             style: const TextStyle(
                               fontSize: 22,
                               color: Colors.grey,
@@ -320,9 +322,12 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
                       onPressed: () => setState(() {
                         if (count < target) count++;
                       }),
-                      child: const Text(
-                        "Tap to Count",
-                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      child: Text(
+                        tr("tap_to_count"),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                        ),
                       ),
                     ),
                   ),

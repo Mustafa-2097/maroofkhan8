@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
 const Color kBackground = Color(0xFFF8F9FB);
@@ -11,6 +13,7 @@ class ZakatWhatIsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
@@ -24,7 +27,7 @@ class ZakatWhatIsScreen extends StatelessWidget {
         title: Column(
           children: [
             Text(
-              "Zakat",
+              tr("zakat"),
               style: GoogleFonts.ebGaramond(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
@@ -32,7 +35,7 @@ class ZakatWhatIsScreen extends StatelessWidget {
               ),
             ),
             Text(
-              "Purify your wealth with ease and accuracy",
+              tr("purify_wealth_sub"),
               style: GoogleFonts.ebGaramond(fontSize: 12, color: kTextGrey),
             ),
           ],
@@ -78,7 +81,7 @@ class ZakatWhatIsScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "What is Zakat?",
+                          tr("what_is_zakat"),
                           style: GoogleFonts.ebGaramond(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -87,7 +90,7 @@ class ZakatWhatIsScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          "Learn the fundamental meaning and importance of Zakat",
+                          tr("what_is_zakat_sub"),
                           style: GoogleFonts.ebGaramond(
                             fontSize: 13,
                             color: kTextGrey,
@@ -120,22 +123,22 @@ class ZakatWhatIsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _contentParagraph(
-                    "Zakat is one of the Five Pillars of Islam, making it an obligatory act of worship.",
+                    localizeDigits(tr("zakat_pillar"), context),
                   ),
                   _contentParagraph(
-                    "The word \"Zakat\" means purification and growth. It purifies your wealth and helps it grow in blessings.",
+                    localizeDigits(tr("zakat_meaning_growth"), context),
                   ),
                   _contentParagraph(
-                    "Zakat is 2.5% of your accumulated wealth that has been in your possession for one lunar year (Hawl).",
+                    localizeDigits(tr("zakat_percent"), context),
                   ),
                   _contentParagraph(
-                    "It is a form of charity ordained by Allah to help the poor and needy in the community.",
+                    localizeDigits(tr("zakat_charity_poor"), context),
                   ),
                   _contentParagraph(
-                    "Paying Zakat is not just giving away money—it is fulfilling a divine obligation and ensuring social justice.",
+                    localizeDigits(tr("zakat_obligation_justice"), context),
                   ),
                   Text(
-                    "Allah says in the Quran: \"Take from their wealth a charity to cleanse them and purify them.\" (9:103)",
+                    localizeDigits(tr("zakat_quran_verse"), context),
                     style: GoogleFonts.ebGaramond(
                       fontSize: 15,
                       color: kTextDark,
@@ -182,7 +185,7 @@ class ZakatWhatIsScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Need More Guidance?",
+                          tr("need_more_guidance"),
                           style: GoogleFonts.ebGaramond(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -191,7 +194,7 @@ class ZakatWhatIsScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          "For specific questions about your situation, consult with a knowledgeable Islamic scholar or imam in your community. They can provide personalized guidance based on authentic sources.",
+                          tr("guidance_desc"),
                           style: GoogleFonts.ebGaramond(
                             fontSize: 13,
                             color: kTextGrey,

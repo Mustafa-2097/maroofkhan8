@@ -1,3 +1,4 @@
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,7 @@ import '../../ai_murshid/views/ai_murshid_screen.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:share_plus/share_plus.dart';
 
 // --- Common UI Constants ---
@@ -42,7 +44,7 @@ class FilterChipRow extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  controller.categories[index],
+                  tr(controller.getCategoryKey(index)),
                   style: GoogleFonts.ebGaramond(
                     color: Colors.white,
                     fontSize: 12,
@@ -89,7 +91,7 @@ class DuaCard extends StatelessWidget {
                 Text(
                   arabic,
                   textAlign: TextAlign.right,
-                  textDirection: TextDirection.rtl,
+                  textDirection: ui.TextDirection.rtl,
                   style: GoogleFonts.amiri(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -139,10 +141,11 @@ class DuaListScreen extends StatefulWidget {
 class _DuaListScreenState extends State<DuaListScreen> {
   @override
   Widget build(BuildContext context) {
+    context.locale;
     final DuaController controller = Get.put(DuaController());
     return Scaffold(
       appBar: AppBar(
-        title: const HeaderSection(title: "Dua"),
+        title: HeaderSection(title: tr("dua")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -179,10 +182,13 @@ class _DuaListScreenState extends State<DuaListScreen> {
                   ),
                   child: TextField(
                     onChanged: (v) => controller.updateSearch(v),
-                    decoration: const InputDecoration(
-                      hintText: "Search Duas...",
-                      hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
-                      icon: Icon(Icons.search, size: 20, color: kBrown),
+                    decoration: InputDecoration(
+                      hintText: tr("search_duas"),
+                      hintStyle: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                      icon: const Icon(Icons.search, size: 20, color: kBrown),
                       border: InputBorder.none,
                     ),
                   ),
@@ -202,7 +208,7 @@ class _DuaListScreenState extends State<DuaListScreen> {
               final displayList = controller.filteredDuaList;
 
               if (displayList.isEmpty) {
-                return const Center(child: Text("No Duas found"));
+                return Center(child: Text(tr("no_duas_found")));
               }
 
               return ListView.builder(
@@ -272,13 +278,15 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
         final file = File(filePath);
 
         final textToSave =
-            "${widget.dua.title ?? ''}\n\nArabic: ${widget.dua.arabic ?? ''}\n\nPronunciation: ${widget.dua.pronunciation ?? ''}\n\nMeaning: ${widget.dua.meaning ?? ''}\n\nShared via Maroof Khan App";
+            "${widget.dua.title ?? ''}\n\n${tr("arabic_label")}: ${widget.dua.arabic ?? ''}\n\n${tr("pronunciation_label")}: ${widget.dua.pronunciation ?? ''}\n\n${tr("meaning_label")}: ${widget.dua.meaning ?? ''}\n\n${tr("shared_via")}";
 
         await file.writeAsString(textToSave);
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Dua downloaded successfully!\nPath: $filePath"),
+            content: Text(
+              "${tr("dua_download_success")}\n${tr("path_colon")} $filePath",
+            ),
             backgroundColor: kBrown,
           ),
         );
@@ -292,9 +300,10 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     return Scaffold(
       appBar: AppBar(
-        title: const HeaderSection(title: "Duas"),
+        title: HeaderSection(title: tr("duas")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -326,7 +335,7 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildSmallPill("Dua", true),
+                _buildSmallPill(tr("dua"), true),
                 // _buildSmallPill("Translation", false),
                 // _buildSmallPill("Tafsir", false),
               ],
@@ -358,6 +367,7 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
                   Text(
                     widget.dua.arabic ?? "",
                     textAlign: TextAlign.center,
+                    textDirection: ui.TextDirection.rtl,
                     style: GoogleFonts.amiri(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -387,29 +397,30 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _actionIcon(Icons.headset_outlined, "Listen"),
+                  _actionIcon(Icons.headset_outlined, tr("listen")),
                   _actionIcon(
                     Icons.auto_awesome_outlined,
-                    "AI Explanation",
+                    tr("ai_explanation"),
                     onTap: () {
                       Get.to(() => const ChatScreen());
                     },
                   ),
                   _actionIcon(
                     Icons.share_outlined,
-                    "Share",
+                    tr("share"),
                     onTap: () {
                       final shareText =
                           "${widget.dua.title ?? ''}\n\n"
                           "${widget.dua.arabic ?? ''}\n\n"
-                          "Meaning: ${widget.dua.meaning ?? ''}\n\n"
-                          "Shared via Maroof Khan App";
+                          "${widget.dua.arabic ?? ''}\n\n"
+                          "${tr("meaning_colon")} ${widget.dua.meaning ?? ''}\n\n"
+                          "${tr("shared_via")}";
                       Share.share(shareText);
                     },
                   ),
                   _actionIcon(
                     Icons.download_outlined,
-                    "Download",
+                    tr("download"),
                     onTap: _downloadDua,
                   ),
                 ],
@@ -428,7 +439,7 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Meaning:",
+                    tr("meaning_colon"),
                     style: GoogleFonts.ebGaramond(
                       color: kBrown,
                       fontWeight: FontWeight.bold,

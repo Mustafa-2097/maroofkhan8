@@ -5,6 +5,8 @@ import 'package:maroofkhan8/features/audio/views/audio_screen.dart';
 import 'package:get/get.dart';
 import 'package:maroofkhan8/features/audio/controller/audio_controller.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 
 class AudioListScreen extends StatefulWidget {
   final String category;
@@ -64,10 +66,11 @@ class _AudioListScreenState extends State<AudioListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    context.locale; // Trigger rebuild on locale change
     return Scaffold(
       backgroundColor: const Color(0xFFF9F9F9),
       appBar: AppBar(
-        title: HeaderSection(title: "Audio List"),
+        title: HeaderSection(title: tr("audio_list_title")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -83,12 +86,17 @@ class _AudioListScreenState extends State<AudioListScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             child: Row(
               children: categories.map((cat) {
+                String catKey = cat == "Sufi Lectures"
+                    ? "cat_sufi_lectures"
+                    : cat == "Malfuzat"
+                    ? "cat_malfuzat"
+                    : "cat_naats_manqabats";
                 return Expanded(
                   child: Padding(
                     padding: EdgeInsets.only(
                       right: cat != categories.last ? 8 : 0,
                     ),
-                    child: _buildChip(cat, selectedCategory == cat, () {
+                    child: _buildChip(tr(catKey), selectedCategory == cat, () {
                       setState(() {
                         selectedCategory = cat;
                       });
@@ -117,7 +125,7 @@ class _AudioListScreenState extends State<AudioListScreen> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        "No audio found in this category",
+                        tr("no_audio_found_category"),
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.grey.shade600,
@@ -152,9 +160,11 @@ class _AudioListScreenState extends State<AudioListScreen> {
                             final featuredAudio =
                                 controller.featuredAudio.value;
                             if (featuredAudio == null) {
-                              return const SizedBox(
+                              return SizedBox(
                                 height: 100,
-                                child: Center(child: Text("No featured audio")),
+                                child: Center(
+                                  child: Text(tr("no_featured_audio")),
+                                ),
                               );
                             }
                             final isCurrentlyPlaying =
@@ -195,7 +205,7 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                               children: [
                                                 Text(
                                                   featuredAudio.title ??
-                                                      'Trust in Allah',
+                                                      tr('trust_in_allah'),
                                                   style: GoogleFonts.amiri(
                                                     fontSize: 26,
                                                     fontWeight: FontWeight.bold,
@@ -204,7 +214,7 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                                 ),
                                                 Text(
                                                   featuredAudio.subtitle ??
-                                                      'Shaykh’s Lecture',
+                                                      tr('shaykh_lecture'),
                                                   style: const TextStyle(
                                                     fontSize: 16,
                                                     color: Colors.grey,
@@ -223,13 +233,16 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                               }
                                             },
                                             itemBuilder: (context) => [
-                                              const PopupMenuItem(
+                                              PopupMenuItem(
                                                 value: 'share',
                                                 child: Row(
                                                   children: [
-                                                    Icon(Icons.share, size: 20),
-                                                    SizedBox(width: 8),
-                                                    Text('Share'),
+                                                    const Icon(
+                                                      Icons.share,
+                                                      size: 20,
+                                                    ),
+                                                    const SizedBox(width: 8),
+                                                    Text(tr('share')),
                                                   ],
                                                 ),
                                               ),
@@ -247,12 +260,18 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                         children: [
                                           Text(
                                             isCurrentlyPlaying
-                                                ? _formatDuration(
-                                                    controller
-                                                        .currentDuration
-                                                        .value,
+                                                ? localizeDigits(
+                                                    _formatDuration(
+                                                      controller
+                                                          .currentDuration
+                                                          .value,
+                                                    ),
+                                                    context,
                                                   )
-                                                : '00:00',
+                                                : localizeDigits(
+                                                    '00:00',
+                                                    context,
+                                                  ),
                                             style: const TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w500,
@@ -315,16 +334,18 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                           ),
                                           Text(
                                             isCurrentlyPlaying
-                                                ? _formatDuration(
-                                                    controller
-                                                        .totalDuration
-                                                        .value,
+                                                ? localizeDigits(
+                                                    _formatDuration(
+                                                      controller
+                                                          .totalDuration
+                                                          .value,
+                                                    ),
+                                                    context,
                                                   )
-                                                : (controller
-                                                          .cachedDurations[featuredAudio
-                                                              .id ??
-                                                          ''] ??
-                                                      '00:00'),
+                                                : localizeDigits(
+                                                    '00:00',
+                                                    context,
+                                                  ),
                                             style: const TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w500,
@@ -352,8 +373,8 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                                             .playerState
                                                             .value ==
                                                         PlayerState.playing
-                                                ? 'Pause'
-                                                : 'Listen',
+                                                ? tr('pause')
+                                                : tr('listen'),
                                             onPressed: () {
                                               if (isCurrentlyPlaying &&
                                                   controller
@@ -374,7 +395,7 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                           const SizedBox(width: 16),
                                           _buildActionButton(
                                             icon: Icons.file_download_outlined,
-                                            label: 'Download (Premium)',
+                                            label: tr('download_premium'),
                                             onPressed: () {
                                               controller.downloadAudio(
                                                 featuredAudio,
@@ -471,7 +492,7 @@ class _AudioListScreenState extends State<AudioListScreen> {
               )
             : Icon(icon, color: Colors.white, size: 16),
         label: Text(
-          isLoading ? "Loading..." : label,
+          isLoading ? tr("loading_dots") : label,
           style: const TextStyle(
             color: Colors.white,
             fontSize: 14,

@@ -6,6 +6,8 @@ import 'package:maroofkhan8/features/hadis/models/hadith_book.dart';
 import 'package:maroofkhan8/features/hadis/models/hadith_chapter.dart';
 import 'package:maroofkhan8/features/quran/views/quran_screen.dart';
 
+import 'package:easy_localization/easy_localization.dart';
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 import 'hadith_list_details_screen.dart';
 import 'saved_hadiths_screen.dart';
 
@@ -33,6 +35,7 @@ class _HadithBookDetailsScreenState extends State<HadithBookDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FE),
       body: SafeArea(
@@ -40,7 +43,7 @@ class _HadithBookDetailsScreenState extends State<HadithBookDetailsScreen> {
           children: [
             const SizedBox(height: 10),
             // 1. Header with Decorative Lines
-            HeaderDecoration(bookName: widget.book.name),
+            HeaderDecoration(bookName: tr("book_${widget.book.id}_name")),
 
             const SizedBox(height: 15),
 
@@ -58,7 +61,7 @@ class _HadithBookDetailsScreenState extends State<HadithBookDetailsScreen> {
 
                 final chapters = controller.filteredChapters;
                 if (chapters.isEmpty) {
-                  return const Center(child: Text("No Chapters Available"));
+                  return Center(child: Text(tr("no_chapters_available")));
                 }
                 return ListView.builder(
                   padding: const EdgeInsets.symmetric(vertical: 10),
@@ -73,7 +76,7 @@ class _HadithBookDetailsScreenState extends State<HadithBookDetailsScreen> {
                             builder: (_) => HadithListDetailsScreen(
                               slug: widget.book.id,
                               chapterNum: chapter.number,
-                              bookName: widget.book.name,
+                              bookName: tr("book_${widget.book.id}_name"),
                             ),
                           ),
                         );
@@ -97,7 +100,7 @@ class _HadithBookDetailsScreenState extends State<HadithBookDetailsScreen> {
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
           child: Row(
             children: [
-              HexagonBadge(number: chapter.number),
+              HexagonBadge(number: localizeDigits(chapter.number, context)),
               const SizedBox(width: 15),
               Expanded(
                 child: Column(
@@ -113,7 +116,7 @@ class _HadithBookDetailsScreenState extends State<HadithBookDetailsScreen> {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      "Hadith Chapter  |  ${chapter.number}",
+                      "${tr('hadith_chapter')}  |  ${localizeDigits(chapter.number, context)}",
                       style: GoogleFonts.playfairDisplay(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
@@ -214,9 +217,9 @@ class SearchBarSection extends StatelessWidget {
               child: TextField(
                 onChanged: (value) =>
                     controller.chapterSearchQuery.value = value,
-                decoration: const InputDecoration(
-                  hintText: 'Search',
-                  hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+                decoration: InputDecoration(
+                  hintText: tr('search'),
+                  hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
                   border: InputBorder.none,
                 ),
               ),
