@@ -6,6 +6,8 @@ import '../controller/sahaba_controller.dart';
 import '../model/sahaba_model.dart';
 import '../../ai_murshid/views/ai_murshid_screen.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -34,7 +36,7 @@ class _SahabaListScreenState extends State<SahabaListScreen> {
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
-        title: HeaderSection(title: "Sahaba"),
+        title: HeaderSection(title: tr("sahaba_title")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -83,11 +85,11 @@ class _SahabaListScreenState extends State<SahabaListScreen> {
               ),
               child: TextField(
                 onChanged: (val) => controller.searchQuery.value = val,
-                decoration: const InputDecoration(
-                  hintText: "Search",
-                  hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
+                decoration: InputDecoration(
+                  hintText: tr("search"),
+                  hintStyle: const TextStyle(fontSize: 14, color: Colors.grey),
                   border: InputBorder.none,
-                  contentPadding: EdgeInsets.only(bottom: 8),
+                  contentPadding: const EdgeInsets.only(bottom: 8),
                 ),
               ),
             ),
@@ -102,7 +104,7 @@ class _SahabaListScreenState extends State<SahabaListScreen> {
                   );
                 }
                 if (controller.filteredSahabaList.isEmpty) {
-                  return const Center(child: Text("No records found"));
+                  return Center(child: Text(tr("no_records_found")));
                 }
                 return ListView.builder(
                   itemCount: controller.filteredSahabaList.length,
@@ -280,11 +282,11 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _tabButton("Biography", 0),
+                    _tabButton(tr("biography"), 0),
                     const SizedBox(width: 10),
-                    _tabButton("Teachings", 1),
+                    _tabButton(tr("teachings"), 1),
                     const SizedBox(width: 10),
-                    _tabButton("Quotes", 2),
+                    _tabButton(tr("quotes"), 2),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -314,20 +316,20 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
   String _getTabTitle() {
     switch (_currentTab) {
       case 1:
-        return "His Teachings";
+        return tr("his_teachings");
       case 2:
-        return "His Quotes";
+        return tr("his_quotes");
       default:
-        return "Biography";
+        return tr("biography");
     }
   }
 
   Widget _buildTabBody(Sahaba sahaba) {
     switch (_currentTab) {
       case 1:
-        return _contentListTab(sahaba.teachings, "Teachings");
+        return _contentListTab(sahaba.teachings, tr("teachings"));
       case 2:
-        return _contentListTab(sahaba.quotes, "Quotes", isQuote: true);
+        return _contentListTab(sahaba.quotes, tr("quotes"), isQuote: true);
       default:
         return _buildBiographyContent(sahaba);
     }
@@ -371,13 +373,25 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
       ),
       child: Column(
         children: [
-          _bioRow("Name :", sahaba.name),
-          _bioRow("Born :", sahaba.dateOfBirth ?? "N/A"),
-          _bioRow("Died :", sahaba.dateOfDeath ?? "N/A"),
-          _bioRow("Position :", sahaba.position ?? "N/A"),
-          _bioRow("Institution :", sahaba.institution ?? "N/A"),
-          _bioRow("Works :", sahaba.works ?? "N/A"),
-          _bioRow("Known For :", sahaba.knownFor ?? "N/A"),
+          _bioRow(tr("label_name"), sahaba.name),
+          _bioRow(
+            tr("label_born"),
+            localizeDigits(sahaba.dateOfBirth ?? tr("not_available"), context),
+          ),
+          _bioRow(
+            tr("label_died"),
+            localizeDigits(sahaba.dateOfDeath ?? tr("not_available"), context),
+          ),
+          _bioRow(tr("label_position"), sahaba.position ?? tr("not_available")),
+          _bioRow(
+            tr("label_institution"),
+            sahaba.institution ?? tr("not_available"),
+          ),
+          _bioRow(tr("label_works"), sahaba.works ?? tr("not_available")),
+          _bioRow(
+            tr("label_known_for"),
+            sahaba.knownFor ?? tr("not_available"),
+          ),
         ],
       ),
     );
@@ -421,7 +435,7 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
         child: Padding(
           padding: const EdgeInsets.only(top: 20),
           child: Text(
-            "Information about $type will be updated soon.",
+            tr("info_updated_soon", args: [type]),
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 14, color: Colors.grey),
           ),
@@ -497,7 +511,7 @@ class _ExpandableContentCardState extends State<_ExpandableContentCard> {
               final tp = TextPainter(
                 text: span,
                 maxLines: 5,
-                textDirection: TextDirection.ltr,
+                textDirection: Directionality.of(context),
               );
               tp.layout(maxWidth: constraints.maxWidth);
 
@@ -534,7 +548,7 @@ class _ExpandableContentCardState extends State<_ExpandableContentCard> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
-                            isExpanded ? "Read Less" : "Read More",
+                            isExpanded ? tr("read_less") : tr("read_more"),
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 10,
@@ -625,11 +639,11 @@ class SahabaAudioScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _actionTab("His Teaches", true),
+                  _actionTab(tr("his_teaches"), true),
                   const SizedBox(width: 8),
-                  _actionTab("Translation", false),
+                  _actionTab(tr("translation"), false),
                   const SizedBox(width: 8),
-                  _actionTab("Tafsir", false),
+                  _actionTab(tr("tafsir"), false),
                 ],
               ),
               const SizedBox(height: 25),
@@ -659,7 +673,7 @@ class SahabaAudioScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      "Lessons and Contributions",
+                      tr("lessons_contributions"),
                       style: GoogleFonts.playfairDisplay(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -668,13 +682,13 @@ class SahabaAudioScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      sahaba.works ?? "Contributions information coming soon.",
+                      sahaba.works ?? tr("contributions_placeholder"),
                       textAlign: TextAlign.center,
                       style: GoogleFonts.playfairDisplay(fontSize: 14),
                     ),
                     const SizedBox(height: 15),
                     Text(
-                      sahaba.knownFor ?? "Known for information coming soon.",
+                      sahaba.knownFor ?? tr("known_for_placeholder"),
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 12,
@@ -693,17 +707,17 @@ class SahabaAudioScreen extends StatelessWidget {
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       Text(
-                        "00:00",
-                        style: TextStyle(
+                        localizeDigits("00:00", context),
+                        style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
-                        "00:00",
-                        style: TextStyle(
+                        localizeDigits("00:00", context),
+                        style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
@@ -760,7 +774,7 @@ class SahabaAudioScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _bottomAction(Icons.headset, "Listen", true),
+                    _bottomAction(Icons.headset, tr("listen"), true),
                     Container(
                       height: 30,
                       width: 1,
@@ -768,7 +782,7 @@ class SahabaAudioScreen extends StatelessWidget {
                     ),
                     _bottomAction(
                       Icons.auto_awesome,
-                      "AI Explanation",
+                      tr("ai_explanation"),
                       false,
                       onTap: () {
                         Get.to(() => const ChatScreen());
@@ -781,7 +795,7 @@ class SahabaAudioScreen extends StatelessWidget {
                     ),
                     _bottomAction(
                       Icons.share_outlined,
-                      "Share",
+                      tr("share"),
                       false,
                       onTap: () {
                         final shareText =
@@ -789,7 +803,7 @@ class SahabaAudioScreen extends StatelessWidget {
                             "Biography: ${sahaba.name}\n"
                             "Born: ${sahaba.dateOfBirth ?? 'N/A'}\n"
                             "Died: ${sahaba.dateOfDeath ?? 'N/A'}\n\n"
-                            "Shared via Maroof Khan App";
+                            "${tr("shared_via")}";
                         Share.share(shareText);
                       },
                     ),
@@ -798,7 +812,11 @@ class SahabaAudioScreen extends StatelessWidget {
                       width: 1,
                       color: Colors.grey.shade300,
                     ),
-                    _bottomAction(Icons.download_outlined, "Download", false),
+                    _bottomAction(
+                      Icons.download_outlined,
+                      tr("download"),
+                      false,
+                    ),
                   ],
                 ),
               ),

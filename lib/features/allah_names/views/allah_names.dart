@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import '../controllers/allah_names_controller.dart';
 import '../models/allah_name_model.dart';
 import 'saved_allah_names_screen.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -31,7 +33,7 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
             const SizedBox(height: 10),
 
             // 1. Header
-            const HeaderWithLines(title: "99 names of Allah"),
+            HeaderWithLines(title: tr("names_99")),
             const SizedBox(height: 20),
 
             // 2. Search Bar
@@ -49,19 +51,19 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
                       ),
                       child: TextField(
                         onChanged: controller.updateSearchQuery,
-                        decoration: const InputDecoration(
-                          prefixIcon: Icon(
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(
                             Icons.search,
                             color: Colors.grey,
                             size: 20,
                           ),
-                          hintText: "search...",
-                          hintStyle: TextStyle(
+                          hintText: "${tr("search")}...",
+                          hintStyle: const TextStyle(
                             color: Colors.grey,
                             fontSize: 14,
                           ),
                           border: InputBorder.none,
-                          contentPadding: EdgeInsets.only(top: 8),
+                          contentPadding: const EdgeInsets.only(top: 8),
                         ),
                       ),
                     ),
@@ -93,11 +95,11 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _filterButton("All", 0),
+                _filterButton(tr("all"), 0),
                 const SizedBox(width: 10),
                 // _filterButton("With Meaning", 1),
                 // const SizedBox(width: 10),
-                _filterButton("With Audio", 2),
+                _filterButton(tr("with_audio"), 2),
               ],
             ),
             const SizedBox(height: 20),
@@ -114,7 +116,7 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
                 final displayedNames = controller.filteredNamesList;
 
                 if (displayedNames.isEmpty) {
-                  return const Center(child: Text("No names found"));
+                  return Center(child: Text(tr("no_names_found")));
                 }
 
                 if (controller.selectedFilterIndex.value == 2) {
@@ -280,14 +282,14 @@ class AudioPlayerSection extends StatelessWidget {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
+                  children: [
                     Text(
-                      "1:00",
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      localizeDigits("1:00", context),
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                     Text(
-                      "2:12",
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      localizeDigits("2:12", context),
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
                     ),
                   ],
                 ),
@@ -464,11 +466,11 @@ class PlayerDialog extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _miniTab("All", false),
+                _miniTab(tr("all"), false),
                 const SizedBox(width: 5),
-                _miniTab("With Meaning", false),
+                _miniTab(tr("with_meaning"), false),
                 const SizedBox(width: 5),
-                _miniTab("With Audio", true),
+                _miniTab(tr("with_audio"), true),
               ],
             ),
             const SizedBox(height: 30),
@@ -537,14 +539,14 @@ class PlayerDialog extends StatelessWidget {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
+                  children: [
                     Text(
-                      "1:00",
-                      style: TextStyle(fontSize: 10, color: Colors.grey),
+                      localizeDigits("1:00", context),
+                      style: const TextStyle(fontSize: 10, color: Colors.grey),
                     ),
                     Text(
-                      "2:12",
-                      style: TextStyle(fontSize: 10, color: Colors.grey),
+                      localizeDigits("2:12", context),
+                      style: const TextStyle(fontSize: 10, color: Colors.grey),
                     ),
                   ],
                 ),

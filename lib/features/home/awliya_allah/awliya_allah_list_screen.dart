@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import 'package:maroofkhan8/features/home/awliya_allah/awliya_allah_details_screen.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'controllers/awliya_allah_controller.dart';
 import 'models/awliya_allah_model.dart';
 
@@ -22,7 +23,7 @@ class _AwliyaAllahListScreenState extends State<AwliyaAllahListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const HeaderSection(title: "Awliya Allah"),
+        title: HeaderSection(title: tr("awliya_allah_title")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -52,10 +53,10 @@ class _AwliyaAllahListScreenState extends State<AwliyaAllahListScreen> {
               ),
               child: TextField(
                 onChanged: (val) => controller.searchQuery.value = val,
-                decoration: const InputDecoration(
-                  hintText: "Search",
-                  hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 15),
+                decoration: InputDecoration(
+                  hintText: tr("search"),
+                  hintStyle: const TextStyle(color: Colors.grey, fontSize: 16),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 15),
                   border: InputBorder.none,
                 ),
               ),
@@ -71,7 +72,7 @@ class _AwliyaAllahListScreenState extends State<AwliyaAllahListScreen> {
                 );
               }
               if (controller.filteredAwliyaList.isEmpty) {
-                return const Center(child: Text("No records found"));
+                return Center(child: Text(tr("no_records_found")));
               }
               return ListView.builder(
                 padding: const EdgeInsets.symmetric(

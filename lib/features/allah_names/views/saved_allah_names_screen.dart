@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import '../controllers/allah_names_controller.dart';
 import 'allah_names.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SavedAllahNamesScreen extends StatelessWidget {
   const SavedAllahNamesScreen({super.key});
@@ -38,7 +39,7 @@ class SavedAllahNamesScreen extends StatelessWidget {
           ),
           alignment: Alignment.center,
           child: Text(
-            "Saved",
+            tr("saved"),
             style: GoogleFonts.playfairDisplay(
               color: const Color(0xFF2E2E2E),
               fontWeight: FontWeight.w500,
@@ -56,7 +57,7 @@ class SavedAllahNamesScreen extends StatelessWidget {
         final savedNames = controller.savedNamesList;
 
         if (savedNames.isEmpty) {
-          return const Center(child: Text("No saved names yet"));
+          return Center(child: Text(tr("no_saved_names_yet")));
         }
 
         return GridView.builder(
