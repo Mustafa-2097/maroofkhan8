@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import 'package:share_plus/share_plus.dart';
 
+import 'package:easy_localization/easy_localization.dart';
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 import '../controller/hadith_controller.dart';
 import 'hadith_book_details_screen.dart';
 import 'hadith_tafsir_details_screen.dart';
@@ -30,9 +32,10 @@ class _HadithScreenState extends State<HadithScreen> {
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     return Scaffold(
       appBar: AppBar(
-        title: HeaderSection(title: "Al Hadith"),
+        title: HeaderSection(title: tr("al_hadith")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -70,9 +73,9 @@ class _HadithScreenState extends State<HadithScreen> {
                         onChanged: (val) {
                           controller.searchQuery.value = val;
                         },
-                        decoration: const InputDecoration(
-                          hintText: 'Search',
-                          hintStyle: TextStyle(
+                        decoration: InputDecoration(
+                          hintText: tr('search'),
+                          hintStyle: const TextStyle(
                             color: Colors.grey,
                             fontSize: 14,
                           ),
@@ -109,11 +112,11 @@ class _HadithScreenState extends State<HadithScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
-                  _tabButton("Hadith Book", 0),
+                  _tabButton(tr("hadith_book"), 0),
                   const SizedBox(width: 8),
-                  _tabButton("Popular Hadith", 1),
+                  _tabButton(tr("popular_hadith"), 1),
                   const SizedBox(width: 8),
-                  _tabButton("Last Read", 2, icon: Icons.access_time),
+                  _tabButton(tr("last_read"), 2, icon: Icons.access_time),
                 ],
               ),
             ),
@@ -142,7 +145,7 @@ class _HadithScreenState extends State<HadithScreen> {
       }
       final books = controller.filteredHadithBooks;
       if (books.isEmpty) {
-        return const Center(child: Text("No Books Available"));
+        return Center(child: Text(tr("no_books_available")));
       }
       return ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -189,14 +192,22 @@ class _HadithScreenState extends State<HadithScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          book.name,
+                          tr("book_${book.id}_name"),
                           style: GoogleFonts.playfairDisplay(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          "Chapters - ${book.chapters}",
+                          tr("book_${book.id}_writer"),
+                          style: GoogleFonts.playfairDisplay(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xFFA6A6A6),
+                          ),
+                        ),
+                        Text(
+                          "${tr('chapters')} - ${localizeDigits(book.chapters.toString(), context)}",
                           style: GoogleFonts.playfairDisplay(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
@@ -204,7 +215,7 @@ class _HadithScreenState extends State<HadithScreen> {
                           ),
                         ),
                         Text(
-                          "Hadith - ${book.hadiths}",
+                          "${tr('hadiths')} - ${localizeDigits(book.hadiths.toString(), context)}",
                           style: GoogleFonts.playfairDisplay(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
@@ -243,7 +254,7 @@ class _HadithScreenState extends State<HadithScreen> {
       }
       final popular = controller.filteredPopularHadiths;
       if (popular.isEmpty) {
-        return const Center(child: Text("No Popular Hadiths Available"));
+        return Center(child: Text(tr("no_popular_hadiths_available")));
       }
       return ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -282,7 +293,7 @@ class _HadithScreenState extends State<HadithScreen> {
                   child: Text(
                     item.reference.isNotEmpty
                         ? "— ${item.reference}"
-                        : "— Hadith ${item.hadithNo}",
+                        : "— ${tr('hadith')} ${localizeDigits(item.hadithNo?.toString() ?? '0', context)}",
                     style: TextStyle(
                       color: primaryBrown,
                       fontSize: 12,
@@ -314,9 +325,9 @@ class _HadithScreenState extends State<HadithScreen> {
                     GestureDetector(
                       onTap: () {
                         final shareText =
-                            "${item.book ?? 'Popular Hadith'}\n\n"
+                            "${item.book ?? tr('popular_hadith')}\n\n"
                             "${item.hadith}\n\n"
-                            "(${item.reference.isNotEmpty ? item.reference : 'Hadith ' + (item.hadithNo?.toString() ?? 'N/A')})\n\n"
+                            "(${item.reference.isNotEmpty ? item.reference : tr('hadith') + ' ' + localizeDigits(item.hadithNo?.toString() ?? 'N/A', context)})\n\n"
                             "Shared via Maroof Khan App";
                         Share.share(shareText);
                       },
@@ -327,7 +338,7 @@ class _HadithScreenState extends State<HadithScreen> {
                       ),
                     ),
                     const Spacer(),
-                    _iconLabel(Icons.volume_up_outlined, "Listen"),
+                    _iconLabel(Icons.volume_up_outlined, tr("listen")),
                     const SizedBox(width: 15),
                     GestureDetector(
                       onTap: () {
@@ -342,7 +353,10 @@ class _HadithScreenState extends State<HadithScreen> {
                           ),
                         );
                       },
-                      child: _iconLabel(Icons.visibility_outlined, "Full View"),
+                      child: _iconLabel(
+                        Icons.visibility_outlined,
+                        tr("full_view"),
+                      ),
                     ),
                   ],
                 ),
@@ -362,7 +376,7 @@ class _HadithScreenState extends State<HadithScreen> {
       }
       final lastRead = controller.filteredLastReadHadiths;
       if (lastRead.isEmpty) {
-        return const Center(child: Text("No Last Read Records"));
+        return Center(child: Text(tr("no_last_read_records")));
       }
       return ListView.builder(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -399,7 +413,7 @@ class _HadithScreenState extends State<HadithScreen> {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
-                    "— ${item.book}",
+                    "— ${tr("book_${item.book}_name")}",
                     style: TextStyle(
                       color: primaryBrown,
                       fontSize: 12,
@@ -433,7 +447,7 @@ class _HadithScreenState extends State<HadithScreen> {
                         final shareText =
                             "${item.book}\n\n"
                             "${item.hadith}\n\n"
-                            "(Hadith ${item.hadithNo ?? 'N/A'})\n\n"
+                            "(${tr('hadith')} ${localizeDigits(item.hadithNo ?? 'N/A', context)})\n\n"
                             "Shared via Maroof Khan App";
                         Share.share(shareText);
                       },
@@ -444,7 +458,7 @@ class _HadithScreenState extends State<HadithScreen> {
                       ),
                     ),
                     const Spacer(),
-                    _iconLabel(Icons.volume_up_outlined, "Listen"),
+                    _iconLabel(Icons.volume_up_outlined, tr("listen")),
                     const SizedBox(width: 15),
                     GestureDetector(
                       onTap: () {
@@ -457,7 +471,10 @@ class _HadithScreenState extends State<HadithScreen> {
                           ),
                         );
                       },
-                      child: _iconLabel(Icons.visibility_outlined, "Full View"),
+                      child: _iconLabel(
+                        Icons.visibility_outlined,
+                        tr("full_view"),
+                      ),
                     ),
                   ],
                 ),
@@ -535,7 +552,7 @@ class HeaderDecoration extends StatelessWidget {
           const Icon(Icons.circle, size: 4, color: brown),
           const SizedBox(width: 10),
           Text(
-            "Hadith",
+            tr("hadith"),
             style: GoogleFonts.playfairDisplay(
               fontSize: 18,
               fontWeight: FontWeight.bold,

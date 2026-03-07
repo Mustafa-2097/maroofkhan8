@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../controller/quran_controller.dart';
 import '../model/surah_model.dart';
 import 'quran_screen.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 
 class SavedSurasScreen extends StatelessWidget {
   const SavedSurasScreen({super.key});
@@ -45,7 +47,7 @@ class SavedSurasScreen extends StatelessWidget {
           ),
           alignment: Alignment.center,
           child: Text(
-            "Bookmarked Surahs",
+            tr("bookmarked_surahs"),
             style: GoogleFonts.playfairDisplay(
               color: isDark ? Colors.white : const Color(0xFF2E2E2E),
               fontWeight: FontWeight.w500,
@@ -74,9 +76,9 @@ class SavedSurasScreen extends StatelessWidget {
                   color: Colors.grey.withOpacity(0.5),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  "No saved surahs yet",
-                  style: TextStyle(color: Colors.grey, fontSize: 16),
+                Text(
+                  tr("no_saved_surahs"),
+                  style: const TextStyle(color: Colors.grey, fontSize: 16),
                 ),
               ],
             ),
@@ -88,10 +90,20 @@ class SavedSurasScreen extends StatelessWidget {
           itemCount: savedItems.length,
           itemBuilder: (context, index) {
             final surah = savedItems[index];
+            final nameKey = "surah_${surah.id}_name";
+            final transKey = "surah_${surah.id}_trans";
+            final localizedName = tr(nameKey) == nameKey
+                ? surah.name
+                : tr(nameKey);
+            final localizedTrans = tr(transKey) == transKey
+                ? surah.translatedName
+                : tr(transKey);
+
             return SurahCard(
-              num: "${surah.id}",
-              title: surah.name,
-              sub: "${surah.translatedName}  | ${surah.versesCount} Ayah",
+              num: localizeDigits("${surah.id}", context),
+              title: localizedName,
+              sub:
+                  "$localizedTrans  | ${localizeDigits("${surah.versesCount}", context)} ${tr('ayah')}",
               surah: surah,
             );
           },

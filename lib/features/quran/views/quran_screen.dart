@@ -8,9 +8,11 @@ import '../model/surah_model.dart';
 import '../model/verse_model.dart' as vm;
 import 'package:share_plus/share_plus.dart';
 
-import '../../../core/constant/widgets/header.dart';
+import 'package:maroofkhan8/core/constant/widgets/header.dart';
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 import '../../ai_murshid/views/ai_murshid_screen.dart';
 import 'saved_suras_screen.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -29,9 +31,10 @@ class QuranScreen extends StatefulWidget {
 class _MainContainerState extends State<QuranScreen> {
   @override
   Widget build(BuildContext context) {
+    context.locale;
     return Scaffold(
       appBar: AppBar(
-        title: HeaderSection(title: "Al Quran"),
+        title: HeaderSection(title: tr("al_quran")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -65,6 +68,7 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     return SafeArea(
       child: Column(
         children: [
@@ -78,11 +82,11 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               children: [
-                _tabButton("Surah", 0),
+                _tabButton(tr("surah"), 0),
                 const SizedBox(width: 8),
-                _tabButton("Juz", 1),
+                _tabButton(tr("juz"), 1),
                 const SizedBox(width: 8),
-                _tabButton("Last Read", 2, icon: Icons.access_time),
+                _tabButton(tr("last_read"), 2, icon: Icons.access_time),
               ],
             ),
           ),
@@ -152,7 +156,7 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           if (controller.filteredJuzList.isEmpty) {
-            return const Center(child: Text("No Juz found"));
+            return Center(child: Text(tr("no_juz_found")));
           }
           return ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -162,15 +166,20 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
               String subtitle = "";
               if (juz.verses != null && juz.verses!.isNotEmpty) {
                 subtitle = juz.verses!
-                    .map((v) => "Chapter ${v.chapter}")
+                    .map(
+                      (v) =>
+                          "${tr('chapter')} ${localizeDigits(v.chapter.toString(), context)}",
+                    )
                     .toSet()
                     .join(", ");
               } else {
-                subtitle = "Juz ${juz.number ?? 0}";
+                subtitle =
+                    "${tr('juz')} ${localizeDigits((juz.number ?? 0).toString(), context)}";
               }
               return _listTile(
-                num: "${juz.number ?? 0}",
-                title: "Juz ${juz.number ?? 0}",
+                num: localizeDigits((juz.number ?? 0).toString(), context),
+                title:
+                    "${tr('juz')} ${localizeDigits((juz.number ?? 0).toString(), context)}",
                 sub: subtitle,
                 surah: null,
               );
@@ -183,7 +192,7 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           if (controller.filteredLastReadList.isEmpty) {
-            return const Center(child: Text("No items found"));
+            return Center(child: Text(tr("no_items_found")));
           }
           return ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -191,10 +200,18 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
             itemBuilder: (context, i) {
               final lastRead = controller.filteredLastReadList[i];
               final chapter = lastRead.chapter;
+              final nameKey = "surah_${chapter?.chapterNumber}_name";
+              final localizedTitle = tr(nameKey) == nameKey
+                  ? (chapter?.name ?? tr("unknown"))
+                  : tr(nameKey);
               return _listTile(
-                num: "${chapter?.chapterNumber ?? i + 1}",
-                title: chapter?.name ?? "Unknown",
-                sub: "Verse ${lastRead.verse ?? 1}",
+                num: localizeDigits(
+                  (chapter?.chapterNumber ?? i + 1).toString(),
+                  context,
+                ),
+                title: localizedTitle,
+                sub:
+                    "${tr('verse')} ${localizeDigits((lastRead.verse ?? 1).toString(), context)}",
                 surah: chapter != null
                     ? SurahModel(
                         id: chapter.id ?? 0,
@@ -219,11 +236,27 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
                 itemCount: controller.filteredSurahList.length,
                 itemBuilder: (context, i) {
                   final surah = controller.filteredSurahList[i];
+                  final revelationKey =
+                      surah.revelationPlace.toLowerCase() == 'makkah'
+                      ? 'revelation_makkah'
+                      : 'revelation_madinah';
+
+                  // Use localized names if keys exist, otherwise fallback to surah model values
+                  final nameKey = "surah_${surah.id}_name";
+                  final transKey = "surah_${surah.id}_trans";
+
+                  final localizedName = tr(nameKey) == nameKey
+                      ? surah.name
+                      : tr(nameKey);
+                  final localizedTrans = tr(transKey) == transKey
+                      ? surah.translatedName
+                      : tr(transKey);
+
                   return _listTile(
-                    num: "${surah.id}",
-                    title: surah.name,
+                    num: localizeDigits(surah.id.toString(), context),
+                    title: localizedName,
                     sub:
-                        "${surah.translatedName}  | ${surah.versesCount} Ayah  |  ${surah.revelationPlace.toLowerCase().capitalizeFirst} Surah",
+                        "$localizedTrans  | ${localizeDigits(surah.versesCount.toString(), context)} ${tr('ayah')}  |  ${tr(revelationKey)} ${tr('surah')}",
                     surah: surah,
                   );
                 },
@@ -396,11 +429,17 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                       visualDensity: VisualDensity.compact,
                     ),
                   ),
-                  HeaderSection(title: widget.surah.name),
+                  HeaderSection(
+                    title:
+                        tr("surah_${widget.surah.id}_name") ==
+                            "surah_${widget.surah.id}_name"
+                        ? widget.surah.name
+                        : tr("surah_${widget.surah.id}_name"),
+                  ),
                   Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      "${widget.surah.id}",
+                      localizeDigits(widget.surah.id.toString(), context),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -408,7 +447,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
               ),
             ),
             Text(
-              "Read  •  Listen  •  Understand",
+              tr("read_listen_understand"),
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
@@ -421,11 +460,11 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
-                  _detailTab("Surah", 0),
+                  _detailTab(tr("surah"), 0),
                   const SizedBox(width: 10),
-                  _detailTab("Tafsir", 1),
+                  _detailTab(tr("tafsir"), 1),
                   const SizedBox(width: 10),
-                  _detailTab("AI Explanation", 2),
+                  _detailTab(tr("ai_explanation"), 2),
                 ],
               ),
             ),
@@ -509,7 +548,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                 .remainder(60)
                 .toString()
                 .padLeft(2, '0');
-            return "$minutes:$seconds";
+            return localizeDigits("$minutes:$seconds", context);
           }
 
           return Column(
@@ -629,7 +668,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
               return const Center(child: CircularProgressIndicator());
             }
             if (controller.verseList.isEmpty) {
-              return const Center(child: Text("No verses found"));
+              return Center(child: Text(tr("no_verses_found")));
             }
             return ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -648,7 +687,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
         return const Center(child: CircularProgressIndicator());
       }
       if (controller.tafsirList.isEmpty) {
-        return const Center(child: Text("No tafsir found"));
+        return Center(child: Text(tr("no_tafsir_found")));
       }
       return ListView.builder(
         padding: const EdgeInsets.all(20),
@@ -669,7 +708,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                     const Icon(Icons.menu_book, size: 16, color: kPrimaryBrown),
                     const SizedBox(width: 8),
                     Text(
-                      "Verse ${tafsir.startKey ?? ''}:",
+                      "${tr('verse')} ${localizeDigits(tafsir.startKey ?? '', context)}:",
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -736,7 +775,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
               Column(
                 children: [
                   Text(
-                    "${verse.number ?? ''}",
+                    localizeDigits((verse.number ?? '').toString(), context),
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -748,7 +787,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                       final shareText =
                           "${verse.ayah ?? ''}\n\n"
                           "${verse.translation ?? ''}\n\n"
-                          "(${widget.surah.name}, Verse ${verse.number ?? ''})";
+                          "(${widget.surah.name}, ${tr('verse')} ${localizeDigits((verse.number ?? '').toString(), context)})";
                       Share.share(shareText);
                     },
                     icon: const Icon(
@@ -810,9 +849,9 @@ class SearchAndBookmark extends StatelessWidget {
                       Get.find<QuranController>();
                   controller.searchQuery.value = val;
                 },
-                decoration: const InputDecoration(
-                  hintText: 'Search',
-                  hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+                decoration: InputDecoration(
+                  hintText: tr('search'),
+                  hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
                   border: InputBorder.none,
                 ),
               ),

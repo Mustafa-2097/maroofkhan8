@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/features/hadis/controller/hadith_controller.dart';
 import 'package:maroofkhan8/features/hadis/models/hadith.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 
 import 'hadith_tafsir_details_screen.dart';
 import 'saved_hadiths_screen.dart';
@@ -37,6 +39,7 @@ class _HadithListDetailsScreenState extends State<HadithListDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     const Color primaryBrown = Color(0xFF8D3C1F);
 
     return Scaffold(
@@ -73,7 +76,8 @@ class _HadithListDetailsScreenState extends State<HadithListDetailsScreen> {
                         children: [
                           TextSpan(text: "${widget.bookName}-"),
                           TextSpan(
-                            text: "(Chapter-${widget.chapterNum})",
+                            text:
+                                "(${tr('chapters')}-${localizeDigits(widget.chapterNum, context)})",
                             style: const TextStyle(color: primaryBrown),
                           ),
                         ],
@@ -114,9 +118,9 @@ class _HadithListDetailsScreenState extends State<HadithListDetailsScreen> {
                       child: TextField(
                         onChanged: (value) =>
                             controller.hadithSearchQuery.value = value,
-                        decoration: const InputDecoration(
-                          hintText: 'Search',
-                          hintStyle: TextStyle(
+                        decoration: InputDecoration(
+                          hintText: tr('search'),
+                          hintStyle: const TextStyle(
                             color: Colors.grey,
                             fontSize: 14,
                           ),
@@ -144,7 +148,7 @@ class _HadithListDetailsScreenState extends State<HadithListDetailsScreen> {
                 }
                 final hadiths = controller.filteredHadithList;
                 if (hadiths.isEmpty) {
-                  return const Center(child: Text("No Hadiths Available"));
+                  return Center(child: Text(tr("no_hadiths_available")));
                 }
                 return ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -239,7 +243,7 @@ class HadithCard extends StatelessWidget {
           ),
           const SizedBox(height: 15),
           Text(
-            "$bookName • Hadith ${hadith.number}",
+            "$bookName • ${tr('hadith')} ${localizeDigits(hadith.number, context)}",
             style: const TextStyle(fontSize: 11, color: Colors.grey),
           ),
           const Divider(height: 30, color: Color(0xFFEEEEEE)),
@@ -266,9 +270,8 @@ class HadithCard extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   final shareText =
-                      "${hadith.heading.isNotEmpty ? hadith.heading : ''}\n\n"
-                      "${hadith.hadith}\n\n"
-                      "($bookName, Hadith ${hadith.number})\n\n"
+                      "(${hadith.heading.isNotEmpty ? hadith.heading : ''})\n\n"
+                      "($bookName, ${tr('hadith')} ${localizeDigits(hadith.number, context)})\n\n"
                       "Shared via Maroof Khan App";
                   Share.share(shareText);
                 },
@@ -293,7 +296,10 @@ class HadithCard extends StatelessWidget {
                     ),
                   );
                 },
-                child: _footerAction(Icons.visibility_outlined, "Full View"),
+                child: _footerAction(
+                  Icons.visibility_outlined,
+                  tr("full_view"),
+                ),
               ),
             ],
           ),
