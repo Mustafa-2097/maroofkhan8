@@ -19,5 +19,10 @@
     "num_1": "١",
     "time_2h_15m": "٢س ١٥\nدقيقة",
     "num_8": "٨",
-    "daily_story": "قصة يومية"
+    "daily_story": "قصة يومية",
+    "nav_home": "الرئيسية",
+    "nav_al_murshid": "المرشد",
+    "nav_quran": "القرآن",
+    "nav_hadith": "الحديث",
+    "nav_sufism": "الصوفية"
 }
