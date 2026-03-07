@@ -52,6 +52,12 @@ class _AudioListScreenState extends State<AudioListScreen> {
     });
   }
 
+  @override
+  void dispose() {
+    controller.stopAudio();
+    super.dispose();
+  }
+
   final List<String> categories = [
     "Sufi Lectures",
     "Malfuzat",

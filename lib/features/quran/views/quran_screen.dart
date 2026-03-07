@@ -1,5 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/core/constant/app_colors.dart';
 import 'package:get/get.dart';
@@ -396,6 +397,17 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
   final QuranController controller = Get.find<QuranController>();
   int _activeDetailTab = 0; // 0: Surah, 1: Tafsir, 2: AI Explanation
 
+  // AI Explanation state
+  final _aiScrollController = ScrollController();
+  final _aiTextController = TextEditingController();
+  final List<Map<String, dynamic>> _aiMessages = [];
+  bool _aiIsTyping = false;
+  late final _quranAiService = _QuranAiService();
+
+  // Voice input state
+  late final stt.SpeechToText _speech = stt.SpeechToText();
+  bool _aiIsListening = false;
+
   @override
   void initState() {
     super.initState();
@@ -405,6 +417,14 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
       controller.updateLastRead(widget.surah.id, 1);
       controller.postChapters(widget.surah.id);
     });
+  }
+
+  @override
+  void dispose() {
+    controller.stopAudio();
+    _aiScrollController.dispose();
+    _aiTextController.dispose();
+    super.dispose();
   }
 
   @override
@@ -472,7 +492,9 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
             Expanded(
               child: _activeDetailTab == 0
                   ? _buildSurahReader()
-                  : _buildTafsirReader(),
+                  : _activeDetailTab == 1
+                  ? _buildTafsirReader()
+                  : _buildAiExplanation(),
             ),
           ],
         ),
@@ -486,19 +508,10 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
     return Expanded(
       child: GestureDetector(
         onTap: () {
-          if (index == 2) {
-            // 1. If AI Explanation is clicked, navigate to ChatScreen
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ChatScreen()),
-            );
-          } else {
-            // 2. Otherwise, just switch the local tab (Surah or Tafsir)
-            if (index == 1) {
-              controller.fetchSurahTafsir(widget.surah.id);
-            }
-            setState(() => _activeDetailTab = index);
+          if (index == 1) {
+            controller.fetchSurahTafsir(widget.surah.id);
           }
+          setState(() => _activeDetailTab = index);
         },
         child: Container(
           height: 35,
@@ -819,6 +832,446 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
           const Divider(height: 1, color: Color(0xFFF1F1F1)),
         ],
       ),
+    );
+  }
+
+  // ── AI Explanation inline chat ──────────────────────────────────────────
+  Widget _buildAiExplanation() {
+    return Column(
+      children: [
+        // Chat messages
+        Expanded(
+          child: _aiMessages.isEmpty && !_aiIsTyping
+              ? Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.auto_awesome,
+                        size: 40,
+                        color: kPrimaryBrown.withValues(alpha: 0.4),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        "Ask anything about\n${widget.surah.name}",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 16,
+                          color: Colors.grey.shade400,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : ListView.builder(
+                  controller: _aiScrollController,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  itemCount: _aiMessages.length + (_aiIsTyping ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (index == _aiMessages.length && _aiIsTyping) {
+                      // Typing indicator
+                      return Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: const _TypingIndicator(),
+                        ),
+                      );
+                    }
+                    final msg = _aiMessages[index];
+                    final isUser = msg['isUser'] as bool;
+                    return Align(
+                      alignment: isUser
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.78,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isUser ? kPrimaryBrown : Colors.grey.shade100,
+                          borderRadius: BorderRadius.only(
+                            topLeft: const Radius.circular(14),
+                            topRight: const Radius.circular(14),
+                            bottomLeft: Radius.circular(isUser ? 14 : 0),
+                            bottomRight: Radius.circular(isUser ? 0 : 14),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.04),
+                              blurRadius: 6,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: SelectableText(
+                          msg['text'] as String,
+                          style: TextStyle(
+                            color: isUser ? Colors.white : Colors.black87,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+        ),
+        // Input bar with mic (Ai Murshid Design)
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          child: Stack(
+            alignment: Alignment.centerRight,
+            clipBehavior: Clip.none,
+            children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                height: 60,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(40),
+                  border: Border.all(color: Colors.grey.shade200),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.02),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    const SizedBox(width: 20),
+                    Expanded(
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: _aiIsListening
+                            ? Container(
+                                key: const ValueKey('listening'),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFF8F9FA),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: const Text(
+                                  "Speak now...",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Color(0xFF4A4A4A),
+                                  ),
+                                ),
+                              )
+                            : TextField(
+                                key: const ValueKey('textField'),
+                                controller: _aiTextController,
+                                enabled: !_aiIsTyping,
+                                maxLines:
+                                    1, // Keep single line for Enter-to-send
+                                textInputAction: TextInputAction.send,
+                                onSubmitted: (val) {
+                                  if (!_aiIsTyping && val.trim().isNotEmpty) {
+                                    _sendAiMessage();
+                                  }
+                                },
+                                decoration: InputDecoration(
+                                  hintText: "Ask about ${widget.surah.name}...",
+                                  hintStyle: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey.shade500,
+                                  ),
+                                  border: InputBorder.none,
+                                  contentPadding: const EdgeInsets.only(
+                                    right: 100, // Room for buttons
+                                  ),
+                                ),
+                                onChanged: (_) => setState(() {}),
+                              ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Mic + Send Buttons
+              Positioned(
+                right: 6,
+                child: Row(
+                  children: [
+                    // Mic Button
+                    GestureDetector(
+                      onTap: () async {
+                        if (_aiIsListening) {
+                          _speech.stop();
+                          setState(() => _aiIsListening = false);
+                        } else {
+                          final available = await _speech.initialize(
+                            onStatus: (status) {
+                              if (status == 'notListening' ||
+                                  status == 'done') {
+                                if (mounted)
+                                  setState(() => _aiIsListening = false);
+                              }
+                            },
+                            onError: (_) {
+                              if (mounted)
+                                setState(() => _aiIsListening = false);
+                            },
+                          );
+                          if (available) {
+                            setState(() => _aiIsListening = true);
+                            _speech.listen(
+                              pauseFor: const Duration(seconds: 8),
+                              listenFor: const Duration(seconds: 30),
+                              partialResults: true,
+                              cancelOnError: false,
+                              onResult: (result) {
+                                setState(() {
+                                  _aiTextController.text =
+                                      result.recognizedWords;
+                                });
+                              },
+                            );
+                          }
+                        }
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 250),
+                        height: _aiIsListening ? 48 : 40,
+                        width: _aiIsListening ? 48 : 40,
+                        decoration: BoxDecoration(
+                          color: _aiIsListening ? kPrimaryBrown : Colors.grey,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          _aiIsListening ? Icons.mic : Icons.mic_none,
+                          color: Colors.white,
+                          size: _aiIsListening ? 26 : 22,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    // Send Button
+                    GestureDetector(
+                      onTap:
+                          _aiTextController.text.trim().isEmpty || _aiIsTyping
+                          ? null
+                          : _sendAiMessage,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        height: 42,
+                        width: 42,
+                        decoration: BoxDecoration(
+                          color:
+                              _aiTextController.text.trim().isEmpty ||
+                                  _aiIsTyping
+                              ? Colors.grey.shade300
+                              : kPrimaryBrown,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.send_rounded,
+                          color:
+                              _aiTextController.text.trim().isEmpty ||
+                                  _aiIsTyping
+                              ? Colors.grey
+                              : Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _sendAiMessage() async {
+    final text = _aiTextController.text.trim();
+    if (text.isEmpty) return;
+    _aiTextController.clear();
+    setState(() {
+      _aiMessages.add({'text': text, 'isUser': true});
+      _aiIsTyping = true;
+    });
+    _scrollAiToBottom();
+    try {
+      final reply = await _quranAiService.sendMessage(
+        surahName: widget.surah.name,
+        question: text,
+      );
+      if (mounted) {
+        setState(() {
+          _aiIsTyping = false;
+          _aiMessages.add({'text': reply, 'isUser': false});
+        });
+        _scrollAiToBottom();
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _aiIsTyping = false);
+        debugPrint("AI error: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "AI Error: ${e.toString().replaceAll('Exception: ', '')}",
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  void _scrollAiToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_aiScrollController.hasClients) {
+        _aiScrollController.animateTo(
+          _aiScrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+}
+
+// ── Quran-specific AI service ───────────────────────────────────────────────
+class _QuranAiService {
+  String? _sessionId;
+
+  Future<String> sendMessage({
+    required String surahName,
+    required String question,
+  }) async {
+    final body = jsonEncode({
+      if (_sessionId != null) 'session_id': _sessionId,
+      'user_id': 'quran_user',
+      'context': surahName, // Missing field causing 422
+      'text': question,
+    });
+
+    try {
+      final response = await http
+          .post(
+            Uri.parse(ApiEndpoints.quranExplanationMeditation),
+            headers: {'Content-Type': 'application/json'},
+            body: body,
+          )
+          .timeout(const Duration(seconds: 30));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data is Map<String, dynamic>) {
+          _sessionId = data['session_id'] as String?;
+          return (data['explanation'] as String?) ??
+              (data['message'] as String?) ??
+              "No response";
+        }
+        return "Unexpected response format";
+      } else {
+        // Include body for debugging 422
+        throw Exception(
+          'Server Error ${response.statusCode}: ${response.body}',
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+}
+
+// Small animated dot used in typing indicator
+class _Dot extends StatelessWidget {
+  final double offset;
+  const _Dot({this.offset = 0});
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.translate(
+      offset: Offset(0, offset),
+      child: Container(
+        width: 6,
+        height: 6,
+        decoration: BoxDecoration(
+          color: kPrimaryBrown.withValues(alpha: 0.6),
+          shape: BoxShape.circle,
+        ),
+      ),
+    );
+  }
+}
+
+// Sine-wave animated typing indicator
+class _TypingIndicator extends StatefulWidget {
+  const _TypingIndicator();
+  @override
+  State<_TypingIndicator> createState() => _TypingIndicatorState();
+}
+
+class _TypingIndicatorState extends State<_TypingIndicator>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(3, (index) {
+            // Create a staggered sine wave offset
+            final double t = _controller.value;
+            // Phase shift for each dot (0.4 radians ≈ 23 degrees)
+            final double shift = (index * 0.4);
+            // Calculate sine value and scale to pixels
+            final double verticalOffset =
+                4 * math.sin((t * 2 * math.pi) - shift);
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: _Dot(offset: verticalOffset),
+            );
+          }),
+        );
+      },
     );
   }
 }

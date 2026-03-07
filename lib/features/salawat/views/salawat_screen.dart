@@ -237,7 +237,14 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
   void initState() {
     super.initState();
     currentSalawat = widget.salawat;
+    controller.prepareAudio(currentSalawat);
     _loadFullData();
+  }
+
+  @override
+  void dispose() {
+    controller.stopSalawat();
+    super.dispose();
   }
 
   Future<void> _loadFullData() async {
@@ -248,6 +255,8 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
           currentSalawat = details;
           isFullDataLoaded = true;
         });
+        // Prepare again in case the file URL was only in the details
+        controller.prepareAudio(currentSalawat);
       }
     }
   }

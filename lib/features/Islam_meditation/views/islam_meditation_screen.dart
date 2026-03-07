@@ -216,10 +216,16 @@ class MeditationPlayerScreen extends StatefulWidget {
   final MeditationData? meditation;
   final GuidedMeditationData? guidedMeditation;
 
+  /// Optional: pass the full list + starting index for next/prev navigation
+  final List<GuidedMeditationData> allGuidedMeditations;
+  final int initialIndex;
+
   const MeditationPlayerScreen({
     super.key,
     this.meditation,
     this.guidedMeditation,
+    this.allGuidedMeditations = const [],
+    this.initialIndex = 0,
   });
 
   @override
@@ -231,44 +237,38 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
   PlayerState playerState = PlayerState.stopped;
   Duration duration = Duration.zero;
   Duration position = Duration.zero;
+  bool isTrackLoading = false;
+
+  // Tracks the current guided meditation being played
+  late GuidedMeditationData? _currentGuided;
+  late int _currentIndex;
+
+  String? get _audioUrl => _currentGuided?.file ?? widget.meditation?.file;
 
   @override
   void initState() {
     super.initState();
+    _currentGuided = widget.guidedMeditation;
+    _currentIndex = widget.initialIndex;
     player = AudioPlayer();
 
     // Set source
-    final audioUrl = widget.meditation?.file;
-    if (audioUrl != null) {
+    final audioUrl = _audioUrl;
+    if (audioUrl != null && audioUrl.isNotEmpty) {
       player.setSourceUrl(audioUrl);
     }
 
-    // Listen to player state
     player.onPlayerStateChanged.listen((state) {
-      if (mounted) {
-        setState(() {
-          playerState = state;
-        });
-      }
+      if (mounted) setState(() => playerState = state);
     });
-
-    // Listen to duration
     player.onDurationChanged.listen((d) {
-      if (mounted) {
-        setState(() {
-          duration = d;
-        });
-      }
+      if (mounted) setState(() => duration = d);
     });
-
-    // Listen to position
     player.onPositionChanged.listen((p) {
-      if (mounted) {
-        setState(() {
-          position = p;
-        });
-      }
+      if (mounted) setState(() => position = p);
     });
+    // Auto-advance to next when track completes
+    player.onPlayerComplete.listen((_) => _nextTrack());
   }
 
   @override
@@ -288,10 +288,75 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
     if (playerState == PlayerState.playing) {
       await player.pause();
     } else {
-      final audioUrl = widget.meditation?.file;
-      if (audioUrl != null) {
-        await player.play(UrlSource(audioUrl));
-      }
+      await _startSession();
+    }
+  }
+
+  Future<void> _startSession() async {
+    final audioUrl = _audioUrl;
+    if (audioUrl == null || audioUrl.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("No audio available for this session")),
+      );
+      return;
+    }
+    await player.play(UrlSource(audioUrl));
+  }
+
+  Future<void> _keepBreathing() async {
+    await player.pause();
+  }
+
+  Future<void> _endSession() async {
+    await player.stop();
+    if (mounted) Navigator.pop(context);
+  }
+
+  Future<void> _loadTrackAt(int index) async {
+    final list = widget.allGuidedMeditations;
+    if (index < 0 || index >= list.length) return;
+
+    setState(() {
+      isTrackLoading = true;
+      duration = Duration.zero;
+      position = Duration.zero;
+    });
+    await player.stop();
+
+    // Fetch the full record (with audio file) from the API
+    final fetched = await SufismController.instance.fetchGuidedMeditationById(
+      list[index].id!,
+    );
+    if (!mounted) return;
+
+    setState(() {
+      _currentGuided = fetched ?? list[index];
+      _currentIndex = index;
+      isTrackLoading = false;
+    });
+
+    final url = _audioUrl;
+    if (url != null && url.isNotEmpty) {
+      await player.play(UrlSource(url));
+    }
+  }
+
+  Future<void> _nextTrack() async {
+    final list = widget.allGuidedMeditations;
+    if (list.isEmpty) return;
+    final nextIndex = (_currentIndex + 1) % list.length;
+    await _loadTrackAt(nextIndex);
+  }
+
+  Future<void> _prevTrack() async {
+    final list = widget.allGuidedMeditations;
+    if (list.isEmpty) return;
+    // If more than 3 seconds in, restart; otherwise go to previous
+    if (position.inSeconds > 3) {
+      await player.seek(Duration.zero);
+    } else {
+      final prevIndex = (_currentIndex - 1 + list.length) % list.length;
+      await _loadTrackAt(prevIndex);
     }
   }
 
@@ -414,26 +479,49 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.skip_previous_outlined, size: 30),
+                      GestureDetector(
+                        onTap: hasList ? _prevTrack : null,
+                        child: Icon(
+                          Icons.skip_previous_outlined,
+                          size: 30,
+                          color: hasList ? Colors.black87 : Colors.grey[300],
+                        ),
+                      ),
                       const SizedBox(width: 25),
                       GestureDetector(
-                        onTap: _togglePlay,
+                        onTap: isTrackLoading ? null : _togglePlay,
                         child: Container(
                           padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(width: 1),
                           ),
-                          child: Icon(
-                            playerState == PlayerState.playing
-                                ? Icons.pause_rounded
-                                : Icons.play_arrow_rounded,
-                            size: 35,
-                          ),
+                          child: isTrackLoading
+                              ? const SizedBox(
+                                  width: 35,
+                                  height: 35,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Color(0xFF8D4B33),
+                                  ),
+                                )
+                              : Icon(
+                                  playerState == PlayerState.playing
+                                      ? Icons.pause_rounded
+                                      : Icons.play_arrow_rounded,
+                                  size: 35,
+                                ),
                         ),
                       ),
                       const SizedBox(width: 25),
-                      const Icon(Icons.skip_next_outlined, size: 30),
+                      GestureDetector(
+                        onTap: hasList ? _nextTrack : null,
+                        child: Icon(
+                          Icons.skip_next_outlined,
+                          size: 30,
+                          color: hasList ? Colors.black87 : Colors.grey[300],
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -442,7 +530,7 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
             const SizedBox(height: 40),
             // Bottom Action Buttons
             Padding(
-              padding: const EdgeInsets.only(bottom: 40),
+              padding: const EdgeInsets.only(bottom: 50),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -463,19 +551,26 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
     );
   }
 
-  Widget _buildBottomBtn(String text, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Text(
-        text,
-        style: GoogleFonts.ebGaramond(
-          color: Colors.white,
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
+  Widget _buildBottomBtn(
+    String text,
+    Color color, {
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Text(
+          text,
+          style: GoogleFonts.ebGaramond(
+            color: Colors.white,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );

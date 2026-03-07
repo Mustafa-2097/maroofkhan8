@@ -18,6 +18,7 @@ class SufismController extends GetxController {
   var guidedMeditationList = <GuidedMeditationData>[].obs;
   var isMeditationLoading = false.obs;
   var isMeditationExpanded = false.obs;
+  var guidedMeditationSearchQuery = "".obs;
 
   var teacherList = <IslamicTeacherData>[].obs;
   var isTeacherLoading = false.obs;
@@ -106,6 +107,23 @@ class SufismController extends GetxController {
           (t) => t.title!.toLowerCase().contains(
             teacherSearchQuery.value.toLowerCase(),
           ),
+        )
+        .toList();
+  }
+
+  List<GuidedMeditationData> get filteredGuidedMeditationList {
+    if (guidedMeditationSearchQuery.value.isEmpty) {
+      return guidedMeditationList;
+    }
+    return guidedMeditationList
+        .where(
+          (m) =>
+              (m.name ?? "").toLowerCase().contains(
+                guidedMeditationSearchQuery.value.toLowerCase(),
+              ) ||
+              (m.meaning ?? "").toLowerCase().contains(
+                guidedMeditationSearchQuery.value.toLowerCase(),
+              ),
         )
         .toList();
   }
