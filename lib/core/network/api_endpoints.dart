@@ -3,6 +3,8 @@ class ApiEndpoints {
   static const String baseUrl = 'http://206.162.244.189:5001/api/v1';
   static const String aiExplanationGeneral =
       "http://204.197.173.4:8060/api/ai-murshid/ai-explanation";
+  static const String quranExplanationMeditation =
+      "http://204.197.173.4:8060/api/ai-murshid/quran-explanation";
 
   /// Auth
   static const String register = '$baseUrl/auth/register';

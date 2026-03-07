@@ -371,6 +371,8 @@ class QuranController extends GetxController {
     try {
       isAudioLoading.value = true;
       surahAudio.value = null;
+      currentDuration.value = Duration.zero;
+      totalDuration.value = Duration.zero;
       currentSurahId.value = id;
       print("DEBUG: Fetching audio for Surah $id");
       final token = await SharedPreferencesHelper.getToken();
@@ -394,6 +396,10 @@ class QuranController extends GetxController {
         if (audioResponse.data != null) {
           surahAudio.value = audioResponse.data;
           print("DEBUG: Fetched Audio URL: ${surahAudio.value?.url}");
+          // Set source immediately to load duration metadata
+          if (surahAudio.value?.url != null) {
+            await audioPlayer.setSource(UrlSource(surahAudio.value!.url!));
+          }
         } else {
           print("DEBUG: Audio data is null in response");
         }
@@ -419,9 +425,12 @@ class QuranController extends GetxController {
       }
 
       print("DEBUG: Attempting to play: ${surahAudio.value!.url}");
-      if (playerState.value == PlayerState.paused) {
+      // If the player is already loaded with this source, just resume
+      if (playerState.value == PlayerState.paused ||
+          playerState.value == PlayerState.stopped ||
+          playerState.value == PlayerState.completed) {
         await audioPlayer.resume();
-      } else {
+      } else if (playerState.value != PlayerState.playing) {
         await audioPlayer.play(UrlSource(surahAudio.value!.url!));
       }
     } catch (e) {

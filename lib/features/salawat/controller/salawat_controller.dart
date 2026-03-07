@@ -255,6 +255,24 @@ class SalawatController extends GetxController {
   }
 
   // Playback Methods
+  Future<void> prepareAudio(SalawatData salawat) async {
+    final audioUrl = salawat.file ?? salawat.audio;
+    if (audioUrl == null) return;
+
+    try {
+      if (currentPlayingSalawatId.value != salawat.id) {
+        await audioPlayer.stop();
+        currentPlayingSalawatId.value = salawat.id;
+        currentDuration.value = Duration.zero;
+        totalDuration.value = Duration.zero;
+        await audioPlayer.setSource(UrlSource(audioUrl));
+        debugPrint("DEBUG: Salawat Audio Prepared: $audioUrl");
+      }
+    } catch (e) {
+      debugPrint("DEBUG: Error preparing salawat: $e");
+    }
+  }
+
   Future<void> playSalawat(SalawatData salawat) async {
     final audioUrl = salawat.file ?? salawat.audio;
     if (audioUrl == null) {
@@ -264,11 +282,15 @@ class SalawatController extends GetxController {
 
     try {
       if (currentPlayingSalawatId.value == salawat.id &&
-          playerState.value == PlayerState.paused) {
+          (playerState.value == PlayerState.paused ||
+              playerState.value == PlayerState.stopped ||
+              playerState.value == PlayerState.completed)) {
         await audioPlayer.resume();
       } else {
         await audioPlayer.stop();
         currentPlayingSalawatId.value = salawat.id;
+        currentDuration.value = Duration.zero;
+        totalDuration.value = Duration.zero;
         await audioPlayer.play(UrlSource(audioUrl));
       }
     } catch (e) {
