@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 import '../../../core/constant/widgets/header.dart';
 
 // --- COLORS & THEME ---
@@ -20,10 +22,11 @@ class PrayerTrackerScreenn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
-        title: const HeaderSection(title: "Prayer Tracker"),
+        title: HeaderSection(title: tr("prayer_tracker")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -63,7 +66,7 @@ class PrayerTrackerScreenn extends StatelessWidget {
                     ],
                   ),
                   child: Text(
-                    "4 Rajab 1447, Yaumul khamis",
+                    localizeDigits(tr("rajab_date_example"), context),
                     style: GoogleFonts.playfairDisplay(
                       color: kPrimaryBrown,
                       fontWeight: FontWeight.bold,
@@ -76,7 +79,7 @@ class PrayerTrackerScreenn extends StatelessWidget {
 
               // 2. Main Header
               Text(
-                "Asr Prayer",
+                tr("asr_prayer"),
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -85,7 +88,7 @@ class PrayerTrackerScreenn extends StatelessWidget {
               ),
               const SizedBox(height: 5),
               Text(
-                "Next:Magrib in 00:38",
+                "${tr("next_prayer")} ${tr("magrib")} ${tr("in")} ${localizeDigits("00:38", context)}",
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 18,
                   color: kTextDark,
@@ -142,27 +145,30 @@ class PrayerTimesCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Today's Prayer Time",
+                tr("todays_prayer_time"),
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const Row(
+              Row(
                 children: [
                   Text(
-                    "Weekly View",
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                    tr("weekly_view"),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  Icon(Icons.chevron_right, size: 16),
+                  const Icon(Icons.chevron_right, size: 16),
                 ],
               ),
             ],
           ),
           const Divider(height: 25, color: Color(0xFFEEEEEE)),
-          _prayerRow("Fajr", "4:15am"),
-          _prayerRow("Sunrise", "5:45am"),
-          _prayerRow("Dhuhr", "12:10pm"),
+          _prayerRow(tr("fajr"), localizeDigits("4:15am", context)),
+          _prayerRow(tr("sunrise"), localizeDigits("5:45am", context)),
+          _prayerRow(tr("dhuhr"), localizeDigits("12:10pm", context)),
 
           // Active Row (Asr)
           Container(
@@ -182,8 +188,8 @@ class PrayerTimesCard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  "Asr",
+                Text(
+                  tr("asr"),
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -191,16 +197,17 @@ class PrayerTimesCard extends StatelessWidget {
                   ),
                 ),
                 RichText(
-                  text: const TextSpan(
-                    style: TextStyle(color: Colors.white, fontSize: 13),
+                  text: TextSpan(
+                    style: const TextStyle(color: Colors.white, fontSize: 13),
                     children: [
                       TextSpan(
-                        text: "4:45pm ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        text: "${localizeDigits("4:45pm", context)} ",
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       TextSpan(
-                        text: "Jama'ah 5:00 pm",
-                        style: TextStyle(fontSize: 11),
+                        text:
+                            "${tr("jamaah")} ${localizeDigits("5:00 pm", context)}",
+                        style: const TextStyle(fontSize: 11),
                       ),
                     ],
                   ),
@@ -209,8 +216,8 @@ class PrayerTimesCard extends StatelessWidget {
             ),
           ),
 
-          _prayerRow("Magrib", "6:25pm"),
-          _prayerRow("Isha", "7:45pm"),
+          _prayerRow(tr("magrib"), localizeDigits("6:25pm", context)),
+          _prayerRow(tr("isha"), localizeDigits("7:45pm", context)),
         ],
       ),
     );
@@ -281,7 +288,7 @@ class DuasReflectionCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Duas & Reflection",
+            tr("duas_reflection"),
             style: GoogleFonts.playfairDisplay(
               fontSize: 13,
               fontWeight: FontWeight.bold,
@@ -292,7 +299,7 @@ class DuasReflectionCard extends StatelessWidget {
             children: [
               Expanded(
                 child: _brownButton(
-                  "Dua Before Salah",
+                  tr("dua_before_salah"),
                   showArrow: true,
                   fullWidth: true,
                 ),
@@ -300,7 +307,7 @@ class DuasReflectionCard extends StatelessWidget {
               const SizedBox(width: 15),
               Expanded(
                 child: _brownButton(
-                  "Dua After Salah",
+                  tr("dua_after_salah"),
                   showArrow: true,
                   fullWidth: true,
                 ),
@@ -327,16 +334,19 @@ class SpecialRamadanCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Special in Ramadan",
+                tr("special_in_ramadan"),
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Row(
-                children: const [
-                  Text("Special Month", style: TextStyle(fontSize: 12)),
-                  Icon(Icons.keyboard_arrow_down, size: 16),
+                children: [
+                  Text(
+                    tr("special_month"),
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                  const Icon(Icons.keyboard_arrow_down, size: 16),
                 ],
               ),
             ],
@@ -347,14 +357,14 @@ class SpecialRamadanCard extends StatelessWidget {
               Expanded(
                 child: _iconPillButton(
                   Icons.mosque_outlined,
-                  "Dua For Ramadan",
+                  tr("dua_for_ramadan"),
                 ),
               ),
               const SizedBox(width: 15),
               Expanded(
                 child: _iconPillButton(
                   Icons.dark_mode_outlined,
-                  "Track Fasting",
+                  tr("track_fasting"),
                 ),
               ),
             ],
@@ -411,7 +421,7 @@ class RamadanCountdownCard extends StatelessWidget {
             alignment: Alignment.center,
             children: [
               Text(
-                "24 Ramadan 1446 AH = 24 December 2025\nAD",
+                localizeDigits(tr("ramadan_countdown_example"), context),
                 textAlign: TextAlign.center,
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 14,
@@ -439,17 +449,17 @@ class RamadanCountdownCard extends StatelessWidget {
               _circleInfo(
                 kNavyCircle,
                 Icons.wb_sunny_outlined, // Placeholder for sun/moon icon
-                "Sahuri Time",
-                "04:10 am",
-                "Starts in 01:25:30",
+                tr("sahuri_time"),
+                localizeDigits("04:10 am", context),
+                "${tr("starts_in")} ${localizeDigits("01:25:30", context)}",
               ),
               const SizedBox(width: 25),
               _circleInfo(
                 kOrangeCircleStart,
                 Icons.wb_sunny_outlined,
-                "Iftar Time",
-                "05:10 pm",
-                "End in 01:25:30",
+                tr("iftar_time"),
+                localizeDigits("05:10 pm", context),
+                "${tr("end_in")} ${localizeDigits("01:25:30", context)}",
                 isGradient: true,
               ),
             ],
@@ -521,7 +531,7 @@ class AyahOfDayCard extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            "Ayah of the day",
+            tr("ayah_of_the_day"),
             style: GoogleFonts.playfairDisplay(
               fontSize: 14,
               fontWeight: FontWeight.bold,
@@ -539,14 +549,14 @@ class AyahOfDayCard extends StatelessWidget {
           ),
           const SizedBox(height: 15),
           Text(
-            "So surely with hardship comes\nease. Surely with hardship comes\nease.\"",
+            tr("ayah_meaning"),
             textAlign: TextAlign.center,
             style: GoogleFonts.playfairDisplay(fontSize: 15, color: kTextDark),
           ),
           const SizedBox(height: 15),
-          const Text(
-            "— Surah Ash-Sharh (94:5–6)",
-            style: TextStyle(fontSize: 12, color: kTextGrey),
+          Text(
+            localizeDigits(tr("surah_reference"), context),
+            style: const TextStyle(fontSize: 12, color: kTextGrey),
           ),
         ],
       ),

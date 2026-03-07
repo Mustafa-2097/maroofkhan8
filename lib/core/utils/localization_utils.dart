@@ -3,7 +3,36 @@ import 'package:easy_localization/easy_localization.dart';
 
 String localizeDigits(String input, BuildContext context) {
   final languageCode = context.locale.languageCode;
-  if (languageCode == 'en') return input;
+
+  // Localize AM/PM
+  String result = input;
+  if (languageCode == 'ar') {
+    result = result
+        .replaceAll('am', 'ص')
+        .replaceAll('pm', 'م')
+        .replaceAll('AM', 'ص')
+        .replaceAll('PM', 'م')
+        .replaceAll('AH', 'هـ')
+        .replaceAll('AD', 'م');
+  } else if (languageCode == 'ur') {
+    result = result
+        .replaceAll('am', 'صبح')
+        .replaceAll('pm', 'شام')
+        .replaceAll('AM', 'صبح')
+        .replaceAll('PM', 'شام')
+        .replaceAll('AH', 'ہجری')
+        .replaceAll('AD', 'عیسوی');
+  } else if (languageCode == 'hi') {
+    result = result
+        .replaceAll('am', 'पूर्वान्ह')
+        .replaceAll('pm', 'अपराह्न')
+        .replaceAll('AM', 'पूर्वान्ह')
+        .replaceAll('PM', 'अपराह्न')
+        .replaceAll('AH', 'हिजरी')
+        .replaceAll('AD', 'ईस्वी');
+  }
+
+  if (languageCode == 'en') return result;
 
   const Map<String, List<String>> digitMap = {
     'hi': ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'],
@@ -12,9 +41,9 @@ String localizeDigits(String input, BuildContext context) {
   };
 
   final digits = digitMap[languageCode];
-  if (digits == null) return input;
+  if (digits == null) return result;
 
-  return input
+  return result
       .split('')
       .map((char) {
         final index = int.tryParse(char);
