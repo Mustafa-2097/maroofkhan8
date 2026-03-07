@@ -59,4 +59,11 @@ class DuaController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  String getCategoryKey(int index) {
+    if (index == 0) return "all_duas";
+    if (index == 1) return "special_days";
+    if (index == 2) return "before_after";
+    return "all_duas";
+  }
 }
