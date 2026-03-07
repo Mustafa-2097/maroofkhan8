@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
 const Color kBackground = Color(0xFFF8F9FB);
@@ -11,6 +12,7 @@ class WhoCannotReceiveZakatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
@@ -24,7 +26,7 @@ class WhoCannotReceiveZakatScreen extends StatelessWidget {
         title: Column(
           children: [
             Text(
-              "Zakat",
+              tr("zakat"),
               style: GoogleFonts.ebGaramond(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
@@ -33,7 +35,7 @@ class WhoCannotReceiveZakatScreen extends StatelessWidget {
             ),
             const SizedBox(height: 2),
             Text(
-              "Purify your wealth with ease and accuracy",
+              tr("purify_wealth_sub"),
               style: GoogleFonts.ebGaramond(fontSize: 12, color: kTextGrey),
             ),
           ],
@@ -79,7 +81,7 @@ class WhoCannotReceiveZakatScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Who Can't Receive Zakat?",
+                          tr("who_cannot_receive_zakat"),
                           style: GoogleFonts.ebGaramond(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -88,7 +90,7 @@ class WhoCannotReceiveZakatScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          "People who are not eligible for Zakat",
+                          tr("who_cannot_receive_zakat_sub"),
                           style: GoogleFonts.ebGaramond(
                             fontSize: 13,
                             color: kTextGrey,
@@ -121,7 +123,7 @@ class WhoCannotReceiveZakatScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "The following people cannot receive Zakat:",
+                    tr("cannot_receive_zakat_title"),
                     style: GoogleFonts.ebGaramond(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -131,25 +133,15 @@ class WhoCannotReceiveZakatScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
 
-                  _ineligibleItem(
-                    "Your immediate family: parents, grandparents, children, grandchildren, spouse",
-                  ),
-                  _ineligibleItem(
-                    "The wealthy or those who possess wealth above Nisab",
-                  ),
-                  _ineligibleItem(
-                    "Non-Muslims (except those whose hearts are being reconciled to Islam)",
-                  ),
-                  _ineligibleItem(
-                    "Descendants of the Prophet Muhammad (ﷺ) - they are prohibited from accepting Zakat",
-                  ),
-                  _ineligibleItem(
-                    "People who are physically capable of earning but choose not to work",
-                  ),
+                  _ineligibleItem(tr("cannot_family")),
+                  _ineligibleItem(tr("cannot_wealthy")),
+                  _ineligibleItem(tr("cannot_non_muslims_except")),
+                  _ineligibleItem(tr("cannot_prophet_family")),
+                  _ineligibleItem(tr("cannot_able_bodied")),
 
                   const SizedBox(height: 8),
                   Text(
-                    "However, extended family like cousins, aunts, uncles, nephews, and nieces CAN receive Zakat if they meet the criteria.\n\nGiving Zakat to eligible relatives is actually more rewarding as it combines charity and maintaining family ties.\n\nAlways verify the recipient's eligibility or give through trusted Islamic organizations.",
+                    tr("zakat_family_notice"),
                     style: GoogleFonts.ebGaramond(
                       fontSize: 15,
                       color: kTextDark,
@@ -195,7 +187,7 @@ class WhoCannotReceiveZakatScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Need More Guidance?",
+                          tr("need_more_guidance"),
                           style: GoogleFonts.ebGaramond(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -204,7 +196,7 @@ class WhoCannotReceiveZakatScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          "For specific questions about your situation, consult with a knowledgeable Islamic scholar or imam in your community. They can provide personalized guidance based on authentic sources.",
+                          tr("guidance_desc"),
                           style: GoogleFonts.ebGaramond(
                             fontSize: 13,
                             color: kTextGrey,

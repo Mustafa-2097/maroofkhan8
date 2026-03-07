@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
 const Color kBackground = Color(0xFFF8F9FB);
@@ -11,6 +13,7 @@ class WhoCanReceiveZakatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
@@ -24,7 +27,7 @@ class WhoCanReceiveZakatScreen extends StatelessWidget {
         title: Column(
           children: [
             Text(
-              "Zakat",
+              tr("zakat"),
               style: GoogleFonts.ebGaramond(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
@@ -33,7 +36,7 @@ class WhoCanReceiveZakatScreen extends StatelessWidget {
             ),
             const SizedBox(height: 2),
             Text(
-              "Purify your wealth with ease and accuracy",
+              tr("purify_wealth_sub"),
               style: GoogleFonts.ebGaramond(fontSize: 12, color: kTextGrey),
             ),
           ],
@@ -79,7 +82,7 @@ class WhoCanReceiveZakatScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Who Can Receive Zakat?",
+                          tr("who_can_receive_zakat"),
                           style: GoogleFonts.ebGaramond(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -88,7 +91,7 @@ class WhoCanReceiveZakatScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          "The eight categories of Zakat recipients",
+                          tr("who_can_receive_zakat_sub"),
                           style: GoogleFonts.ebGaramond(
                             fontSize: 13,
                             color: kTextGrey,
@@ -121,7 +124,7 @@ class WhoCanReceiveZakatScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Allah has defined 8 categories of people eligible to receive Zakat in Surah At-Tawbah (9:60):",
+                    localizeDigits(tr("zakat_recipients_title"), context),
                     style: GoogleFonts.ebGaramond(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -131,34 +134,18 @@ class WhoCanReceiveZakatScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
 
-                  _recipientItem(
-                    "The Poor (Al-Fuqara) - Those with no income or means",
-                  ),
-                  _recipientItem(
-                    "The Needy (Al-Masakin) - Those with insufficient income",
-                  ),
-                  _recipientItem(
-                    "Zakat Administrators - Those appointed to collect and distribute Zakat",
-                  ),
-                  _recipientItem(
-                    "Those Whose Hearts Are to Be Reconciled - New Muslims or those inclined toward Islam",
-                  ),
-                  _recipientItem(
-                    "Freeing Slaves - To help free those in bondage",
-                  ),
-                  _recipientItem(
-                    "Travelers in Need (Ibn As-Sabil) - Stranded travelers without resources",
-                  ),
-                  _recipientItem(
-                    "Those in Debt (Al-Gharimin) - People burdened with debt",
-                  ),
-                  _recipientItem(
-                    "In the Cause of Allah (Fi Sabilillah) - Islamic projects and those striving in Allah's path",
-                  ),
+                  _recipientItem(tr("recipient_poor")),
+                  _recipientItem(tr("recipient_needy")),
+                  _recipientItem(tr("recipient_admin")),
+                  _recipientItem(tr("recipient_hearts")),
+                  _recipientItem(tr("recipient_slaves")),
+                  _recipientItem(tr("recipient_travelers")),
+                  _recipientItem(tr("recipient_debt")),
+                  _recipientItem(tr("recipient_cause")),
 
                   const SizedBox(height: 20),
                   Text(
-                    "Distribution can be to one or more categories depending on need and circumstance.",
+                    tr("zakat_distribution_notice"),
                     style: GoogleFonts.ebGaramond(
                       fontSize: 15,
                       color: kTextDark,
@@ -204,7 +191,7 @@ class WhoCanReceiveZakatScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Need More Guidance?",
+                          tr("need_more_guidance"),
                           style: GoogleFonts.ebGaramond(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -213,7 +200,7 @@ class WhoCanReceiveZakatScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          "For specific questions about your situation, consult with a knowledgeable Islamic scholar or imam in your community. They can provide personalized guidance based on authentic sources.",
+                          tr("guidance_desc"),
                           style: GoogleFonts.ebGaramond(
                             fontSize: 13,
                             color: kTextGrey,

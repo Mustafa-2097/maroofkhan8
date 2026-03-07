@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -14,15 +16,16 @@ class ZakatRulesDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.locale;
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
         title: Column(
           children: [
-            const HeaderSection(title: "Zakat Calculator"),
-            const Text(
-              "Purify your wealth with ease and accuracy",
-              style: TextStyle(fontSize: 10, color: kTextGrey),
+            HeaderSection(title: tr("zakat_calculator_title")),
+            Text(
+              tr("purify_wealth_sub"),
+              style: const TextStyle(fontSize: 10, color: kTextGrey),
             ),
           ],
         ),
@@ -98,7 +101,7 @@ class ZakatRulesDetailScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Who Must Pay Zakat?",
+                          tr("who_must_pay_zakat"),
                           style: GoogleFonts.playfairDisplay(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -106,9 +109,12 @@ class ZakatRulesDetailScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 5),
-                        const Text(
-                          "Understand the conditions for Zakat obligation",
-                          style: TextStyle(fontSize: 12, color: kTextGrey),
+                        Text(
+                          tr("who_must_pay_zakat_sub"),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: kTextGrey,
+                          ),
                         ),
                       ],
                     ),
@@ -127,7 +133,7 @@ class ZakatRulesDetailScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Every Muslim who meets the following conditions must pay Zakat:",
+                    tr("zakat_conditions_title"),
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -138,33 +144,27 @@ class ZakatRulesDetailScreen extends StatelessWidget {
                   const SizedBox(height: 20),
 
                   // Checklist Items
-                  _checkListItem("Must be an adult and sane"),
-                  _checkListItem("Must be a free person (not a slave)"),
-                  _checkListItem(
-                    "Must possess wealth above the Nisab threshold",
-                  ),
-                  _checkListItem(
-                    "The wealth must be in possession for one full lunar year (Hawl)",
-                  ),
-                  _checkListItem(
-                    "The wealth must be of a growing nature (cash, gold, silver, business assets, etc.)",
-                  ),
+                  _checkListItem(tr("cond_adult_sane")),
+                  _checkListItem(tr("cond_free")),
+                  _checkListItem(tr("cond_nisab")),
+                  _checkListItem(localizeDigits(tr("cond_hawl"), context)),
+                  _checkListItem(tr("cond_nature")),
 
                   const SizedBox(height: 15),
 
                   // Paragraphs
-                  const Text(
-                    "Children and insane persons are exempt, though guardians may pay on their behalf if they have substantial wealth.",
-                    style: TextStyle(
+                  Text(
+                    tr("exempt_notice"),
+                    style: const TextStyle(
                       fontSize: 13,
                       color: kTextDark,
                       height: 1.5,
                     ),
                   ),
                   const SizedBox(height: 15),
-                  const Text(
-                    "If your wealth falls below Nisab during the year, the count resets when it reaches Nisab again.",
-                    style: TextStyle(
+                  Text(
+                    tr("nisab_reset_notice"),
+                    style: const TextStyle(
                       fontSize: 13,
                       color: kTextDark,
                       height: 1.5,
@@ -213,7 +213,7 @@ class ZakatRulesDetailScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Need More Guidance?",
+                          tr("need_more_guidance"),
                           style: GoogleFonts.playfairDisplay(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
@@ -221,9 +221,9 @@ class ZakatRulesDetailScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        const Text(
-                          "For specific questions about your situation, consult with a knowledgeable Islamic scholar or imam in your community. They can provide personalized guidance based on authentic sources.",
-                          style: TextStyle(
+                        Text(
+                          tr("guidance_desc"),
+                          style: const TextStyle(
                             fontSize: 12,
                             color: kTextGrey,
                             height: 1.4,
