@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:maroofkhan8/features/hadis/views/hadis_screen.dart';
 import 'package:maroofkhan8/features/quran/views/quran_screen.dart';
 import '../../audio/views/audio_screen.dart';
@@ -11,15 +12,17 @@ import '../../../core/network/api_Service.dart';
 import '../../../core/network/api_endpoints.dart';
 
 class QuickStartFeature {
-  final String title;
-  final IconData icon;
+  final String titleKey;
+  final IconData? icon;
+  final String? imagePath;
   final Widget Function() destination;
   final Color Function(bool isDark, Color primary) colorBuilder;
   final bool isPinkCard;
 
   QuickStartFeature({
-    required this.title,
-    required this.icon,
+    required this.titleKey,
+    this.icon,
+    this.imagePath,
     required this.destination,
     required this.colorBuilder,
     this.isPinkCard = false,
@@ -45,7 +48,7 @@ class DashboardController extends GetxController {
         bannerQuote.value = response['data'] ?? {};
       }
     } catch (e) {
-      print("Error fetching banner quote: $e");
+      if (e is! String) print("Error fetching banner quote: $e");
     } finally {
       isQuoteLoading.value = false;
     }
@@ -53,50 +56,50 @@ class DashboardController extends GetxController {
 
   final List<QuickStartFeature> allFeatures = [
     QuickStartFeature(
-      title: "Quran",
+      titleKey: "feature_quran",
       icon: Icons.menu_book,
       destination: () => const QuranScreen(),
       colorBuilder: (isDark, primary) =>
           isDark ? primary.withOpacity(0.15) : const Color(0xFFDCD6FF),
     ),
     QuickStartFeature(
-      title: "Hadith",
+      titleKey: "feature_hadith",
       icon: Icons.book,
       destination: () => const HadithScreen(),
       colorBuilder: (isDark, primary) =>
           isDark ? Colors.orange.withOpacity(0.15) : const Color(0xFFFFD6CA),
     ),
     QuickStartFeature(
-      title: "Dua",
+      titleKey: "feature_dua",
       icon: Icons.front_hand,
       destination: () => const DuaListScreen(),
       colorBuilder: (isDark, primary) =>
           isDark ? Colors.orange.withOpacity(0.15) : const Color(0xFFFFD6CA),
     ),
     QuickStartFeature(
-      title: "Prayer\nTracker",
+      titleKey: "feature_prayer_tracker",
       icon: Icons.gps_fixed,
       destination: () => const PrayerTrackerScreenn(),
       colorBuilder: (isDark, primary) =>
           isDark ? primary.withOpacity(0.1) : const Color(0xFFE0D9FA),
     ),
     QuickStartFeature(
-      title: "Islamic\nStories",
+      titleKey: "feature_islamic_stories",
       icon: Icons.auto_stories,
       destination: () => const IslamicStoriesScreen(),
       colorBuilder: (isDark, primary) =>
           isDark ? primary.withOpacity(0.15) : const Color(0xFFDCD6FF),
     ),
     QuickStartFeature(
-      title: "Zakat\nCalculator",
-      icon: Icons.savings_outlined,
+      titleKey: "feature_zakat_calculator",
+      imagePath: "assets/images/zakat.png",
       destination: () => const ZakatCalculator(),
       colorBuilder: (isDark, primary) =>
           isDark ? Colors.pink.withOpacity(0.15) : const Color(0xFFE94E77),
       isPinkCard: true,
     ),
     QuickStartFeature(
-      title: "Audio",
+      titleKey: "feature_audio",
       icon: Icons.audiotrack,
       destination: () => const AudioScreen(),
       colorBuilder: (isDark, primary) =>
@@ -110,7 +113,7 @@ class DashboardController extends GetxController {
     }
     return allFeatures
         .where(
-          (feature) => feature.title
+          (feature) => tr(feature.titleKey)
               .toLowerCase()
               .replaceAll('\n', ' ')
               .contains(searchQuery.value.toLowerCase()),

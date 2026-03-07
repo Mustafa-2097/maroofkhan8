@@ -18,7 +18,7 @@ class LanguageScreen extends GetView<LanguageController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 24),
-        
+
               Align(
                 alignment: Alignment.center,
                 child: Text(
@@ -29,7 +29,7 @@ class LanguageScreen extends GetView<LanguageController> {
                   ),
                 ),
               ),
-        
+
               const SizedBox(height: 8),
               Text(
                 'Select your preferred language below. This helps us serve you better.',
@@ -38,19 +38,16 @@ class LanguageScreen extends GetView<LanguageController> {
                 ),
                 textAlign: TextAlign.center,
               ),
-        
+
               const SizedBox(height: 32),
-        
-              Text(
-                'Select Language',
-                style: theme.textTheme.titleLarge,
-              ),
-        
+
+              Text('Select Language', style: theme.textTheme.titleLarge),
+
               const SizedBox(height: 12),
-        
+
               /// Language List
               Expanded(
-                child: Obx( () {
+                child: Obx(() {
                   final selectedLanguage = controller.selectedLanguage.value;
                   return ListView.separated(
                     itemCount: controller.languages.length,
@@ -60,9 +57,13 @@ class LanguageScreen extends GetView<LanguageController> {
                       final isSelected = selectedLanguage == language;
                       return InkWell(
                         borderRadius: BorderRadius.circular(8),
-                        onTap: () => controller.selectLanguage(language),
+                        onTap: () =>
+                            controller.selectLanguage(language, context),
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 14.h,
+                          ),
                           decoration: BoxDecoration(
                             color: isSelected
                                 ? theme.colorScheme.primary.withOpacity(0.08)
@@ -91,8 +92,7 @@ class LanguageScreen extends GetView<LanguageController> {
                       );
                     },
                   );
-                }
-                ),
+                }),
               ),
             ],
           ),
@@ -101,7 +101,7 @@ class LanguageScreen extends GetView<LanguageController> {
 
       /// Bottom Button
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.fromLTRB(24, 16, 24,  111.h),
+        padding: EdgeInsets.fromLTRB(24, 16, 24, 111.h),
         child: SizedBox(
           height: 48,
           child: ElevatedButton(
