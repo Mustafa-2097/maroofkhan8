@@ -599,5 +599,18 @@
   "start_session": "सत्र शुरू करें",
   "keep_breathing": "सांस लेते रहें",
   "end_session": "सत्र समाप्त करें",
-  "al_murshid": "अल मुर्शिद"
+  "al_murshid": "अल मुर्शिद",
+  "al_murshid_title": "अल मुर्शिद",
+  "no_audio_available": "इस सत्र के लिए कोई ऑडियो उपलब्ध नहीं है",
+  "arabic_content_not_available": "अरबी सामग्री उपलब्ध नहीं है",
+  "pronunciation_not_available": "उच्चारण उपलब्ध नहीं है",
+  "meaning_not_available": "अर्थ उपलब्ध नहीं है",
+  "search_hint": "खोजें",
+  "bookmarked_salawat": "बुकमार्क की गई सलवात",
+  "no_saved_salawat_yet": "अभी तक कोई सलवात सुरक्षित नहीं है",
+  "download_started": "डाउनलोड शुरू हुआ",
+  "downloading_audio_for": "{} के लिए ऑडियो डाउनलोड हो रहा है...",
+  "download_complete": "डाउनलोड पूरा हुआ",
+  "audio_saved_desc": "{} के लिए ऑडियो सुरक्षित कर लिया गया है।",
+  "error": "त्रुटि"
 }

@@ -599,5 +599,18 @@
   "start_session": "سیشن شروع کریں",
   "keep_breathing": "سانس لیتے رہیں",
   "end_session": "سیشن ختم کریں",
-  "al_murshid": "المرشد"
+  "al_murshid": "المرشد",
+  "al_murshid_title": "المرشد",
+  "no_audio_available": "اس سیشن کے لیے کوئی آڈیو دستیاب نہیں ہے",
+  "arabic_content_not_available": "عربی مواد دستیاب نہیں ہے",
+  "pronunciation_not_available": "تلفظ دستیاب نہیں ہے",
+  "meaning_not_available": "معنی دستیاب نہیں ہے",
+  "search_hint": "تلاش کریں",
+  "bookmarked_salawat": "بک مارک شدہ صلوات",
+  "no_saved_salawat_yet": "ابھی تک کوئی صلوات محفوظ نہیں ہوئی",
+  "download_started": "ڈاؤن لوڈ شروع ہو گیا",
+  "downloading_audio_for": "{} کے لیے آڈیو ڈاؤن لوڈ ہو رہی ہے...",
+  "download_complete": "ڈاؤن لوڈ مکمل ہو گیا",
+  "audio_saved_desc": "{} کے لیے آڈیو محفوظ ہو گئی ہے۔",
+  "error": "غلطی"
 }

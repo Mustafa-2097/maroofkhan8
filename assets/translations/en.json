@@ -383,5 +383,18 @@
   "start_session": "Start Session",
   "keep_breathing": "Keep Breathing",
   "end_session": "End Session",
-  "al_murshid": "Al Murshid"
+  "al_murshid": "Al Murshid",
+  "al_murshid_title": "Al Murshid",
+  "no_audio_available": "No audio available for this session",
+  "arabic_content_not_available": "Arabic content not available",
+  "pronunciation_not_available": "Pronunciation not available",
+  "meaning_not_available": "Meaning not available",
+  "search_hint": "Search",
+  "bookmarked_salawat": "Bookmarked Salawat",
+  "no_saved_salawat_yet": "No saved salawat yet",
+  "download_started": "Download Started",
+  "downloading_audio_for": "Downloading audio for {}...",
+  "download_complete": "Download Complete",
+  "audio_saved_desc": "Audio for {} has been saved.",
+  "error": "Error"
 }

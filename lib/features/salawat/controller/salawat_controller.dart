@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,11 +29,11 @@ class SalawatController extends GetxController {
     return salawatList
         .where(
           (salawat) =>
-      salawat.title?.toLowerCase().contains(
-        searchQuery.value.toLowerCase(),
-      ) ??
-          false,
-    )
+              salawat.title?.toLowerCase().contains(
+                searchQuery.value.toLowerCase(),
+              ) ??
+              false,
+        )
         .toList();
   }
 
@@ -107,8 +108,8 @@ class SalawatController extends GetxController {
 
     for (var saved in savedSalawatList) {
       int index = salawatList.indexWhere(
-            (s) =>
-        s.id == saved.id ||
+        (s) =>
+            s.id == saved.id ||
             ((s.title != null && s.title == saved.title) &&
                 (s.arabic != null && s.arabic == saved.arabic)),
       );
@@ -129,8 +130,8 @@ class SalawatController extends GetxController {
       if (currentlySaved) {
         // Find the relation ID from savedSalawatList by matching title or arabic
         final savedItem = savedSalawatList.firstWhereOrNull(
-              (s) =>
-          s.id == salawat.id ||
+          (s) =>
+              s.id == salawat.id ||
               ((s.title != null && s.title == salawat.title) &&
                   (s.arabic != null && s.arabic == salawat.arabic)),
         );
@@ -159,8 +160,8 @@ class SalawatController extends GetxController {
         int index = salawatList.indexWhere((s) => s.id == salawat.id);
         if (index == -1) {
           index = salawatList.indexWhere(
-                (s) =>
-            (s.title != null && s.title == salawat.title) &&
+            (s) =>
+                (s.title != null && s.title == salawat.title) &&
                 (s.arabic != null && s.arabic == salawat.arabic),
           );
         }
@@ -171,16 +172,18 @@ class SalawatController extends GetxController {
 
         if (newState == false) {
           savedSalawatList.removeWhere(
-                (s) =>
-            s.id == salawat.id ||
+            (s) =>
+                s.id == salawat.id ||
                 ((s.title != null && s.title == salawat.title) &&
                     (s.arabic != null && s.arabic == salawat.arabic)),
           );
         }
 
         Get.snackbar(
-          "Success",
-          newState ? "Added to saved" : "Removed from saved",
+          // "Success",
+          // newState ? "Added to saved" : "Removed from saved",
+          tr("success"),
+          newState ? tr("added_to_bookmarks") : tr("removed_from_bookmarks"),
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: kPrimaryBrown,
           colorText: Colors.white,
@@ -209,7 +212,7 @@ class SalawatController extends GetxController {
         final details = SalawatData.fromJson(response['data']);
         // Sync isSaved status from local list
         details.isSaved = salawatList.any(
-              (s) => s.id == id && (s.isSaved ?? false),
+          (s) => s.id == id && (s.isSaved ?? false),
         );
         return details;
       }
@@ -238,18 +241,23 @@ class SalawatController extends GetxController {
 
   Future<void> downloadSalawat(SalawatData salawat) async {
     if (salawat.audio == null) {
-      Get.snackbar("Error", "No audio file available for download");
+      // Get.snackbar("Error", "No audio file available for download");
+      Get.snackbar(tr("error"), tr("no_audio_available"));
       return;
     }
     Get.snackbar(
-      "Download Started",
-      "Downloading audio for ${salawat.title}...",
+      // "Download Started",
+      // "Downloading audio for ${salawat.title}...",
+      tr("download_started"),
+      tr("downloading_audio_for", args: [salawat.title ?? tr("untitled")]),
       snackPosition: SnackPosition.BOTTOM,
     );
     await Future.delayed(const Duration(seconds: 2));
     Get.snackbar(
-      "Download Complete",
-      "Audio for ${salawat.title} has been saved.",
+      // "Download Complete",
+      // "Audio for ${salawat.title} has been saved.",
+      tr("download_complete"),
+      tr("audio_saved_desc", args: [salawat.title ?? tr("untitled")]),
       snackPosition: SnackPosition.BOTTOM,
     );
   }
@@ -276,7 +284,8 @@ class SalawatController extends GetxController {
   Future<void> playSalawat(SalawatData salawat) async {
     final audioUrl = salawat.file ?? salawat.audio;
     if (audioUrl == null) {
-      Get.snackbar("Error", "No audio file available for playback");
+      // Get.snackbar("Error", "No audio file available for playback");
+      Get.snackbar(tr("error"), tr("no_audio_available"));
       return;
     }
 
