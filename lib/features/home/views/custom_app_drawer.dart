@@ -11,6 +11,7 @@ class CustomAppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final sh = MediaQuery.of(context).size.height;
     final sw = MediaQuery.of(context).size.width;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Drawer(
       width: sw * 0.8,
@@ -20,17 +21,20 @@ class CustomAppDrawer extends StatelessWidget {
         children: [
           Container(
             height: sh * 0.8,
-            padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: sw*0.076),
+            padding: EdgeInsets.symmetric(
+              vertical: 20.h,
+              horizontal: sw * 0.076,
+            ),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: isDark
+                  ? Theme.of(context).colorScheme.surface
+                  : Colors.white,
               borderRadius: BorderRadius.only(
                 topRight: Radius.circular(20.r),
                 bottomRight: Radius.circular(20.r),
               ),
             ),
-            child: SafeArea(
-              child: ProfileList(),
-            ),
+            child: SafeArea(child: ProfileList()),
           ),
         ],
       ),

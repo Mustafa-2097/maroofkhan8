@@ -63,10 +63,9 @@ class _ProfileListState extends State<ProfileList> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           /// Personal Info Section
-          _SectionHeader(title: tr('personal_info')),
           _DrawerItem(
             icon: Icons.person_outline,
-            label: 'Personal Data',
+            label: 'personal_data', // 'Personal Data',
             onTap: () => Get.to(() => const PersonalData()),
           ),
           // _DrawerItem(
@@ -93,25 +92,25 @@ class _ProfileListState extends State<ProfileList> {
           // ),
           _DrawerItem(
             icon: Icons.subscriptions_outlined,
-            label: 'Subscription',
+            label: 'subscription', // 'Subscription',
             onTap: () => Get.to(() => SubscriptionPage()),
             //onTap: () => Get.to(() => PremiumSubscriptionPage()),
           ),
           _DrawerItem(
             icon: Icons.volunteer_activism_outlined,
-            label: 'Donation',
+            label: 'donation', // 'Donation',
             onTap: () => Get.to(() => const DonationScreen()),
           ),
           _DrawerItem(
             icon: Icons.payment_outlined,
-            label: 'Payment History',
+            label: 'payment_history', // 'Payment History',
             onTap: () => Get.to(() => const PaymentHistory()),
           ),
 
           _DrawerItem(
             icon: Icons.dark_mode_outlined,
-            label: 'Dark Theme',
-            subtitle: 'Switch to a dark color scheme',
+            label: 'dark_theme', // 'Dark Theme',
+            subtitle: 'dark_theme_subtitle', // 'Switch to a dark color scheme',
             trailing: Switch(
               value: isDark,
               activeColor: Colors.orange,
@@ -129,16 +128,16 @@ class _ProfileListState extends State<ProfileList> {
           SizedBox(height: 18.h),
 
           /// General Section
-          _SectionHeader(title: 'General'),
+          _SectionHeader(title: tr('general')), // 'General'),
           Divider(color: Colors.grey.shade400),
           _DrawerItem(
             icon: Icons.notifications_outlined,
-            label: 'Change Password',
+            label: 'change_password', // 'Change Password',
             onTap: () => Get.to(() => ChangePassword()),
           ),
           _DrawerItem(
             icon: Icons.language_outlined,
-            label: 'Language',
+            label: 'language', // 'Language',
             trailing: DropdownButton<String>(
               value: selectedLanguage,
               underline: const SizedBox(),
@@ -160,21 +159,21 @@ class _ProfileListState extends State<ProfileList> {
           SizedBox(height: 18.h),
 
           /// About Section
-          _SectionHeader(title: tr('about')),
+          _SectionHeader(title: tr('about')), // 'About'),
           Divider(color: Colors.grey.shade400),
           _DrawerItem(
             icon: Icons.contact_mail_outlined,
-            label: 'Contact Us',
+            label: 'contact_us', // 'Contact Us',
             onTap: () => Get.to(() => ContactUs()),
           ),
           _DrawerItem(
             icon: Icons.help_outline,
-            label: 'Support Center',
+            label: 'support_center', // 'Support Center',
             onTap: () => Get.to(() => SupportCenter()),
           ),
           _DrawerItem(
             icon: Icons.lock_outline,
-            label: 'Privacy & Policy',
+            label: 'privacy_policy', // 'Privacy & Policy',
             onTap: () => Get.to(() => const TermsConditions()),
           ),
 
@@ -249,7 +248,7 @@ class _ProfileListState extends State<ProfileList> {
 
                   /// TITLE
                   Text(
-                    "LOGOUT",
+                    tr("logout").toUpperCase(), // "LOGOUT",
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                       letterSpacing: 1,
@@ -260,8 +259,9 @@ class _ProfileListState extends State<ProfileList> {
 
                   /// DESCRIPTION
                   Text(
-                    "Are you sure you want to log out? "
-                    "You will need to sign in again to access your account.",
+                    tr(
+                      "logout_confirmation",
+                    ), // "Are you sure you want to log out? " "You will need to sign in again to access your account.",
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(
@@ -299,7 +299,7 @@ class _ProfileListState extends State<ProfileList> {
                             ),
                             onPressed: () => Navigator.pop(context),
                             child: Text(
-                              "Cancel",
+                              tr("cancel"), // "Cancel",
                               style: Theme.of(context).textTheme.bodyLarge
                                   ?.copyWith(
                                     color: isDark
@@ -337,7 +337,7 @@ class _ProfileListState extends State<ProfileList> {
                               // TODO: handle logout logic
                             },
                             child: Text(
-                              "Logout",
+                              tr("logout"), // "Logout",
                               style: Theme.of(context).textTheme.bodyLarge
                                   ?.copyWith(
                                     color: Colors.white,
@@ -515,7 +515,7 @@ class _LogoutButton extends StatelessWidget {
         onPressed: onPressed,
         icon: Icon(Icons.logout, color: logoutRed),
         label: Text(
-          "Logout",
+          tr("logout"), // "Logout",
           style: TextStyle(color: logoutRed, fontWeight: FontWeight.bold),
         ),
         style: OutlinedButton.styleFrom(
