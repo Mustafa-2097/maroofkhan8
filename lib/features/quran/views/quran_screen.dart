@@ -76,13 +76,17 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
       child: Column(
         children: [
           // const SizedBox(height: 10),
-          // const HeaderSection(title: "Al Quran"),
-          const SizedBox(height: 15),
+          // const SizedBox(height: 15),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.018),
           const SearchAndBookmark(),
-          const SizedBox(height: 15),
+          // const SizedBox(height: 15),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.018),
           // Tab Row
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            // padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.05,
+            ),
             child: Row(
               children: [
                 _tabButton(tr("surah"), 0),
@@ -93,7 +97,8 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 15),
+          // const SizedBox(height: 15),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.018),
           Expanded(child: _buildTabContent()),
         ],
       ),
@@ -107,14 +112,18 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
       child: GestureDetector(
         onTap: () => setState(() => _selectedTab = index),
         child: Container(
-          height: 38,
+          // height: 38,
+          height: MediaQuery.of(context).size.height * 0.045,
           decoration: BoxDecoration(
             color: isSelected
                 ? kPrimaryBrown
                 : isDark
                 ? Colors.white
                 : Colors.black,
-            borderRadius: BorderRadius.circular(20),
+            // borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(
+              MediaQuery.of(context).size.width * 0.05,
+            ),
             border: isSelected ? null : Border.all(color: Colors.grey.shade200),
           ),
           child: Row(
@@ -140,7 +149,8 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
                       : isDark
                       ? Colors.black
                       : Colors.white,
-                  fontSize: 16,
+                  // fontSize: 16,
+                  fontSize: MediaQuery.of(context).size.width * 0.038,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -162,7 +172,10 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
             return Center(child: Text(tr("no_juz_found")));
           }
           return ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            // padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.05,
+            ),
             itemCount: controller.filteredJuzList.length,
             itemBuilder: (context, i) {
               final juz = controller.filteredJuzList[i];
@@ -198,7 +211,10 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
             return Center(child: Text(tr("no_items_found")));
           }
           return ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            // padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.05,
+            ),
             itemCount: controller.filteredLastReadList.length,
             itemBuilder: (context, i) {
               final lastRead = controller.filteredLastReadList[i];
@@ -234,7 +250,10 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
           return Stack(
             children: [
               ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                // padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.05,
+                ),
                 itemCount: controller.filteredSurahList.length,
                 itemBuilder: (context, i) {
                   final surah = controller.filteredSurahList[i];
@@ -302,16 +321,21 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
                       Text(
                         title,
                         style: GoogleFonts.playfairDisplay(
-                          fontSize: 16,
+                          // fontSize: 16,
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 2),
+                      // const SizedBox(height: 2),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.003,
+                      ),
                       Text(
                         sub,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFF6F8DA1),
+                        style: TextStyle(
+                          // fontSize: 14,
+                          fontSize: MediaQuery.of(context).size.width * 0.035,
+                          color: const Color(0xFF6F8DA1),
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -321,9 +345,10 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
                 if (time != null)
                   Text(
                     time,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF6F8DA1),
+                    style: TextStyle(
+                      // fontSize: 12,
+                      fontSize: MediaQuery.of(context).size.width * 0.03,
+                      color: const Color(0xFF6F8DA1),
                     ),
                   ),
                 if (surah != null)
@@ -422,10 +447,14 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 10),
+            // const SizedBox(height: 10),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.012),
             // Header with back button
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              // padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.05,
+              ),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -452,15 +481,20 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
             Text(
               tr("read_listen_understand"),
               style: TextStyle(
-                fontSize: 14,
+                // fontSize: 14,
+                fontSize: MediaQuery.of(context).size.width * 0.035,
                 fontWeight: FontWeight.w600,
                 color: isDark ? AppColors.whiteColor : Colors.black87,
               ),
             ),
-            const SizedBox(height: 15),
+            // const SizedBox(height: 15),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.018),
             // Detail Tabs
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              // padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.05,
+              ),
               child: Row(
                 children: [
                   _detailTab(tr("surah"), 0),
@@ -471,7 +505,8 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            // const SizedBox(height: 20),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.025),
             Expanded(
               child: _activeDetailTab == 0
                   ? _buildSurahReader()
@@ -497,7 +532,8 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
           setState(() => _activeDetailTab = index);
         },
         child: Container(
-          height: 35,
+          // height: 35,
+          height: MediaQuery.of(context).size.height * 0.045,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: isSelected
@@ -516,7 +552,8 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                   : isDark
                   ? Colors.black
                   : Colors.white,
-              fontSize: 14,
+              // fontSize: 14,
+              fontSize: MediaQuery.of(context).size.width * 0.038,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -555,7 +592,8 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                   Text(
                     formatDuration(current),
                     style: TextStyle(
-                      fontSize: 12,
+                      // fontSize: 12,
+                      fontSize: MediaQuery.of(context).size.width * 0.03,
                       fontWeight: FontWeight.w600,
                       color: isDark ? AppColors.whiteColor : Colors.black87,
                     ),
@@ -591,7 +629,8 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                   Text(
                     formatDuration(total),
                     style: TextStyle(
-                      fontSize: 12,
+                      // fontSize: 12,
+                      fontSize: MediaQuery.of(context).size.width * 0.03,
                       fontWeight: FontWeight.w600,
                       color: isDark ? AppColors.whiteColor : Colors.black87,
                     ),
@@ -616,12 +655,14 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                   IconButton(
                     onPressed: () => controller.resetAudio(),
                     icon: Icon(
-                      size: 30,
                       Icons.restart_alt,
+                      // size: 30,
+                      size: MediaQuery.of(context).size.width * 0.075,
                       color: isDark ? AppColors.whiteColor : Colors.black87,
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  // const SizedBox(width: 10),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.025),
                   IconButton(
                     onPressed: () {
                       if (isPlaying) {
@@ -634,12 +675,14 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                       isPlaying
                           ? Icons.pause_circle_filled
                           : Icons.play_circle_filled,
-                      size: 40,
+                      // size: 40,
+                      size: MediaQuery.of(context).size.width * 0.1,
                       color: isDark ? AppColors.whiteColor : Colors.black87,
                     ),
                   ),
 
-                  const SizedBox(width: 10),
+                  // const SizedBox(width: 10),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.025),
                   GestureDetector(
                     onLongPress: () =>
                         controller.seekRelative(const Duration(seconds: 5)),
@@ -657,7 +700,8 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
             ],
           );
         }),
-        const SizedBox(height: 10),
+        // const SizedBox(height: 10),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.012),
         Expanded(
           child: Obx(() {
             if (controller.isVerseLoading.value) {
@@ -667,7 +711,10 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
               return Center(child: Text(tr("no_verses_found")));
             }
             return ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              // padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.05,
+              ),
               itemCount: controller.verseList.length,
               itemBuilder: (context, i) => _verseItem(controller.verseList[i]),
             );
@@ -740,27 +787,34 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                       child: Text(
                         verse.ayah ?? '',
                         textAlign: TextAlign.right,
-                        style: const TextStyle(
-                          fontSize: 22,
+                        style: TextStyle(
+                          // fontSize: 22,
+                          fontSize: MediaQuery.of(context).size.width * 0.055,
                           fontWeight: FontWeight.bold,
                           height: 1.8,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    // const SizedBox(height: 10),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.012,
+                    ),
                     Text(
                       verse.transliteration ?? '',
-                      style: const TextStyle(
-                        fontSize: 13,
+                      style: TextStyle(
+                        // fontSize: 13,
+                        fontSize: MediaQuery.of(context).size.width * 0.032,
                         fontStyle: FontStyle.italic,
                         color: kLightGrey,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    // const SizedBox(height: 8),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                     Text(
                       verse.translation ?? '',
-                      style: const TextStyle(
-                        fontSize: 14,
+                      style: TextStyle(
+                        // fontSize: 14,
+                        fontSize: MediaQuery.of(context).size.width * 0.035,
                         color: Colors.black87,
                       ),
                     ),

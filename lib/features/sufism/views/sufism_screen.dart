@@ -1314,7 +1314,6 @@ class _GridCard extends StatelessWidget {
   final IconData icon;
   final Color color;
   final bool isPinkCard;
-  final Color? textColor;
   final bool isDark;
 
   const _GridCard({
@@ -1322,7 +1321,6 @@ class _GridCard extends StatelessWidget {
     required this.icon,
     required this.color,
     this.isPinkCard = false,
-    this.textColor,
     required this.isDark,
   });
 
