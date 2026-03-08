@@ -28,11 +28,11 @@ class SalawatController extends GetxController {
     return salawatList
         .where(
           (salawat) =>
-              salawat.title?.toLowerCase().contains(
-                searchQuery.value.toLowerCase(),
-              ) ??
-              false,
-        )
+      salawat.title?.toLowerCase().contains(
+        searchQuery.value.toLowerCase(),
+      ) ??
+          false,
+    )
         .toList();
   }
 
@@ -107,8 +107,8 @@ class SalawatController extends GetxController {
 
     for (var saved in savedSalawatList) {
       int index = salawatList.indexWhere(
-        (s) =>
-            s.id == saved.id ||
+            (s) =>
+        s.id == saved.id ||
             ((s.title != null && s.title == saved.title) &&
                 (s.arabic != null && s.arabic == saved.arabic)),
       );
@@ -129,8 +129,8 @@ class SalawatController extends GetxController {
       if (currentlySaved) {
         // Find the relation ID from savedSalawatList by matching title or arabic
         final savedItem = savedSalawatList.firstWhereOrNull(
-          (s) =>
-              s.id == salawat.id ||
+              (s) =>
+          s.id == salawat.id ||
               ((s.title != null && s.title == salawat.title) &&
                   (s.arabic != null && s.arabic == salawat.arabic)),
         );
@@ -159,8 +159,8 @@ class SalawatController extends GetxController {
         int index = salawatList.indexWhere((s) => s.id == salawat.id);
         if (index == -1) {
           index = salawatList.indexWhere(
-            (s) =>
-                (s.title != null && s.title == salawat.title) &&
+                (s) =>
+            (s.title != null && s.title == salawat.title) &&
                 (s.arabic != null && s.arabic == salawat.arabic),
           );
         }
@@ -171,8 +171,8 @@ class SalawatController extends GetxController {
 
         if (newState == false) {
           savedSalawatList.removeWhere(
-            (s) =>
-                s.id == salawat.id ||
+                (s) =>
+            s.id == salawat.id ||
                 ((s.title != null && s.title == salawat.title) &&
                     (s.arabic != null && s.arabic == salawat.arabic)),
           );
@@ -209,7 +209,7 @@ class SalawatController extends GetxController {
         final details = SalawatData.fromJson(response['data']);
         // Sync isSaved status from local list
         details.isSaved = salawatList.any(
-          (s) => s.id == id && (s.isSaved ?? false),
+              (s) => s.id == id && (s.isSaved ?? false),
         );
         return details;
       }

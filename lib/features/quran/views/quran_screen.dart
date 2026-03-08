@@ -9,11 +9,13 @@ import '../model/surah_model.dart';
 import '../model/verse_model.dart' as vm;
 import 'package:share_plus/share_plus.dart';
 
-import 'package:maroofkhan8/core/constant/widgets/header.dart';
-import 'package:maroofkhan8/core/utils/localization_utils.dart';
-import '../../ai_murshid/views/ai_murshid_screen.dart';
+import '../../../core/constant/widgets/header.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:speech_to_text/speech_to_text.dart' as stt;
+import '../../../core/network/api_endpoints.dart';
 import 'saved_suras_screen.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'dart:math' as math;
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -32,23 +34,22 @@ class QuranScreen extends StatefulWidget {
 class _MainContainerState extends State<QuranScreen> {
   @override
   Widget build(BuildContext context) {
-    context.locale;
     return Scaffold(
       appBar: AppBar(
-        title: HeaderSection(title: tr("al_quran")),
+        title: HeaderSection(title: "Al Quran"),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: widget.hideBack
             ? null
             : IconButton(
-                icon: const Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.grey,
-                  size: 20,
-                ),
-                onPressed: () => Navigator.pop(context),
-              ),
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.grey,
+            size: 20,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: const QuranTabsScreen(),
     );
@@ -69,7 +70,6 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    context.locale;
     return SafeArea(
       child: Column(
         children: [
@@ -83,11 +83,11 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               children: [
-                _tabButton(tr("surah"), 0),
+                _tabButton("Surah", 0),
                 const SizedBox(width: 8),
-                _tabButton(tr("juz"), 1),
+                _tabButton("Juz", 1),
                 const SizedBox(width: 8),
-                _tabButton(tr("last_read"), 2, icon: Icons.access_time),
+                _tabButton("Last Read", 2, icon: Icons.access_time),
               ],
             ),
           ),
@@ -157,7 +157,7 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           if (controller.filteredJuzList.isEmpty) {
-            return Center(child: Text(tr("no_juz_found")));
+            return const Center(child: Text("No Juz found"));
           }
           return ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -167,20 +167,15 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
               String subtitle = "";
               if (juz.verses != null && juz.verses!.isNotEmpty) {
                 subtitle = juz.verses!
-                    .map(
-                      (v) =>
-                          "${tr('chapter')} ${localizeDigits(v.chapter.toString(), context)}",
-                    )
+                    .map((v) => "Chapter ${v.chapter}")
                     .toSet()
                     .join(", ");
               } else {
-                subtitle =
-                    "${tr('juz')} ${localizeDigits((juz.number ?? 0).toString(), context)}";
+                subtitle = "Juz ${juz.number ?? 0}";
               }
               return _listTile(
-                num: localizeDigits((juz.number ?? 0).toString(), context),
-                title:
-                    "${tr('juz')} ${localizeDigits((juz.number ?? 0).toString(), context)}",
+                num: "${juz.number ?? 0}",
+                title: "Juz ${juz.number ?? 0}",
                 sub: subtitle,
                 surah: null,
               );
@@ -193,7 +188,7 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           if (controller.filteredLastReadList.isEmpty) {
-            return Center(child: Text(tr("no_items_found")));
+            return const Center(child: Text("No items found"));
           }
           return ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -201,26 +196,18 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
             itemBuilder: (context, i) {
               final lastRead = controller.filteredLastReadList[i];
               final chapter = lastRead.chapter;
-              final nameKey = "surah_${chapter?.chapterNumber}_name";
-              final localizedTitle = tr(nameKey) == nameKey
-                  ? (chapter?.name ?? tr("unknown"))
-                  : tr(nameKey);
               return _listTile(
-                num: localizeDigits(
-                  (chapter?.chapterNumber ?? i + 1).toString(),
-                  context,
-                ),
-                title: localizedTitle,
-                sub:
-                    "${tr('verse')} ${localizeDigits((lastRead.verse ?? 1).toString(), context)}",
+                num: "${chapter?.chapterNumber ?? i + 1}",
+                title: chapter?.name ?? "Unknown",
+                sub: "Verse ${lastRead.verse ?? 1}",
                 surah: chapter != null
                     ? SurahModel(
-                        id: chapter.id ?? 0,
-                        name: chapter.name ?? "",
-                        translatedName: chapter.nameTranslated ?? "",
-                        versesCount: chapter.versesCount ?? 0,
-                        revelationPlace: chapter.revelationPlace ?? "",
-                      )
+                  id: chapter.id ?? 0,
+                  name: chapter.name ?? "",
+                  translatedName: chapter.nameTranslated ?? "",
+                  versesCount: chapter.versesCount ?? 0,
+                  revelationPlace: chapter.revelationPlace ?? "",
+                )
                     : null,
                 isLastRead: true,
               );
@@ -237,27 +224,11 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
                 itemCount: controller.filteredSurahList.length,
                 itemBuilder: (context, i) {
                   final surah = controller.filteredSurahList[i];
-                  final revelationKey =
-                      surah.revelationPlace.toLowerCase() == 'makkah'
-                      ? 'revelation_makkah'
-                      : 'revelation_madinah';
-
-                  // Use localized names if keys exist, otherwise fallback to surah model values
-                  final nameKey = "surah_${surah.id}_name";
-                  final transKey = "surah_${surah.id}_trans";
-
-                  final localizedName = tr(nameKey) == nameKey
-                      ? surah.name
-                      : tr(nameKey);
-                  final localizedTrans = tr(transKey) == transKey
-                      ? surah.translatedName
-                      : tr(transKey);
-
                   return _listTile(
-                    num: localizeDigits(surah.id.toString(), context),
-                    title: localizedName,
+                    num: "${surah.id}",
+                    title: surah.name,
                     sub:
-                        "$localizedTrans  | ${localizeDigits(surah.versesCount.toString(), context)} ${tr('ayah')}  |  ${tr(revelationKey)} ${tr('surah')}",
+                    "${surah.translatedName}  | ${surah.versesCount} Ayah  |  ${surah.revelationPlace.toLowerCase().capitalizeFirst} Surah",
                     surah: surah,
                   );
                 },
@@ -449,17 +420,11 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                       visualDensity: VisualDensity.compact,
                     ),
                   ),
-                  HeaderSection(
-                    title:
-                        tr("surah_${widget.surah.id}_name") ==
-                            "surah_${widget.surah.id}_name"
-                        ? widget.surah.name
-                        : tr("surah_${widget.surah.id}_name"),
-                  ),
+                  HeaderSection(title: widget.surah.name),
                   Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      localizeDigits(widget.surah.id.toString(), context),
+                      "${widget.surah.id}",
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -467,7 +432,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
               ),
             ),
             Text(
-              tr("read_listen_understand"),
+              "Read  •  Listen  •  Understand",
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
@@ -480,11 +445,11 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
-                  _detailTab(tr("surah"), 0),
+                  _detailTab("Surah", 0),
                   const SizedBox(width: 10),
-                  _detailTab(tr("tafsir"), 1),
+                  _detailTab("Tafsir", 1),
                   const SizedBox(width: 10),
-                  _detailTab(tr("ai_explanation"), 2),
+                  _detailTab("AI Explanation", 2),
                 ],
               ),
             ),
@@ -561,7 +526,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                 .remainder(60)
                 .toString()
                 .padLeft(2, '0');
-            return localizeDigits("$minutes:$seconds", context);
+            return "$minutes:$seconds";
           }
 
           return Column(
@@ -590,7 +555,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                       child: Slider(
                         value: total.inMilliseconds > 0
                             ? (current.inMilliseconds / total.inMilliseconds)
-                                  .clamp(0.0, 1.0)
+                            .clamp(0.0, 1.0)
                             : 0.0,
                         onChanged: (v) {
                           if (total.inMilliseconds > 0) {
@@ -681,7 +646,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
               return const Center(child: CircularProgressIndicator());
             }
             if (controller.verseList.isEmpty) {
-              return Center(child: Text(tr("no_verses_found")));
+              return const Center(child: Text("No verses found"));
             }
             return ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -700,7 +665,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
         return const Center(child: CircularProgressIndicator());
       }
       if (controller.tafsirList.isEmpty) {
-        return Center(child: Text(tr("no_tafsir_found")));
+        return const Center(child: Text("No tafsir found"));
       }
       return ListView.builder(
         padding: const EdgeInsets.all(20),
@@ -721,7 +686,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                     const Icon(Icons.menu_book, size: 16, color: kPrimaryBrown),
                     const SizedBox(width: 8),
                     Text(
-                      "${tr('verse')} ${localizeDigits(tafsir.startKey ?? '', context)}:",
+                      "Verse ${tafsir.startKey ?? ''}:",
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -788,7 +753,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
               Column(
                 children: [
                   Text(
-                    localizeDigits((verse.number ?? '').toString(), context),
+                    "${verse.number ?? ''}",
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -800,7 +765,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                       final shareText =
                           "${verse.ayah ?? ''}\n\n"
                           "${verse.translation ?? ''}\n\n"
-                          "(${widget.surah.name}, ${tr('verse')} ${localizeDigits((verse.number ?? '').toString(), context)})";
+                          "(${widget.surah.name}, Verse ${verse.number ?? ''})";
                       Share.share(shareText);
                     },
                     icon: const Icon(
@@ -843,95 +808,95 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
         Expanded(
           child: _aiMessages.isEmpty && !_aiIsTyping
               ? Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.auto_awesome,
-                        size: 40,
-                        color: kPrimaryBrown.withValues(alpha: 0.4),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        "Ask anything about\n${widget.surah.name}",
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.playfairDisplay(
-                          fontSize: 16,
-                          color: Colors.grey.shade400,
-                          fontWeight: FontWeight.w600,
-                        ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.auto_awesome,
+                  size: 40,
+                  color: kPrimaryBrown.withValues(alpha: 0.4),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  "Ask anything about\n${widget.surah.name}",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 16,
+                    color: Colors.grey.shade400,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          )
+              : ListView.builder(
+            controller: _aiScrollController,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 8,
+            ),
+            itemCount: _aiMessages.length + (_aiIsTyping ? 1 : 0),
+            itemBuilder: (context, index) {
+              if (index == _aiMessages.length && _aiIsTyping) {
+                // Typing indicator
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const _TypingIndicator(),
+                  ),
+                );
+              }
+              final msg = _aiMessages[index];
+              final isUser = msg['isUser'] as bool;
+              return Align(
+                alignment: isUser
+                    ? Alignment.centerRight
+                    : Alignment.centerLeft,
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.78,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isUser ? kPrimaryBrown : Colors.grey.shade100,
+                    borderRadius: BorderRadius.only(
+                      topLeft: const Radius.circular(14),
+                      topRight: const Radius.circular(14),
+                      bottomLeft: Radius.circular(isUser ? 14 : 0),
+                      bottomRight: Radius.circular(isUser ? 0 : 14),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.04),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
-                )
-              : ListView.builder(
-                  controller: _aiScrollController,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
+                  child: SelectableText(
+                    msg['text'] as String,
+                    style: TextStyle(
+                      color: isUser ? Colors.white : Colors.black87,
+                      fontSize: 14,
+                    ),
                   ),
-                  itemCount: _aiMessages.length + (_aiIsTyping ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (index == _aiMessages.length && _aiIsTyping) {
-                      // Typing indicator
-                      return Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 10,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: const _TypingIndicator(),
-                        ),
-                      );
-                    }
-                    final msg = _aiMessages[index];
-                    final isUser = msg['isUser'] as bool;
-                    return Align(
-                      alignment: isUser
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 10,
-                        ),
-                        constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.78,
-                        ),
-                        decoration: BoxDecoration(
-                          color: isUser ? kPrimaryBrown : Colors.grey.shade100,
-                          borderRadius: BorderRadius.only(
-                            topLeft: const Radius.circular(14),
-                            topRight: const Radius.circular(14),
-                            bottomLeft: Radius.circular(isUser ? 14 : 0),
-                            bottomRight: Radius.circular(isUser ? 0 : 14),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.04),
-                              blurRadius: 6,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: SelectableText(
-                          msg['text'] as String,
-                          style: TextStyle(
-                            color: isUser ? Colors.white : Colors.black87,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
                 ),
+              );
+            },
+          ),
         ),
         // Input bar with mic (Ai Murshid Design)
         Padding(
@@ -964,48 +929,48 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                         duration: const Duration(milliseconds: 300),
                         child: _aiIsListening
                             ? Container(
-                                key: const ValueKey('listening'),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 8,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFF8F9FA),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: const Text(
-                                  "Speak now...",
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Color(0xFF4A4A4A),
-                                  ),
-                                ),
-                              )
+                          key: const ValueKey('listening'),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF8F9FA),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Text(
+                            "Speak now...",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF4A4A4A),
+                            ),
+                          ),
+                        )
                             : TextField(
-                                key: const ValueKey('textField'),
-                                controller: _aiTextController,
-                                enabled: !_aiIsTyping,
-                                maxLines:
-                                    1, // Keep single line for Enter-to-send
-                                textInputAction: TextInputAction.send,
-                                onSubmitted: (val) {
-                                  if (!_aiIsTyping && val.trim().isNotEmpty) {
-                                    _sendAiMessage();
-                                  }
-                                },
-                                decoration: InputDecoration(
-                                  hintText: "Ask about ${widget.surah.name}...",
-                                  hintStyle: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey.shade500,
-                                  ),
-                                  border: InputBorder.none,
-                                  contentPadding: const EdgeInsets.only(
-                                    right: 100, // Room for buttons
-                                  ),
-                                ),
-                                onChanged: (_) => setState(() {}),
-                              ),
+                          key: const ValueKey('textField'),
+                          controller: _aiTextController,
+                          enabled: !_aiIsTyping,
+                          maxLines:
+                          1, // Keep single line for Enter-to-send
+                          textInputAction: TextInputAction.send,
+                          onSubmitted: (val) {
+                            if (!_aiIsTyping && val.trim().isNotEmpty) {
+                              _sendAiMessage();
+                            }
+                          },
+                          decoration: InputDecoration(
+                            hintText: "Ask about ${widget.surah.name}...",
+                            hintStyle: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey.shade500,
+                            ),
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.only(
+                              right: 100, // Room for buttons
+                            ),
+                          ),
+                          onChanged: (_) => setState(() {}),
+                        ),
                       ),
                     ),
                   ],
@@ -1072,7 +1037,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                     // Send Button
                     GestureDetector(
                       onTap:
-                          _aiTextController.text.trim().isEmpty || _aiIsTyping
+                      _aiTextController.text.trim().isEmpty || _aiIsTyping
                           ? null
                           : _sendAiMessage,
                       child: AnimatedContainer(
@@ -1081,8 +1046,8 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                         width: 42,
                         decoration: BoxDecoration(
                           color:
-                              _aiTextController.text.trim().isEmpty ||
-                                  _aiIsTyping
+                          _aiTextController.text.trim().isEmpty ||
+                              _aiIsTyping
                               ? Colors.grey.shade300
                               : kPrimaryBrown,
                           shape: BoxShape.circle,
@@ -1090,8 +1055,8 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                         child: Icon(
                           Icons.send_rounded,
                           color:
-                              _aiTextController.text.trim().isEmpty ||
-                                  _aiIsTyping
+                          _aiTextController.text.trim().isEmpty ||
+                              _aiIsTyping
                               ? Colors.grey
                               : Colors.white,
                           size: 20,
@@ -1175,10 +1140,10 @@ class _QuranAiService {
     try {
       final response = await http
           .post(
-            Uri.parse(ApiEndpoints.quranExplanationMeditation),
-            headers: {'Content-Type': 'application/json'},
-            body: body,
-          )
+        Uri.parse(ApiEndpoints.quranExplanationMeditation),
+        headers: {'Content-Type': 'application/json'},
+        body: body,
+      )
           .timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
@@ -1299,12 +1264,12 @@ class SearchAndBookmark extends StatelessWidget {
               child: TextField(
                 onChanged: (val) {
                   final QuranController controller =
-                      Get.find<QuranController>();
+                  Get.find<QuranController>();
                   controller.searchQuery.value = val;
                 },
-                decoration: InputDecoration(
-                  hintText: tr('search'),
-                  hintStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+                decoration: const InputDecoration(
+                  hintText: 'Search',
+                  hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
                   border: InputBorder.none,
                 ),
               ),

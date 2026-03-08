@@ -58,7 +58,7 @@ class SalawatListScreen extends StatelessWidget {
                     ),
                     child: TextField(
                       onChanged: (value) =>
-                          controller.searchQuery.value = value,
+                      controller.searchQuery.value = value,
                       decoration: const InputDecoration(
                         hintText: "Search",
                         hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
@@ -338,15 +338,15 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                     child: Obx(() {
                       final controllerSalawat =
                           controller.salawatList.firstWhereOrNull(
-                            (s) => s.id == currentSalawat.id,
+                                (s) => s.id == currentSalawat.id,
                           ) ??
-                          controller.salawatList.firstWhereOrNull(
-                            (s) => s.title == currentSalawat.title,
-                          );
+                              controller.salawatList.firstWhereOrNull(
+                                    (s) => s.title == currentSalawat.title,
+                              );
                       final isSaved =
                           controllerSalawat?.isSaved ??
-                          currentSalawat.isSaved ??
-                          false;
+                              currentSalawat.isSaved ??
+                              false;
 
                       return GestureDetector(
                         onTap: () => controller.toggleBookmark(currentSalawat),
@@ -391,7 +391,7 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
             Obx(() {
               final isPlaying =
                   controller.playerState.value == PlayerState.playing &&
-                  controller.currentPlayingSalawatId.value == currentSalawat.id;
+                      controller.currentPlayingSalawatId.value == currentSalawat.id;
               final currentPos = controller.currentDuration.value;
               final totalPos = controller.totalDuration.value;
 

@@ -43,12 +43,12 @@ class QuranController extends GetxController {
     return surahList
         .where(
           (s) =>
-              s.name.toLowerCase().contains(searchQuery.value.toLowerCase()) ||
-              s.translatedName.toLowerCase().contains(
-                searchQuery.value.toLowerCase(),
-              ) ||
-              s.id.toString() == searchQuery.value,
-        )
+      s.name.toLowerCase().contains(searchQuery.value.toLowerCase()) ||
+          s.translatedName.toLowerCase().contains(
+            searchQuery.value.toLowerCase(),
+          ) ||
+          s.id.toString() == searchQuery.value,
+    )
         .toList();
   }
 
@@ -68,14 +68,14 @@ class QuranController extends GetxController {
     return lastReadList
         .where(
           (lr) =>
-              (lr.chapter?.name ?? '').toLowerCase().contains(
-                searchQuery.value.toLowerCase(),
-              ) ||
-              (lr.chapter?.nameTranslated ?? '').toLowerCase().contains(
-                searchQuery.value.toLowerCase(),
-              ) ||
-              (lr.chapter?.chapterNumber ?? 0).toString() == searchQuery.value,
-        )
+      (lr.chapter?.name ?? '').toLowerCase().contains(
+        searchQuery.value.toLowerCase(),
+      ) ||
+          (lr.chapter?.nameTranslated ?? '').toLowerCase().contains(
+            searchQuery.value.toLowerCase(),
+          ) ||
+          (lr.chapter?.chapterNumber ?? 0).toString() == searchQuery.value,
+    )
         .toList();
   }
 
@@ -471,7 +471,7 @@ class QuranController extends GetxController {
     if (verseKey == null || surahAudio.value == null) return;
 
     final segment = surahAudio.value!.segments?.firstWhereOrNull(
-      (s) => s.verseKey == verseKey,
+          (s) => s.verseKey == verseKey,
     );
 
     if (segment != null && segment.timestampFrom != null) {

@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:maroofkhan8/features/Islam_meditation/controller/meditation_controller.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:maroofkhan8/features/home/dhikr/dhikr_screen.dart';
 import 'package:maroofkhan8/features/sufism/controller/sufism_controller.dart';
 
@@ -36,7 +35,6 @@ class SufismHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.locale;
     Get.put(MeditationController());
     final sufismController = Get.put(SufismController());
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -53,10 +51,10 @@ class SufismHomeScreen extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
             child: Column(
               children: [
-                HeaderSection(title: tr("sufism")),
+                const HeaderSection(title: "Sufism"),
                 Center(
                   child: Text(
-                    tr("daily_wisdom_meditation"),
+                    "Daily Wisdom & Meditation",
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -107,10 +105,10 @@ class SufismHomeScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 5),
-                      Text(
-                        tr("sufi_quote"),
+                      const Text(
+                        "Whoever knows himself knows his Lord.\"",
                         textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 12, color: kTextGrey),
+                        style: TextStyle(fontSize: 12, color: kTextGrey),
                       ),
                       const SizedBox(height: 10),
                       const HeaderDecorationMini(label: "Ibn Arabi"),
@@ -133,12 +131,12 @@ class SufismHomeScreen extends StatelessWidget {
                     Icon(Icons.explore_outlined, color: primaryColor, size: 24),
                     const SizedBox(width: 8),
                     Text(
-                      tr("explore"),
+                      "Explore",
                       style: Theme.of(context).textTheme.headlineSmall
                           ?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: isDark ? Colors.white : Colors.black87,
-                          ),
+                        fontWeight: FontWeight.w600,
+                        color: isDark ? Colors.white : Colors.black87,
+                      ),
                     ),
                   ],
                 ),
@@ -149,7 +147,7 @@ class SufismHomeScreen extends StatelessWidget {
 
                 // Guided Meditation List
                 Text(
-                  tr("guided_meditation"),
+                  "Guided Meditation",
                   style: GoogleFonts.playfairDisplay(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -161,7 +159,7 @@ class SufismHomeScreen extends StatelessWidget {
                     return const Center(child: CircularProgressIndicator());
                   }
                   if (sufismController.guidedMeditationList.isEmpty) {
-                    return Center(child: Text(tr("no_records_found")));
+                    return const Center(child: Text("No records found"));
                   }
                   final fullList = sufismController.guidedMeditationList
                       .toList();
@@ -169,7 +167,7 @@ class SufismHomeScreen extends StatelessWidget {
                   return Column(
                     children: List.generate(
                       displayList.length,
-                      (i) => _meditationTile(
+                          (i) => _meditationTile(
                         context,
                         displayList[i].name ?? "Untitled",
                         displayList[i].nameArabic ?? "",
@@ -191,11 +189,12 @@ class SufismHomeScreen extends StatelessWidget {
                     onTap: () =>
                         Get.to(() => const GuidedMeditationListScreen()),
                     child: Center(
-                      child: Text(
-                        sufismController.isMeditationExpanded.value
-                            ? tr("show_less")
-                            : tr("see_more"),
-                        style: const TextStyle(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
                           color: kPrimaryBrown,
                           borderRadius: BorderRadius.circular(20),
                         ),
@@ -225,7 +224,7 @@ class SufismHomeScreen extends StatelessWidget {
 
                 // Teaching Section
                 Text(
-                  tr("teaching"),
+                  "Teaching",
                   style: GoogleFonts.playfairDisplay(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -241,12 +240,14 @@ class SufismHomeScreen extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          const Text("No records found"),
+                          const SizedBox(height: 8),
                           TextButton(
                             onPressed: () =>
                                 sufismController.fetchIslamicTeachers(),
-                            child: Text(
-                              tr("retry"),
-                              style: const TextStyle(color: kPrimaryBrown),
+                            child: const Text(
+                              "Retry",
+                              style: TextStyle(color: kPrimaryBrown),
                             ),
                           ),
                         ],
@@ -272,19 +273,19 @@ class SufismHomeScreen extends StatelessWidget {
                               .take(2)
                               .map(
                                 (teacher) => Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 5,
-                                    ),
-                                    child: _teachingCard(
-                                      context,
-                                      teacher.title ?? "",
-                                      teacher.image ?? "",
-                                      teacherId: teacher.id,
-                                    ),
-                                  ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 5,
                                 ),
-                              )
+                                child: _teachingCard(
+                                  context,
+                                  teacher.title ?? "",
+                                  teacher.image ?? "",
+                                  teacherId: teacher.id,
+                                ),
+                              ),
+                            ),
+                          )
                               .toList(),
                         ),
                         const SizedBox(height: 15),
@@ -300,12 +301,12 @@ class SufismHomeScreen extends StatelessWidget {
                               color: kPrimaryBrown,
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            child: Row(
+                            child: const Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  tr("more"),
-                                  style: const TextStyle(
+                                  "More",
+                                  style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 12,
                                   ),
@@ -334,14 +335,14 @@ class SufismHomeScreen extends StatelessWidget {
   }
 
   Widget _meditationTile(
-    BuildContext context,
-    String title,
-    String titleArabic,
-    String sub, {
-    GuidedMeditationData? medData,
-    List<GuidedMeditationData> allMeditations = const [],
-    int index = 0,
-  }) {
+      BuildContext context,
+      String title,
+      String titleArabic,
+      String sub, {
+        GuidedMeditationData? medData,
+        List<GuidedMeditationData> allMeditations = const [],
+        int index = 0,
+      }) {
     return GestureDetector(
       onTap: () {
         if (medData != null) {
@@ -409,11 +410,11 @@ class SufismHomeScreen extends StatelessWidget {
   }
 
   Widget _teachingCard(
-    BuildContext context,
-    String title,
-    String imgUrl, {
-    String? teacherId,
-  }) {
+      BuildContext context,
+      String title,
+      String imgUrl, {
+        String? teacherId,
+      }) {
     return GestureDetector(
       onTap: () {
         if (teacherId != null) {
@@ -487,7 +488,7 @@ class GuidedMeditationListScreen extends StatelessWidget {
                 ),
                 child: TextField(
                   onChanged: (val) =>
-                      sufismController.guidedMeditationSearchQuery.value = val,
+                  sufismController.guidedMeditationSearchQuery.value = val,
                   decoration: const InputDecoration(
                     hintText: "Search",
                     hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
@@ -512,7 +513,7 @@ class GuidedMeditationListScreen extends StatelessWidget {
                   }
                   return ListView.builder(
                     itemCount:
-                        sufismController.filteredGuidedMeditationList.length,
+                    sufismController.filteredGuidedMeditationList.length,
                     itemBuilder: (context, index) {
                       final list =
                           sufismController.filteredGuidedMeditationList;
@@ -538,14 +539,14 @@ class GuidedMeditationListScreen extends StatelessWidget {
   }
 
   Widget _meditationTile(
-    BuildContext context,
-    String title,
-    String titleArabic,
-    String sub, {
-    GuidedMeditationData? medData,
-    List<GuidedMeditationData> allMeditations = const [],
-    int index = 0,
-  }) {
+      BuildContext context,
+      String title,
+      String titleArabic,
+      String sub, {
+        GuidedMeditationData? medData,
+        List<GuidedMeditationData> allMeditations = const [],
+        int index = 0,
+      }) {
     return GestureDetector(
       onTap: () {
         if (medData != null) {
@@ -621,12 +622,11 @@ class IslamicTeachersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.locale;
     final sufismController = SufismController.instance;
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
-        title: HeaderSection(title: tr("islamic_teachers")),
+        title: const HeaderSection(title: "Islamic Teachers"),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -651,9 +651,9 @@ class IslamicTeachersScreen extends StatelessWidget {
                 ),
                 child: TextField(
                   onChanged: (val) =>
-                      sufismController.teacherSearchQuery.value = val,
-                  decoration: InputDecoration(
-                    hintText: tr("search"),
+                  sufismController.teacherSearchQuery.value = val,
+                  decoration: const InputDecoration(
+                    hintText: "Search",
                     hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
                     border: InputBorder.none,
                     prefixIcon: Icon(
@@ -672,13 +672,13 @@ class IslamicTeachersScreen extends StatelessWidget {
                     return const Center(child: CircularProgressIndicator());
                   }
                   if (sufismController.filteredTeacherList.isEmpty) {
-                    return Center(child: Text(tr("no_teachers_found")));
+                    return const Center(child: Text("No teachers found"));
                   }
                   return ListView.builder(
                     itemCount: sufismController.filteredTeacherList.length,
                     itemBuilder: (context, index) {
                       final teacher =
-                          sufismController.filteredTeacherList[index];
+                      sufismController.filteredTeacherList[index];
                       return _teacherCard(context, teacher);
                     },
                   );
@@ -799,7 +799,6 @@ class _TeachingDetailsScreenState extends State<TeachingDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    context.locale;
     if (isLoading) {
       return const Scaffold(
         backgroundColor: kBackground,
@@ -807,9 +806,9 @@ class _TeachingDetailsScreenState extends State<TeachingDetailsScreen> {
       );
     }
     if (teacherData == null) {
-      return Scaffold(
+      return const Scaffold(
         backgroundColor: kBackground,
-        body: Center(child: Text(tr("teacher_details_not_found"))),
+        body: Center(child: Text("Teacher details not found")),
       );
     }
 
@@ -856,7 +855,7 @@ class _TeachingDetailsScreenState extends State<TeachingDetailsScreen> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  tr("his_teaching"),
+                  "His Teaching",
                   style: GoogleFonts.playfairDisplay(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -867,15 +866,15 @@ class _TeachingDetailsScreenState extends State<TeachingDetailsScreen> {
 
               if (teacherData!.teachings == null ||
                   teacherData!.teachings!.isEmpty)
-                Center(child: Text(tr("no_special_teachings")))
+                const Center(child: Text("No special teachings recorded."))
               else
                 ...teacherData!.teachings!
                     .map(
                       (t) => _teachingContentCard(
-                        t.title ?? "",
-                        t.description ?? "",
-                      ),
-                    )
+                    t.title ?? "",
+                    t.description ?? "",
+                  ),
+                )
                     .toList(),
             ],
           ),
@@ -920,8 +919,8 @@ class _TeachingDetailsScreenState extends State<TeachingDetailsScreen> {
                 color: kPrimaryBrown,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Text(
-                tr("read_more"),
+              child: const Text(
+                "Read More",
                 style: TextStyle(color: Colors.white, fontSize: 10),
               ),
             ),
@@ -1008,9 +1007,9 @@ class CustomSearchBar extends StatelessWidget {
       child: TextField(
         onChanged: onChanged,
         style: TextStyle(color: isDark ? Colors.white : Colors.black),
-        decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.search, color: Colors.grey, size: 20),
-          hintText: "${tr("search")}...",
+        decoration: const InputDecoration(
+          prefixIcon: Icon(Icons.search, color: Colors.grey, size: 20),
+          hintText: "Search...",
           hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
           border: InputBorder.none,
           contentPadding: EdgeInsets.only(top: 8),
@@ -1041,7 +1040,7 @@ class ExploreMoreGrid extends StatelessWidget {
             Get.to(() => AhleBaitListScreen());
           },
           child: _GridCard(
-            title: tr("ahle_bait"),
+            title: "Ahle Bait",
             icon: Icons.diversity_3,
             color: isDark
                 ? Colors.green.withOpacity(0.15)
@@ -1054,7 +1053,7 @@ class ExploreMoreGrid extends StatelessWidget {
             Get.to(() => AwliyaAllahListScreen());
           },
           child: _GridCard(
-            title: tr("awliya_allah"),
+            title: "Awliya\nAllah",
             icon: Icons.nightlight_round,
             color: isDark
                 ? primaryColor.withOpacity(0.1)
@@ -1067,7 +1066,7 @@ class ExploreMoreGrid extends StatelessWidget {
             Get.to(() => SahabaListScreen());
           },
           child: _GridCard(
-            title: tr("sahaba"),
+            title: "Sahaba",
             icon: Icons.groups,
             color: isDark
                 ? Colors.orange.withOpacity(0.15)
@@ -1080,7 +1079,7 @@ class ExploreMoreGrid extends StatelessWidget {
             Get.to(() => DhikrListScreen());
           },
           child: _GridCard(
-            title: tr("dhikr"),
+            title: "Dhikr",
             icon: Icons.search,
             color: isDark
                 ? Colors.pink.withOpacity(0.15)
@@ -1094,7 +1093,7 @@ class ExploreMoreGrid extends StatelessWidget {
             Get.to(() => NamesOfAllahScreen());
           },
           child: _GridCard(
-            title: tr("names_99"),
+            title: "99\nNames",
             icon: Icons.verified_outlined,
             color: isDark
                 ? Colors.green.withOpacity(0.15)
@@ -1107,7 +1106,7 @@ class ExploreMoreGrid extends StatelessWidget {
             Get.to(() => const MainMenuScreen());
           },
           child: _GridCard(
-            title: tr("islaah_meditation"),
+            title: "Islaah &\nMeditation",
             icon: Icons.self_improvement,
             color: isDark
                 ? primaryColor.withOpacity(0.1)
@@ -1120,7 +1119,7 @@ class ExploreMoreGrid extends StatelessWidget {
             Get.to(() => SalawatListScreen());
           },
           child: _GridCard(
-            title: tr("salawat"),
+            title: "Salawat",
             icon: Icons.handshake_outlined,
             color: isDark
                 ? Colors.orange.withOpacity(0.15)
@@ -1133,7 +1132,7 @@ class ExploreMoreGrid extends StatelessWidget {
             Get.to(() => IslamicBooksListScreen());
           },
           child: _GridCard(
-            title: tr("islamic_books"),
+            title: "Islamic\nBooks",
             icon: Icons.diversity_2,
             color: isDark
                 ? Colors.pink.withOpacity(0.15)
@@ -1147,7 +1146,7 @@ class ExploreMoreGrid extends StatelessWidget {
             Get.to(() => const IslamicNamesScreen());
           },
           child: _GridCard(
-            title: tr("islamic_names"),
+            title: "Islamic\nNames",
             icon: Icons.child_care,
             color: isDark
                 ? Colors.green.withOpacity(0.15)

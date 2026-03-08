@@ -6,8 +6,7 @@ import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import '../controller/meditation_controller.dart';
 import '../model/meditation_model.dart';
 import '../../sufism/model/guided_meditation_model.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:maroofkhan8/core/utils/localization_utils.dart';
+import '../../sufism/controller/sufism_controller.dart';
 
 // --- Reusable Components ---
 
@@ -136,7 +135,7 @@ class MainMenuScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: HeaderSection(title: tr("islaah_meditation_title")),
+        title: const HeaderSection(title: "Islaah & Meditation"),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -155,7 +154,9 @@ class MainMenuScreen extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (controller.meditationList.isEmpty) {
-                  return Center(child: Text(tr("no_meditation_records")));
+                  return const Center(
+                    child: Text("No meditation records found"),
+                  );
                 }
 
                 return ListView.builder(
@@ -189,13 +190,13 @@ class MainMenuScreen extends StatelessWidget {
                           );
                         } else {
                           Get.snackbar(
-                            tr("error"),
-                            tr("fetch_meditation_error"),
+                            "Error",
+                            "Could not fetch meditation details",
                           );
                         }
                       },
                       child: CategoryCard(
-                        title: med.title ?? tr("untitled"),
+                        title: med.title ?? "Untitled",
                         subtitle: med.subtitle ?? "",
                         icon: Icons.self_improvement,
                       ),
@@ -281,7 +282,7 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
     String twoDigits(int n) => n.toString().padLeft(2, "0");
     String twoDigitMinutes = twoDigits(d.inMinutes.remainder(60));
     String twoDigitSeconds = twoDigits(d.inSeconds.remainder(60));
-    return localizeDigits("$twoDigitMinutes:$twoDigitSeconds", context);
+    return "$twoDigitMinutes:$twoDigitSeconds";
   }
 
   void _togglePlay() async {
@@ -362,15 +363,16 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final title =
-        widget.meditation?.title ??
-        widget.guidedMeditation?.name ??
-        tr("inner_peace");
-    final subtitle =
-        widget.meditation?.subtitle ??
-        widget.guidedMeditation?.meaning ??
-        tr("calm_heart_placeholder");
-    final arabicTitle = widget.guidedMeditation?.nameArabic;
+    const title = "Inner Peace";
+    const subtitle = "Calm your heart, balance your\nmind";
+    // final title =
+    //     //  _currentGuided?.name ??
+    //     widget.meditation?.title ?? "Inner Peace";
+    // final subtitle =
+    //     //_currentGuided?.meaning ??
+    //     widget.meditation?.subtitle ?? "Calm your heart, balance your\nmind";
+    final arabicTitle = _currentGuided?.name ?? widget.meditation?.title;
+    final hasList = widget.allGuidedMeditations.length > 1;
 
     return Scaffold(
       appBar: AppBar(
@@ -427,7 +429,7 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
             ),
             const SizedBox(height: 30),
             Text(
-              tr("al_murshid"),
+              "Al Murshid",
               style: GoogleFonts.playfairDisplay(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -435,7 +437,7 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
             ),
             const SizedBox(height: 10),
             Text(
-              tr("remember_allah_placeholder"),
+              "Take a deep breath and remember Allah.\nPause if needed. Focus on your heart",
               textAlign: TextAlign.center,
               style: GoogleFonts.ebGaramond(
                 fontSize: 15,
@@ -460,7 +462,7 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
                         child: Slider(
                           value: (duration.inMilliseconds > 0)
                               ? position.inMilliseconds /
-                                    duration.inMilliseconds
+                              duration.inMilliseconds
                               : 0.0,
                           onChanged: (v) {
                             final newPos = duration.inMilliseconds * v;
@@ -498,19 +500,19 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
                           ),
                           child: isTrackLoading
                               ? const SizedBox(
-                                  width: 35,
-                                  height: 35,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Color(0xFF8D4B33),
-                                  ),
-                                )
+                            width: 35,
+                            height: 35,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Color(0xFF8D4B33),
+                            ),
+                          )
                               : Icon(
-                                  playerState == PlayerState.playing
-                                      ? Icons.pause_rounded
-                                      : Icons.play_arrow_rounded,
-                                  size: 35,
-                                ),
+                            playerState == PlayerState.playing
+                                ? Icons.pause_rounded
+                                : Icons.play_arrow_rounded,
+                            size: 35,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 25),
@@ -534,14 +536,23 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildBottomBtn(tr("start_session"), const Color(0xFF0D5D4E)),
-                  const SizedBox(width: 8),
                   _buildBottomBtn(
-                    tr("keep_breathing"),
-                    const Color(0xFF8D4B33),
+                    "Start Session",
+                    const Color(0xFF0D5D4E),
+                    onTap: _startSession,
                   ),
                   const SizedBox(width: 8),
-                  _buildBottomBtn(tr("end_session"), const Color(0xFF1B2344)),
+                  _buildBottomBtn(
+                    "Keep Breathing",
+                    const Color(0xFF8D4B33),
+                    onTap: _keepBreathing,
+                  ),
+                  const SizedBox(width: 8),
+                  _buildBottomBtn(
+                    "End Session",
+                    const Color(0xFF1B2344),
+                    onTap: _endSession,
+                  ),
                 ],
               ),
             ),
@@ -552,10 +563,10 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
   }
 
   Widget _buildBottomBtn(
-    String text,
-    Color color, {
-    required VoidCallback onTap,
-  }) {
+      String text,
+      Color color, {
+        required VoidCallback onTap,
+      }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
