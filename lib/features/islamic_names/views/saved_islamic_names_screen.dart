@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -26,7 +27,8 @@ class SavedIslamicNamesScreen extends StatelessWidget {
         ),
         centerTitle: true,
         title: Text(
-          "Saved Names",
+          // "Saved Names",
+          tr("saved_names_title"),
           style: GoogleFonts.ebGaramond(
             color: Colors.black,
             fontWeight: FontWeight.bold,
@@ -56,7 +58,8 @@ class SavedIslamicNamesScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  "No saved names yet",
+                  // "No saved names yet",
+                  tr("no_saved_names_yet"),
                   style: GoogleFonts.ebGaramond(fontSize: 18, color: kTextGrey),
                 ),
               ],
@@ -106,7 +109,8 @@ class SavedIslamicNamesScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          "Meaning: ${name.meaning}",
+                          // "Meaning: ${name.meaning}",
+                          "${tr("meaning_colon")} ${name.meaning}",
                           style: GoogleFonts.ebGaramond(
                             fontSize: 14,
                             color: kTextGrey,

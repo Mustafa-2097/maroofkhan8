@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -22,7 +23,8 @@ class NameGuidelinesScreen extends StatelessWidget {
         ),
         centerTitle: true,
         title: Text(
-          "Islamic Name",
+          // "Islamic Name",
+          tr("islamic_names"),
           style: GoogleFonts.ebGaramond(
             color: Colors.black,
             fontWeight: FontWeight.bold,
@@ -51,7 +53,8 @@ class NameGuidelinesScreen extends StatelessWidget {
                 ],
               ),
               child: Text(
-                "Islamic Guidelines for Choosing a Name",
+                // "Islamic Guidelines for Choosing a Name",
+                tr("choosing_name_guidelines"),
                 textAlign: TextAlign.center,
                 style: GoogleFonts.ebGaramond(
                   fontSize: 20,
@@ -82,27 +85,27 @@ class NameGuidelinesScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _paragraph(
-                    "Islam provides clear guidance when choosing a name for a child. Parents are encouraged to select names that have good and positive meanings, as names reflect a person's identity and character.",
+                    // "Islam provides clear guidance when choosing a name for a child. Parents are encouraged to select names that have good and positive meanings, as names reflect a person's identity and character.",
+                    tr("guidelines_paragraph_1"),
                   ),
                   const SizedBox(height: 12),
-                  _paragraph("Islamic guidelines for naming include:"),
+                  // _paragraph("Islamic guidelines for naming include:"),
+                  _paragraph(tr("guidelines_subtitle")),
                   const SizedBox(height: 8),
-                  _bulletPoint("Choosing names with good and noble meanings"),
-                  _bulletPoint(
-                    "Avoiding names with bad, offensive, or negative meanings",
-                  ),
-                  _bulletPoint(
-                    "Avoiding names that imply shirk (associating partners with Allah)",
-                  ),
-                  _bulletPoint(
-                    "Preferring names of Prophets, companions, pious people, and righteous women",
-                  ),
-                  _bulletPoint(
-                    "Choosing names that are easy to pronounce and respectful",
-                  ),
+                  // _bulletPoint("Choosing names with good and noble meanings"),
+                  _bulletPoint(tr("guideline_1")),
+                  // _bulletPoint("Avoiding names with bad, offensive, or negative meanings"),
+                  _bulletPoint(tr("guideline_2")),
+                  // _bulletPoint("Avoiding names that imply shirk (associating partners with Allah)"),
+                  _bulletPoint(tr("guideline_3")),
+                  // _bulletPoint("Preferring names of Prophets, companions, pious people, and righteous women"),
+                  _bulletPoint(tr("guideline_4")),
+                  // _bulletPoint("Choosing names that are easy to pronounce and respectful"),
+                  _bulletPoint(tr("guideline_5")),
                   const SizedBox(height: 16),
                   _paragraph(
-                    "The Prophet Muhammad (ﷺ) encouraged giving good names and sometimes changed names that had bad meanings. Therefore, selecting a beautiful and meaningful name is part of Islamic etiquette and a responsibility of parents.",
+                    // "The Prophet Muhammad (ﷺ) encouraged giving good names and sometimes changed names that had bad meanings. Therefore, selecting a beautiful and meaningful name is part of Islamic etiquette and a responsibility of parents.",
+                    tr("guidelines_paragraph_2"),
                   ),
                 ],
               ),
