@@ -101,7 +101,7 @@ class SufismHomeScreen extends StatelessWidget {
                         tr("sufi_quote_arabic"),
                         textAlign: TextAlign.center,
                         style: GoogleFonts.amiri(
-                          color: Colors.white,
+                          color: Colors.black,
                           fontSize: 18.sp,
                           fontWeight: FontWeight.bold,
                         ),
@@ -120,7 +120,7 @@ class SufismHomeScreen extends StatelessWidget {
                         tr("sufi_quote_transliteration"),
                         textAlign: TextAlign.center,
                         style: GoogleFonts.outfit(
-                          color: Colors.white70,
+                          color: Colors.black,
                           fontSize: 14.sp,
                           fontStyle: FontStyle.italic,
                         ),
@@ -136,7 +136,7 @@ class SufismHomeScreen extends StatelessWidget {
                         tr("sufi_quote"),
                         textAlign: TextAlign.center,
                         style: GoogleFonts.outfit(
-                          color: Colors.white,
+                          color: Colors.black,
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w500,
                         ),
