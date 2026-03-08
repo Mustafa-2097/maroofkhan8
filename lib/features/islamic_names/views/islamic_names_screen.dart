@@ -1,6 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import 'package:maroofkhan8/features/islamic_names/views/name_importance_screen.dart';
 import 'package:maroofkhan8/features/islamic_names/views/name_guidelines_screen.dart';
 import 'package:maroofkhan8/features/islamic_names/views/girl_names_screen.dart';
@@ -21,22 +23,32 @@ class IslamicNamesScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        title: HeaderSection(title: tr("islamic_names")),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
           onPressed: () => Navigator.pop(context),
         ),
-        centerTitle: true,
-        title: Text(
-          "Islamic Name",
-          style: GoogleFonts.ebGaramond(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
-          ),
-        ),
       ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.white,
+      //   elevation: 0,
+      //   leading: IconButton(
+      //     icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+      //     onPressed: () => Navigator.pop(context),
+      //   ),
+      //   centerTitle: true,
+      //   title: Text(
+      //     "Islamic Name",
+      //     style: GoogleFonts.ebGaramond(
+      //       color: Colors.black,
+      //       fontWeight: FontWeight.bold,
+      //       fontSize: 22,
+      //     ),
+      //   ),
+      // ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: Column(
@@ -46,7 +58,8 @@ class IslamicNamesScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: _genderCard(
-                    "Islamic girls' names with meanings",
+                    // "Islamic girls' names with meanings",
+                    tr("girls_names_with_meanings"),
                     Icons.face_outlined,
                     hasBorder: false,
                     onTap: () {
@@ -57,7 +70,8 @@ class IslamicNamesScreen extends StatelessWidget {
                 const SizedBox(width: 15),
                 Expanded(
                   child: _genderCard(
-                    "Islamic Boys' names with meanings",
+                    // "Islamic Boys' names with meanings",
+                    tr("boys_names_with_meanings"),
                     Icons.face_6_outlined,
                     hasBorder: false,
                     onTap: () {
@@ -71,7 +85,8 @@ class IslamicNamesScreen extends StatelessWidget {
 
             // Horizontal Info Cards
             _infoCard(
-              "The Importance of Giving a Beautiful Name to a Child in Islam",
+              // "The Importance of Giving a Beautiful Name to a Child in Islam",
+              tr("importance_of_name"),
               imagePath: "assets/icons/children.png",
               onTap: () {
                 Get.to(() => const NameImportanceScreen());
@@ -79,7 +94,8 @@ class IslamicNamesScreen extends StatelessWidget {
             ),
             const SizedBox(height: 15),
             _infoCard(
-              "Islamic Guidelines for Choosing a Name",
+              // "Islamic Guidelines for Choosing a Name",
+              tr("choosing_name_guidelines"),
               imagePath: "assets/icons/baby.png",
               onTap: () {
                 Get.to(() => const NameGuidelinesScreen());

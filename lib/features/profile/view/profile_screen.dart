@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:maroofkhan8/features/profile/view/pages/subscription/view/PremiumSubscriptionPage.dart';
@@ -20,7 +21,7 @@ class ProfileScreen extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          "PROFILE",
+          tr("profile"), // "PROFILE",
           style: Theme.of(
             context,
           ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
@@ -89,7 +90,7 @@ class ProfileScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Your Plan Status",
+                          tr("your_plan_status"), // "Your Plan Status",
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         InkWell(
@@ -104,7 +105,7 @@ class ProfileScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
-                              "Upgrade",
+                              tr("upgrade"), // "Upgrade",
                               style: TextStyle(
                                 color: Theme.of(context).colorScheme.onPrimary,
                                 fontWeight: FontWeight.bold,
@@ -136,7 +137,7 @@ class ProfileScreen extends StatelessWidget {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                "Basic Plan",
+                                tr("basic_plan"), // "Basic Plan",
                                 style: TextStyle(
                                   color: Theme.of(
                                     context,
@@ -150,7 +151,7 @@ class ProfileScreen extends StatelessWidget {
 
                         const Spacer(),
                         Text(
-                          "Expires: 12/2024",
+                          "${tr('expires')}: 12/2024", // "Expires: 12/2024",
                           style: Theme.of(context).textTheme.labelMedium,
                         ),
                       ],

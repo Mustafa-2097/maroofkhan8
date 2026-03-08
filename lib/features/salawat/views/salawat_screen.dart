@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -29,7 +30,8 @@ class SalawatListScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
-        title: const HeaderSection(title: "Salawat"),
+        // title: const HeaderSection(title: "Salawat"),
+        title: HeaderSection(title: tr("salawat")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -58,10 +60,14 @@ class SalawatListScreen extends StatelessWidget {
                     ),
                     child: TextField(
                       onChanged: (value) =>
-                      controller.searchQuery.value = value,
-                      decoration: const InputDecoration(
-                        hintText: "Search",
-                        hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
+                          controller.searchQuery.value = value,
+                      decoration: InputDecoration(
+                        // hintText: "Search",
+                        hintText: tr("search_hint"),
+                        hintStyle: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.only(bottom: 10),
                       ),
@@ -97,7 +103,8 @@ class SalawatListScreen extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (controller.filteredSalawat.isEmpty) {
-                  return const Center(child: Text("No items found"));
+                  // return const Center(child: Text("No items found"));
+                  return Center(child: Text(tr("no_items_found")));
                 }
 
                 return ListView.builder(
@@ -105,7 +112,8 @@ class SalawatListScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final salawat = controller.filteredSalawat[index];
                     return _SalawatListItem(
-                      title: salawat.title ?? "Untitled",
+                      // title: salawat.title ?? "Untitled",
+                      title: tr(salawat.title ?? "untitled"),
                       arabic: salawat.arabic,
                       isSaved: salawat.isSaved ?? false,
                       onTap: () => Navigator.push(
@@ -266,7 +274,8 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
-        title: const HeaderSection(title: "Salawat"),
+        // title: const HeaderSection(title: "Salawat"),
+        title: HeaderSection(title: tr("salawat")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -308,7 +317,8 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                 ],
               ),
               child: Text(
-                currentSalawat.title ?? "Salawat",
+                // currentSalawat.title ?? "Salawat",
+                tr(currentSalawat.title ?? "salawat"),
                 textAlign: TextAlign.center,
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 14,
@@ -338,15 +348,15 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                     child: Obx(() {
                       final controllerSalawat =
                           controller.salawatList.firstWhereOrNull(
-                                (s) => s.id == currentSalawat.id,
+                            (s) => s.id == currentSalawat.id,
                           ) ??
-                              controller.salawatList.firstWhereOrNull(
-                                    (s) => s.title == currentSalawat.title,
-                              );
+                          controller.salawatList.firstWhereOrNull(
+                            (s) => s.title == currentSalawat.title,
+                          );
                       final isSaved =
                           controllerSalawat?.isSaved ??
-                              currentSalawat.isSaved ??
-                              false;
+                          currentSalawat.isSaved ??
+                          false;
 
                       return GestureDetector(
                         onTap: () => controller.toggleBookmark(currentSalawat),
@@ -362,7 +372,8 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    currentSalawat.arabic ?? "ARABIC CONTENT NOT AVAILABLE",
+                    // currentSalawat.arabic ?? "ARABIC CONTENT NOT AVAILABLE",
+                    currentSalawat.arabic ?? tr("arabic_content_not_available"),
                     textAlign: TextAlign.center,
                     style: GoogleFonts.amiri(
                       fontSize: 20,
@@ -372,9 +383,12 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                   ),
                   const SizedBox(height: 20),
                   Text(
+                    // currentSalawat.transliteration ??
+                    //     currentSalawat.pronunciation ??
+                    //     "PRONUNCIATION NOT AVAILABLE",
                     currentSalawat.transliteration ??
                         currentSalawat.pronunciation ??
-                        "PRONUNCIATION NOT AVAILABLE",
+                        tr("pronunciation_not_available"),
                     style: const TextStyle(
                       fontSize: 12,
                       color: kTextDark,
@@ -391,7 +405,7 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
             Obx(() {
               final isPlaying =
                   controller.playerState.value == PlayerState.playing &&
-                      controller.currentPlayingSalawatId.value == currentSalawat.id;
+                  controller.currentPlayingSalawatId.value == currentSalawat.id;
               final currentPos = controller.currentDuration.value;
               final totalPos = controller.totalDuration.value;
 
@@ -528,7 +542,8 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                 children: [
                   _ActionButton(
                     icon: Icons.headset,
-                    label: "Listen",
+                    // label: "Listen",
+                    label: tr("listen"),
                     isActive: true,
                     onTap: () {
                       // Call play logic if needed or just use current player
@@ -537,7 +552,8 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                   _VerticalDivider(),
                   _ActionButton(
                     icon: Icons.auto_awesome,
-                    label: "AI Explanation",
+                    // label: "AI Explanation",
+                    label: tr("ai_explanation"),
                     isActive: false,
                     onTap: () {
                       Get.to(() => const ChatScreen());
@@ -546,14 +562,16 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                   _VerticalDivider(),
                   _ActionButton(
                     icon: Icons.share_outlined,
-                    label: "Share",
+                    // label: "Share",
+                    label: tr("share"),
                     isActive: false,
                     onTap: () => controller.shareSalawat(currentSalawat),
                   ),
                   _VerticalDivider(),
                   _ActionButton(
                     icon: Icons.download_outlined,
-                    label: "Download",
+                    // label: "Download",
+                    label: tr("download"),
                     isActive: false,
                     onTap: () => controller.downloadSalawat(currentSalawat),
                   ),
@@ -580,7 +598,8 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Meaning:",
+                    // "Meaning:",
+                    tr("meaning_colon"),
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
@@ -589,9 +608,12 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                   ),
                   const SizedBox(height: 5),
                   Text(
+                    // currentSalawat.translation ??
+                    //     currentSalawat.meaning ??
+                    //     "MEANING NOT AVAILABLE",
                     currentSalawat.translation ??
                         currentSalawat.meaning ??
-                        "MEANING NOT AVAILABLE",
+                        tr("meaning_not_available"),
                     style: const TextStyle(
                       fontSize: 12,
                       height: 1.4,

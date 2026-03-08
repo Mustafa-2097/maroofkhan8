@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -40,7 +41,8 @@ class SavedSalawatScreen extends StatelessWidget {
           ),
           alignment: Alignment.center,
           child: Text(
-            "Bookmarked Salawat",
+            // "Bookmarked Salawat",
+            tr("bookmarked_salawat"),
             style: GoogleFonts.playfairDisplay(
               color: const Color(0xFF2E2E2E),
               fontWeight: FontWeight.w500,
@@ -69,9 +71,10 @@ class SavedSalawatScreen extends StatelessWidget {
                   color: Colors.grey.withValues(alpha: 0.5),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  "No saved salawat yet",
-                  style: TextStyle(color: Colors.grey, fontSize: 16),
+                Text(
+                  // "No saved salawat yet",
+                  tr("no_saved_salawat_yet"),
+                  style: const TextStyle(color: Colors.grey, fontSize: 16),
                 ),
               ],
             ),
@@ -138,7 +141,8 @@ class _SavedSalawatCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    salawat.title ?? "Untitled",
+                    // salawat.title ?? "Untitled",
+                    tr(salawat.title ?? "untitled"),
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,

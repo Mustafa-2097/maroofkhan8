@@ -25,6 +25,8 @@ class IslamicStoriesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     context.locale;
     final controller = Get.put(IslamicStoriesController());
+    final sh = MediaQuery.of(context).size.height;
+    final sw = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: kBackground,
@@ -53,10 +55,12 @@ class IslamicStoriesScreen extends StatelessWidget {
       // ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          // padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: sw * 0.05),
           child: Column(
             children: [
-              const SizedBox(height: 10),
+              // const SizedBox(height: 10),
+              SizedBox(height: sh * 0.012),
 
               // Header Text
               // Text(
@@ -67,12 +71,15 @@ class IslamicStoriesScreen extends StatelessWidget {
               //     color: Colors.black,
               //   ),
               // ),
-              const SizedBox(height: 20),
+              // const SizedBox(height: 20),
+              SizedBox(height: sh * 0.025),
 
               // Search Bar
               Container(
-                height: 45,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+                // height: 45,
+                height: sh * 0.055,
+                // padding: const EdgeInsets.symmetric(horizontal: 10),
+                padding: EdgeInsets.symmetric(horizontal: sw * 0.025),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8),
@@ -87,11 +94,13 @@ class IslamicStoriesScreen extends StatelessWidget {
                       color: Colors.grey,
                     ),
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.only(bottom: 8),
+                    // contentPadding: EdgeInsets.only(bottom: 8),
+                    contentPadding: EdgeInsets.only(bottom: sh * 0.01),
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              // const SizedBox(height: 20),
+              SizedBox(height: sh * 0.025),
 
               // List Items
               Expanded(
@@ -119,16 +128,22 @@ class IslamicStoriesScreen extends StatelessWidget {
   }
 
   Widget _ahleBaitCard(BuildContext context, IslamicStory story) {
+    final sh = MediaQuery.of(context).size.height;
+    final sw = MediaQuery.of(context).size.width;
+
     return GestureDetector(
       onTap: () {
         Get.to(() => IslamicStoriesDetailScreen(story: story));
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 15),
-        padding: const EdgeInsets.all(12),
+        // margin: const EdgeInsets.only(bottom: 15),
+        // padding: const EdgeInsets.all(12),
+        margin: EdgeInsets.only(bottom: sh * 0.018),
+        padding: EdgeInsets.all(sw * 0.03),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
+          // borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(sw * 0.04),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.05),
@@ -140,11 +155,13 @@ class IslamicStoriesScreen extends StatelessWidget {
         child: Row(
           children: [
             CircleAvatar(
-              radius: 28,
+              // radius: 28,
+              radius: sw * 0.07,
               backgroundImage: NetworkImage(story.image),
               backgroundColor: Colors.grey.shade200,
             ),
-            const SizedBox(width: 15),
+            // const SizedBox(width: 15),
+            SizedBox(width: sw * 0.035),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,30 +169,37 @@ class IslamicStoriesScreen extends StatelessWidget {
                   Text(
                     story.title,
                     style: GoogleFonts.playfairDisplay(
-                      fontSize: 16,
+                      // fontSize: 16,
+                      fontSize: sw * 0.04,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  // const SizedBox(height: 4),
+                  SizedBox(height: sh * 0.005),
                   Text(
                     story.subtitle,
-                    style: const TextStyle(fontSize: 11, color: kTextGrey),
+                    // style: const TextStyle(fontSize: 11, color: kTextGrey),
+                    style: TextStyle(fontSize: sw * 0.03, color: kTextGrey),
                     maxLines: 2,
                   ),
                 ],
               ),
             ),
             Container(
-              height: 30,
-              width: 30,
+              // height: 30,
+              // width: 30,
+              height: sw * 0.08,
+              width: sw * 0.08,
               decoration: BoxDecoration(
                 color: kPrimaryBrown,
-                borderRadius: BorderRadius.circular(8),
+                // borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(sw * 0.02),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.arrow_forward,
                 color: Colors.white,
-                size: 16,
+                // size: 16,
+                size: sw * 0.04,
               ),
             ),
           ],
@@ -210,6 +234,9 @@ class _IslamicStoriesDetailScreenState
   @override
   Widget build(BuildContext context) {
     context.locale;
+    final sh = MediaQuery.of(context).size.height;
+    final sw = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
@@ -234,17 +261,23 @@ class _IslamicStoriesDetailScreenState
         }
 
         return SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          // padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(sw * 0.05),
           child: Column(
             children: [
-              const SizedBox(height: 20),
+              // const SizedBox(height: 20),
+              SizedBox(height: sh * 0.025),
 
               // Title Banner
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  vertical: 15,
-                  horizontal: 10,
+                // padding: const EdgeInsets.symmetric(
+                //   vertical: 15,
+                //   horizontal: 10,
+                // ),
+                padding: EdgeInsets.symmetric(
+                  vertical: sh * 0.018,
+                  horizontal: sw * 0.025,
                 ),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -260,19 +293,23 @@ class _IslamicStoriesDetailScreenState
                   detail.title,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.playfairDisplay(
-                    fontSize: 14,
+                    // fontSize: 14,
+                    fontSize: sw * 0.038,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              // const SizedBox(height: 20),
+              SizedBox(height: sh * 0.025),
 
               // Main Content Card
               Container(
-                padding: const EdgeInsets.all(20),
+                // padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(sw * 0.05),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
+                  // borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(sw * 0.04),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.04),
@@ -293,8 +330,9 @@ class _IslamicStoriesDetailScreenState
                     const SizedBox(height: 10),
                     Text(
                       detail.description,
-                      style: const TextStyle(
-                        fontSize: 14,
+                      style: TextStyle(
+                        // fontSize: 14,
+                        fontSize: sw * 0.035,
                         color: kTextDark,
                         height: 1.5,
                       ),
@@ -303,17 +341,23 @@ class _IslamicStoriesDetailScreenState
                   ],
                 ),
               ),
-              const SizedBox(height: 25),
+              // const SizedBox(height: 25),
+              SizedBox(height: sh * 0.03),
 
               // Action Buttons
               Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 10,
+                // padding: const EdgeInsets.symmetric(
+                //   vertical: 12,
+                //   horizontal: 10,
+                // ),
+                padding: EdgeInsets.symmetric(
+                  vertical: sh * 0.015,
+                  horizontal: sw * 0.025,
                 ),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
+                  // borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(sw * 0.08),
                   border: Border.all(color: kPrimaryBrown.withOpacity(0.5)),
                 ),
                 child: Row(
@@ -368,15 +412,18 @@ class _IslamicStoriesDetailScreenState
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+              // const SizedBox(height: 20),
+              SizedBox(height: sh * 0.025),
 
               // Meaning Card
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(20),
+                // padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(sw * 0.05),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
+                  // borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(sw * 0.04),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.04),
@@ -390,16 +437,19 @@ class _IslamicStoriesDetailScreenState
                     Text(
                       tr("simple_explanation_colon"),
                       style: GoogleFonts.playfairDisplay(
-                        fontSize: 14,
+                        // fontSize: 14,
+                        fontSize: sw * 0.035,
                         fontWeight: FontWeight.bold,
                         color: kPrimaryBrown,
                       ),
                     ),
-                    const SizedBox(height: 5),
+                    // const SizedBox(height: 5),
+                    SizedBox(height: sh * 0.006),
                     Text(
                       tr("story_teachings_placeholder"),
                       style: TextStyle(
-                        fontSize: 14,
+                        // fontSize: 14,
+                        fontSize: sw * 0.035,
                         height: 1.4,
                         color: kTextDark,
                       ),
@@ -407,7 +457,8 @@ class _IslamicStoriesDetailScreenState
                   ],
                 ),
               ),
-              const SizedBox(height: 30),
+              // const SizedBox(height: 30),
+              SizedBox(height: sh * 0.035),
             ],
           ),
         );
@@ -431,17 +482,25 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sw = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: onTap,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 18, color: isActive ? kPrimaryBrown : Colors.black),
-          const SizedBox(height: 4),
+          // Icon(icon, size: 18, color: isActive ? kPrimaryBrown : Colors.black),
+          Icon(
+            icon,
+            size: sw * 0.045,
+            color: isActive ? kPrimaryBrown : Colors.black,
+          ),
+          // const SizedBox(height: 4),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.005),
           Text(
             label,
             style: TextStyle(
-              fontSize: 14,
+              // fontSize: 14,
+              fontSize: sw * 0.032,
               fontWeight: FontWeight.bold,
               color: isActive ? kPrimaryBrown : Colors.black,
             ),

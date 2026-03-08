@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -22,7 +23,8 @@ class NameImportanceScreen extends StatelessWidget {
         ),
         centerTitle: true,
         title: Text(
-          "Islamic Name",
+          // "Islamic Name",
+          tr("islamic_names"),
           style: GoogleFonts.ebGaramond(
             color: Colors.black,
             fontWeight: FontWeight.bold,
@@ -51,7 +53,8 @@ class NameImportanceScreen extends StatelessWidget {
                 ],
               ),
               child: Text(
-                "The Importance of Giving a Beautiful\nName to a Child in Islam",
+                // "The Importance of Giving a Beautiful\nName to a Child in Islam",
+                tr("importance_of_name"),
                 textAlign: TextAlign.center,
                 style: GoogleFonts.ebGaramond(
                   fontSize: 20,
@@ -82,15 +85,18 @@ class NameImportanceScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _paragraph(
-                    "In Islam, giving a child a beautiful and meaningful name is very important. A name carries identity, dignity, and has an influence on a person’s character and personality. Islam encourages parents to choose names with good meanings, as a person will be called by their name in this world and in the Hereafter.",
+                    // "In Islam, giving a child a beautiful and meaningful name is very important. A name carries identity, dignity, and has an influence on a person’s character and personality. Islam encourages parents to choose names with good meanings, as a person will be called by their name in this world and in the Hereafter.",
+                    tr("importance_content_1"),
                   ),
                   const SizedBox(height: 16),
                   _paragraph(
-                    "The Prophet Muhammad (ﷺ) emphasized choosing good names and discouraged names with bad or negative meanings. A good name reflects faith, good character, and a positive identity. Therefore, parents should select names that have pleasant meanings, are easy to pronounce, and are aligned with Islamic values.",
+                    // "The Prophet Muhammad (ﷺ) emphasized choosing good names and discouraged names with bad or negative meanings. A good name reflects faith, good character, and a positive identity. Therefore, parents should select names that have pleasant meanings, are easy to pronounce, and are aligned with Islamic values.",
+                    tr("importance_content_2"),
                   ),
                   const SizedBox(height: 16),
                   _paragraph(
-                    "Giving a child a beautiful name is not only a parental responsibility but also a Sunnah, and it is considered a way of making du‘a (supplication) for the child’s good future.",
+                    // "Giving a child a beautiful name is not only a parental responsibility but also a Sunnah, and it is considered a way of making du‘a (supplication) for the child’s good future.",
+                    tr("importance_content_3"),
                   ),
                 ],
               ),

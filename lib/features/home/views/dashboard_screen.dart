@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:maroofkhan8/features/profile/view/profile_screen.dart';
 import 'package:maroofkhan8/features/quran/views/quran_screen.dart';
@@ -19,6 +19,8 @@ class DashboardScreen extends StatelessWidget {
     context.locale;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final backgroundColor = Theme.of(context).colorScheme.background;
+    final sh = MediaQuery.of(context).size.height;
+    final sw = MediaQuery.of(context).size.width;
 
     return Scaffold(
       drawer: const CustomAppDrawer(),
@@ -46,28 +48,38 @@ class DashboardScreen extends StatelessWidget {
         ),
         child: SafeArea(
           child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+            // padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+            padding: EdgeInsets.symmetric(
+              horizontal: sw * 0.04,
+              vertical: sh * 0.012,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const HeaderSection(),
-                SizedBox(height: 20.h),
+                // SizedBox(height: 20.h),
+                SizedBox(height: sh * 0.025),
                 const HeroSection(),
-                SizedBox(height: 30.h),
+                // SizedBox(height: 30.h),
+                SizedBox(height: sh * 0.035),
 
                 // 1. Your Journey Section
                 SectionHeader(title: tr("your_journey")),
-                SizedBox(height: 15.h),
+                // SizedBox(height: 15.h),
+                SizedBox(height: sh * 0.018),
                 const YourJourneyRow(),
 
-                SizedBox(height: 30.h),
+                // SizedBox(height: 30.h),
+                SizedBox(height: sh * 0.035),
 
                 // 2. Quick Start Section
                 SectionHeader(title: tr("quick_start")),
-                SizedBox(height: 15.h),
+                // SizedBox(height: 15.h),
+                SizedBox(height: sh * 0.018),
                 const QuickStartGrid(),
 
-                SizedBox(height: 40.h),
+                // SizedBox(height: 40.h),
+                SizedBox(height: sh * 0.05),
               ],
             ),
           ),
@@ -85,6 +97,8 @@ class HeaderSection extends StatelessWidget {
     context.locale;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
+    final sh = MediaQuery.of(context).size.height;
+    final sw = MediaQuery.of(context).size.width;
 
     final profileController = Get.put(ProfileController());
     final dashboardController = Get.put(DashboardController());
@@ -98,13 +112,19 @@ class HeaderSection extends StatelessWidget {
           children: [
             InkWell(
               onTap: () => Scaffold.of(context).openDrawer(),
-              child: Icon(Icons.menu_rounded, color: primaryColor, size: 26),
+              // child: Icon(Icons.menu_rounded, color: primaryColor, size: 26),
+              child: Icon(
+                Icons.menu_rounded,
+                color: primaryColor,
+                size: sw * 0.065,
+              ),
             ),
             // Logo Circle
             Row(
               children: [
                 Container(
-                  height: 35,
+                  // height: 35,
+                  height: sh * 0.045,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.grey.shade300, width: 2),
@@ -112,11 +132,13 @@ class HeaderSection extends StatelessWidget {
                   child: Center(
                     child: Image.asset(
                       'assets/images/onboarding02.png',
-                      height: 100,
+                      // height: 100,
+                      height: sh * 0.1,
                     ),
                   ),
                 ),
-                SizedBox(width: 10),
+                // SizedBox(width: 10),
+                SizedBox(width: sw * 0.025),
                 Text(
                   tr("digital_khanqah"),
                   style: Theme.of(context).textTheme.headlineSmall,
@@ -127,7 +149,8 @@ class HeaderSection extends StatelessWidget {
               onTap: () => Get.to(() => ProfileScreen()),
               child: Obx(
                 () => CircleAvatar(
-                  radius: 18,
+                  // radius: 18,
+                  radius: sw * 0.045,
                   backgroundColor: isDark
                       ? Colors.grey.shade800
                       : Colors.grey.shade300,
@@ -137,7 +160,8 @@ class HeaderSection extends StatelessWidget {
                   child: profileController.avatar.value.isEmpty
                       ? Icon(
                           Icons.person,
-                          size: 20,
+                          // size: 20,
+                          size: sw * 0.05,
                           color: isDark
                               ? Colors.grey.shade300
                               : Colors.grey.shade600,
@@ -149,14 +173,16 @@ class HeaderSection extends StatelessWidget {
           ],
         ),
 
-        const SizedBox(height: 20),
+        // const SizedBox(height: 20),
+        SizedBox(height: sh * 0.025),
 
         /// Greeting
         Text(
           tr("greeting"),
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
             color: Theme.of(context).disabledColor.withValues(alpha: 0.6),
-            fontSize: 20.sp,
+            // fontSize: 20.sp,
+            fontSize: sw * 0.05,
             height: 0.9,
           ),
         ),
@@ -269,12 +295,14 @@ class _HeroSectionState extends State<HeroSection> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
     final dashboardController = Get.find<DashboardController>();
+    final sh = MediaQuery.of(context).size.height;
 
     return Obx(() {
       if (dashboardController.isQuoteLoading.value) {
-        return const SizedBox(
-          height: 210,
-          child: Center(child: CircularProgressIndicator()),
+        return SizedBox(
+          // height: 210,
+          height: sh * 0.25,
+          child: const Center(child: CircularProgressIndicator()),
         );
       }
 
@@ -301,7 +329,8 @@ class _HeroSectionState extends State<HeroSection> {
       return Column(
         children: [
           SizedBox(
-            height: 210,
+            // height: 210,
+            height: sh * 0.25,
             child: PageView.builder(
               controller: _pageController,
               itemCount: slides.length,
@@ -325,10 +354,15 @@ class _HeroSectionState extends State<HeroSection> {
     bool isDark,
     Color primaryColor,
   ) {
+    final sh = MediaQuery.of(context).size.height;
+    final sw = MediaQuery.of(context).size.width;
+
     return Container(
-      margin: EdgeInsets.only(right: 8),
+      // margin: EdgeInsets.only(right: 8),
+      margin: EdgeInsets.only(right: sw * 0.02),
       width: double.infinity,
-      height: 210,
+      // height: 210,
+      height: sh * 0.25,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         image: DecorationImage(
@@ -597,15 +631,18 @@ class _JourneyCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircleAvatar(
-            radius: 14,
+            // radius: 14,
+            radius: MediaQuery.of(context).size.width * 0.035,
             backgroundColor: isDark ? Colors.grey.shade800 : Colors.white,
             child: Icon(
               icon,
-              size: 18,
+              // size: 18,
+              size: MediaQuery.of(context).size.width * 0.045,
               color: isDark ? Colors.white : Colors.black87,
             ),
           ),
-          const SizedBox(height: 6),
+          // const SizedBox(height: 6),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.008),
           FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
@@ -614,7 +651,8 @@ class _JourneyCard extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: isDark ? Colors.white : Colors.black87,
-                fontSize: 12.sp,
+                // fontSize: 12.sp,
+                fontSize: MediaQuery.of(context).size.width * 0.03,
               ),
             ),
           ),
@@ -627,7 +665,8 @@ class _JourneyCard extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: isDark ? Colors.white : Colors.black87,
-                fontSize: 10.sp,
+                // fontSize: 10.sp,
+                fontSize: MediaQuery.of(context).size.width * 0.025,
               ),
             ),
           ),
@@ -646,6 +685,8 @@ class QuickStartGrid extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
     final DashboardController controller = Get.find<DashboardController>();
+    final sh = MediaQuery.of(context).size.height;
+    final sw = MediaQuery.of(context).size.width;
 
     return Obx(() {
       final features = controller.filteredFeatures;
@@ -668,9 +709,12 @@ class QuickStartGrid extends StatelessWidget {
         itemCount: features.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
-          childAspectRatio: 0.75, // Increased vertical space
-          mainAxisSpacing: 12.h,
-          crossAxisSpacing: 8.w,
+          // childAspectRatio: 0.75, // Increased vertical space
+          childAspectRatio: (sw / 4) / (sh * 0.15),
+          // mainAxisSpacing: 12.h,
+          mainAxisSpacing: sh * 0.015,
+          // crossAxisSpacing: 8.w,
+          crossAxisSpacing: sw * 0.02,
         ),
         itemBuilder: (context, index) {
           final feature = features[index];
@@ -729,7 +773,8 @@ class _GridCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircleAvatar(
-            radius: 16,
+            // radius: 16,
+            radius: MediaQuery.of(context).size.width * 0.04,
             backgroundColor: isDark ? Colors.grey.shade800 : Colors.white,
             child: imagePath != null
                 ? Padding(
@@ -738,11 +783,13 @@ class _GridCard extends StatelessWidget {
                   )
                 : Icon(
                     icon,
-                    size: 18,
+                    // size: 18,
+                    size: MediaQuery.of(context).size.width * 0.045,
                     color: isDark ? Colors.white : Colors.black87,
                   ),
           ),
-          const SizedBox(height: 4),
+          // const SizedBox(height: 4),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.005),
           FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
@@ -751,7 +798,8 @@ class _GridCard extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: isDark ? Colors.white : Colors.black87,
-                fontSize: 11.sp,
+                // fontSize: 11.sp,
+                fontSize: MediaQuery.of(context).size.width * 0.028,
               ),
             ),
           ),
