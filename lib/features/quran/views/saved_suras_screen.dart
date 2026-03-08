@@ -92,12 +92,14 @@ class SavedSurasScreen extends StatelessWidget {
             final surah = savedItems[index];
             final nameKey = "surah_${surah.id}_name";
             final transKey = "surah_${surah.id}_trans";
-            final localizedName = tr(nameKey) == nameKey
-                ? surah.name
-                : tr(nameKey);
-            final localizedTrans = tr(transKey) == transKey
-                ? surah.translatedName
-                : tr(transKey);
+            // final localizedName = tr(nameKey) == nameKey
+            //     ? surah.name
+            //     : tr(nameKey);
+            // final localizedTrans = tr(transKey) == transKey
+            //     ? surah.translatedName
+            //     : tr(transKey);
+            final localizedName = tr(nameKey);
+            final localizedTrans = tr(transKey);
 
             return SurahCard(
               num: localizeDigits("${surah.id}", context),

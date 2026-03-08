@@ -35,12 +35,13 @@ class _AudioListScreenState extends State<AudioListScreen> {
       // If we navigated with a specific audio ID, make it featured and play it
       if (widget.initialAudioId != null && controller.audioList.isNotEmpty) {
         int index = controller.audioList.indexWhere(
-              (a) => a.id == widget.initialAudioId,
+          (a) => a.id == widget.initialAudioId,
         );
         if (index != -1) {
           final selectedAudio = controller.audioList.removeAt(index);
           controller.audioList.insert(0, selectedAudio);
-          controller.playAudio(selectedAudio);
+          // controller.playAudio(selectedAudio);
+          controller.featuredAudio.value = selectedAudio;
         }
       } else if (controller.audioList.isNotEmpty) {
         // Just play the first one if no specific one was requested
@@ -159,7 +160,7 @@ class _AudioListScreenState extends State<AudioListScreen> {
                             }
                             final isCurrentlyPlaying =
                                 controller.currentAudioId.value ==
-                                    featuredAudio.id;
+                                featuredAudio.id;
 
                             return Column(
                               mainAxisSize: MainAxisSize.min,
@@ -180,18 +181,18 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                   padding: const EdgeInsets.all(20.0),
                                   child: Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Expanded(
                                             child: Column(
                                               crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Text(
                                                   featuredAudio.title ??
@@ -248,10 +249,10 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                           Text(
                                             isCurrentlyPlaying
                                                 ? _formatDuration(
-                                              controller
-                                                  .currentDuration
-                                                  .value,
-                                            )
+                                                    controller
+                                                        .currentDuration
+                                                        .value,
+                                                  )
                                                 : '00:00',
                                             style: const TextStyle(
                                               fontSize: 14,
@@ -263,14 +264,14 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                               data: SliderThemeData(
                                                 trackHeight: 3,
                                                 thumbShape:
-                                                const RoundSliderThumbShape(
-                                                  enabledThumbRadius: 6,
-                                                ),
+                                                    const RoundSliderThumbShape(
+                                                      enabledThumbRadius: 6,
+                                                    ),
                                                 activeTrackColor: const Color(
                                                   0xFF8D3C1F,
                                                 ),
                                                 inactiveTrackColor:
-                                                Colors.grey.shade300,
+                                                    Colors.grey.shade300,
                                                 thumbColor: const Color(
                                                   0xFF8D3C1F,
                                                 ),
@@ -280,32 +281,32 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                               ),
                                               child: Slider(
                                                 value:
-                                                isCurrentlyPlaying &&
-                                                    controller
-                                                        .totalDuration
-                                                        .value
-                                                        .inSeconds >
-                                                        0
+                                                    isCurrentlyPlaying &&
+                                                        controller
+                                                                .totalDuration
+                                                                .value
+                                                                .inSeconds >
+                                                            0
                                                     ? controller
-                                                    .currentDuration
-                                                    .value
-                                                    .inSeconds /
-                                                    controller
-                                                        .totalDuration
-                                                        .value
-                                                        .inSeconds
+                                                              .currentDuration
+                                                              .value
+                                                              .inSeconds /
+                                                          controller
+                                                              .totalDuration
+                                                              .value
+                                                              .inSeconds
                                                     : 0.0,
                                                 onChanged: (val) {
                                                   if (isCurrentlyPlaying) {
                                                     controller.seekAudio(
                                                       Duration(
                                                         seconds:
-                                                        (val *
-                                                            controller
-                                                                .totalDuration
-                                                                .value
-                                                                .inSeconds)
-                                                            .toInt(),
+                                                            (val *
+                                                                    controller
+                                                                        .totalDuration
+                                                                        .value
+                                                                        .inSeconds)
+                                                                .toInt(),
                                                       ),
                                                     );
                                                   }
@@ -316,15 +317,15 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                           Text(
                                             isCurrentlyPlaying
                                                 ? _formatDuration(
-                                              controller
-                                                  .totalDuration
-                                                  .value,
-                                            )
+                                                    controller
+                                                        .totalDuration
+                                                        .value,
+                                                  )
                                                 : (controller
-                                                .cachedDurations[featuredAudio
-                                                .id ??
-                                                ''] ??
-                                                '00:00'),
+                                                          .cachedDurations[featuredAudio
+                                                              .id ??
+                                                          ''] ??
+                                                      '00:00'),
                                             style: const TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w500,
@@ -335,30 +336,30 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                       const SizedBox(height: 24),
                                       Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           _buildActionButton(
                                             icon:
-                                            isCurrentlyPlaying &&
-                                                controller
-                                                    .playerState
-                                                    .value ==
-                                                    PlayerState.playing
+                                                isCurrentlyPlaying &&
+                                                    controller
+                                                            .playerState
+                                                            .value ==
+                                                        PlayerState.playing
                                                 ? Icons.pause_rounded
                                                 : Icons.play_arrow_rounded,
                                             label:
-                                            isCurrentlyPlaying &&
-                                                controller
-                                                    .playerState
-                                                    .value ==
-                                                    PlayerState.playing
+                                                isCurrentlyPlaying &&
+                                                    controller
+                                                            .playerState
+                                                            .value ==
+                                                        PlayerState.playing
                                                 ? 'Pause'
                                                 : 'Listen',
                                             onPressed: () {
                                               if (isCurrentlyPlaying &&
                                                   controller
-                                                      .playerState
-                                                      .value ==
+                                                          .playerState
+                                                          .value ==
                                                       PlayerState.playing) {
                                                 controller.pauseAudio();
                                               } else {
@@ -368,7 +369,7 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                               }
                                             },
                                             isLoading:
-                                            isCurrentlyPlaying &&
+                                                isCurrentlyPlaying &&
                                                 controller.isAudioLoading.value,
                                           ),
                                           const SizedBox(width: 16),
@@ -403,7 +404,8 @@ class _AudioListScreenState extends State<AudioListScreen> {
                         return AudioCard(
                           audio: audio,
                           onTap: () {
-                            controller.playAudio(audio);
+                            // controller.playAudio(audio);
+                            controller.featuredAudio.value = audio;
                           },
                         );
                       }, childCount: controller.audioList.length),
@@ -462,13 +464,13 @@ class _AudioListScreenState extends State<AudioListScreen> {
         onPressed: isLoading ? null : onPressed,
         icon: isLoading
             ? const SizedBox(
-          width: 16,
-          height: 16,
-          child: CircularProgressIndicator(
-            strokeWidth: 2,
-            color: Colors.white,
-          ),
-        )
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
             : Icon(icon, color: Colors.white, size: 16),
         label: Text(
           isLoading ? "Loading..." : label,

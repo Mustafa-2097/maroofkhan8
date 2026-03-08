@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../core/constant/app_colors.dart';
-import '../../core/constant/image_path.dart';
+// import '../../core/constant/app_colors.dart';
+// import '../../core/constant/image_path.dart';
 import '../Controller/splash_controller.dart';
 import 'package:get/get.dart';
 
@@ -19,10 +19,7 @@ class SplashScreen extends StatelessWidget {
       body: Column(
         children: [
           SizedBox(height: 200.h),
-          Image.asset(
-            'assets/images/onboarding01.png',
-            height: sh*0.38,
-          ),
+          Image.asset('assets/images/onboarding01.png', height: sh * 0.38),
           Text(
             "AI Murshid",
             style: Theme.of(context).textTheme.headlineLarge?.copyWith(
@@ -33,10 +30,10 @@ class SplashScreen extends StatelessWidget {
           const Spacer(),
           Image.asset(
             "assets/images/splash02.png",
-            height: sh*0.2,
+            height: sh * 0.2,
             width: double.infinity,
             fit: BoxFit.cover,
-          )
+          ),
         ],
       ),
     );
