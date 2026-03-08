@@ -612,5 +612,7 @@
   "downloading_audio_for": "{} کے لیے آڈیو ڈاؤن لوڈ ہو رہی ہے...",
   "download_complete": "ڈاؤن لوڈ مکمل ہو گیا",
   "audio_saved_desc": "{} کے لیے آڈیو محفوظ ہو گئی ہے۔",
-  "error": "غلطی"
+  "error": "غلطی",
+  "check_out_this_book": "اس کتاب کو دیکھیں: ",
+  "no_pdf_available": "کوئی پی ڈی ایف فائل دستیاب نہیں ہے"
 }

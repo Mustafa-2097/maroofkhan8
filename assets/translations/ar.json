@@ -612,5 +612,7 @@
   "downloading_audio_for": "جاري تحميل الصوت لـ {}...",
   "download_complete": "اكتمل التحميل",
   "audio_saved_desc": "تم حفظ الصوت لـ {}.",
-  "error": "خطأ"
+  "error": "خطأ",
+  "check_out_this_book": "تحقق من هذا الكتاب: ",
+  "no_pdf_available": "لا يوجد ملف PDF متاح"
 }

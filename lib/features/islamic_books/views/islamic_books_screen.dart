@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart'; // Add GetX
 import 'package:google_fonts/google_fonts.dart';
@@ -27,7 +28,8 @@ class IslamicBooksListScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: kBackground,
       appBar: AppBar(
-        title: const HeaderSection(title: "Islamic Books"),
+        // title: const HeaderSection(title: "Islamic Books"),
+        title: HeaderSection(title: tr("islamic_books")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -89,9 +91,13 @@ class IslamicBooksListScreen extends StatelessWidget {
                     ),
                     child: TextField(
                       onChanged: controller.updateSearchQuery,
-                      decoration: const InputDecoration(
-                        hintText: "Search",
-                        hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
+                      decoration: InputDecoration(
+                        // hintText: "Search",
+                        hintText: tr("search_hint"),
+                        hintStyle: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.only(bottom: 10),
                       ),
@@ -124,7 +130,8 @@ class IslamicBooksListScreen extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (controller.filteredBookList.isEmpty) {
-                  return const Center(child: Text("No books found"));
+                  // return const Center(child: Text("No books found"));
+                  return Center(child: Text(tr("no_books_found")));
                 }
 
                 return ListView.builder(
@@ -132,7 +139,8 @@ class IslamicBooksListScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final book = controller.filteredBookList[index];
                     return _BookListItem(
-                      title: book.title ?? "Untitled",
+                      // title: book.title ?? "Untitled",
+                      title: book.title ?? tr("untitled"),
                       subtitle: book.subtitle ?? "",
                       imageUrl: book.image,
                       onTap: () {
@@ -141,7 +149,8 @@ class IslamicBooksListScreen extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (_) => BookReaderScreen(
-                              title: book.title ?? "Book",
+                              // title: book.title ?? "Book",
+                              title: book.title ?? tr("book"),
                               pdfUrl: book.file,
                             ),
                           ),
@@ -323,7 +332,8 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
         title: Column(
           children: [
             Text(
-              "Islamic Book's",
+              // "Islamic Book's",
+              tr("islamic_books"),
               style: GoogleFonts.playfairDisplay(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
@@ -400,7 +410,10 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                       onTap: () {
                         if (widget.pdfUrl != null &&
                             widget.pdfUrl!.isNotEmpty) {
-                          Share.share('Check out this book: ${widget.pdfUrl}');
+                          // Share.share('Check out this book: ${widget.pdfUrl}');
+                          Share.share(
+                            '${tr("check_out_this_book")} ${widget.pdfUrl}',
+                          );
                         }
                       },
                       child: const Icon(
@@ -438,10 +451,11 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                 });
               },
             )
-          : const Center(
+          : Center(
               child: Text(
-                "No PDF file available",
-                style: TextStyle(color: Colors.grey),
+                // "No PDF file available",
+                tr("no_pdf_available"),
+                style: const TextStyle(color: Colors.grey),
               ),
             ),
     );

@@ -396,5 +396,7 @@
   "downloading_audio_for": "Downloading audio for {}...",
   "download_complete": "Download Complete",
   "audio_saved_desc": "Audio for {} has been saved.",
-  "error": "Error"
+  "error": "Error",
+  "check_out_this_book": "Check out this book: ",
+  "no_pdf_available": "No PDF file available"
 }

@@ -612,5 +612,7 @@
   "downloading_audio_for": "{} के लिए ऑडियो डाउनलोड हो रहा है...",
   "download_complete": "डाउनलोड पूरा हुआ",
   "audio_saved_desc": "{} के लिए ऑडियो सुरक्षित कर लिया गया है।",
-  "error": "त्रुटि"
+  "error": "त्रुटि",
+  "check_out_this_book": "इस पुस्तक को देखें: ",
+  "no_pdf_available": "कोई पीडीएफ फाइल उपलब्ध नहीं है"
 }
