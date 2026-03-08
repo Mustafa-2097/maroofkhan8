@@ -65,6 +65,9 @@ class _AudioListScreenState extends State<AudioListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final sh = MediaQuery.of(context).size.height;
+    final sw = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF9F9F9),
       appBar: AppBar(
@@ -81,20 +84,31 @@ class _AudioListScreenState extends State<AudioListScreen> {
         children: [
           /// 1. Category Filter Chips (Fixed & Non-Scrollable)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            // padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            padding: EdgeInsets.symmetric(
+              horizontal: sw * 0.04,
+              vertical: sh * 0.012,
+            ),
             child: Row(
               children: categories.map((cat) {
                 return Expanded(
                   child: Padding(
                     padding: EdgeInsets.only(
-                      right: cat != categories.last ? 8 : 0,
+                      // right: cat != categories.last ? 8 : 0,
+                      right: cat != categories.last ? sw * 0.02 : 0,
                     ),
-                    child: _buildChip(cat, selectedCategory == cat, () {
-                      setState(() {
-                        selectedCategory = cat;
-                      });
-                      controller.fetchAudios(category: selectedCategory);
-                    }),
+                    child: _buildChip(
+                      cat,
+                      selectedCategory == cat,
+                      () {
+                        setState(() {
+                          selectedCategory = cat;
+                        });
+                        controller.fetchAudios(category: selectedCategory);
+                      },
+                      sw,
+                      sh,
+                    ),
                   ),
                 );
               }).toList(),
@@ -113,14 +127,17 @@ class _AudioListScreenState extends State<AudioListScreen> {
                     children: [
                       Icon(
                         Icons.audio_file_outlined,
-                        size: 64,
+                        // size: 64,
+                        size: sw * 0.15,
                         color: Colors.grey.shade400,
                       ),
-                      const SizedBox(height: 16),
+                      // const SizedBox(height: 16),
+                      SizedBox(height: sh * 0.02),
                       Text(
                         "No audio found in this category",
                         style: TextStyle(
-                          fontSize: 18,
+                          // fontSize: 18,
+                          fontSize: sw * 0.045,
                           color: Colors.grey.shade600,
                           fontWeight: FontWeight.w500,
                         ),
@@ -132,30 +149,35 @@ class _AudioListScreenState extends State<AudioListScreen> {
 
               return CustomScrollView(
                 slivers: [
-                  /// 2. Featured Main Card
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      // padding: const EdgeInsets.all(16.0),
+                      padding: EdgeInsets.all(sw * 0.04),
                       child: Card(
                         shadowColor: Colors.transparent,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
+                          // borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(sw * 0.04),
                           side: BorderSide(color: Colors.grey.shade300),
                         ),
                         child: Container(
                           width: double.infinity,
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
+                            // borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(sw * 0.04),
                           ),
                           child: Obx(() {
                             // Use the tracked featured audio from controller
                             final featuredAudio =
                                 controller.featuredAudio.value;
                             if (featuredAudio == null) {
-                              return const SizedBox(
-                                height: 100,
-                                child: Center(child: Text("No featured audio")),
+                              return SizedBox(
+                                // height: 100,
+                                height: sh * 0.12,
+                                child: const Center(
+                                  child: Text("No featured audio"),
+                                ),
                               );
                             }
                             final isCurrentlyPlaying =
@@ -198,7 +220,8 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                                   featuredAudio.title ??
                                                       'Trust in Allah',
                                                   style: GoogleFonts.amiri(
-                                                    fontSize: 26,
+                                                    // fontSize: 26,
+                                                    fontSize: sw * 0.06,
                                                     fontWeight: FontWeight.bold,
                                                     height: 1.1,
                                                   ),
@@ -206,8 +229,9 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                                 Text(
                                                   featuredAudio.subtitle ??
                                                       'Shaykh’s Lecture',
-                                                  style: const TextStyle(
-                                                    fontSize: 16,
+                                                  style: TextStyle(
+                                                    // fontSize: 16,
+                                                    fontSize: sw * 0.038,
                                                     color: Colors.grey,
                                                     fontWeight: FontWeight.w400,
                                                   ),
@@ -224,26 +248,33 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                               }
                                             },
                                             itemBuilder: (context) => [
-                                              const PopupMenuItem(
+                                              PopupMenuItem(
                                                 value: 'share',
                                                 child: Row(
                                                   children: [
-                                                    Icon(Icons.share, size: 20),
-                                                    SizedBox(width: 8),
-                                                    Text('Share'),
+                                                    // Icon(Icons.share, size: 20),
+                                                    Icon(
+                                                      Icons.share,
+                                                      size: sw * 0.05,
+                                                    ),
+                                                    // SizedBox(width: 8),
+                                                    SizedBox(width: sw * 0.02),
+                                                    const Text('Share'),
                                                   ],
                                                 ),
                                               ),
                                             ],
-                                            child: const Icon(
+                                            child: Icon(
                                               Icons.more_horiz,
-                                              size: 24,
+                                              // size: 24,
+                                              size: sw * 0.06,
                                               color: Colors.grey,
                                             ),
                                           ),
                                         ],
                                       ),
-                                      const SizedBox(height: 16),
+                                      // const SizedBox(height: 16),
+                                      SizedBox(height: sh * 0.02),
                                       Row(
                                         children: [
                                           Text(
@@ -254,8 +285,9 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                                         .value,
                                                   )
                                                 : '00:00',
-                                            style: const TextStyle(
-                                              fontSize: 14,
+                                            style: TextStyle(
+                                              // fontSize: 14,
+                                              fontSize: sw * 0.035,
                                               fontWeight: FontWeight.w500,
                                             ),
                                           ),
@@ -264,8 +296,9 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                               data: SliderThemeData(
                                                 trackHeight: 3,
                                                 thumbShape:
-                                                    const RoundSliderThumbShape(
-                                                      enabledThumbRadius: 6,
+                                                    RoundSliderThumbShape(
+                                                      enabledThumbRadius:
+                                                          sw * 0.015,
                                                     ),
                                                 activeTrackColor: const Color(
                                                   0xFF8D3C1F,
@@ -326,14 +359,16 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                                               .id ??
                                                           ''] ??
                                                       '00:00'),
-                                            style: const TextStyle(
-                                              fontSize: 14,
+                                            style: TextStyle(
+                                              // fontSize: 14,
+                                              fontSize: sw * 0.035,
                                               fontWeight: FontWeight.w500,
                                             ),
                                           ),
                                         ],
                                       ),
-                                      const SizedBox(height: 24),
+                                      // const SizedBox(height: 24),
+                                      SizedBox(height: sh * 0.03),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -371,8 +406,11 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                             isLoading:
                                                 isCurrentlyPlaying &&
                                                 controller.isAudioLoading.value,
+                                            sw: sw,
+                                            sh: sh,
                                           ),
-                                          const SizedBox(width: 16),
+                                          // const SizedBox(width: 16),
+                                          SizedBox(width: sw * 0.04),
                                           _buildActionButton(
                                             icon: Icons.file_download_outlined,
                                             label: 'Download (Premium)',
@@ -381,6 +419,8 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                                 featuredAudio,
                                               );
                                             },
+                                            sw: sw,
+                                            sh: sh,
                                           ),
                                         ],
                                       ),
@@ -397,7 +437,8 @@ class _AudioListScreenState extends State<AudioListScreen> {
 
                   /// 3. Recent Lectures List
                   SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    // padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: EdgeInsets.symmetric(horizontal: sw * 0.04),
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate((context, index) {
                         final audio = controller.audioList[index];
@@ -427,11 +468,21 @@ class _AudioListScreenState extends State<AudioListScreen> {
     return "$twoDigitMinutes:$twoDigitSeconds";
   }
 
-  Widget _buildChip(String label, bool isSelected, VoidCallback onTap) {
+  Widget _buildChip(
+    String label,
+    bool isSelected,
+    VoidCallback onTap,
+    double sw,
+    double sh,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+        // padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+        padding: EdgeInsets.symmetric(
+          horizontal: sw * 0.01,
+          vertical: sh * 0.01,
+        ),
         decoration: BoxDecoration(
           color: isSelected ? const Color(0xFF8D3C1F) : const Color(0xFF1A1A1A),
           borderRadius: BorderRadius.circular(10),
@@ -441,9 +492,10 @@ class _AudioListScreenState extends State<AudioListScreen> {
             fit: BoxFit.scaleDown,
             child: Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
-                fontSize: 13,
+                // fontSize: 13,
+                fontSize: sw * 0.03,
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -458,32 +510,39 @@ class _AudioListScreenState extends State<AudioListScreen> {
     required String label,
     required VoidCallback onPressed,
     bool isLoading = false,
+    required double sw,
+    required double sh,
   }) {
     return Expanded(
       child: ElevatedButton.icon(
         onPressed: isLoading ? null : onPressed,
         icon: isLoading
-            ? const SizedBox(
-                width: 16,
-                height: 16,
-                child: CircularProgressIndicator(
+            ? SizedBox(
+                // width: 16,
+                // height: 16,
+                width: sw * 0.04,
+                height: sw * 0.04,
+                child: const CircularProgressIndicator(
                   strokeWidth: 2,
                   color: Colors.white,
                 ),
               )
-            : Icon(icon, color: Colors.white, size: 16),
+            // : Icon(icon, color: Colors.white, size: 16),
+            : Icon(icon, color: Colors.white, size: sw * 0.04),
         label: Text(
           isLoading ? "Loading..." : label,
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.white,
-            fontSize: 14,
+            // fontSize: 14,
+            fontSize: sw * 0.035,
             fontWeight: FontWeight.w400,
           ),
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF8D3C1F),
           foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 10),
+          // padding: const EdgeInsets.symmetric(vertical: 10),
+          padding: EdgeInsets.symmetric(vertical: sh * 0.012),
           shape: const StadiumBorder(),
           disabledBackgroundColor: const Color(
             0xFF8D3C1F,

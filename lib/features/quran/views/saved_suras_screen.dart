@@ -15,6 +15,8 @@ class SavedSurasScreen extends StatelessWidget {
     final controller = Get.find<QuranController>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
     const Color kPrimaryBrown = Color(0xFF8D3C1F);
+    final sh = MediaQuery.of(context).size.height;
+    final sw = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: isDark
@@ -32,8 +34,10 @@ class SavedSurasScreen extends StatelessWidget {
         ),
         title: Container(
           width: double.infinity,
-          height: 45,
-          margin: const EdgeInsets.only(right: 20),
+          // height: 45,
+          height: sh * 0.05,
+          // margin: const EdgeInsets.only(right: 20),
+          margin: EdgeInsets.only(right: sw * 0.05),
           decoration: BoxDecoration(
             color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
             borderRadius: BorderRadius.circular(10),
@@ -51,7 +55,8 @@ class SavedSurasScreen extends StatelessWidget {
             style: GoogleFonts.playfairDisplay(
               color: isDark ? Colors.white : const Color(0xFF2E2E2E),
               fontWeight: FontWeight.w500,
-              fontSize: 18,
+              // fontSize: 18,
+              fontSize: sw * 0.045,
             ),
           ),
         ),
@@ -72,13 +77,16 @@ class SavedSurasScreen extends StatelessWidget {
               children: [
                 Icon(
                   Icons.bookmark_border,
-                  size: 64,
+                  // size: 64,
+                  size: sw * 0.15,
                   color: Colors.grey.withOpacity(0.5),
                 ),
-                const SizedBox(height: 16),
+                // const SizedBox(height: 16),
+                SizedBox(height: sh * 0.02),
                 Text(
                   tr("no_saved_surahs"),
-                  style: const TextStyle(color: Colors.grey, fontSize: 16),
+                  // style: const TextStyle(color: Colors.grey, fontSize: 16),
+                  style: TextStyle(color: Colors.grey, fontSize: sw * 0.04),
                 ),
               ],
             ),
@@ -86,7 +94,8 @@ class SavedSurasScreen extends StatelessWidget {
         }
 
         return ListView.builder(
-          padding: const EdgeInsets.all(20),
+          // padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(sw * 0.05),
           itemCount: savedItems.length,
           itemBuilder: (context, index) {
             final surah = savedItems[index];
@@ -133,12 +142,16 @@ class SurahCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<QuranController>();
     const Color kPrimaryBrown = Color(0xFF8D3C1F);
+    final sh = MediaQuery.of(context).size.height;
+    final sw = MediaQuery.of(context).size.width;
 
     return GestureDetector(
       onTap: () => Get.to(() => QuranDetailsScreen(surah: surah)),
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
+        // margin: const EdgeInsets.only(bottom: 12),
+        margin: EdgeInsets.only(bottom: sh * 0.015),
+        // padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(sw * 0.04),
         decoration: BoxDecoration(
           color: Theme.of(context).brightness == Brightness.dark
               ? const Color(0xFF1E1E1E)
@@ -155,8 +168,10 @@ class SurahCard extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 40,
-              height: 40,
+              // width: 40,
+              // height: 40,
+              width: sw * 0.1,
+              height: sw * 0.1,
               decoration: BoxDecoration(
                 color: kPrimaryBrown.withOpacity(0.1),
                 shape: BoxShape.circle,
@@ -171,7 +186,8 @@ class SurahCard extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 16),
+            // const SizedBox(width: 16),
+            SizedBox(width: sw * 0.04),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,13 +195,18 @@ class SurahCard extends StatelessWidget {
                   Text(
                     title,
                     style: GoogleFonts.playfairDisplay(
-                      fontSize: 16,
+                      // fontSize: 16,
+                      fontSize: sw * 0.04,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
                     sub,
-                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                    // style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                    style: TextStyle(
+                      fontSize: sw * 0.03,
+                      color: Colors.grey[600],
+                    ),
                   ),
                 ],
               ),

@@ -27,6 +27,9 @@ class _AudioScreenState extends State<AudioScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final sh = MediaQuery.of(context).size.height;
+    final sw = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         title: HeaderSection(title: tr("audio_title")),
@@ -44,7 +47,8 @@ class _AudioScreenState extends State<AudioScreen> {
           onRefresh: () => controller.fetchAudios(category: "All"),
           child: Column(
             children: [
-              const SizedBox(height: 8),
+              // const SizedBox(height: 8),
+              SizedBox(height: sh * 0.01),
 
               /// List
               Expanded(
@@ -64,7 +68,8 @@ class _AudioScreenState extends State<AudioScreen> {
                     );
                   }
                   return ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    // padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: EdgeInsets.symmetric(horizontal: sw * 0.04),
                     itemCount: controller.audioList.length,
                     itemBuilder: (context, index) {
                       final audio = controller.audioList[index];
@@ -105,17 +110,28 @@ class AudioCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = AudioController.instance;
+    final sh = MediaQuery.of(context).size.height;
+    final sw = MediaQuery.of(context).size.width;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 95,
-        width: 392,
-        margin: const EdgeInsets.only(bottom: 16),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        // height: 95,
+        // width: 392,
+        height: sh * 0.11,
+        width: double.infinity,
+        // margin: const EdgeInsets.only(bottom: 16),
+        // padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        margin: EdgeInsets.only(bottom: sh * 0.018),
+        padding: EdgeInsets.symmetric(
+          horizontal: sw * 0.03,
+          vertical: sh * 0.012,
+        ),
         decoration: BoxDecoration(
           border: Border.all(color: const Color(0xFFA6A6A6), width: 1),
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          // borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(sw * 0.04),
         ),
         child: Row(
           children: [
@@ -125,16 +141,18 @@ class AudioCard extends StatelessWidget {
                 color: Color(0xFF24255B),
                 shape: BoxShape.circle,
               ),
-              child: const CircleAvatar(
-                radius: 28,
-                backgroundImage: NetworkImage(
+              child: CircleAvatar(
+                // radius: 28,
+                radius: sw * 0.07,
+                backgroundImage: const NetworkImage(
                   "https://i.pravatar.cc/150?img=3",
                 ),
                 backgroundColor: Colors.transparent,
               ),
             ),
 
-            const SizedBox(width: 12),
+            // const SizedBox(width: 12),
+            SizedBox(width: sw * 0.03),
 
             /// Title + Subtitle
             Expanded(
@@ -144,19 +162,22 @@ class AudioCard extends StatelessWidget {
                 children: [
                   Text(
                     audio.title ?? tr("untitled"),
-                    style: const TextStyle(
-                      fontSize: 20,
+                    style: TextStyle(
+                      // fontSize: 20,
+                      fontSize: sw * 0.045,
                       fontWeight: FontWeight.w400,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  // const SizedBox(height: 4),
+                  SizedBox(height: sh * 0.005),
                   Text(
                     audio.subtitle ?? tr("shaykh_lecture"),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Color(0xFFA6A6A6),
+                    style: TextStyle(
+                      // fontSize: 16,
+                      fontSize: sw * 0.035,
+                      color: const Color(0xFFA6A6A6),
                       fontWeight: FontWeight.w400,
                     ),
                     maxLines: 1,
@@ -175,14 +196,16 @@ class AudioCard extends StatelessWidget {
                   final duration = controller.cachedDurations[audio.id ?? ''];
                   return Text(
                     localizeDigits(duration ?? "00:00", context),
-                    style: const TextStyle(
-                      fontSize: 12,
+                    style: TextStyle(
+                      // fontSize: 12,
+                      fontSize: sw * 0.03,
                       color: Colors.black,
                       fontWeight: FontWeight.w400,
                     ),
                   );
                 }),
-                const SizedBox(width: 8),
+                // const SizedBox(width: 8),
+                SizedBox(width: sw * 0.02),
                 PopupMenuButton<String>(
                   onSelected: (value) {
                     if (value == 'share') {
@@ -201,10 +224,11 @@ class AudioCard extends StatelessWidget {
                       ),
                     ),
                   ],
-                  child: const Icon(
+                  child: Icon(
                     Icons.more_horiz,
-                    size: 18,
-                    color: Color.fromARGB(255, 0, 0, 0),
+                    // size: 18,
+                    size: sw * 0.045,
+                    color: const Color.fromARGB(255, 0, 0, 0),
                   ),
                 ),
               ],
