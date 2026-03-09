@@ -464,54 +464,54 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
         const SizedBox(height: 30),
 
         // Audio Player
-        Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  localizeDigits("00:00", context),
-                  style: const TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  localizeDigits("00:00", context),
-                  style: const TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            SliderTheme(
-              data: SliderTheme.of(context).copyWith(
-                activeTrackColor: kPrimaryBrown,
-                inactiveTrackColor: Colors.grey.shade300,
-                thumbColor: kPrimaryBrown,
-                trackHeight: 2,
-                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 4),
-                overlayShape: SliderComponentShape.noOverlay,
-              ),
-              child: Slider(value: 0.0, onChanged: (v) {}),
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
+        // Column(
+        //   children: [
+        //     Row(
+        //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //       children: [
+        //         Text(
+        //           localizeDigits("00:00", context),
+        //           style: const TextStyle(
+        //             fontSize: 10,
+        //             fontWeight: FontWeight.bold,
+        //           ),
+        //         ),
+        //         Text(
+        //           localizeDigits("00:00", context),
+        //           style: const TextStyle(
+        //             fontSize: 10,
+        //             fontWeight: FontWeight.bold,
+        //           ),
+        //         ),
+        //       ],
+        //     ),
+        //     SliderTheme(
+        //       data: SliderTheme.of(context).copyWith(
+        //         activeTrackColor: kPrimaryBrown,
+        //         inactiveTrackColor: Colors.grey.shade300,
+        //         thumbColor: kPrimaryBrown,
+        //         trackHeight: 2,
+        //         thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 4),
+        //         overlayShape: SliderComponentShape.noOverlay,
+        //       ),
+        //       child: Slider(value: 0.0, onChanged: (v) {}),
+        //     ),
+        //   ],
+        // ),
+        // const SizedBox(height: 20),
 
         // Controls
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.skip_previous, size: 24, color: Colors.black),
-            SizedBox(width: 30),
-            Icon(Icons.play_circle_outline, size: 35, color: Colors.black),
-            SizedBox(width: 30),
-            Icon(Icons.skip_next, size: 24, color: Colors.black),
-          ],
-        ),
-        const SizedBox(height: 30),
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   children: const [
+        //     Icon(Icons.skip_previous, size: 24, color: Colors.black),
+        //     SizedBox(width: 30),
+        //     Icon(Icons.play_circle_outline, size: 35, color: Colors.black),
+        //     SizedBox(width: 30),
+        //     Icon(Icons.skip_next, size: 24, color: Colors.black),
+        //   ],
+        // ),
+        // const SizedBox(height: 30),
 
         // Bottom Actions Pill
         Container(
@@ -524,8 +524,8 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _bottomAction(Icons.headset, tr("listen"), true),
-              Container(height: 30, width: 1, color: Colors.grey.shade300),
+              // _bottomAction(Icons.headset, tr("listen"), true),
+              // Container(height: 30, width: 1, color: Colors.grey.shade300),
               _bottomAction(
                 Icons.auto_awesome,
                 tr("ai_explanation"),

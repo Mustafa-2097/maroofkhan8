@@ -105,7 +105,11 @@ class SavedHadithsScreen extends StatelessWidget {
                     children: [
                       Text(
                         hadith.heading.isNotEmpty
-                            ? hadith.heading
+                            ? (tr(
+                                    "book_${hadith.heading}_name",
+                                  ).contains("book_")
+                                  ? hadith.heading
+                                  : tr("book_${hadith.heading}_name"))
                             : tr("hadith"),
                         style: const TextStyle(
                           fontSize: 11,
@@ -153,7 +157,13 @@ class SavedHadithsScreen extends StatelessWidget {
                           Get.to(
                             () => HadishTafsirDetailsScreen(
                               hadithText: hadith.hadith,
-                              bookName: hadith.heading,
+                              bookName:
+                                  tr(
+                                    "book_${hadith.heading}_name",
+                                  ).contains("book_")
+                                  ? hadith.heading
+                                  : tr("book_${hadith.heading}_name"),
+                              bookSlug: hadith.heading,
                               chapterNum: "0",
                               hadithNumber: hadith.number,
                             ),

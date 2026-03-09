@@ -148,6 +148,7 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
                     return NameCard(
                       data: nameItem,
                       onTap: () {
+                        controller.isPlayingFromSaved.value = false;
                         controller.currentAudioIndex.value = index;
                         controller.selectedFilterIndex.value = 2;
                       },
@@ -167,6 +168,7 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
       bool isActive = controller.selectedFilterIndex.value == index;
       return GestureDetector(
         onTap: () {
+          controller.isPlayingFromSaved.value = false;
           controller.updateFilterIndex(index);
         },
         child: Container(
@@ -278,37 +280,76 @@ class AudioPlayerSection extends StatelessWidget {
           // Slider
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      localizeDigits("1:00", context),
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                    Text(
-                      localizeDigits("2:12", context),
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 5),
-                SliderTheme(
-                  data: SliderTheme.of(context).copyWith(
-                    activeTrackColor: kPrimaryBrown,
-                    inactiveTrackColor: Colors.grey.shade300,
-                    thumbColor: kPrimaryBrown,
-                    thumbShape: const RoundSliderThumbShape(
-                      enabledThumbRadius: 6,
-                    ),
-                    trackHeight: 3,
-                    overlayShape: SliderComponentShape.noOverlay,
+            child: Obx(() {
+              bool isCurrent = controller.currentPlayingId.value == data.id;
+              double currentPos = isCurrent
+                  ? controller.position.value.inSeconds.toDouble()
+                  : 0.0;
+              double totalDuration = isCurrent
+                  ? controller.duration.value.inSeconds.toDouble()
+                  : 0.0;
+              if (totalDuration < currentPos) totalDuration = currentPos;
+
+              return Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        localizeDigits(
+                          controller.formatDuration(
+                            isCurrent
+                                ? controller.position.value
+                                : Duration.zero,
+                          ),
+                          context,
+                        ),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      Text(
+                        localizeDigits(
+                          controller.formatDuration(
+                            isCurrent
+                                ? controller.duration.value
+                                : Duration.zero,
+                          ),
+                          context,
+                        ),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
                   ),
-                  child: Slider(value: 0.45, onChanged: (v) {}),
-                ),
-              ],
-            ),
+                  const SizedBox(height: 5),
+                  SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      activeTrackColor: kPrimaryBrown,
+                      inactiveTrackColor: Colors.grey.shade300,
+                      thumbColor: kPrimaryBrown,
+                      thumbShape: const RoundSliderThumbShape(
+                        enabledThumbRadius: 6,
+                      ),
+                      trackHeight: 3,
+                      overlayShape: SliderComponentShape.noOverlay,
+                    ),
+                    child: Slider(
+                      value: currentPos,
+                      max: totalDuration > 0 ? totalDuration : 1.0,
+                      onChanged: (v) {
+                        if (isCurrent) {
+                          controller.seekAudio(v);
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              );
+            }),
           ),
 
           const SizedBox(height: 40),
@@ -323,12 +364,21 @@ class AudioPlayerSection extends StatelessWidget {
                 color: Colors.black87,
               ),
               const SizedBox(width: 30),
-              const Icon(
-                Icons
-                    .play_circle_filled, // Filled for play look consistent with screenshot
-                size: 55,
-                color: Color(0xFF2E2E2E),
-              ),
+              Obx(() {
+                bool isCurrentPlaying =
+                    controller.currentPlayingId.value == data.id &&
+                    controller.isPlaying.value;
+                return GestureDetector(
+                  onTap: () => controller.playNameAudio(data),
+                  child: Icon(
+                    isCurrentPlaying
+                        ? Icons.pause_circle_filled
+                        : Icons.play_circle_filled,
+                    size: 55,
+                    color: const Color(0xFF2E2E2E),
+                  ),
+                );
+              }),
               const SizedBox(width: 30),
               IconButton(
                 onPressed: controller.nextAudio,
@@ -395,14 +445,22 @@ class NameCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                GestureDetector(
-                  onTap: onTap,
-                  child: const Icon(
-                    Icons.volume_up_outlined,
-                    size: 20,
-                    color: Colors.grey,
-                  ),
-                ),
+                Obx(() {
+                  final controller = Get.find<AllahNamesController>();
+                  bool isCurrentPlaying =
+                      controller.currentPlayingId.value == data.id &&
+                      controller.isPlaying.value;
+                  return GestureDetector(
+                    onTap: () => controller.playNameAudio(data),
+                    child: Icon(
+                      isCurrentPlaying
+                          ? Icons.pause_circle_outline
+                          : Icons.volume_up_outlined,
+                      size: 20,
+                      color: isCurrentPlaying ? kPrimaryBrown : Colors.grey,
+                    ),
+                  );
+                }),
               ],
             ),
 
@@ -444,149 +502,223 @@ class NameCard extends StatelessWidget {
 
 // --- PLAYER DIALOG (SCREEN 3) ---
 class PlayerDialog extends StatelessWidget {
-  final AllahName data;
-
-  const PlayerDialog({super.key, required this.data});
+  const PlayerDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      insetPadding: const EdgeInsets.all(20),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: kBackground,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _miniTab(tr("all"), false),
-                const SizedBox(width: 5),
-                _miniTab(tr("with_meaning"), false),
-                const SizedBox(width: 5),
-                _miniTab(tr("with_audio"), true),
-              ],
-            ),
-            const SizedBox(height: 30),
+    final controller = Get.find<AllahNamesController>();
+    return Obx(() {
+      final list = controller.activeList;
+      if (list.isEmpty) return const SizedBox();
+      final index = controller.currentAudioIndex.value;
+      final safeIdx = index < list.length ? index : 0;
+      final data = list[safeIdx];
 
-            // Large White Card
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 15,
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  const Align(
-                    alignment: Alignment.topRight,
-                    child: Icon(
-                      Icons.volume_up_outlined,
-                      color: Colors.grey,
-                      size: 20,
-                    ),
-                  ),
-                  Text(
-                    data.arabic,
-                    style: GoogleFonts.amiri(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    data.pronunciation,
-                    style: GoogleFonts.playfairDisplay(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    data.meaning,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 14, color: kTextGrey),
-                  ),
-                  const SizedBox(height: 20),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Icon(
-                      data.isSaved ? Icons.bookmark : Icons.bookmark_border,
-                      size: 22,
-                      color: data.isSaved ? kPrimaryBrown : Colors.black,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        insetPadding: const EdgeInsets.all(20),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: kBackground,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     _miniTab(tr("all"), false),
+              //     const SizedBox(width: 5),
+              //     _miniTab(tr("with_meaning"), false),
+              //     const SizedBox(width: 5),
+              //     _miniTab(tr("with_audio"), true),
+              //   ],
+              // ),
+              const SizedBox(height: 30),
 
-            const SizedBox(height: 30),
-
-            // Slider
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      localizeDigits("1:00", context),
-                      style: const TextStyle(fontSize: 10, color: Colors.grey),
-                    ),
-                    Text(
-                      localizeDigits("2:12", context),
-                      style: const TextStyle(fontSize: 10, color: Colors.grey),
+              // Large White Card
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 30,
+                  horizontal: 20,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.05),
+                      blurRadius: 15,
                     ),
                   ],
                 ),
-                SliderTheme(
-                  data: SliderTheme.of(context).copyWith(
-                    activeTrackColor: kPrimaryBrown,
-                    inactiveTrackColor: Colors.grey.shade300,
-                    thumbColor: kPrimaryBrown,
-                    thumbShape: const RoundSliderThumbShape(
-                      enabledThumbRadius: 5,
+                child: Column(
+                  children: [
+                    const Align(
+                      alignment: Alignment.topRight,
+                      child: Icon(
+                        Icons.volume_up_outlined,
+                        color: Colors.grey,
+                        size: 20,
+                      ),
                     ),
-                    trackHeight: 2,
-                    overlayShape: SliderComponentShape.noOverlay,
-                  ),
-                  child: Slider(value: 0.45, onChanged: (v) {}),
+                    Text(
+                      data.arabic,
+                      style: GoogleFonts.amiri(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      data.pronunciation,
+                      style: GoogleFonts.playfairDisplay(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      data.meaning,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 14, color: kTextGrey),
+                    ),
+                    const SizedBox(height: 20),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: GestureDetector(
+                        onTap: () => controller.toggleSaveName(data),
+                        child: Icon(
+                          data.isSaved ? Icons.bookmark : Icons.bookmark_border,
+                          size: 22,
+                          color: data.isSaved ? kPrimaryBrown : Colors.black,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 20),
+              ),
 
-            // Controls
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(
-                  Icons.skip_previous_outlined,
-                  size: 28,
-                  color: Colors.black87,
-                ),
-                SizedBox(width: 30),
-                Icon(Icons.play_circle_outline, size: 40, color: Colors.black),
-                SizedBox(width: 30),
-                Icon(Icons.skip_next_outlined, size: 28, color: Colors.black87),
-              ],
-            ),
-            const SizedBox(height: 10),
-          ],
+              const SizedBox(height: 30),
+
+              // Slider
+              Obx(() {
+                bool isCurrent = controller.currentPlayingId.value == data.id;
+                double currentPos = isCurrent
+                    ? controller.position.value.inSeconds.toDouble()
+                    : 0.0;
+                double totalDuration = isCurrent
+                    ? controller.duration.value.inSeconds.toDouble()
+                    : 0.0;
+                if (totalDuration < currentPos) totalDuration = currentPos;
+
+                return Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          localizeDigits(
+                            controller.formatDuration(
+                              isCurrent
+                                  ? controller.position.value
+                                  : Duration.zero,
+                            ),
+                            context,
+                          ),
+                          style: const TextStyle(
+                            fontSize: 10,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Text(
+                          localizeDigits(
+                            controller.formatDuration(
+                              isCurrent
+                                  ? controller.duration.value
+                                  : Duration.zero,
+                            ),
+                            context,
+                          ),
+                          style: const TextStyle(
+                            fontSize: 10,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SliderTheme(
+                      data: SliderTheme.of(context).copyWith(
+                        activeTrackColor: kPrimaryBrown,
+                        inactiveTrackColor: Colors.grey.shade300,
+                        thumbColor: kPrimaryBrown,
+                        thumbShape: const RoundSliderThumbShape(
+                          enabledThumbRadius: 5,
+                        ),
+                        trackHeight: 2,
+                        overlayShape: SliderComponentShape.noOverlay,
+                      ),
+                      child: Slider(
+                        value: currentPos,
+                        max: totalDuration > 0 ? totalDuration : 1.0,
+                        onChanged: (v) {
+                          if (isCurrent) {
+                            controller.seekAudio(v);
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              }),
+              const SizedBox(height: 20),
+
+              // Controls
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      controller.previousAudio();
+                    },
+                    icon: const Icon(Icons.skip_previous_outlined, size: 28),
+                    color: Colors.black87,
+                  ),
+                  const SizedBox(width: 30),
+                  Obx(() {
+                    bool isCurrentPlaying =
+                        controller.currentPlayingId.value == data.id &&
+                        controller.isPlaying.value;
+                    return GestureDetector(
+                      onTap: () => controller.playNameAudio(data),
+                      child: Icon(
+                        isCurrentPlaying
+                            ? Icons.pause_circle_outline
+                            : Icons.play_circle_outline,
+                        size: 40,
+                        color: Colors.black,
+                      ),
+                    );
+                  }),
+                  const SizedBox(width: 30),
+                  IconButton(
+                    onPressed: () {
+                      controller.nextAudio();
+                    },
+                    icon: const Icon(Icons.skip_next_outlined, size: 28),
+                    color: Colors.black87,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget _miniTab(String text, bool active) {

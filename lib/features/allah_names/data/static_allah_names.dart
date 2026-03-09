@@ -6,6 +6,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْحَيُّ",
     pronunciation: "Al-Ḥayy",
     meaning: "The Eternally Living One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-hayy.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -13,6 +14,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْآخِرُ",
     pronunciation: "Al-Ākhir",
     meaning: "The Infinite Last One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-akhir.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -20,6 +22,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْأَوَّلُ",
     pronunciation: "Al-Awwal",
     meaning: "The Very First",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-awwal.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -27,6 +30,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمُؤَخِّرُ",
     pronunciation: "Al-Muʾakhkhir",
     meaning: "The Delayer",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-muakhkhir.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -34,6 +38,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمُقَدِّمُ",
     pronunciation: "Al-Muqaddim",
     meaning: "The Expediting One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-muqaddim.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -41,6 +46,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمُقْتَدِرُ",
     pronunciation: "Al-Muqtadir",
     meaning: "The All Authoritative One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-muqtadir.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -48,6 +54,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْقَادِرُ",
     pronunciation: "Al-Qādir",
     meaning: "The All-Powerful",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-qadir.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -55,6 +62,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلصَّمَدُ",
     pronunciation: "Aṣ-Ṣamad",
     meaning: "The Supreme Provider",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/as-samad.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -62,6 +70,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْأَحَدُ",
     pronunciation: "Al-Aḥad",
     meaning: "The Sole One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-ahad.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -69,6 +78,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْوَاحِدُ",
     pronunciation: "Al-Wāḥid",
     meaning: "The Only One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-wahid.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -76,6 +86,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمَاجِدُ",
     pronunciation: "Al-Mājid",
     meaning: "The All-Noble One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-majid.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -83,6 +94,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْوَاجِدُ",
     pronunciation: "Al-Wājid",
     meaning: "The Pointing One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-wajid.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -90,6 +102,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْقَيُّومُ",
     pronunciation: "Al-Qayyūm",
     meaning: "The Self-Subsisting One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-qayyum.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -97,6 +110,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلظَّاهِرُ",
     pronunciation: "Aẓ-Ẓāhir",
     meaning: "The Perceptible",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/az-zahir.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -104,6 +118,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمُمِيتُ",
     pronunciation: "Al-Mumīt",
     meaning: "The Inflictor of Death",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-mumit.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -111,6 +126,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمُحْيِي",
     pronunciation: "Al-Muḥyī",
     meaning: "The Maintainer of life",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-muhyi.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -118,6 +134,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمُعِيدُ",
     pronunciation: "Al-Muʿīd",
     meaning: "The Restorer",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-muid.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -125,6 +142,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمُبْدِئُ",
     pronunciation: "Al-Mubdiʾ",
     meaning: "The Originator",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-mubdi.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -132,6 +150,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمُحْصِي",
     pronunciation: "Al-Muḥṣī",
     meaning: "The All-Enumerating One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-muhsi.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -139,6 +158,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْحَمِيدُ",
     pronunciation: "Al-Ḥamīd",
     meaning: "The Sole-Laudable One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-hamid.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -146,6 +166,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْوَلِيُّ",
     pronunciation: "Al-Waliyy",
     meaning: "The Protecting Associate",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-waliyy.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -153,6 +174,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمَتِينُ",
     pronunciation: "Al-Matīn",
     meaning: "The Firm One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-matin.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -160,6 +182,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْقَوِيُّ",
     pronunciation: "Al-Qawiyy",
     meaning: "The Strong One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-qawi.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -167,6 +190,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْوَكِيلُ",
     pronunciation: "Al-Wakīl",
     meaning: "The Universal Trustee",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-wakeel.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -174,6 +198,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْحَقُّ",
     pronunciation: "Al-Ḥaqq",
     meaning: "The Embodiment of Truth",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-haqq.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -181,6 +206,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْجَامِعُ",
     pronunciation: "Al-Jāmiʿ",
     meaning: "The Assembler of Scattered Creations",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-jami.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -188,6 +214,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلصَّبُورُ",
     pronunciation: "Aṣ-Ṣabūr",
     meaning: "The Extensively Enduring One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/as-sabur.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -195,6 +222,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلرَّشِيدُ",
     pronunciation: "Ar-Rashīd",
     meaning: "The Guide to Path of Rectitude",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/ar-rashid.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -202,6 +230,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْوَارِثُ",
     pronunciation: "Al-Wāriṯ",
     meaning: "The Eternal Inheritor",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-warith.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -209,6 +238,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْبَاقِي",
     pronunciation: "Al-Bāqī",
     meaning: "The Ever Surviving One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-baqi.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -216,6 +246,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْبَدِيعُ",
     pronunciation: "Al-Badīʿ",
     meaning: "The Unique One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-badi.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -223,6 +254,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْهَادِي",
     pronunciation: "Al-Hādī",
     meaning: "The Provider of Guidance",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-hadi.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -230,6 +262,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلنُّورُ",
     pronunciation: "An-Nūr",
     meaning: "The Prime Light",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/an-nur.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -237,6 +270,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلنَّافِعُ",
     pronunciation: "An-Nāfiʿ",
     meaning: "The Bestower of Benefits",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/an-nafi.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -244,6 +278,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلضَّارُّ",
     pronunciation: "Aḍ-Ḍārr",
     meaning: "The Distressor",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/ad-darr.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -251,6 +286,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمَانِعُ",
     pronunciation: "Al-Māniʿ",
     meaning: "The Preventer",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-mani.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -258,6 +294,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمُغْنِيُ",
     pronunciation: "Al-Mughnī",
     meaning: "The Enricher",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-mughni.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -265,6 +302,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْغَنِيُّ",
     pronunciation: "Al-Ghaniyy",
     meaning: "The Self-Sufficient One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-ghaniyy.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -272,6 +310,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلشَّهِيدُ",
     pronunciation: "As-Shahīd",
     meaning: "The All Observing Witness",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/ash-shahid.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -279,6 +318,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمُقْسِطُ",
     pronunciation: "Al-Muqsiṭ",
     meaning: "The Just One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-muqsit.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -286,6 +326,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ذُو ٱلْجَلَالِ وَٱلْإِكْرَامِ",
     pronunciation: "Dhū al-Jalāli wa’l-Ikrām",
     meaning: "The Possessor of Majesty and Honour",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/dhul-jalali-wal-ikram.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -293,6 +334,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "مَالِكُ ٱلْمُلْكِ",
     pronunciation: "Mālik al-Mulk",
     meaning: "The Eternal Possessor of Sovereignty",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/malikul mulk.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -300,6 +342,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلرَّءُوفُ",
     pronunciation: "Ar-Raʾūf",
     meaning: "The Benign One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/ar-rauf.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -307,6 +350,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْعَفُوُّ",
     pronunciation: "Al-ʿAfūw",
     meaning: "The Supreme Pardoner",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-afuw.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -314,6 +358,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمُنْتَقِمُ",
     pronunciation: "Al-Muntaqim",
     meaning: "The Retaliator",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-muntaqim.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -321,6 +366,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلتَّوَابُ",
     pronunciation: "At-Tawwāb",
     meaning: "The Ever-Acceptor of Repentance",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/at-tawwab.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -328,6 +374,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْبَرُّ",
     pronunciation: "Al-Barr",
     meaning: "The Fountain-Head of Truth",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-barr.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -335,6 +382,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمُتَعَالِي",
     pronunciation: "Al-Mutaʿālī",
     meaning: "The Extremely Exalted One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-muta-ali.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -342,6 +390,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْوَالِي",
     pronunciation: "Al-Wālī",
     meaning: "The Holder of Supreme Authority",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-wali.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -349,6 +398,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْبَاطِنُ",
     pronunciation: "Al-Bāṭin",
     meaning: "The Imperceptible",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-batin.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -356,6 +406,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمُصَوِّرُ",
     pronunciation: "Al-Muṣawwir",
     meaning: "The Flawless Shaper",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-musawwir.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -363,6 +414,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمُذِلُّ",
     pronunciation: "Al-Mudhill",
     meaning: "The Abaser",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-mudhill.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -370,6 +422,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمُعِزُّ",
     pronunciation: "Al-Muʿizz",
     meaning: "The Honourer-Bestower",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-muizz.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -377,6 +430,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلرَّافِعُ",
     pronunciation: "Ar-Rāfiʿ",
     meaning: "The Elevating One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/ar-rafi.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -384,6 +438,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْخَافِضُ",
     pronunciation: "Al-Khāfiḍ",
     meaning: "The Reducer",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-khafid.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -391,6 +446,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْبَاسِطُ",
     pronunciation: "Al-Bāsiṭ",
     meaning: "The Extender",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-basit.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -398,6 +454,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْقَابِضُ",
     pronunciation: "Al-Qābiḍ",
     meaning: "The Restricting One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-qabid.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -405,6 +462,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْعَلِيمُ",
     pronunciation: "Al-ʿAlīm",
     meaning: "The All-Knowing One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-alim.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -412,6 +470,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْفَتَّاحُ",
     pronunciation: "Al-Fattāḥ",
     meaning: "The Opener",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-fattah.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -419,6 +478,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلرَّزَّاقُ",
     pronunciation: "Ar-Razzāq",
     meaning: "The Total Provider",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/ar-razzaq.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -426,6 +486,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْوَهَّابُ",
     pronunciation: "Al-Wahhāb",
     meaning: "The Supreme Bestower",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-wahhab.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -433,6 +494,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْقَهَّارُ",
     pronunciation: "Al-Qahhār",
     meaning: "The All-Prevailing One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-qahhar.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -440,6 +502,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْغَفَّارُ",
     pronunciation: "Al-Ghaffār",
     meaning: "The Great Forgiver",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-ghaffar.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -447,6 +510,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلسَّمِيعُ",
     pronunciation: "As-Samīʿ",
     meaning: "The All-Hearer",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/as-sami.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -454,6 +518,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْبَارِئُ",
     pronunciation: "Al-Bāriʾ",
     meaning: "The Evolver / The Maker",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-bari.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -461,6 +526,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْخَٰلِقُ",
     pronunciation: "Al-Khāliq",
     meaning: "The Creator",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-khaliq.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -468,6 +534,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمُتَكَبِّرُ",
     pronunciation: "Al-Mutakabbir",
     meaning: "The Dominant One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-mutakabbir.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -475,6 +542,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْجَبَّارُ",
     pronunciation: "Al-Jabbār",
     meaning: "The All Compelling",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-jabbar.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -482,6 +550,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْعَزِيزُ",
     pronunciation: "Al-‘Azīz",
     meaning: "The Mighty One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-aziz.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -489,6 +558,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمُهَيْمِنُ",
     pronunciation: "Al-Muhaymin",
     meaning: "The Guardian",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-muhaymin.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -496,6 +566,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمُؤْمِنُ",
     pronunciation: "Al-Mu’min",
     meaning: "The Infuser of Faith",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-mumin.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -503,6 +574,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلسَّلَامُ",
     pronunciation: "As-Salām",
     meaning: "The Giver of Peace",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/as-salam.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -510,6 +582,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْقُدُّوسُ",
     pronunciation: "Al-Quddūs",
     meaning: "The Most Sacred / The Most Holy",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-qaddus.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -517,6 +590,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمَلِكُ",
     pronunciation: "Al-Malik",
     meaning: "The King",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-malik.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -524,6 +598,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلرَّحِيمُ",
     pronunciation: "Ar-Raḥīm",
     meaning: "The Merciful",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/ar-raheem.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -531,6 +606,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْحَفِيظُ",
     pronunciation: "Al-Ḥafīẓ",
     meaning: "The Guarding One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-hafiz.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -538,6 +614,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْبَاعِثُ",
     pronunciation: "Al-Bāʿith",
     meaning: "The Infuser of New Life ",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-baith.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -545,6 +622,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمَجِيدُ",
     pronunciation: "Al-Majīd",
     meaning: "The Glorious One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-majid.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -552,6 +630,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْوَدُودُ",
     pronunciation: "Al-Wadūd",
     meaning: "The Loving One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-wadud.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -559,6 +638,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْحَكِيمُ",
     pronunciation: "Al-Ḥakīm",
     meaning: "The Wise One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-hakim.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -566,6 +646,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْوَاسِعُ",
     pronunciation: "Al-Wāsiʿ",
     meaning: "The All-Pervading One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-wasi.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -573,6 +654,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمُجِيبُ",
     pronunciation: "Al-Mujīb",
     meaning: "The Responding One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-mujib.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -580,6 +662,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلرَّقِيبُ",
     pronunciation: "Ar-Raqīb",
     meaning: "The Watchful One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/ar-raqib.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -587,6 +670,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْكَرِيمُ",
     pronunciation: "Al-Karīm",
     meaning: "The Bountiful One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-karim.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -594,6 +678,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْجَلِيلُ",
     pronunciation: "Al-Jalīl",
     meaning: "The Majestic One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-jalil.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -601,6 +686,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْحَسِيبُ",
     pronunciation: "Al-Ḥasīb",
     meaning: "The Reckoning One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-hasib.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -608,6 +694,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْمُقِيتُ",
     pronunciation: "Al-Muqīt",
     meaning: "The Sustaining One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-muqit.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -615,6 +702,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلرَّحْمَٰنُ",
     pronunciation: "Ar-Raḥmān",
     meaning: "The Beneficent",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/ar-rahman.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -622,6 +710,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْكَبِيرُ",
     pronunciation: "Al-Kabīr",
     meaning: "The Great One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-kabir.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -629,6 +718,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْعَلِيُّ",
     pronunciation: "Al-ʿAlī",
     meaning: "The Sublime One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-ali.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -636,6 +726,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلشَّكُورُ",
     pronunciation: "Ash-Shakūr",
     meaning: "The Acknowledging One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/ash-shakur.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -643,6 +734,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْغَفُورُ",
     pronunciation: "Al-Ghafūr",
     meaning: "The All-Forgiving",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-ghafur.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -650,6 +742,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْعَظِيمُ",
     pronunciation: "Al-ʿAẓīm",
     meaning: "The Magnificent One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-azeem.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -657,6 +750,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْحَلِيمُ",
     pronunciation: "Al-Ḥalīm",
     meaning: "The Clement One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-halim.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -664,6 +758,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْخَبِيرُ",
     pronunciation: "Al-Khabīr",
     meaning: "The All-Aware One",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-khabir.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -671,6 +766,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱللَّطِيفُ",
     pronunciation: "Al-Laṭīf",
     meaning: "The Knower of Subtleties",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-latif.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -678,6 +774,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْعَدْلُ",
     pronunciation: "Al-‘Adl",
     meaning: "The Embodiment of Justice",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-adl.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -685,6 +782,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْحَكَمُ",
     pronunciation: "Al-Ḥakam",
     meaning: "The Impartial Judge",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-hakam.mp3",
     isSaved: false,
   ),
   AllahName(
@@ -692,6 +790,7 @@ final List<AllahName> staticAllahNames = [
     arabic: "ٱلْبَصِيرُ",
     pronunciation: "Al-Baṣīr",
     meaning: "The All-Seeing",
+    file: "https://tjanatillsamman.smtsigma.com/uploads/audio/al-basir.mp3",
     isSaved: false,
   ),
 ];

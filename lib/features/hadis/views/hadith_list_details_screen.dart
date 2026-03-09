@@ -158,6 +158,7 @@ class _HadithListDetailsScreenState extends State<HadithListDetailsScreen> {
                     return HadithCard(
                       hadith: hadith,
                       bookName: widget.bookName,
+                      bookSlug: widget.slug,
                       chapterNum: widget.chapterNum,
                     );
                   },
@@ -194,12 +195,14 @@ class _HadithListDetailsScreenState extends State<HadithListDetailsScreen> {
 class HadithCard extends StatelessWidget {
   final Hadith hadith;
   final String bookName;
+  final String bookSlug;
   final String chapterNum;
 
   const HadithCard({
     super.key,
     required this.hadith,
     required this.bookName,
+    required this.bookSlug,
     required this.chapterNum,
   });
 
@@ -253,7 +256,7 @@ class HadithCard extends StatelessWidget {
                 onTap: () {
                   HadithController.instance.toggleSaveHadith(
                     hadithText: hadith.hadith,
-                    book: bookName,
+                    book: bookSlug,
                     chapterNo: chapterNum,
                     hadithNo: hadith.number,
                     currentlySaved: hadith.isSaved,
@@ -292,6 +295,7 @@ class HadithCard extends StatelessWidget {
                       hadithNumber: hadith.number,
                       heading: hadith.heading,
                       bookName: bookName,
+                      bookSlug: bookSlug,
                       chapterNum: chapterNum,
                     ),
                   );

@@ -14,6 +14,7 @@ import 'package:maroofkhan8/core/utils/localization_utils.dart';
 class HadishTafsirDetailsScreen extends StatefulWidget {
   final String hadithText;
   final String bookName;
+  final String bookSlug;
   final String chapterNum;
   final String hadithNumber;
   final String? heading;
@@ -22,6 +23,7 @@ class HadishTafsirDetailsScreen extends StatefulWidget {
     super.key,
     required this.hadithText,
     required this.bookName,
+    required this.bookSlug,
     required this.chapterNum,
     required this.hadithNumber,
     this.heading,
@@ -46,7 +48,7 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
     HadithController.instance.updateLastReadHadith(
       LastReadHadith(
         hadith: widget.hadithText,
-        book: widget.bookName,
+        book: widget.bookSlug,
         chapterNo: widget.chapterNum,
         hadithNo: widget.hadithNumber,
       ),
@@ -305,7 +307,7 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _actionIcon(Icons.headphones_outlined, tr("listen")),
+                    // _actionIcon(Icons.headphones_outlined, tr("listen")),
                     _actionIcon(
                       Icons.auto_awesome_outlined,
                       tr("ai_explanation"),

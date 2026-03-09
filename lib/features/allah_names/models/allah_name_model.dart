@@ -3,6 +3,7 @@ class AllahName {
   final String arabic;
   final String pronunciation;
   final String meaning;
+  final String file;
   final bool isSaved;
 
   AllahName({
@@ -10,6 +11,7 @@ class AllahName {
     required this.arabic,
     required this.pronunciation,
     required this.meaning,
+    required this.file,
     required this.isSaved,
   });
 
@@ -19,6 +21,7 @@ class AllahName {
       arabic: json['arabic'] ?? '',
       pronunciation: json['pronunciation'] ?? '',
       meaning: json['meaning'] ?? '',
+      file: json['file'] ?? '',
       isSaved: json['isSaved'] ?? false,
     );
   }
