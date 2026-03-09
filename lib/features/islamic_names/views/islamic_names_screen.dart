@@ -10,9 +10,6 @@ import 'package:maroofkhan8/features/islamic_names/views/boy_names_screen.dart';
 import '../controller/islamic_name_controller.dart';
 
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
-const Color kBackground = Color(0xFFFBFBFD);
-const Color kTextDark = Color(0xFF2E2E2E);
-const Color kTextGrey = Color(0xFF757575);
 
 class IslamicNamesScreen extends StatelessWidget {
   const IslamicNamesScreen({super.key});
@@ -20,37 +17,33 @@ class IslamicNamesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Get.put(IslamicNameController());
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFFBFBFD),
       appBar: AppBar(
         title: HeaderSection(title: tr("islamic_names")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: isDark ? Colors.white70 : Colors.grey,
+            size: sw * 0.05,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      // appBar: AppBar(
-      //   backgroundColor: Colors.white,
-      //   elevation: 0,
-      //   leading: IconButton(
-      //     icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
-      //     onPressed: () => Navigator.pop(context),
-      //   ),
-      //   centerTitle: true,
-      //   title: Text(
-      //     "Islamic Name",
-      //     style: GoogleFonts.ebGaramond(
-      //       color: Colors.black,
-      //       fontWeight: FontWeight.bold,
-      //       fontSize: 22,
-      //     ),
-      //   ),
-      // ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        padding: EdgeInsets.symmetric(
+          horizontal: sw * 0.05,
+          vertical: sh * 0.03,
+        ),
         child: Column(
           children: [
             // Top Cards Row
@@ -58,7 +51,7 @@ class IslamicNamesScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: _genderCard(
-                    // "Islamic girls' names with meanings",
+                    context,
                     tr("girls_names_with_meanings"),
                     Icons.face_outlined,
                     hasBorder: false,
@@ -67,10 +60,10 @@ class IslamicNamesScreen extends StatelessWidget {
                     },
                   ),
                 ),
-                const SizedBox(width: 15),
+                SizedBox(width: sw * 0.04),
                 Expanded(
                   child: _genderCard(
-                    // "Islamic Boys' names with meanings",
+                    context,
                     tr("boys_names_with_meanings"),
                     Icons.face_6_outlined,
                     hasBorder: false,
@@ -81,20 +74,20 @@ class IslamicNamesScreen extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 30),
+            SizedBox(height: sh * 0.035),
 
             // Horizontal Info Cards
             _infoCard(
-              // "The Importance of Giving a Beautiful Name to a Child in Islam",
+              context,
               tr("importance_of_name"),
               imagePath: "assets/icons/children.png",
               onTap: () {
                 Get.to(() => const NameImportanceScreen());
               },
             ),
-            const SizedBox(height: 15),
+            SizedBox(height: sh * 0.018),
             _infoCard(
-              // "Islamic Guidelines for Choosing a Name",
+              context,
               tr("choosing_name_guidelines"),
               imagePath: "assets/icons/baby.png",
               onTap: () {
@@ -108,26 +101,33 @@ class IslamicNamesScreen extends StatelessWidget {
   }
 
   Widget _genderCard(
+    BuildContext context,
     String text,
     IconData icon, {
     required bool hasBorder,
     VoidCallback? onTap,
   }) {
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 160,
-        padding: const EdgeInsets.all(12),
+        height: sh * 0.2,
+        padding: EdgeInsets.all(sw * 0.03),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: hasBorder ? kPrimaryBrown : Colors.grey.shade200,
+            color: hasBorder
+                ? kPrimaryBrown
+                : (isDark ? Colors.grey.shade900 : Colors.grey.shade200),
             width: 1.5,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.02),
+              color: Colors.black.withOpacity(isDark ? 0.3 : 0.02),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -138,16 +138,20 @@ class IslamicNamesScreen extends StatelessWidget {
           children: [
             Icon(
               icon,
-              size: 50,
-              color: const Color.fromARGB(255, 113, 113, 113),
+              size: sw * 0.12,
+              color: isDark
+                  ? kPrimaryBrown
+                  : const Color.fromARGB(255, 113, 113, 113),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: sh * 0.015),
             Text(
               text,
               textAlign: TextAlign.center,
               style: GoogleFonts.ebGaramond(
-                fontSize: 14,
-                color: const Color.fromARGB(255, 0, 0, 0),
+                fontSize: sw * 0.035,
+                color: isDark
+                    ? Colors.white
+                    : const Color.fromARGB(255, 0, 0, 0),
                 height: 1.3,
               ),
             ),
@@ -158,22 +162,30 @@ class IslamicNamesScreen extends StatelessWidget {
   }
 
   Widget _infoCard(
+    BuildContext context,
     String text, {
     IconData? icon,
     String? imagePath,
     VoidCallback? onTap,
   }) {
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        padding: EdgeInsets.symmetric(
+          horizontal: sw * 0.04,
+          vertical: sh * 0.025,
+        ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.02),
+              color: Colors.black.withOpacity(isDark ? 0.3 : 0.02),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -182,32 +194,36 @@ class IslamicNamesScreen extends StatelessWidget {
         child: Row(
           children: [
             if (imagePath != null)
-              Image.asset(imagePath, width: 45, height: 45)
+              Image.asset(imagePath, width: sw * 0.12, height: sw * 0.12)
             else if (icon != null)
-              Icon(icon, size: 45, color: Colors.grey.shade400),
-            const SizedBox(width: 16),
+              Icon(
+                icon,
+                size: sw * 0.12,
+                color: isDark ? Colors.white38 : Colors.grey.shade400,
+              ),
+            SizedBox(width: sw * 0.04),
             Expanded(
               child: Text(
                 text,
                 style: GoogleFonts.ebGaramond(
-                  fontSize: 15,
+                  fontSize: sw * 0.038,
                   fontWeight: FontWeight.bold,
-                  color: kTextDark,
+                  color: isDark ? Colors.white : const Color(0xFF2E2E2E),
                   height: 1.3,
                 ),
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: sw * 0.025),
             Container(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(color: kPrimaryBrown, width: 1.5),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.arrow_forward_rounded,
                 color: kPrimaryBrown,
-                size: 14,
+                size: sw * 0.035,
               ),
             ),
           ],

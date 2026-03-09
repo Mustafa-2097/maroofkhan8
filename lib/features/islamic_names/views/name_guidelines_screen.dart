@@ -3,79 +3,89 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
-const Color kBackground = Color(0xFFFBFBFD);
-const Color kTextDark = Color(0xFF2E2E2E);
-const Color kTextGrey = Color(0xFF757575);
 
 class NameGuidelinesScreen extends StatelessWidget {
   const NameGuidelinesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFFBFBFD),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: isDark ? Colors.white70 : Colors.grey,
+            size: sw * 0.05,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
         title: Text(
-          // "Islamic Name",
           tr("islamic_names"),
           style: GoogleFonts.ebGaramond(
-            color: Colors.black,
+            color: isDark ? Colors.white : Colors.black,
             fontWeight: FontWeight.bold,
-            fontSize: 22,
+            fontSize: sw * 0.055,
           ),
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        padding: EdgeInsets.symmetric(
+          horizontal: sw * 0.05,
+          vertical: sh * 0.03,
+        ),
         child: Column(
           children: [
             // Title Header Card
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(sw * 0.04),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade100),
+                border: Border.all(
+                  color: isDark ? Colors.grey.shade900 : Colors.grey.shade100,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.02),
+                    color: Colors.black.withOpacity(isDark ? 0.3 : 0.02),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
                 ],
               ),
               child: Text(
-                // "Islamic Guidelines for Choosing a Name",
                 tr("choosing_name_guidelines"),
                 textAlign: TextAlign.center,
                 style: GoogleFonts.ebGaramond(
-                  fontSize: 20,
+                  fontSize: sw * 0.05,
                   fontWeight: FontWeight.bold,
-                  color: kTextDark,
+                  color: isDark ? Colors.white : const Color(0xFF2E2E2E),
                   height: 1.2,
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: sh * 0.03),
 
             // Content Card
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(sw * 0.05),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.02),
+                    color: Colors.black.withOpacity(isDark ? 0.3 : 0.02),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -84,29 +94,17 @@ class NameGuidelinesScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _paragraph(
-                    // "Islam provides clear guidance when choosing a name for a child. Parents are encouraged to select names that have good and positive meanings, as names reflect a person's identity and character.",
-                    tr("guidelines_paragraph_1"),
-                  ),
+                  _paragraph(context, tr("guidelines_paragraph_1")),
                   const SizedBox(height: 12),
-                  // _paragraph("Islamic guidelines for naming include:"),
-                  _paragraph(tr("guidelines_subtitle")),
+                  _paragraph(context, tr("guidelines_subtitle")),
                   const SizedBox(height: 8),
-                  // _bulletPoint("Choosing names with good and noble meanings"),
-                  _bulletPoint(tr("guideline_1")),
-                  // _bulletPoint("Avoiding names with bad, offensive, or negative meanings"),
-                  _bulletPoint(tr("guideline_2")),
-                  // _bulletPoint("Avoiding names that imply shirk (associating partners with Allah)"),
-                  _bulletPoint(tr("guideline_3")),
-                  // _bulletPoint("Preferring names of Prophets, companions, pious people, and righteous women"),
-                  _bulletPoint(tr("guideline_4")),
-                  // _bulletPoint("Choosing names that are easy to pronounce and respectful"),
-                  _bulletPoint(tr("guideline_5")),
+                  _bulletPoint(context, tr("guideline_1")),
+                  _bulletPoint(context, tr("guideline_2")),
+                  _bulletPoint(context, tr("guideline_3")),
+                  _bulletPoint(context, tr("guideline_4")),
+                  _bulletPoint(context, tr("guideline_5")),
                   const SizedBox(height: 16),
-                  _paragraph(
-                    // "The Prophet Muhammad (ﷺ) encouraged giving good names and sometimes changed names that had bad meanings. Therefore, selecting a beautiful and meaningful name is part of Islamic etiquette and a responsibility of parents.",
-                    tr("guidelines_paragraph_2"),
-                  ),
+                  _paragraph(context, tr("guidelines_paragraph_2")),
                 ],
               ),
             ),
@@ -116,19 +114,23 @@ class NameGuidelinesScreen extends StatelessWidget {
     );
   }
 
-  Widget _paragraph(String text) {
+  Widget _paragraph(BuildContext context, String text) {
+    final sw = MediaQuery.of(context).size.width;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Text(
       text,
       style: GoogleFonts.ebGaramond(
-        fontSize: 16,
-        color: kTextDark,
+        fontSize: sw * 0.04,
+        color: isDark ? Colors.grey[300] : const Color(0xFF2E2E2E),
         height: 1.4,
       ),
       textAlign: TextAlign.justify,
     );
   }
 
-  Widget _bulletPoint(String text) {
+  Widget _bulletPoint(BuildContext context, String text) {
+    final sw = MediaQuery.of(context).size.width;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Row(
@@ -137,8 +139,8 @@ class NameGuidelinesScreen extends StatelessWidget {
           Text(
             "• ",
             style: TextStyle(
-              fontSize: 16,
-              color: kTextDark,
+              fontSize: sw * 0.04,
+              color: isDark ? Colors.white : const Color(0xFF2E2E2E),
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -146,8 +148,8 @@ class NameGuidelinesScreen extends StatelessWidget {
             child: Text(
               text,
               style: GoogleFonts.ebGaramond(
-                fontSize: 16,
-                color: kTextDark,
+                fontSize: sw * 0.04,
+                color: isDark ? Colors.grey[300] : const Color(0xFF2E2E2E),
                 height: 1.4,
               ),
             ),

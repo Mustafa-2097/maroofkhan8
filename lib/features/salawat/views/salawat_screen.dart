@@ -26,93 +26,116 @@ class SalawatListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(SalawatController());
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark ? const Color(0xFF121212) : kBackground,
       appBar: AppBar(
-        // title: const HeaderSection(title: "Salawat"),
         title: HeaderSection(title: tr("salawat")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: isDark ? Colors.white70 : Colors.grey,
+            size: 20,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      // appBar: _buildAppBar(context),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: sw * 0.05),
         child: Column(
           children: [
-            const SizedBox(height: 10),
+            SizedBox(height: sh * 0.015),
             // Search Bar & Bookmark Icon
             Row(
               children: [
                 Expanded(
                   child: Container(
-                    height: 45,
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    height: sh * 0.055,
+                    padding: EdgeInsets.symmetric(horizontal: sw * 0.04),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.grey.shade200),
+                      border: Border.all(
+                        color: isDark
+                            ? Colors.grey.shade800
+                            : Colors.grey.shade200,
+                      ),
                     ),
                     child: TextField(
                       onChanged: (value) =>
                           controller.searchQuery.value = value,
+                      style: TextStyle(
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
                       decoration: InputDecoration(
-                        // hintText: "Search",
                         hintText: tr("search_hint"),
-                        hintStyle: const TextStyle(
-                          fontSize: 14,
+                        hintStyle: TextStyle(
+                          fontSize: sw * 0.035,
                           color: Colors.grey,
                         ),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.only(bottom: 10),
+                        contentPadding: EdgeInsets.only(bottom: sh * 0.015),
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 10),
+                SizedBox(width: sw * 0.03),
                 GestureDetector(
                   onTap: () => Get.to(() => const SavedSalawatScreen()),
                   child: Container(
-                    height: 45,
-                    width: 45,
+                    height: sh * 0.055,
+                    width: sh * 0.055,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.grey.shade200),
-                      color: Colors.white,
+                      border: Border.all(
+                        color: isDark
+                            ? Colors.grey.shade800
+                            : Colors.grey.shade200,
+                      ),
+                      color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.bookmark_border,
-                      color: Colors.grey,
-                      size: 20,
+                      color: isDark ? Colors.white70 : Colors.grey,
+                      size: sw * 0.05,
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: sh * 0.025),
 
             // List Items
             Expanded(
               child: Obx(() {
                 if (controller.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(
+                    child: CircularProgressIndicator(color: kPrimaryBrown),
+                  );
                 }
                 if (controller.filteredSalawat.isEmpty) {
-                  // return const Center(child: Text("No items found"));
-                  return Center(child: Text(tr("no_items_found")));
+                  return Center(
+                    child: Text(
+                      tr("no_items_found"),
+                      style: TextStyle(
+                        color: isDark ? Colors.grey[400] : kTextGrey,
+                      ),
+                    ),
+                  );
                 }
 
                 return ListView.builder(
+                  padding: EdgeInsets.only(bottom: sh * 0.02),
                   itemCount: controller.filteredSalawat.length,
                   itemBuilder: (context, index) {
                     final salawat = controller.filteredSalawat[index];
                     return _SalawatListItem(
-                      // title: salawat.title ?? "Untitled",
                       title: tr(salawat.title ?? "untitled"),
                       arabic: salawat.arabic,
                       isSaved: salawat.isSaved ?? false,
@@ -149,17 +172,24 @@ class _SalawatListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 15),
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+        margin: EdgeInsets.only(bottom: sh * 0.018),
+        padding: EdgeInsets.symmetric(
+          vertical: sh * 0.025,
+          horizontal: sw * 0.04,
+        ),
         decoration: BoxDecoration(
-          color: kCardColor,
+          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
+              color: Colors.black.withOpacity(isDark ? 0.2 : 0.04),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -173,13 +203,13 @@ class _SalawatListItem extends StatelessWidget {
                 border: Border.all(color: kPrimaryBrown, width: 1.5),
                 borderRadius: BorderRadius.circular(4),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.menu_book_outlined,
                 color: kPrimaryBrown,
-                size: 16,
+                size: sw * 0.04,
               ),
             ),
-            const SizedBox(width: 15),
+            SizedBox(width: sw * 0.04),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,9 +217,9 @@ class _SalawatListItem extends StatelessWidget {
                   Text(
                     title,
                     style: GoogleFonts.playfairDisplay(
-                      fontSize: 14,
+                      fontSize: sw * 0.038,
                       fontWeight: FontWeight.w600,
-                      color: kTextDark,
+                      color: isDark ? Colors.white : kTextDark,
                     ),
                   ),
                   if (arabic != null) ...[
@@ -198,25 +228,28 @@ class _SalawatListItem extends StatelessWidget {
                       arabic!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.amiri(fontSize: 12, color: kTextGrey),
+                      style: GoogleFonts.amiri(
+                        fontSize: sw * 0.035,
+                        color: isDark ? Colors.grey[400] : kTextGrey,
+                      ),
                     ),
                   ],
                 ],
               ),
             ),
             if (isSaved) ...[
-              const SizedBox(width: 10),
-              const Icon(
+              SizedBox(width: sw * 0.02),
+              Icon(
                 Icons.bookmark,
-                color: Color.fromARGB(255, 146, 35, 27),
-                size: 16,
+                color: const Color.fromARGB(255, 146, 35, 27),
+                size: sw * 0.045,
               ),
             ],
-            const SizedBox(width: 10),
+            SizedBox(width: sw * 0.02),
             Icon(
               Icons.arrow_circle_right_outlined,
-              color: kPrimaryBrown.withValues(alpha: 0.8),
-              size: 22,
+              color: kPrimaryBrown.withOpacity(0.8),
+              size: sw * 0.06,
             ),
           ],
         ),
@@ -259,11 +292,12 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
     if (currentSalawat.id != null) {
       final details = await controller.fetchSalawatDetails(currentSalawat.id!);
       if (details != null) {
-        setState(() {
-          currentSalawat = details;
-          isFullDataLoaded = true;
-        });
-        // Prepare again in case the file URL was only in the details
+        if (mounted) {
+          setState(() {
+            currentSalawat = details;
+            isFullDataLoaded = true;
+          });
+        }
         controller.prepareAudio(currentSalawat);
       }
     }
@@ -271,72 +305,70 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark ? const Color(0xFF121212) : kBackground,
       appBar: AppBar(
-        // title: const HeaderSection(title: "Salawat"),
         title: HeaderSection(title: tr("salawat")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: isDark ? Colors.white70 : Colors.grey,
+            size: 20,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      // appBar: _buildAppBar(context),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(sw * 0.05),
         child: Column(
           children: [
-            // Tabs
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              // children: [
-              //   _TabButton(text: "Salawat", isActive: true),
-              //   const SizedBox(width: 10),
-              //   _TabButton(text: "Translation", isActive: false),
-              //   const SizedBox(width: 10),
-              //   _TabButton(text: "Tafsir", isActive: false),
-              // ],
-            ),
-            const SizedBox(height: 20),
+            SizedBox(height: sh * 0.01),
 
             // Title Banner
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+              padding: EdgeInsets.symmetric(
+                vertical: sh * 0.02,
+                horizontal: sw * 0.03,
+              ),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(8),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.03),
+                    color: Colors.black.withOpacity(isDark ? 0.2 : 0.03),
                     blurRadius: 5,
                   ),
                 ],
               ),
               child: Text(
-                // currentSalawat.title ?? "Salawat",
                 tr(currentSalawat.title ?? "salawat"),
                 textAlign: TextAlign.center,
                 style: GoogleFonts.playfairDisplay(
-                  fontSize: 14,
+                  fontSize: sw * 0.045,
                   fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : Colors.black,
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: sh * 0.025),
 
             // Main Content Card
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(sw * 0.06),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(15),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.04),
+                    color: Colors.black.withOpacity(isDark ? 0.2 : 0.04),
                     blurRadius: 10,
                   ),
                 ],
@@ -362,36 +394,33 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                         onTap: () => controller.toggleBookmark(currentSalawat),
                         child: Icon(
                           isSaved ? Icons.bookmark : Icons.bookmark_border,
-                          size: 20,
+                          size: sw * 0.055,
                           color: isSaved
                               ? const Color.fromARGB(255, 146, 35, 27)
                               : Colors.grey,
-                        ), //
+                        ),
                       );
                     }),
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    // currentSalawat.arabic ?? "ARABIC CONTENT NOT AVAILABLE",
                     currentSalawat.arabic ?? tr("arabic_content_not_available"),
                     textAlign: TextAlign.center,
                     style: GoogleFonts.amiri(
-                      fontSize: 20,
+                      fontSize: sw * 0.065,
                       fontWeight: FontWeight.bold,
                       height: 1.8,
+                      color: isDark ? Colors.white : Colors.black,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: sh * 0.025),
                   Text(
-                    // currentSalawat.transliteration ??
-                    //     currentSalawat.pronunciation ??
-                    //     "PRONUNCIATION NOT AVAILABLE",
                     currentSalawat.transliteration ??
                         currentSalawat.pronunciation ??
                         tr("pronunciation_not_available"),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: kTextDark,
+                    style: TextStyle(
+                      fontSize: sw * 0.035,
+                      color: isDark ? Colors.grey[400] : kTextDark,
                       height: 1.5,
                     ),
                     textAlign: TextAlign.justify,
@@ -399,7 +428,7 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 25),
+            SizedBox(height: sh * 0.03),
 
             // Audio Player
             Obx(() {
@@ -418,33 +447,40 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
 
               return Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        formatDuration(currentPos),
-                        style: const TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: sw * 0.02),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          formatDuration(currentPos),
+                          style: TextStyle(
+                            fontSize: sw * 0.03,
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? Colors.grey[400] : Colors.black,
+                          ),
                         ),
-                      ),
-                      Text(
-                        formatDuration(totalPos),
-                        style: const TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
+                        Text(
+                          formatDuration(totalPos),
+                          style: TextStyle(
+                            fontSize: sw * 0.03,
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? Colors.grey[400] : Colors.black,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   SliderTheme(
                     data: SliderTheme.of(context).copyWith(
                       activeTrackColor: kPrimaryBrown,
-                      inactiveTrackColor: Colors.grey.shade300,
+                      inactiveTrackColor: isDark
+                          ? Colors.grey.shade800
+                          : Colors.grey.shade300,
                       thumbColor: kPrimaryBrown,
                       trackHeight: 3,
                       thumbShape: const RoundSliderThumbShape(
-                        enabledThumbRadius: 4,
+                        enabledThumbRadius: 6,
                       ),
                       overlayShape: SliderComponentShape.noOverlay,
                     ),
@@ -460,15 +496,15 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: sh * 0.02),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       IconButton(
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.skip_previous,
-                          size: 24,
-                          color: Colors.black54,
+                          size: sw * 0.07,
+                          color: isDark ? Colors.white70 : Colors.black54,
                         ),
                         onPressed: () {
                           final prev = controller.getPreviousSalawat(
@@ -484,14 +520,14 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                           }
                         },
                       ),
-                      const SizedBox(width: 30),
+                      SizedBox(width: sw * 0.08),
                       IconButton(
                         icon: Icon(
                           isPlaying
                               ? Icons.pause_circle_outline
                               : Icons.play_circle_outline,
-                          size: 36,
-                          color: Colors.black,
+                          size: sw * 0.12,
+                          color: isDark ? Colors.white : Colors.black,
                         ),
                         onPressed: () {
                           if (isPlaying) {
@@ -501,12 +537,12 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                           }
                         },
                       ),
-                      const SizedBox(width: 30),
+                      SizedBox(width: sw * 0.08),
                       IconButton(
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.skip_next,
-                          size: 24,
-                          color: Colors.black54,
+                          size: sw * 0.07,
+                          color: isDark ? Colors.white70 : Colors.black54,
                         ),
                         onPressed: () {
                           final next = controller.getNextSalawat(
@@ -527,32 +563,37 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                 ],
               );
             }),
-            const SizedBox(height: 25),
+            SizedBox(height: sh * 0.035),
 
             // Action Buttons
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+              padding: EdgeInsets.symmetric(
+                vertical: sh * 0.015,
+                horizontal: sw * 0.02,
+              ),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(30),
-                border: Border.all(color: kPrimaryBrown.withValues(alpha: 0.5)),
+                border: Border.all(color: kPrimaryBrown.withOpacity(0.5)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(isDark ? 0.2 : 0.03),
+                    blurRadius: 5,
+                  ),
+                ],
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _ActionButton(
-                    icon: Icons.headset,
-                    // label: "Listen",
-                    label: tr("listen"),
-                    isActive: true,
-                    onTap: () {
-                      // Call play logic if needed or just use current player
-                    },
-                  ),
+                  // _ActionButton(
+                  //   icon: Icons.headset,
+                  //   label: tr("listen"),
+                  //   isActive: true,
+                  //   onTap: () {},
+                  // ),
                   _VerticalDivider(),
                   _ActionButton(
                     icon: Icons.auto_awesome,
-                    // label: "AI Explanation",
                     label: tr("ai_explanation"),
                     isActive: false,
                     onTap: () {
@@ -562,7 +603,6 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                   _VerticalDivider(),
                   _ActionButton(
                     icon: Icons.share_outlined,
-                    // label: "Share",
                     label: tr("share"),
                     isActive: false,
                     onTap: () => controller.shareSalawat(currentSalawat),
@@ -570,7 +610,6 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                   _VerticalDivider(),
                   _ActionButton(
                     icon: Icons.download_outlined,
-                    // label: "Download",
                     label: tr("download"),
                     isActive: false,
                     onTap: () => controller.downloadSalawat(currentSalawat),
@@ -578,18 +617,18 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: sh * 0.03),
 
             // Meaning Card
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(sw * 0.05),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(15),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.04),
+                    color: Colors.black.withOpacity(isDark ? 0.2 : 0.04),
                     blurRadius: 10,
                   ),
                 ],
@@ -598,32 +637,28 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    // "Meaning:",
                     tr("meaning_colon"),
                     style: GoogleFonts.playfairDisplay(
-                      fontSize: 14,
+                      fontSize: sw * 0.04,
                       fontWeight: FontWeight.bold,
                       color: kPrimaryBrown,
                     ),
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 8),
                   Text(
-                    // currentSalawat.translation ??
-                    //     currentSalawat.meaning ??
-                    //     "MEANING NOT AVAILABLE",
                     currentSalawat.translation ??
                         currentSalawat.meaning ??
                         tr("meaning_not_available"),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      height: 1.4,
-                      color: kTextDark,
+                    style: TextStyle(
+                      fontSize: sw * 0.035,
+                      height: 1.5,
+                      color: isDark ? Colors.grey[300] : kTextDark,
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 30),
+            SizedBox(height: sh * 0.05),
           ],
         ),
       ),
@@ -648,19 +683,30 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sw = MediaQuery.of(context).size.width;
+
     return GestureDetector(
       onTap: onTap,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 18, color: isActive ? kPrimaryBrown : Colors.black),
+          Icon(
+            icon,
+            size: sw * 0.045,
+            color: isActive
+                ? kPrimaryBrown
+                : (isDark ? Colors.white70 : Colors.black),
+          ),
           const SizedBox(height: 4),
           Text(
             label,
             style: TextStyle(
-              fontSize: 10,
+              fontSize: sw * 0.025,
               fontWeight: FontWeight.bold,
-              color: isActive ? kPrimaryBrown : Colors.black,
+              color: isActive
+                  ? kPrimaryBrown
+                  : (isDark ? Colors.white70 : Colors.black),
             ),
           ),
         ],
@@ -672,40 +718,11 @@ class _ActionButton extends StatelessWidget {
 class _VerticalDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(height: 25, width: 1, color: Colors.grey.shade300);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      height: 25,
+      width: 1,
+      color: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+    );
   }
 }
-
-///////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////
-// AppBar _buildAppBar(BuildContext context) {
-//   return AppBar(
-//     backgroundColor: Colors.transparent,
-//     elevation: 0,
-//     leading: Padding(
-//       padding: const EdgeInsets.all(10.0),
-//       child: GestureDetector(
-//         onTap: () {
-//           if (Navigator.canPop(context)) Navigator.pop(context);
-//         },
-//         child: Container(
-//           decoration: BoxDecoration(
-//             border: Border.all(color: Colors.grey.shade300),
-//             borderRadius: BorderRadius.circular(8),
-//           ),
-//           child: const Icon(Icons.chevron_left, color: Colors.grey, size: 20),
-//         ),
-//       ),
-//     ),
-//     centerTitle: true,
-//     title: Text(
-//       "Salawat",
-//       style: GoogleFonts.playfairDisplay(
-//         color: Colors.black,
-//         fontWeight: FontWeight.bold,
-//         fontSize: 20,
-//       ),
-//     ),
-//   );
-// }

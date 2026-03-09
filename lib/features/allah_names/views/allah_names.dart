@@ -10,8 +10,6 @@ import 'package:maroofkhan8/core/utils/localization_utils.dart';
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
 const Color kDarkButton = Color(0xFF2E1C15);
-const Color kBackground = Color(0xFFF9F9FC);
-const Color kTextGrey = Color(0xFF757575);
 
 class NamesOfAllahScreen extends StatefulWidget {
   const NamesOfAllahScreen({super.key});
@@ -25,42 +23,56 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDark
+        ? const Color(0xFF121212)
+        : const Color(0xFFF9F9FC);
+
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 10),
+            SizedBox(height: sh * 0.012),
 
             // 1. Header
             HeaderWithLines(title: tr("names_99")),
-            const SizedBox(height: 20),
+            SizedBox(height: sh * 0.025),
 
             // 2. Search Bar
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: EdgeInsets.symmetric(horizontal: sw * 0.05),
               child: Row(
                 children: [
                   Expanded(
                     child: Container(
-                      height: 45,
+                      height: sh * 0.055,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.grey.shade300),
+                        border: Border.all(
+                          color: isDark
+                              ? Colors.grey.shade800
+                              : Colors.grey.shade300,
+                        ),
                       ),
                       child: TextField(
                         onChanged: controller.updateSearchQuery,
+                        style: TextStyle(
+                          color: isDark ? Colors.white : Colors.black,
+                        ),
                         decoration: InputDecoration(
-                          prefixIcon: const Icon(
+                          prefixIcon: Icon(
                             Icons.search,
                             color: Colors.grey,
-                            size: 20,
+                            size: sw * 0.05,
                           ),
                           hintText: "${tr("search")}...",
-                          hintStyle: const TextStyle(
+                          hintStyle: TextStyle(
                             color: Colors.grey,
-                            fontSize: 14,
+                            fontSize: sw * 0.035,
                           ),
                           border: InputBorder.none,
                           contentPadding: const EdgeInsets.only(top: 8),
@@ -68,41 +80,43 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: sw * 0.025),
                   GestureDetector(
                     onTap: () => Get.to(() => const SavedAllahNamesScreen()),
                     child: Container(
-                      height: 45,
-                      width: 45,
+                      height: sh * 0.055,
+                      width: sh * 0.055,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.grey.shade300),
+                        border: Border.all(
+                          color: isDark
+                              ? Colors.grey.shade800
+                              : Colors.grey.shade300,
+                        ),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.bookmark_border,
-                        color: Colors.grey,
-                        size: 20,
+                        color: isDark ? Colors.white70 : Colors.grey,
+                        size: sw * 0.05,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: sh * 0.025),
 
             // 3. Filter Tabs
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _filterButton(tr("all"), 0),
-                const SizedBox(width: 10),
-                // _filterButton("With Meaning", 1),
-                // const SizedBox(width: 10),
+                SizedBox(width: sw * 0.025),
                 _filterButton(tr("with_audio"), 2),
               ],
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: sh * 0.025),
 
             // 4. Grid of Names
             Expanded(
@@ -116,12 +130,18 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
                 final displayedNames = controller.filteredNamesList;
 
                 if (displayedNames.isEmpty) {
-                  return Center(child: Text(tr("no_names_found")));
+                  return Center(
+                    child: Text(
+                      tr("no_names_found"),
+                      style: TextStyle(
+                        color: isDark ? Colors.grey[400] : Colors.black,
+                      ),
+                    ),
+                  );
                 }
 
                 if (controller.selectedFilterIndex.value == 2) {
                   final audioIdx = controller.currentAudioIndex.value;
-                  // Guard against index out of bounds
                   final safeIdx = audioIdx < displayedNames.length
                       ? audioIdx
                       : 0;
@@ -132,15 +152,15 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
                 }
 
                 return GridView.builder(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: sw * 0.05,
                     vertical: 10,
                   ),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     childAspectRatio: 0.85,
-                    crossAxisSpacing: 15,
-                    mainAxisSpacing: 15,
+                    crossAxisSpacing: sw * 0.04,
+                    mainAxisSpacing: sh * 0.018,
                   ),
                   itemCount: displayedNames.length,
                   itemBuilder: (context, index) {
@@ -165,6 +185,9 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
 
   Widget _filterButton(String text, int index) {
     return Obx(() {
+      final sw = MediaQuery.of(context).size.width;
+      final sh = MediaQuery.of(context).size.height;
+      final isDark = Theme.of(context).brightness == Brightness.dark;
       bool isActive = controller.selectedFilterIndex.value == index;
       return GestureDetector(
         onTap: () {
@@ -172,16 +195,24 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
           controller.updateFilterIndex(index);
         },
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          padding: EdgeInsets.symmetric(
+            horizontal: sw * 0.05,
+            vertical: sh * 0.01,
+          ),
           decoration: BoxDecoration(
-            color: isActive ? kPrimaryBrown : kDarkButton,
+            color: isActive
+                ? kPrimaryBrown
+                : (isDark ? const Color(0xFF1E1E1E) : kDarkButton),
             borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: isDark ? Colors.grey.shade800 : Colors.transparent,
+            ),
           ),
           child: Text(
             text,
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
-              fontSize: 12,
+              fontSize: sw * 0.03,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -204,21 +235,25 @@ class AudioPlayerSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(sw * 0.05),
       child: Column(
         children: [
-          const SizedBox(height: 10),
+          SizedBox(height: sh * 0.012),
           // Large White Card
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(20),
+            padding: EdgeInsets.all(sw * 0.05),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
               borderRadius: BorderRadius.circular(25),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
+                  color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
                   blurRadius: 15,
                   offset: const Offset(0, 5),
                 ),
@@ -230,44 +265,47 @@ class AudioPlayerSection extends StatelessWidget {
                   alignment: Alignment.topRight,
                   child: Icon(
                     Icons.volume_up_outlined,
-                    color: Colors.grey.shade400,
-                    size: 24,
+                    color: isDark ? Colors.white38 : Colors.grey.shade400,
+                    size: sw * 0.06,
                   ),
                 ),
                 Text(
                   data.arabic,
                   style: GoogleFonts.amiri(
-                    fontSize: 48,
+                    fontSize: sw * 0.12,
                     fontWeight: FontWeight.bold,
                     height: 1.2,
+                    color: isDark ? Colors.white : Colors.black,
                   ),
                 ),
-                const SizedBox(height: 15),
+                SizedBox(height: sh * 0.018),
                 Text(
                   data.pronunciation,
                   style: GoogleFonts.playfairDisplay(
-                    fontSize: 26,
+                    fontSize: sw * 0.065,
                     fontWeight: FontWeight.bold,
-                    color: const Color(0xFF2E2E2E),
+                    color: isDark ? Colors.white : const Color(0xFF2E2E2E),
                   ),
                 ),
                 Text(
                   data.meaning,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.playfairDisplay(
-                    fontSize: 18,
-                    color: Colors.grey.shade400,
+                    fontSize: sw * 0.045,
+                    color: isDark ? Colors.grey[400] : Colors.grey.shade400,
                   ),
                 ),
-                const SizedBox(height: 30),
+                SizedBox(height: sh * 0.035),
                 Align(
                   alignment: Alignment.bottomRight,
                   child: GestureDetector(
                     onTap: () => controller.toggleSaveName(data),
                     child: Icon(
                       data.isSaved ? Icons.bookmark : Icons.bookmark_border,
-                      size: 26,
-                      color: data.isSaved ? kPrimaryBrown : Colors.black87,
+                      size: sw * 0.065,
+                      color: data.isSaved
+                          ? kPrimaryBrown
+                          : (isDark ? Colors.white70 : Colors.black87),
                     ),
                   ),
                 ),
@@ -275,11 +313,11 @@ class AudioPlayerSection extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 50),
+          SizedBox(height: sh * 0.06),
 
           // Slider
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+            padding: EdgeInsets.symmetric(horizontal: sw * 0.025),
             child: Obx(() {
               bool isCurrent = controller.currentPlayingId.value == data.id;
               double currentPos = isCurrent
@@ -304,9 +342,9 @@ class AudioPlayerSection extends StatelessWidget {
                           ),
                           context,
                         ),
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
+                        style: TextStyle(
+                          fontSize: sw * 0.03,
+                          color: isDark ? Colors.grey[400] : Colors.grey,
                         ),
                       ),
                       Text(
@@ -318,21 +356,23 @@ class AudioPlayerSection extends StatelessWidget {
                           ),
                           context,
                         ),
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
+                        style: TextStyle(
+                          fontSize: sw * 0.03,
+                          color: isDark ? Colors.grey[400] : Colors.grey,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 5),
+                  SizedBox(height: sh * 0.006),
                   SliderTheme(
                     data: SliderTheme.of(context).copyWith(
                       activeTrackColor: kPrimaryBrown,
-                      inactiveTrackColor: Colors.grey.shade300,
+                      inactiveTrackColor: isDark
+                          ? Colors.grey.shade800
+                          : Colors.grey.shade300,
                       thumbColor: kPrimaryBrown,
-                      thumbShape: const RoundSliderThumbShape(
-                        enabledThumbRadius: 6,
+                      thumbShape: RoundSliderThumbShape(
+                        enabledThumbRadius: sw * 0.015,
                       ),
                       trackHeight: 3,
                       overlayShape: SliderComponentShape.noOverlay,
@@ -352,7 +392,7 @@ class AudioPlayerSection extends StatelessWidget {
             }),
           ),
 
-          const SizedBox(height: 40),
+          SizedBox(height: sh * 0.045),
 
           // Controls
           Row(
@@ -360,10 +400,10 @@ class AudioPlayerSection extends StatelessWidget {
             children: [
               IconButton(
                 onPressed: controller.previousAudio,
-                icon: const Icon(Icons.skip_previous_outlined, size: 35),
-                color: Colors.black87,
+                icon: Icon(Icons.skip_previous_outlined, size: sw * 0.088),
+                color: isDark ? Colors.white70 : Colors.black87,
               ),
-              const SizedBox(width: 30),
+              SizedBox(width: sw * 0.075),
               Obx(() {
                 bool isCurrentPlaying =
                     controller.currentPlayingId.value == data.id &&
@@ -374,16 +414,16 @@ class AudioPlayerSection extends StatelessWidget {
                     isCurrentPlaying
                         ? Icons.pause_circle_filled
                         : Icons.play_circle_filled,
-                    size: 55,
-                    color: const Color(0xFF2E2E2E),
+                    size: sw * 0.138,
+                    color: isDark ? Colors.white : const Color(0xFF2E2E2E),
                   ),
                 );
               }),
-              const SizedBox(width: 30),
+              SizedBox(width: sw * 0.075),
               IconButton(
                 onPressed: controller.nextAudio,
-                icon: const Icon(Icons.skip_next_outlined, size: 35),
-                color: Colors.black87,
+                icon: Icon(Icons.skip_next_outlined, size: sw * 0.088),
+                color: isDark ? Colors.white70 : Colors.black87,
               ),
             ],
           ),
@@ -402,16 +442,19 @@ class NameCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sw = MediaQuery.of(context).size.width;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(12),
+        padding: EdgeInsets.all(sw * 0.03),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -430,8 +473,10 @@ class NameCard extends StatelessWidget {
                   },
                   child: Icon(
                     data.isSaved ? Icons.bookmark : Icons.bookmark_border,
-                    size: 20,
-                    color: data.isSaved ? kPrimaryBrown : Colors.black87,
+                    size: sw * 0.05,
+                    color: data.isSaved
+                        ? kPrimaryBrown
+                        : (isDark ? Colors.white70 : Colors.black87),
                   ),
                 ),
                 Expanded(
@@ -439,9 +484,10 @@ class NameCard extends StatelessWidget {
                     data.arabic,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.amiri(
-                      fontSize: 18,
+                      fontSize: sw * 0.045,
                       fontWeight: FontWeight.bold,
                       height: 1,
+                      color: isDark ? Colors.white : Colors.black,
                     ),
                   ),
                 ),
@@ -456,7 +502,7 @@ class NameCard extends StatelessWidget {
                       isCurrentPlaying
                           ? Icons.pause_circle_outline
                           : Icons.volume_up_outlined,
-                      size: 20,
+                      size: sw * 0.05,
                       color: isCurrentPlaying ? kPrimaryBrown : Colors.grey,
                     ),
                   );
@@ -465,34 +511,28 @@ class NameCard extends StatelessWidget {
             ),
 
             // Middle & Bottom: Pronunciation & Meaning
-            // Padding(
-            //    padding: const EdgeInsets.only(top: 10),
-            //   child:
             Column(
               children: [
                 Text(
                   data.pronunciation,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.playfairDisplay(
-                    fontSize: 20,
+                    fontSize: sw * 0.05,
                     fontWeight: FontWeight.w500,
-                    color: const Color(0xFF2E2E2E),
+                    color: isDark ? Colors.white : const Color(0xFF2E2E2E),
                   ),
                 ),
                 Text(
                   data.meaning,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.playfairDisplay(
-                    fontSize: 14,
-                    color: Colors.grey.shade400,
+                    fontSize: sw * 0.035,
+                    color: isDark ? Colors.grey[400] : Colors.grey.shade400,
                     height: 1.2,
                   ),
                 ),
               ],
             ),
-
-            // ),
-            //const SizedBox(height: 5),
           ],
         ),
       ),
@@ -507,6 +547,10 @@ class PlayerDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<AllahNamesController>();
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Obx(() {
       final list = controller.activeList;
       if (list.isEmpty) return const SizedBox();
@@ -517,84 +561,83 @@ class PlayerDialog extends StatelessWidget {
       return Dialog(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        insetPadding: const EdgeInsets.all(20),
+        insetPadding: EdgeInsets.all(sw * 0.05),
         child: Container(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(sw * 0.05),
           decoration: BoxDecoration(
-            color: kBackground,
+            color: isDark ? const Color(0xFF1E1E1E) : const Color(0xFFF9F9FC),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: [
-              //     _miniTab(tr("all"), false),
-              //     const SizedBox(width: 5),
-              //     _miniTab(tr("with_meaning"), false),
-              //     const SizedBox(width: 5),
-              //     _miniTab(tr("with_audio"), true),
-              //   ],
-              // ),
-              const SizedBox(height: 30),
+              SizedBox(height: sh * 0.035),
 
               // Large White Card
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  vertical: 30,
-                  horizontal: 20,
+                padding: EdgeInsets.symmetric(
+                  vertical: sh * 0.035,
+                  horizontal: sw * 0.05,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDark ? const Color(0xFF252525) : Colors.white,
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
+                      color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
                       blurRadius: 15,
                     ),
                   ],
                 ),
                 child: Column(
                   children: [
-                    const Align(
+                    Align(
                       alignment: Alignment.topRight,
                       child: Icon(
                         Icons.volume_up_outlined,
                         color: Colors.grey,
-                        size: 20,
+                        size: sw * 0.05,
                       ),
                     ),
                     Text(
                       data.arabic,
                       style: GoogleFonts.amiri(
-                        fontSize: 32,
+                        fontSize: sw * 0.08,
                         fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : Colors.black,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: sh * 0.012),
                     Text(
                       data.pronunciation,
                       style: GoogleFonts.playfairDisplay(
-                        fontSize: 22,
+                        fontSize: sw * 0.055,
                         fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : Colors.black,
                       ),
                     ),
                     Text(
                       data.meaning,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 14, color: kTextGrey),
+                      style: TextStyle(
+                        fontSize: sw * 0.035,
+                        color: isDark
+                            ? Colors.grey[400]
+                            : const Color(0xFF757575),
+                      ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: sh * 0.025),
                     Align(
                       alignment: Alignment.bottomRight,
                       child: GestureDetector(
                         onTap: () => controller.toggleSaveName(data),
                         child: Icon(
                           data.isSaved ? Icons.bookmark : Icons.bookmark_border,
-                          size: 22,
-                          color: data.isSaved ? kPrimaryBrown : Colors.black,
+                          size: sw * 0.055,
+                          color: data.isSaved
+                              ? kPrimaryBrown
+                              : (isDark ? Colors.white70 : Colors.black),
                         ),
                       ),
                     ),
@@ -602,7 +645,7 @@ class PlayerDialog extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 30),
+              SizedBox(height: sh * 0.035),
 
               // Slider
               Obx(() {
@@ -629,9 +672,9 @@ class PlayerDialog extends StatelessWidget {
                             ),
                             context,
                           ),
-                          style: const TextStyle(
-                            fontSize: 10,
-                            color: Colors.grey,
+                          style: TextStyle(
+                            fontSize: sw * 0.025,
+                            color: isDark ? Colors.grey[400] : Colors.grey,
                           ),
                         ),
                         Text(
@@ -643,9 +686,9 @@ class PlayerDialog extends StatelessWidget {
                             ),
                             context,
                           ),
-                          style: const TextStyle(
-                            fontSize: 10,
-                            color: Colors.grey,
+                          style: TextStyle(
+                            fontSize: sw * 0.025,
+                            color: isDark ? Colors.grey[400] : Colors.grey,
                           ),
                         ),
                       ],
@@ -653,10 +696,12 @@ class PlayerDialog extends StatelessWidget {
                     SliderTheme(
                       data: SliderTheme.of(context).copyWith(
                         activeTrackColor: kPrimaryBrown,
-                        inactiveTrackColor: Colors.grey.shade300,
+                        inactiveTrackColor: isDark
+                            ? Colors.grey.shade800
+                            : Colors.grey.shade300,
                         thumbColor: kPrimaryBrown,
-                        thumbShape: const RoundSliderThumbShape(
-                          enabledThumbRadius: 5,
+                        thumbShape: RoundSliderThumbShape(
+                          enabledThumbRadius: sw * 0.012,
                         ),
                         trackHeight: 2,
                         overlayShape: SliderComponentShape.noOverlay,
@@ -674,7 +719,7 @@ class PlayerDialog extends StatelessWidget {
                   ],
                 );
               }),
-              const SizedBox(height: 20),
+              SizedBox(height: sh * 0.025),
 
               // Controls
               Row(
@@ -684,10 +729,10 @@ class PlayerDialog extends StatelessWidget {
                     onPressed: () {
                       controller.previousAudio();
                     },
-                    icon: const Icon(Icons.skip_previous_outlined, size: 28),
-                    color: Colors.black87,
+                    icon: Icon(Icons.skip_previous_outlined, size: sw * 0.07),
+                    color: isDark ? Colors.white70 : Colors.black87,
                   ),
-                  const SizedBox(width: 30),
+                  SizedBox(width: sw * 0.075),
                   Obx(() {
                     bool isCurrentPlaying =
                         controller.currentPlayingId.value == data.id &&
@@ -698,41 +743,27 @@ class PlayerDialog extends StatelessWidget {
                         isCurrentPlaying
                             ? Icons.pause_circle_outline
                             : Icons.play_circle_outline,
-                        size: 40,
-                        color: Colors.black,
+                        size: sw * 0.1,
+                        color: isDark ? Colors.white : Colors.black,
                       ),
                     );
                   }),
-                  const SizedBox(width: 30),
+                  SizedBox(width: sw * 0.075),
                   IconButton(
                     onPressed: () {
                       controller.nextAudio();
                     },
-                    icon: const Icon(Icons.skip_next_outlined, size: 28),
-                    color: Colors.black87,
+                    icon: Icon(Icons.skip_next_outlined, size: sw * 0.07),
+                    color: isDark ? Colors.white70 : Colors.black87,
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: sh * 0.012),
             ],
           ),
         ),
       );
     });
-  }
-
-  Widget _miniTab(String text, bool active) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: active ? kPrimaryBrown : kDarkButton,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(color: Colors.white, fontSize: 10),
-      ),
-    );
   }
 }
 
@@ -743,39 +774,50 @@ class HeaderWithLines extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sw = MediaQuery.of(context).size.width;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: sw * 0.05),
       child: Stack(
         alignment: Alignment.center,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(width: 40, height: 1, color: Colors.grey.shade300),
+              Container(
+                width: sw * 0.1,
+                height: 1,
+                color: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+              ),
               const SizedBox(width: 5),
               const Icon(Icons.circle, size: 3, color: kPrimaryBrown),
               const SizedBox(width: 8),
               Text(
                 title,
                 style: GoogleFonts.playfairDisplay(
-                  fontSize: 18,
+                  fontSize: sw * 0.045,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFF2E2E2E),
+                  color: isDark ? Colors.white : const Color(0xFF2E2E2E),
                 ),
               ),
               const SizedBox(width: 8),
               const Icon(Icons.circle, size: 3, color: kPrimaryBrown),
               const SizedBox(width: 5),
-              Container(width: 40, height: 1, color: Colors.grey.shade300),
+              Container(
+                width: sw * 0.1,
+                height: 1,
+                color: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+              ),
             ],
           ),
           Align(
             alignment: Alignment.centerLeft,
             child: IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.arrow_back_ios,
-                color: Colors.grey,
-                size: 20,
+                color: isDark ? Colors.white70 : Colors.grey,
+                size: sw * 0.05,
               ),
               onPressed: () => Navigator.pop(context),
             ),

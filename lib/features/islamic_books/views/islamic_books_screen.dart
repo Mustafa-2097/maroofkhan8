@@ -1,19 +1,15 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart'; // Add GetX
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
-import '../controller/book_controller.dart'; // Add Controller
+import '../controller/book_controller.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
-const Color kBackground = Color(0xFFFDFDFD);
-const Color kTextGrey = Color(0xFF757575);
-const Color kOrangeBook = Color(
-  0xFFF57C00,
-); // Color for the book cover placeholder
+const Color kOrangeBook = Color(0xFFF57C00);
 
 // ==========================================
 // SCREEN 1: BOOK LIST SCREEN
@@ -24,132 +20,103 @@ class IslamicBooksListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(BookController());
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFFDFDFD),
       appBar: AppBar(
-        // title: const HeaderSection(title: "Islamic Books"),
         title: HeaderSection(title: tr("islamic_books")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: isDark ? Colors.white70 : Colors.grey,
+            size: sw * 0.05,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
-
-      // appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      //   elevation: 0,
-      //   leading: Padding(
-      //     padding: const EdgeInsets.only(left: 20),
-      //     child: GestureDetector(
-      //       onTap: () => Navigator.pop(context),
-      //       child: Container(
-      //         margin: const EdgeInsets.all(8),
-      //         decoration: BoxDecoration(
-      //           border: Border.all(color: Colors.grey.shade300),
-      //           borderRadius: BorderRadius.circular(8),
-      //         ),
-      //         child: const Icon(
-      //           Icons.arrow_back_ios,
-      //           color: Colors.grey,
-      //           // Icons.chevron_left,
-      //           // color: Colors.grey,
-      //           size: 20,
-      //         ),
-      //       ),
-      //     ),
-      //   ),
-      //   centerTitle: true,
-      //   title: Text(
-      //     "Islamic Book's",
-      //     style: GoogleFonts.playfairDisplay(
-      //       color: Colors.black,
-      //       fontWeight: FontWeight.bold,
-      //       fontSize: 20,
-      //     ),
-      //   ),
-      // ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: sw * 0.05),
         child: Column(
           children: [
-            const SizedBox(height: 10),
+            SizedBox(height: sh * 0.012),
             // Search Bar Row
             Row(
               children: [
                 Expanded(
                   child: Container(
-                    height: 45,
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    height: sh * 0.055,
+                    padding: EdgeInsets.symmetric(horizontal: sw * 0.04),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.grey.shade200),
+                      border: Border.all(
+                        color: isDark
+                            ? Colors.grey.shade800
+                            : Colors.grey.shade200,
+                      ),
                     ),
                     child: TextField(
                       onChanged: controller.updateSearchQuery,
+                      style: TextStyle(
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
                       decoration: InputDecoration(
-                        // hintText: "Search",
                         hintText: tr("search_hint"),
-                        hintStyle: const TextStyle(
-                          fontSize: 14,
+                        hintStyle: TextStyle(
+                          fontSize: sw * 0.035,
                           color: Colors.grey,
                         ),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.only(bottom: 10),
+                        contentPadding: EdgeInsets.only(bottom: sh * 0.015),
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 10),
-                // Container(
-                //   height: 45,
-                //   width: 45,
-                //   decoration: BoxDecoration(
-                //     shape: BoxShape.circle,
-                //     border: Border.all(color: Colors.grey.shade200),
-                //     color: Colors.white,
-                //   ),
-                //   child: const Icon(
-                //     Icons.bookmark_border,
-                //     color: Colors.grey,
-                //     size: 20,
-                //   ),
-                // ),
               ],
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: sh * 0.025),
 
             // List of Books
             Expanded(
               child: Obx(() {
                 if (controller.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(
+                    child: CircularProgressIndicator(color: kPrimaryBrown),
+                  );
                 }
                 if (controller.filteredBookList.isEmpty) {
-                  // return const Center(child: Text("No books found"));
-                  return Center(child: Text(tr("no_books_found")));
+                  return Center(
+                    child: Text(
+                      tr("no_books_found"),
+                      style: TextStyle(
+                        color: isDark ? Colors.grey[400] : Colors.grey,
+                      ),
+                    ),
+                  );
                 }
 
                 return ListView.builder(
+                  padding: EdgeInsets.only(bottom: sh * 0.02),
                   itemCount: controller.filteredBookList.length,
                   itemBuilder: (context, index) {
                     final book = controller.filteredBookList[index];
                     return _BookListItem(
-                      // title: book.title ?? "Untitled",
                       title: book.title ?? tr("untitled"),
                       subtitle: book.subtitle ?? "",
                       imageUrl: book.image,
                       onTap: () {
-                        // For now navigation to static reader, passing book info if needed
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (_) => BookReaderScreen(
-                              // title: book.title ?? "Book",
                               title: book.title ?? tr("book"),
                               pdfUrl: book.file,
                             ),
@@ -183,17 +150,21 @@ class _BookListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 15),
-        padding: const EdgeInsets.all(12),
+        margin: EdgeInsets.only(bottom: sh * 0.018),
+        padding: EdgeInsets.all(sw * 0.03),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -203,8 +174,8 @@ class _BookListItem extends StatelessWidget {
           children: [
             // Book Cover
             Container(
-              width: 50,
-              height: 70,
+              width: sw * 0.12,
+              height: sh * 0.08,
               decoration: BoxDecoration(
                 color: kOrangeBook,
                 borderRadius: BorderRadius.circular(4),
@@ -222,23 +193,23 @@ class _BookListItem extends StatelessWidget {
                         children: [
                           Container(
                             height: 2,
-                            width: 30,
+                            width: sw * 0.07,
                             color: Colors.black12,
                           ),
-                          const SizedBox(height: 4),
+                          SizedBox(height: sh * 0.005),
                           Text(
                             title.length > 10 ? title.substring(0, 10) : title,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 8,
+                            style: TextStyle(
+                              fontSize: sw * 0.02,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          SizedBox(height: sh * 0.005),
                           Container(
                             height: 2,
-                            width: 30,
+                            width: sw * 0.07,
                             color: Colors.black12,
                           ),
                         ],
@@ -246,7 +217,7 @@ class _BookListItem extends StatelessWidget {
                     )
                   : null,
             ),
-            const SizedBox(width: 15),
+            SizedBox(width: sw * 0.04),
 
             // Text Content
             Expanded(
@@ -256,15 +227,20 @@ class _BookListItem extends StatelessWidget {
                   Text(
                     title,
                     style: GoogleFonts.playfairDisplay(
-                      fontSize: 16,
+                      fontSize: sw * 0.04,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: isDark ? Colors.white : Colors.black87,
                     ),
                   ),
-                  const SizedBox(height: 5),
+                  SizedBox(height: sh * 0.006),
                   Text(
                     subtitle,
-                    style: const TextStyle(fontSize: 12, color: kTextGrey),
+                    style: TextStyle(
+                      fontSize: sw * 0.03,
+                      color: isDark
+                          ? Colors.grey[400]
+                          : const Color(0xFF757575),
+                    ),
                   ),
                 ],
               ),
@@ -272,16 +248,16 @@ class _BookListItem extends StatelessWidget {
 
             // Arrow Button
             Container(
-              height: 35,
-              width: 35,
+              height: sw * 0.09,
+              width: sw * 0.09,
               decoration: BoxDecoration(
                 color: kPrimaryBrown,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.arrow_forward,
                 color: Colors.white,
-                size: 18,
+                size: sw * 0.045,
               ),
             ),
           ],
@@ -312,51 +288,64 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFFDFDFD),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: const Icon(
-              Icons.arrow_back_ios,
-              color: Colors.grey,
-              size: 20,
-            ),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: isDark ? Colors.white70 : Colors.grey,
+            size: sw * 0.05,
           ),
+          onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
         title: Column(
           children: [
             Text(
-              // "Islamic Book's",
               tr("islamic_books"),
               style: GoogleFonts.playfairDisplay(
-                color: Colors.black,
+                color: isDark ? Colors.white : Colors.black,
                 fontWeight: FontWeight.bold,
-                fontSize: 18,
+                fontSize: sw * 0.045,
               ),
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: sh * 0.005),
             Text(
               widget.title,
-              style: const TextStyle(fontSize: 12, color: Colors.black54),
+              style: TextStyle(
+                fontSize: sw * 0.03,
+                color: isDark ? Colors.grey[400] : Colors.black54,
+              ),
             ),
           ],
         ),
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(40),
+          preferredSize: Size.fromHeight(sh * 0.05),
           child: Container(
             decoration: BoxDecoration(
               border: Border(
-                top: BorderSide(color: Colors.grey.shade200),
-                bottom: BorderSide(color: Colors.grey.shade200),
+                top: BorderSide(
+                  color: isDark ? Colors.grey.shade900 : Colors.grey.shade200,
+                ),
+                bottom: BorderSide(
+                  color: isDark ? Colors.grey.shade900 : Colors.grey.shade200,
+                ),
               ),
+              color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            padding: EdgeInsets.symmetric(
+              horizontal: sw * 0.05,
+              vertical: sh * 0.01,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -365,38 +354,42 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                   children: [
                     Text(
                       "$_currentPage/$_pageCount",
-                      style: const TextStyle(
-                        fontSize: 12,
+                      style: TextStyle(
+                        fontSize: sw * 0.03,
                         fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : Colors.black,
                       ),
                     ),
-                    const SizedBox(width: 15),
+                    SizedBox(width: sw * 0.04),
                     InkWell(
                       onTap: () {
                         _pdfViewerController.zoomLevel = (_zoomLevel - 0.25)
                             .clamp(1.0, 4.0);
                       },
-                      child: const Icon(
+                      child: Icon(
                         Icons.remove,
-                        size: 16,
-                        color: Colors.black,
+                        size: sw * 0.04,
+                        color: isDark ? Colors.white : Colors.black,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: sw * 0.02),
                     Text(
                       "${(_zoomLevel * 100).toInt()}%",
-                      style: const TextStyle(fontSize: 12),
+                      style: TextStyle(
+                        fontSize: sw * 0.03,
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: sw * 0.02),
                     InkWell(
                       onTap: () {
                         _pdfViewerController.zoomLevel = (_zoomLevel + 0.25)
                             .clamp(1.0, 4.0);
                       },
-                      child: const Icon(
+                      child: Icon(
                         Icons.add,
-                        size: 16,
-                        color: Colors.black,
+                        size: sw * 0.04,
+                        color: isDark ? Colors.white : Colors.black,
                       ),
                     ),
                   ],
@@ -404,22 +397,22 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
                 // Icons
                 Row(
                   children: [
-                    // const Icon(Icons.favorite_border, size: 20, color: kTextGrey),
-                    const SizedBox(width: 15),
+                    SizedBox(width: sw * 0.04),
                     InkWell(
                       onTap: () {
                         if (widget.pdfUrl != null &&
                             widget.pdfUrl!.isNotEmpty) {
-                          // Share.share('Check out this book: ${widget.pdfUrl}');
                           Share.share(
                             '${tr("check_out_this_book")} ${widget.pdfUrl}',
                           );
                         }
                       },
-                      child: const Icon(
+                      child: Icon(
                         Icons.share_outlined,
-                        size: 20,
-                        color: kTextGrey,
+                        size: sw * 0.05,
+                        color: isDark
+                            ? Colors.grey[400]
+                            : const Color(0xFF757575),
                       ),
                     ),
                   ],
@@ -436,26 +429,33 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
               canShowScrollHead: false,
               canShowScrollStatus: false,
               onDocumentLoaded: (PdfDocumentLoadedDetails details) {
-                setState(() {
-                  _pageCount = details.document.pages.count;
-                });
+                if (mounted) {
+                  setState(() {
+                    _pageCount = details.document.pages.count;
+                  });
+                }
               },
               onPageChanged: (PdfPageChangedDetails details) {
-                setState(() {
-                  _currentPage = details.newPageNumber;
-                });
+                if (mounted) {
+                  setState(() {
+                    _currentPage = details.newPageNumber;
+                  });
+                }
               },
               onZoomLevelChanged: (PdfZoomDetails details) {
-                setState(() {
-                  _zoomLevel = details.newZoomLevel;
-                });
+                if (mounted) {
+                  setState(() {
+                    _zoomLevel = details.newZoomLevel;
+                  });
+                }
               },
             )
           : Center(
               child: Text(
-                // "No PDF file available",
                 tr("no_pdf_available"),
-                style: const TextStyle(color: Colors.grey),
+                style: TextStyle(
+                  color: isDark ? Colors.grey[400] : Colors.grey,
+                ),
               ),
             ),
     );

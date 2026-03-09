@@ -11,27 +11,38 @@ class SavedAllahNamesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<AllahNamesController>();
-    const Color kBackground = Color(0xFFF9F9FC);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+    final backgroundColor = isDark
+        ? const Color(0xFF121212)
+        : const Color(0xFFF9F9FC);
 
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.black),
+          icon: Icon(
+            Icons.chevron_left,
+            color: isDark ? Colors.white : Colors.black,
+          ),
           onPressed: () => Get.back(),
         ),
         title: Container(
           width: double.infinity,
-          height: 45,
-          margin: const EdgeInsets.only(right: 20),
+          height: sh * 0.055,
+          margin: EdgeInsets.only(right: sw * 0.05),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
             borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: isDark ? Colors.grey.shade800 : Colors.transparent,
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
+                color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
                 blurRadius: 5,
                 offset: const Offset(0, 2),
               ),
@@ -41,9 +52,9 @@ class SavedAllahNamesScreen extends StatelessWidget {
           child: Text(
             tr("saved"),
             style: GoogleFonts.playfairDisplay(
-              color: const Color(0xFF2E2E2E),
+              color: isDark ? Colors.white : const Color(0xFF2E2E2E),
               fontWeight: FontWeight.w500,
-              fontSize: 18,
+              fontSize: sw * 0.045,
             ),
           ),
         ),
@@ -57,16 +68,21 @@ class SavedAllahNamesScreen extends StatelessWidget {
         final savedNames = controller.savedNamesList;
 
         if (savedNames.isEmpty) {
-          return Center(child: Text(tr("no_saved_names_yet")));
+          return Center(
+            child: Text(
+              tr("no_saved_names_yet"),
+              style: TextStyle(color: isDark ? Colors.grey[400] : Colors.black),
+            ),
+          );
         }
 
         return GridView.builder(
-          padding: const EdgeInsets.all(20),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          padding: EdgeInsets.symmetric(horizontal: sw * 0.05, vertical: 20),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             childAspectRatio: 0.85,
-            crossAxisSpacing: 15,
-            mainAxisSpacing: 15,
+            crossAxisSpacing: sw * 0.04,
+            mainAxisSpacing: sh * 0.018,
           ),
           itemCount: savedNames.length,
           itemBuilder: (context, index) {

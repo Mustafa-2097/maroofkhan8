@@ -11,11 +11,7 @@ import 'package:maroofkhan8/core/utils/localization_utils.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
-const Color kDarkButton = Color(
-  0xFF1E120D,
-); // Darker brown/black for inactive tabs
-const Color kBackground = Color(0xFFFDFDFD);
-const Color kTextGrey = Color(0xFF757575);
+const Color kDarkButton = Color(0xFF1E120D);
 
 // ==========================================
 // SCREEN 1: SAHABA LIST
@@ -32,9 +28,14 @@ class _SahabaListScreenState extends State<SahabaListScreen> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(SahabaController());
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFFDFDFD),
       appBar: AppBar(
         title: HeaderSection(title: tr("sahaba_title")),
         centerTitle: true,
@@ -43,57 +44,44 @@ class _SahabaListScreenState extends State<SahabaListScreen> {
         leading: widget.hideBack
             ? null
             : IconButton(
-                icon: const Icon(
+                icon: Icon(
                   Icons.arrow_back_ios,
-                  color: Colors.grey,
-                  size: 20,
+                  color: isDark ? Colors.white70 : Colors.grey,
+                  size: sw * 0.05,
                 ),
                 onPressed: () => Navigator.pop(context),
               ),
       ),
-      // appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      //   elevation: 0,
-      //   centerTitle: true,
-      //   title: Text(
-      //     "Sahaba",
-      //     style: GoogleFonts.playfairDisplay(
-      //       color: Colors.black,
-      //       fontWeight: FontWeight.bold,
-      //     ),
-      //   ),
-      //   leading: GestureDetector(
-      //     onTap: () => Get.back(),
-      //     child: const Icon(Icons.chevron_left, color: Colors.black),
-      //   ),
-      //   actions: const [
-      //     Icon(Icons.more_horiz, color: Colors.transparent),
-      //   ], // Spacing
-      // ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: sw * 0.05),
         child: Column(
           children: [
             // Search Bar
             Container(
-              height: 45,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              height: sh * 0.055,
+              padding: EdgeInsets.symmetric(horizontal: sw * 0.025),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade200),
+                border: Border.all(
+                  color: isDark ? Colors.grey.shade900 : Colors.grey.shade200,
+                ),
               ),
               child: TextField(
                 onChanged: (val) => controller.searchQuery.value = val,
+                style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 decoration: InputDecoration(
                   hintText: tr("search"),
-                  hintStyle: const TextStyle(fontSize: 14, color: Colors.grey),
+                  hintStyle: TextStyle(
+                    fontSize: sw * 0.035,
+                    color: Colors.grey,
+                  ),
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.only(bottom: 8),
+                  contentPadding: EdgeInsets.only(bottom: sh * 0.012),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: sh * 0.025),
 
             // List Items
             Expanded(
@@ -104,9 +92,17 @@ class _SahabaListScreenState extends State<SahabaListScreen> {
                   );
                 }
                 if (controller.filteredSahabaList.isEmpty) {
-                  return Center(child: Text(tr("no_records_found")));
+                  return Center(
+                    child: Text(
+                      tr("no_records_found"),
+                      style: TextStyle(
+                        color: isDark ? Colors.grey[400] : Colors.black,
+                      ),
+                    ),
+                  );
                 }
                 return ListView.builder(
+                  padding: EdgeInsets.only(bottom: sh * 0.02),
                   itemCount: controller.filteredSahabaList.length,
                   itemBuilder: (context, index) {
                     final item = controller.filteredSahabaList[index];
@@ -122,19 +118,23 @@ class _SahabaListScreenState extends State<SahabaListScreen> {
   }
 
   Widget _sahabaCard(BuildContext context, Sahaba item) {
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return GestureDetector(
       onTap: () {
         Get.to(() => SahabaDetailScreen(sahaba: item));
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 15),
-        padding: const EdgeInsets.all(12),
+        margin: EdgeInsets.only(bottom: sh * 0.018),
+        padding: EdgeInsets.all(sw * 0.03),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
               blurRadius: 10,
               offset: const Offset(0, 2),
             ),
@@ -143,16 +143,22 @@ class _SahabaListScreenState extends State<SahabaListScreen> {
         child: Row(
           children: [
             CircleAvatar(
-              radius: 28,
+              radius: sw * 0.07,
               backgroundImage: item.image.isNotEmpty
                   ? NetworkImage(item.image)
                   : null,
-              backgroundColor: Colors.grey.shade200,
+              backgroundColor: isDark
+                  ? Colors.grey.shade900
+                  : Colors.grey.shade200,
               child: item.image.isEmpty
-                  ? const Icon(Icons.person, color: Colors.grey)
+                  ? Icon(
+                      Icons.person,
+                      color: isDark ? Colors.white38 : Colors.grey,
+                      size: sw * 0.07,
+                    )
                   : null,
             ),
-            const SizedBox(width: 15),
+            SizedBox(width: sw * 0.04),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,14 +166,20 @@ class _SahabaListScreenState extends State<SahabaListScreen> {
                   Text(
                     item.name,
                     style: GoogleFonts.playfairDisplay(
-                      fontSize: 15,
+                      fontSize: sw * 0.038,
                       fontWeight: FontWeight.bold,
+                      color: isDark ? Colors.white : Colors.black,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     item.title,
-                    style: const TextStyle(fontSize: 11, color: kTextGrey),
+                    style: TextStyle(
+                      fontSize: sw * 0.028,
+                      color: isDark
+                          ? Colors.grey[400]
+                          : const Color(0xFF757575),
+                    ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -175,16 +187,16 @@ class _SahabaListScreenState extends State<SahabaListScreen> {
               ),
             ),
             Container(
-              height: 30,
-              width: 30,
+              height: sw * 0.075,
+              width: sw * 0.075,
               decoration: BoxDecoration(
                 color: kPrimaryBrown,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.arrow_forward,
                 color: Colors.white,
-                size: 16,
+                size: sw * 0.04,
               ),
             ),
           ],
@@ -218,8 +230,14 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFFDFDFD),
       body: SafeArea(
         child: Obx(() {
           if (controller.isDetailLoading.value) {
@@ -231,7 +249,7 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
           final sahaba = controller.selectedSahaba.value ?? widget.sahaba;
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: sw * 0.05, vertical: 10),
             child: Column(
               children: [
                 // Back Button
@@ -239,57 +257,64 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
                   alignment: Alignment.centerLeft,
                   child: GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: const Icon(
+                    child: Icon(
                       Icons.arrow_back_ios,
-                      color: Colors.grey,
-                      size: 20,
+                      color: isDark ? Colors.white70 : Colors.grey,
+                      size: sw * 0.05,
                     ),
                   ),
                 ),
 
                 // Profile Header
-                const SizedBox(height: 10),
+                SizedBox(height: sh * 0.012),
                 CircleAvatar(
-                  radius: 50,
+                  radius: sw * 0.125,
                   backgroundImage: sahaba.image.isNotEmpty
                       ? NetworkImage(sahaba.image)
                       : null,
-                  backgroundColor: Colors.grey.shade200,
+                  backgroundColor: isDark
+                      ? Colors.grey.shade900
+                      : Colors.grey.shade200,
                   child: sahaba.image.isEmpty
-                      ? const Icon(Icons.person, size: 50, color: Colors.grey)
+                      ? Icon(
+                          Icons.person,
+                          size: sw * 0.125,
+                          color: isDark ? Colors.white38 : Colors.grey,
+                        )
                       : null,
                 ),
-                const SizedBox(height: 15),
+                SizedBox(height: sh * 0.018),
                 Text(
                   sahaba.name,
                   style: GoogleFonts.playfairDisplay(
-                    fontSize: 20,
+                    fontSize: sw * 0.05,
                     fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : Colors.black,
                   ),
                 ),
                 const SizedBox(height: 5),
                 Text(
                   sahaba.title,
                   style: GoogleFonts.playfairDisplay(
-                    fontSize: 16,
-                    color: Colors.black54,
+                    fontSize: sw * 0.04,
+                    color: isDark ? Colors.grey[400] : Colors.black54,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: sh * 0.025),
 
                 // Custom Tab Bar
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _tabButton(tr("biography"), 0),
-                    const SizedBox(width: 10),
+                    SizedBox(width: sw * 0.025),
                     _tabButton(tr("teachings"), 1),
-                    const SizedBox(width: 10),
+                    SizedBox(width: sw * 0.025),
                     _tabButton(tr("quotes"), 2),
                   ],
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: sh * 0.025),
 
                 // Dynamic Content
                 Align(
@@ -297,12 +322,13 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
                   child: Text(
                     _getTabTitle(),
                     style: GoogleFonts.playfairDisplay(
-                      fontSize: 18,
+                      fontSize: sw * 0.045,
                       fontWeight: FontWeight.w600,
+                      color: isDark ? Colors.white : Colors.black,
                     ),
                   ),
                 ),
-                const SizedBox(height: 15),
+                SizedBox(height: sh * 0.018),
 
                 _buildTabBody(sahaba),
               ],
@@ -336,20 +362,31 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
   }
 
   Widget _tabButton(String text, int index) {
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     bool isActive = _currentTab == index;
     return GestureDetector(
       onTap: () => setState(() => _currentTab = index),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: EdgeInsets.symmetric(
+          horizontal: sw * 0.04,
+          vertical: sh * 0.01,
+        ),
         decoration: BoxDecoration(
-          color: isActive ? kPrimaryBrown : kDarkButton,
+          color: isActive
+              ? kPrimaryBrown
+              : (isDark ? const Color(0xFF1E1E1E) : kDarkButton),
           borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isDark ? Colors.grey.shade900 : Colors.transparent,
+          ),
         ),
         child: Text(
           text,
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.white,
-            fontSize: 12,
+            fontSize: sw * 0.03,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -359,14 +396,17 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
 
   // --- TAB 1: BIOGRAPHY ---
   Widget _buildBiographyContent(Sahaba sahaba) {
+    final sw = MediaQuery.of(context).size.width;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(sw * 0.05),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
             blurRadius: 10,
           ),
         ],
@@ -398,24 +438,30 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
   }
 
   Widget _bioRow(String label, String value) {
+    final sw = MediaQuery.of(context).size.width;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 80,
+            width: sw * 0.2,
             child: Text(
               label,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: sw * 0.03,
+                color: isDark ? Colors.white70 : Colors.black,
+              ),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(
-                fontSize: 12,
-                color: Colors.black87,
+              style: TextStyle(
+                fontSize: sw * 0.03,
+                color: isDark ? Colors.grey[400] : Colors.black87,
                 height: 1.4,
               ),
             ),
@@ -430,6 +476,7 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
     String type, {
     bool isQuote = false,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     if (items == null || items.isEmpty) {
       return Center(
         child: Padding(
@@ -437,7 +484,10 @@ class _SahabaDetailScreenState extends State<SahabaDetailScreen> {
           child: Text(
             tr("info_updated_soon", args: [type]),
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 14, color: Colors.grey),
+            style: TextStyle(
+              fontSize: 14,
+              color: isDark ? Colors.grey[400] : Colors.grey,
+            ),
           ),
         ),
       );
@@ -477,14 +527,20 @@ class _ExpandableContentCardState extends State<_ExpandableContentCard> {
 
   @override
   Widget build(BuildContext context) {
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.only(bottom: 15),
-      padding: const EdgeInsets.all(15),
+      margin: EdgeInsets.only(bottom: sh * 0.018),
+      padding: EdgeInsets.all(sw * 0.04),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Colors.grey.shade100),
+        border: Border.all(
+          color: isDark ? Colors.grey.shade900 : Colors.grey.shade100,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -493,15 +549,16 @@ class _ExpandableContentCardState extends State<_ExpandableContentCard> {
             widget.title,
             style: GoogleFonts.playfairDisplay(
               fontWeight: FontWeight.bold,
-              fontSize: 14,
+              fontSize: sw * 0.035,
+              color: isDark ? Colors.white : Colors.black,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: sh * 0.01),
           LayoutBuilder(
             builder: (context, constraints) {
               final textStyle = TextStyle(
-                fontSize: 11,
-                color: kTextGrey,
+                fontSize: sw * 0.028,
+                color: isDark ? Colors.grey[400] : const Color(0xFF757575),
                 height: 1.5,
                 fontStyle: widget.isQuote ? FontStyle.italic : FontStyle.normal,
               );
@@ -529,7 +586,7 @@ class _ExpandableContentCardState extends State<_ExpandableContentCard> {
                     style: textStyle,
                   ),
                   if (hasMoreThanFiveLines) ...[
-                    const SizedBox(height: 10),
+                    SizedBox(height: sh * 0.012),
                     Align(
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
@@ -539,9 +596,9 @@ class _ExpandableContentCardState extends State<_ExpandableContentCard> {
                           });
                         },
                         child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: sw * 0.03,
+                            vertical: sh * 0.008,
                           ),
                           decoration: BoxDecoration(
                             color: kPrimaryBrown,
@@ -549,9 +606,9 @@ class _ExpandableContentCardState extends State<_ExpandableContentCard> {
                           ),
                           child: Text(
                             isExpanded ? tr("read_less") : tr("read_more"),
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.white,
-                              fontSize: 10,
+                              fontSize: sw * 0.025,
                             ),
                           ),
                         ),
@@ -577,11 +634,17 @@ class SahabaAudioScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFFDFDFD),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: EdgeInsets.symmetric(horizontal: sw * 0.05, vertical: 10),
           child: Column(
             children: [
               // Back Button
@@ -592,107 +655,124 @@ class SahabaAudioScreen extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
+                      border: Border.all(
+                        color: isDark
+                            ? Colors.grey.shade900
+                            : Colors.grey.shade300,
+                      ),
                       borderRadius: BorderRadius.circular(8),
+                      color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.chevron_left,
-                      color: Colors.grey,
-                      size: 20,
+                      color: isDark ? Colors.white70 : Colors.grey,
+                      size: sw * 0.05,
                     ),
                   ),
                 ),
               ),
 
               // Profile Header
-              const SizedBox(height: 10),
+              SizedBox(height: sh * 0.012),
               CircleAvatar(
-                radius: 50,
+                radius: sw * 0.125,
                 backgroundImage: sahaba.image.isNotEmpty
                     ? NetworkImage(sahaba.image)
                     : null,
-                backgroundColor: Colors.grey.shade200,
+                backgroundColor: isDark
+                    ? Colors.grey.shade900
+                    : Colors.grey.shade200,
                 child: sahaba.image.isEmpty
-                    ? const Icon(Icons.person, size: 50, color: Colors.grey)
+                    ? Icon(
+                        Icons.person,
+                        size: sw * 0.125,
+                        color: isDark ? Colors.white38 : Colors.grey,
+                      )
                     : null,
               ),
-              const SizedBox(height: 15),
+              SizedBox(height: sh * 0.018),
               Text(
                 sahaba.name,
                 style: GoogleFonts.playfairDisplay(
-                  fontSize: 20,
+                  fontSize: sw * 0.05,
                   fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : Colors.black,
                 ),
               ),
               const SizedBox(height: 5),
               Text(
                 sahaba.title,
                 style: GoogleFonts.playfairDisplay(
-                  fontSize: 16,
-                  color: Colors.black54,
+                  fontSize: sw * 0.04,
+                  color: isDark ? Colors.grey[400] : Colors.black54,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: sh * 0.025),
 
               // Filter Tabs (Darker theme here per image)
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _actionTab(tr("his_teaches"), true),
-                  const SizedBox(width: 8),
-                  _actionTab(tr("translation"), false),
-                  const SizedBox(width: 8),
-                  _actionTab(tr("tafsir"), false),
+                  _actionTab(context, tr("his_teaches"), true),
+                  SizedBox(width: sw * 0.02),
+                  _actionTab(context, tr("translation"), false),
+                  SizedBox(width: sw * 0.02),
+                  _actionTab(context, tr("tafsir"), false),
                 ],
               ),
-              const SizedBox(height: 25),
+              SizedBox(height: sh * 0.03),
 
               // White Content Card
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(20),
+                padding: EdgeInsets.all(sw * 0.05),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                   borderRadius: BorderRadius.circular(15),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
+                      color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
                       blurRadius: 10,
                     ),
                   ],
                 ),
                 child: Column(
                   children: [
-                    const Align(
+                    Align(
                       alignment: Alignment.topRight,
                       child: Icon(
                         Icons.bookmark_border,
-                        size: 20,
-                        color: Colors.grey,
+                        size: sw * 0.05,
+                        color: isDark ? Colors.white38 : Colors.grey,
                       ),
                     ),
                     Text(
                       tr("lessons_contributions"),
                       style: GoogleFonts.playfairDisplay(
-                        fontSize: 16,
+                        fontSize: sw * 0.04,
                         fontWeight: FontWeight.bold,
                         color: kPrimaryBrown,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: sh * 0.012),
                     Text(
                       sahaba.works ?? tr("contributions_placeholder"),
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.playfairDisplay(fontSize: 14),
+                      style: GoogleFonts.playfairDisplay(
+                        fontSize: sw * 0.035,
+                        color: isDark ? Colors.white70 : Colors.black,
+                      ),
                     ),
-                    const SizedBox(height: 15),
+                    SizedBox(height: sh * 0.018),
                     Text(
                       sahaba.knownFor ?? tr("known_for_placeholder"),
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: kTextGrey,
+                      style: TextStyle(
+                        fontSize: sw * 0.03,
+                        color: isDark
+                            ? Colors.grey[400]
+                            : const Color(0xFF757575),
                         height: 1.4,
                       ),
                     ),
@@ -700,7 +780,7 @@ class SahabaAudioScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 30),
+              SizedBox(height: sh * 0.035),
 
               // Slider
               Column(
@@ -710,16 +790,18 @@ class SahabaAudioScreen extends StatelessWidget {
                     children: [
                       Text(
                         localizeDigits("00:00", context),
-                        style: const TextStyle(
-                          fontSize: 10,
+                        style: TextStyle(
+                          fontSize: sw * 0.025,
                           fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white70 : Colors.black,
                         ),
                       ),
                       Text(
                         localizeDigits("00:00", context),
-                        style: const TextStyle(
-                          fontSize: 10,
+                        style: TextStyle(
+                          fontSize: sw * 0.025,
                           fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white70 : Colors.black,
                         ),
                       ),
                     ],
@@ -727,11 +809,13 @@ class SahabaAudioScreen extends StatelessWidget {
                   SliderTheme(
                     data: SliderTheme.of(context).copyWith(
                       activeTrackColor: kPrimaryBrown,
-                      inactiveTrackColor: Colors.grey.shade300,
+                      inactiveTrackColor: isDark
+                          ? Colors.grey.shade800
+                          : Colors.grey.shade300,
                       thumbColor: kPrimaryBrown,
                       trackHeight: 2,
-                      thumbShape: const RoundSliderThumbShape(
-                        enabledThumbRadius: 4,
+                      thumbShape: RoundSliderThumbShape(
+                        enabledThumbRadius: sw * 0.01,
                       ),
                       overlayShape: SliderComponentShape.noOverlay,
                     ),
@@ -739,48 +823,57 @@ class SahabaAudioScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: sh * 0.025),
 
               // Play Controls
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(Icons.skip_previous, size: 24, color: Colors.black),
-                  SizedBox(width: 30),
+                children: [
+                  Icon(
+                    Icons.skip_previous,
+                    size: sw * 0.06,
+                    color: isDark ? Colors.white : Colors.black,
+                  ),
+                  SizedBox(width: sw * 0.075),
                   Icon(
                     Icons.play_circle_outline,
-                    size: 35,
-                    color: Colors.black,
+                    size: sw * 0.088,
+                    color: isDark ? Colors.white : Colors.black,
                   ),
-                  SizedBox(width: 30),
-                  Icon(Icons.skip_next, size: 24, color: Colors.black),
+                  SizedBox(width: sw * 0.075),
+                  Icon(
+                    Icons.skip_next,
+                    size: sw * 0.06,
+                    color: isDark ? Colors.white : Colors.black,
+                  ),
                 ],
               ),
-              const SizedBox(height: 30),
+              SizedBox(height: sh * 0.035),
 
               // Bottom Action Buttons
               Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 15,
+                padding: EdgeInsets.symmetric(
+                  vertical: sh * 0.015,
+                  horizontal: sw * 0.04,
                 ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30),
-                  border: Border.all(
-                    color: kPrimaryBrown.withValues(alpha: 0.5),
-                  ),
-                  color: Colors.white,
+                  border: Border.all(color: kPrimaryBrown.withOpacity(0.5)),
+                  color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _bottomAction(Icons.headset, tr("listen"), true),
+                    _bottomAction(context, Icons.headset, tr("listen"), true),
                     Container(
-                      height: 30,
+                      height: sh * 0.035,
                       width: 1,
-                      color: Colors.grey.shade300,
+                      color: isDark
+                          ? Colors.grey.shade800
+                          : Colors.grey.shade300,
                     ),
                     _bottomAction(
+                      context,
                       Icons.auto_awesome,
                       tr("ai_explanation"),
                       false,
@@ -789,11 +882,14 @@ class SahabaAudioScreen extends StatelessWidget {
                       },
                     ),
                     Container(
-                      height: 30,
+                      height: sh * 0.035,
                       width: 1,
-                      color: Colors.grey.shade300,
+                      color: isDark
+                          ? Colors.grey.shade800
+                          : Colors.grey.shade300,
                     ),
                     _bottomAction(
+                      context,
                       Icons.share_outlined,
                       tr("share"),
                       false,
@@ -808,11 +904,14 @@ class SahabaAudioScreen extends StatelessWidget {
                       },
                     ),
                     Container(
-                      height: 30,
+                      height: sh * 0.035,
                       width: 1,
-                      color: Colors.grey.shade300,
+                      color: isDark
+                          ? Colors.grey.shade800
+                          : Colors.grey.shade300,
                     ),
                     _bottomAction(
+                      context,
                       Icons.download_outlined,
                       tr("download"),
                       false,
@@ -820,7 +919,7 @@ class SahabaAudioScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: sh * 0.025),
             ],
           ),
         ),
@@ -828,18 +927,25 @@ class SahabaAudioScreen extends StatelessWidget {
     );
   }
 
-  Widget _actionTab(String text, bool isActive) {
+  Widget _actionTab(BuildContext context, String text, bool isActive) {
+    final sw = MediaQuery.of(context).size.width;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: sw * 0.04, vertical: 8),
       decoration: BoxDecoration(
-        color: isActive ? kPrimaryBrown : kDarkButton,
+        color: isActive
+            ? kPrimaryBrown
+            : (isDark ? const Color(0xFF1E1E1E) : kDarkButton),
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isDark ? Colors.grey.shade900 : Colors.transparent,
+        ),
       ),
       child: Text(
         text,
-        style: const TextStyle(
+        style: TextStyle(
           color: Colors.white,
-          fontSize: 11,
+          fontSize: sw * 0.028,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -847,23 +953,34 @@ class SahabaAudioScreen extends StatelessWidget {
   }
 
   Widget _bottomAction(
+    BuildContext context,
     IconData icon,
     String label,
     bool isActive, {
     VoidCallback? onTap,
   }) {
+    final sw = MediaQuery.of(context).size.width;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 20, color: isActive ? kPrimaryBrown : Colors.black),
+          Icon(
+            icon,
+            size: sw * 0.05,
+            color: isActive
+                ? kPrimaryBrown
+                : (isDark ? Colors.white38 : Colors.black),
+          ),
           const SizedBox(height: 4),
           Text(
             label,
             style: TextStyle(
-              fontSize: 8,
-              color: isActive ? kPrimaryBrown : Colors.black,
+              fontSize: sw * 0.02,
+              color: isActive
+                  ? kPrimaryBrown
+                  : (isDark ? Colors.white38 : Colors.black),
               fontWeight: FontWeight.bold,
             ),
           ),

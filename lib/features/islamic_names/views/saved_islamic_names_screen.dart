@@ -5,9 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../controller/islamic_name_controller.dart';
 
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
-const Color kBackground = Color(0xFFFBFBFD);
-const Color kTextDark = Color(0xFF2E2E2E);
-const Color kTextGrey = Color(0xFF757575);
 
 class SavedIslamicNamesScreen extends StatelessWidget {
   const SavedIslamicNamesScreen({super.key});
@@ -15,24 +12,32 @@ class SavedIslamicNamesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = IslamicNameController.instance;
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFFBFBFD),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: isDark ? Colors.white70 : Colors.grey,
+            size: sw * 0.05,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
         title: Text(
-          // "Saved Names",
           tr("saved_names_title"),
           style: GoogleFonts.ebGaramond(
-            color: Colors.black,
+            color: isDark ? Colors.white : Colors.black,
             fontWeight: FontWeight.bold,
-            fontSize: 22,
+            fontSize: sw * 0.055,
           ),
         ),
       ),
@@ -53,14 +58,16 @@ class SavedIslamicNamesScreen extends StatelessWidget {
               children: [
                 Icon(
                   Icons.bookmark_border,
-                  size: 60,
-                  color: Colors.grey.shade300,
+                  size: sw * 0.15,
+                  color: isDark ? Colors.white24 : Colors.grey.shade300,
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: sh * 0.02),
                 Text(
-                  // "No saved names yet",
                   tr("no_saved_names_yet"),
-                  style: GoogleFonts.ebGaramond(fontSize: 18, color: kTextGrey),
+                  style: GoogleFonts.ebGaramond(
+                    fontSize: sw * 0.045,
+                    color: isDark ? Colors.grey[500] : const Color(0xFF757575),
+                  ),
                 ),
               ],
             ),
@@ -68,17 +75,22 @@ class SavedIslamicNamesScreen extends StatelessWidget {
         }
 
         return ListView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          padding: EdgeInsets.symmetric(
+            horizontal: sw * 0.05,
+            vertical: sh * 0.025,
+          ),
           itemCount: savedNames.length,
           itemBuilder: (context, index) {
             final name = savedNames[index];
             return Container(
-              margin: const EdgeInsets.only(bottom: 10),
-              padding: const EdgeInsets.all(15),
+              margin: EdgeInsets.only(bottom: sh * 0.012),
+              padding: EdgeInsets.all(sw * 0.04),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade200),
+                border: Border.all(
+                  color: isDark ? Colors.grey.shade900 : Colors.grey.shade200,
+                ),
               ),
               child: Row(
                 children: [
@@ -91,29 +103,34 @@ class SavedIslamicNamesScreen extends StatelessWidget {
                             Text(
                               name.name,
                               style: GoogleFonts.ebGaramond(
-                                fontSize: 16,
+                                fontSize: sw * 0.04,
                                 fontWeight: FontWeight.w600,
-                                color: kTextDark,
+                                color: isDark
+                                    ? Colors.white
+                                    : const Color(0xFF2E2E2E),
                               ),
                             ),
-                            const SizedBox(width: 10),
+                            SizedBox(width: sw * 0.025),
                             Text(
                               "– ${name.arabic}",
                               style: GoogleFonts.amiri(
-                                fontSize: 16,
+                                fontSize: sw * 0.04,
                                 fontWeight: FontWeight.bold,
-                                color: kTextDark,
+                                color: isDark
+                                    ? Colors.white
+                                    : const Color(0xFF2E2E2E),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 5),
+                        SizedBox(height: sh * 0.006),
                         Text(
-                          // "Meaning: ${name.meaning}",
                           "${tr("meaning_colon")} ${name.meaning}",
                           style: GoogleFonts.ebGaramond(
-                            fontSize: 14,
-                            color: kTextGrey,
+                            fontSize: sw * 0.035,
+                            color: isDark
+                                ? Colors.grey[400]
+                                : const Color(0xFF757575),
                           ),
                         ),
                       ],
@@ -121,7 +138,11 @@ class SavedIslamicNamesScreen extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () => controller.toggleSaveStatus(name),
-                    child: Icon(Icons.bookmark, color: kPrimaryBrown, size: 20),
+                    child: Icon(
+                      Icons.bookmark,
+                      color: kPrimaryBrown,
+                      size: sw * 0.05,
+                    ),
                   ),
                 ],
               ),
