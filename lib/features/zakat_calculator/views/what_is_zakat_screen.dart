@@ -14,10 +14,11 @@ class ZakatWhatIsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.locale;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark ? const Color(0xFF121212) : kBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
@@ -29,7 +30,7 @@ class ZakatWhatIsScreen extends StatelessWidget {
             Text(
               tr("zakat"),
               style: GoogleFonts.ebGaramond(
-                color: Colors.black,
+                color: isDark ? Colors.white : Colors.black,
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
               ),
@@ -49,12 +50,14 @@ class ZakatWhatIsScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade100),
+                border: Border.all(
+                  color: isDark ? Colors.grey.shade800 : Colors.grey.shade100,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.03),
+                    color: Colors.black.withOpacity(isDark ? 0.2 : 0.03),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -85,7 +88,7 @@ class ZakatWhatIsScreen extends StatelessWidget {
                           style: GoogleFonts.ebGaramond(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
-                            color: kTextDark,
+                            color: isDark ? Colors.white : kTextDark,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -109,11 +112,11 @@ class ZakatWhatIsScreen extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.02),
+                    color: Colors.black.withOpacity(isDark ? 0.2 : 0.02),
                     blurRadius: 15,
                     offset: const Offset(0, 8),
                   ),
@@ -124,24 +127,29 @@ class ZakatWhatIsScreen extends StatelessWidget {
                 children: [
                   _contentParagraph(
                     localizeDigits(tr("zakat_pillar"), context),
+                    isDark,
                   ),
                   _contentParagraph(
                     localizeDigits(tr("zakat_meaning_growth"), context),
+                    isDark,
                   ),
                   _contentParagraph(
                     localizeDigits(tr("zakat_percent"), context),
+                    isDark,
                   ),
                   _contentParagraph(
                     localizeDigits(tr("zakat_charity_poor"), context),
+                    isDark,
                   ),
                   _contentParagraph(
                     localizeDigits(tr("zakat_obligation_justice"), context),
+                    isDark,
                   ),
                   Text(
                     localizeDigits(tr("zakat_quran_verse"), context),
                     style: GoogleFonts.ebGaramond(
                       fontSize: 15,
-                      color: kTextDark,
+                      color: isDark ? Colors.white70 : kTextDark,
                       height: 1.5,
                       fontStyle: FontStyle.normal,
                     ),
@@ -155,14 +163,14 @@ class ZakatWhatIsScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 border: const Border(
                   left: BorderSide(color: kPrimaryBrown, width: 4),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.02),
+                    color: Colors.black.withOpacity(isDark ? 0.2 : 0.02),
                     blurRadius: 15,
                     offset: const Offset(0, 8),
                   ),
@@ -171,11 +179,11 @@ class ZakatWhatIsScreen extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 4.0),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
                     child: Icon(
                       Icons.menu_book_outlined,
-                      color: kTextDark,
+                      color: isDark ? Colors.white70 : kTextDark,
                       size: 20,
                     ),
                   ),
@@ -189,7 +197,7 @@ class ZakatWhatIsScreen extends StatelessWidget {
                           style: GoogleFonts.ebGaramond(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: kTextDark,
+                            color: isDark ? Colors.white : kTextDark,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -213,14 +221,14 @@ class ZakatWhatIsScreen extends StatelessWidget {
     );
   }
 
-  Widget _contentParagraph(String text) {
+  Widget _contentParagraph(String text, bool isDark) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
       child: Text(
         text,
         style: GoogleFonts.ebGaramond(
           fontSize: 15,
-          color: kTextDark,
+          color: isDark ? Colors.white70 : kTextDark,
           height: 1.5,
         ),
       ),

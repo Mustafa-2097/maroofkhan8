@@ -725,7 +725,9 @@ class QuickStartGrid extends StatelessWidget {
             child: _GridCard(
               title: tr(feature.titleKey),
               icon: feature.icon,
-              imagePath: feature.imagePath,
+              imagePath: isDark && feature.darkImagePath != null
+                  ? feature.darkImagePath
+                  : feature.imagePath,
               color: feature.colorBuilder(isDark, primaryColor),
               isPinkCard: feature.isPinkCard,
               textColor: isDark ? Colors.white : Colors.white,

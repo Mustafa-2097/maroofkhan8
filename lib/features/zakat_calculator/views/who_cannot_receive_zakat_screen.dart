@@ -13,10 +13,11 @@ class WhoCannotReceiveZakatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.locale;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark ? const Color(0xFF121212) : kBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
@@ -28,7 +29,7 @@ class WhoCannotReceiveZakatScreen extends StatelessWidget {
             Text(
               tr("zakat"),
               style: GoogleFonts.ebGaramond(
-                color: Colors.black,
+                color: isDark ? Colors.white : Colors.black,
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
               ),
@@ -49,12 +50,14 @@ class WhoCannotReceiveZakatScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade100),
+                border: Border.all(
+                  color: isDark ? Colors.grey.shade800 : Colors.grey.shade100,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.03),
+                    color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -85,7 +88,7 @@ class WhoCannotReceiveZakatScreen extends StatelessWidget {
                           style: GoogleFonts.ebGaramond(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
-                            color: kTextDark,
+                            color: isDark ? Colors.white : kTextDark,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -109,11 +112,11 @@ class WhoCannotReceiveZakatScreen extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.02),
+                    color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.02),
                     blurRadius: 15,
                     offset: const Offset(0, 8),
                   ),
@@ -127,24 +130,22 @@ class WhoCannotReceiveZakatScreen extends StatelessWidget {
                     style: GoogleFonts.ebGaramond(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: kTextDark,
+                      color: isDark ? Colors.white : kTextDark,
                       height: 1.4,
                     ),
                   ),
                   const SizedBox(height: 24),
-
-                  _ineligibleItem(tr("cannot_family")),
-                  _ineligibleItem(tr("cannot_wealthy")),
-                  _ineligibleItem(tr("cannot_non_muslims_except")),
-                  _ineligibleItem(tr("cannot_prophet_family")),
-                  _ineligibleItem(tr("cannot_able_bodied")),
-
+                  _ineligibleItem(tr("cannot_family"), isDark),
+                  _ineligibleItem(tr("cannot_wealthy"), isDark),
+                  _ineligibleItem(tr("cannot_non_muslims_except"), isDark),
+                  _ineligibleItem(tr("cannot_prophet_family"), isDark),
+                  _ineligibleItem(tr("cannot_able_bodied"), isDark),
                   const SizedBox(height: 8),
                   Text(
                     tr("zakat_family_notice"),
                     style: GoogleFonts.ebGaramond(
                       fontSize: 15,
-                      color: kTextDark,
+                      color: isDark ? Colors.white70 : kTextDark,
                       height: 1.5,
                     ),
                   ),
@@ -157,14 +158,14 @@ class WhoCannotReceiveZakatScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 border: const Border(
                   left: BorderSide(color: kPrimaryBrown, width: 4),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.02),
+                    color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.02),
                     blurRadius: 15,
                     offset: const Offset(0, 8),
                   ),
@@ -173,11 +174,11 @@ class WhoCannotReceiveZakatScreen extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 4.0),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
                     child: Icon(
                       Icons.menu_book_outlined,
-                      color: kTextDark,
+                      color: isDark ? Colors.white70 : kTextDark,
                       size: 20,
                     ),
                   ),
@@ -191,7 +192,7 @@ class WhoCannotReceiveZakatScreen extends StatelessWidget {
                           style: GoogleFonts.ebGaramond(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: kTextDark,
+                            color: isDark ? Colors.white : kTextDark,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -215,7 +216,7 @@ class WhoCannotReceiveZakatScreen extends StatelessWidget {
     );
   }
 
-  Widget _ineligibleItem(String text) {
+  Widget _ineligibleItem(String text, bool isDark) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
       child: Row(
@@ -232,7 +233,7 @@ class WhoCannotReceiveZakatScreen extends StatelessWidget {
               text,
               style: GoogleFonts.ebGaramond(
                 fontSize: 15,
-                color: kTextDark,
+                color: isDark ? Colors.white70 : kTextDark,
                 height: 1.3,
               ),
             ),

@@ -106,7 +106,11 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     context.locale;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFF8F9FE),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -133,7 +137,9 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
                         style: GoogleFonts.playfairDisplay(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: const Color(0xFF2E2E2E),
+                          color: isDark
+                              ? Colors.white
+                              : const Color(0xFF2E2E2E),
                         ),
                         children: [
                           TextSpan(text: "${widget.bookName}-"),
@@ -157,9 +163,11 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
                     child: Text(
                       "${widget.bookName} > ${tr('chapters')} ${localizeDigits(widget.chapterNum, context)} > ${tr('hadith')} ${localizeDigits(widget.hadithNumber, context)}",
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 11,
-                        color: Color.fromARGB(255, 78, 78, 78),
+                        color: isDark
+                            ? Colors.grey.shade500
+                            : const Color.fromARGB(255, 78, 78, 78),
                       ),
                     ),
                   ),
@@ -215,11 +223,11 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                   borderRadius: BorderRadius.circular(15),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
+                      color: Colors.black.withOpacity(isDark ? 0.2 : 0.04),
                       blurRadius: 15,
                       offset: const Offset(0, 5),
                     ),
@@ -274,20 +282,24 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
                     ],
                     Text(
                       widget.hadithText,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         height: 1.6,
                         fontWeight: FontWeight.w400,
-                        color: Color(0xFF2E2E2E),
+                        color: isDark
+                            ? Colors.white70
+                            : const Color(0xFF2E2E2E),
                       ),
                     ),
                     const SizedBox(height: 20),
                     Center(
                       child: Text(
                         "${widget.bookName} • ${tr('hadith')} ${localizeDigits(widget.hadithNumber, context)}",
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 10,
-                          color: Color.fromARGB(255, 78, 78, 78),
+                          color: isDark
+                              ? Colors.grey.shade500
+                              : const Color.fromARGB(255, 78, 78, 78),
                         ),
                       ),
                     ),
@@ -343,7 +355,7 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Column(
@@ -351,9 +363,10 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
                   children: [
                     Text(
                       tr("simple_explanation"),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : Colors.black87,
                       ),
                     ),
                     const SizedBox(height: 15),
