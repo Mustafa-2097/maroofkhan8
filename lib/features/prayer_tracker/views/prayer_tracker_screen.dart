@@ -23,11 +23,12 @@ class PrayerTrackerScreenn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.locale;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final sh = MediaQuery.of(context).size.height;
     final sw = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark ? const Color(0xFF121212) : kBackground,
       appBar: AppBar(
         title: HeaderSection(title: tr("prayer_tracker")),
         centerTitle: true,
@@ -66,7 +67,7 @@ class PrayerTrackerScreenn extends StatelessWidget {
                     vertical: sh * 0.012,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                     borderRadius: BorderRadius.circular(30),
                     boxShadow: [
                       BoxShadow(
@@ -80,6 +81,7 @@ class PrayerTrackerScreenn extends StatelessWidget {
                     localizeDigits(tr("rajab_date_example"), context),
                     style: GoogleFonts.playfairDisplay(
                       color: kPrimaryBrown,
+
                       fontWeight: FontWeight.bold,
                       // fontSize: 14,
                       fontSize: sw * 0.035,
@@ -97,7 +99,7 @@ class PrayerTrackerScreenn extends StatelessWidget {
                   // fontSize: 24,
                   fontSize: sw * 0.06,
                   fontWeight: FontWeight.bold,
-                  color: kTextDark,
+                  color: isDark ? Colors.white : kTextDark,
                 ),
               ),
               // const SizedBox(height: 5),
@@ -107,7 +109,7 @@ class PrayerTrackerScreenn extends StatelessWidget {
                 style: GoogleFonts.playfairDisplay(
                   // fontSize: 18,
                   fontSize: sw * 0.045,
-                  color: kTextDark,
+                  color: isDark ? Colors.white : kTextDark,
                 ),
               ),
               // const SizedBox(height: 20),
@@ -157,13 +159,14 @@ class PrayerTimesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final sh = MediaQuery.of(context).size.height;
     final sw = MediaQuery.of(context).size.width;
 
     return Container(
       // padding: const EdgeInsets.all(16),
       padding: EdgeInsets.all(sw * 0.04),
-      decoration: _cardDecoration(sw),
+      decoration: _cardDecoration(sw, isDark),
       child: Column(
         children: [
           Row(
@@ -175,6 +178,7 @@ class PrayerTimesCard extends StatelessWidget {
                   // fontSize: 13,
                   fontSize: sw * 0.032,
                   fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : Colors.black,
                 ),
               ),
               Row(
@@ -185,19 +189,37 @@ class PrayerTimesCard extends StatelessWidget {
                       // fontSize: 12,
                       fontSize: sw * 0.03,
                       fontWeight: FontWeight.bold,
+                      color: isDark ? Colors.grey[400] : kTextDark,
                     ),
                   ),
                   // const Icon(Icons.chevron_right, size: 16),
-                  Icon(Icons.chevron_right, size: sw * 0.04),
+                  Icon(
+                    Icons.chevron_right,
+                    size: sw * 0.04,
+                    color: isDark ? Colors.grey[400] : Colors.black,
+                  ),
                 ],
               ),
             ],
           ),
           // const Divider(height: 25, color: Color(0xFFEEEEEE)),
-          Divider(height: sh * 0.03, color: const Color(0xFFEEEEEE)),
-          _prayerRow(tr("fajr"), localizeDigits("4:15am", context), sw),
-          _prayerRow(tr("sunrise"), localizeDigits("5:45am", context), sw),
-          _prayerRow(tr("dhuhr"), localizeDigits("12:10pm", context), sw),
+          Divider(
+            height: sh * 0.03,
+            color: isDark ? Colors.grey.shade800 : const Color(0xFFEEEEEE),
+          ),
+          _prayerRow(tr("fajr"), localizeDigits("4:15am", context), sw, isDark),
+          _prayerRow(
+            tr("sunrise"),
+            localizeDigits("5:45am", context),
+            sw,
+            isDark,
+          ),
+          _prayerRow(
+            tr("dhuhr"),
+            localizeDigits("12:10pm", context),
+            sw,
+            isDark,
+          ),
 
           // Active Row (Asr)
           Container(
@@ -254,14 +276,19 @@ class PrayerTimesCard extends StatelessWidget {
             ),
           ),
 
-          _prayerRow(tr("magrib"), localizeDigits("6:25pm", context), sw),
-          _prayerRow(tr("isha"), localizeDigits("7:45pm", context), sw),
+          _prayerRow(
+            tr("magrib"),
+            localizeDigits("6:25pm", context),
+            sw,
+            isDark,
+          ),
+          _prayerRow(tr("isha"), localizeDigits("7:45pm", context), sw, isDark),
         ],
       ),
     );
   }
 
-  Widget _prayerRow(String name, String time, double sw) {
+  Widget _prayerRow(String name, String time, double sw, bool isDark) {
     return Padding(
       // padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
       padding: EdgeInsets.symmetric(
@@ -274,14 +301,17 @@ class PrayerTimesCard extends StatelessWidget {
           // Text(name, style: const TextStyle(fontSize: 13, color: kTextDark)),
           Text(
             name,
-            style: TextStyle(fontSize: sw * 0.032, color: kTextDark),
+            style: TextStyle(
+              fontSize: sw * 0.032,
+              color: isDark ? Colors.white : kTextDark,
+            ),
           ),
           Text(
             time,
-            style: const TextStyle(
-              fontSize: 13,
+            style: TextStyle(
+              fontSize: sw * 0.032,
               fontWeight: FontWeight.bold,
-              color: kTextDark,
+              color: isDark ? Colors.white : kTextDark,
             ),
           ),
         ],
@@ -327,13 +357,14 @@ class DuasReflectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final sh = MediaQuery.of(context).size.height;
     final sw = MediaQuery.of(context).size.width;
 
     return Container(
       // padding: const EdgeInsets.all(16),
       padding: EdgeInsets.all(sw * 0.04),
-      decoration: _cardDecoration(sw),
+      decoration: _cardDecoration(sw, isDark),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -343,10 +374,14 @@ class DuasReflectionCard extends StatelessWidget {
               // fontSize: 13,
               fontSize: sw * 0.032,
               fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white : Colors.black,
             ),
           ),
           // const Divider(height: 25, color: Color(0xFFEEEEEE)),
-          Divider(height: sh * 0.03, color: const Color(0xFFEEEEEE)),
+          Divider(
+            height: sh * 0.03,
+            color: isDark ? Colors.grey.shade800 : const Color(0xFFEEEEEE),
+          ),
           Row(
             children: [
               Expanded(
@@ -380,12 +415,13 @@ class SpecialRamadanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final sw = MediaQuery.of(context).size.width;
 
     return Container(
       // padding: const EdgeInsets.all(16),
       padding: EdgeInsets.all(sw * 0.04),
-      decoration: _cardDecoration(sw),
+      decoration: _cardDecoration(sw, isDark),
       child: Column(
         children: [
           Row(
@@ -397,6 +433,7 @@ class SpecialRamadanCard extends StatelessWidget {
                   // fontSize: 13,
                   fontSize: sw * 0.032,
                   fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : Colors.black,
                 ),
               ),
               Row(
@@ -404,10 +441,17 @@ class SpecialRamadanCard extends StatelessWidget {
                   Text(
                     tr("special_month"),
                     // style: const TextStyle(fontSize: 12),
-                    style: TextStyle(fontSize: sw * 0.03),
+                    style: TextStyle(
+                      fontSize: sw * 0.03,
+                      color: isDark ? Colors.grey[400] : Colors.black,
+                    ),
                   ),
                   // const Icon(Icons.keyboard_arrow_down, size: 16),
-                  Icon(Icons.keyboard_arrow_down, size: sw * 0.04),
+                  Icon(
+                    Icons.keyboard_arrow_down,
+                    size: sw * 0.04,
+                    color: isDark ? Colors.grey[400] : Colors.black,
+                  ),
                 ],
               ),
             ],
@@ -421,6 +465,7 @@ class SpecialRamadanCard extends StatelessWidget {
                   Icons.mosque_outlined,
                   tr("dua_for_ramadan"),
                   sw,
+                  isDark,
                 ),
               ),
               // const SizedBox(width: 15),
@@ -430,6 +475,7 @@ class SpecialRamadanCard extends StatelessWidget {
                   Icons.dark_mode_outlined,
                   tr("track_fasting"),
                   sw,
+                  isDark,
                 ),
               ),
             ],
@@ -439,7 +485,7 @@ class SpecialRamadanCard extends StatelessWidget {
     );
   }
 
-  Widget _iconPillButton(IconData icon, String label, double sw) {
+  Widget _iconPillButton(IconData icon, String label, double sw, bool isDark) {
     return Container(
       // padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
       padding: EdgeInsets.symmetric(
@@ -447,10 +493,12 @@ class SpecialRamadanCard extends StatelessWidget {
         horizontal: sw * 0.025,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF2A2A2A) : Colors.white,
         // borderRadius: BorderRadius.circular(30),
         borderRadius: BorderRadius.circular(sw * 0.08),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(
+          color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+        ),
         boxShadow: [
           BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 5),
         ],
@@ -473,12 +521,17 @@ class SpecialRamadanCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: sw * 0.028,
                 fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : Colors.black,
               ),
               overflow: TextOverflow.ellipsis,
             ),
           ),
           // const Icon(Icons.chevron_right, size: 16, color: Colors.black),
-          Icon(Icons.chevron_right, size: sw * 0.04, color: Colors.black),
+          Icon(
+            Icons.chevron_right,
+            size: sw * 0.04,
+            color: isDark ? Colors.white : Colors.black,
+          ),
         ],
       ),
     );
@@ -490,13 +543,14 @@ class RamadanCountdownCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final sh = MediaQuery.of(context).size.height;
     final sw = MediaQuery.of(context).size.width;
 
     return Container(
       // padding: const EdgeInsets.all(20),
       padding: EdgeInsets.all(sw * 0.05),
-      decoration: _cardDecoration(sw),
+      decoration: _cardDecoration(sw, isDark),
       child: Column(
         children: [
           Stack(
@@ -509,6 +563,7 @@ class RamadanCountdownCard extends StatelessWidget {
                   // fontSize: 14,
                   fontSize: sw * 0.035,
                   fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : Colors.black,
                 ),
               ),
               Align(
@@ -628,13 +683,14 @@ class AyahOfDayCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final sw = MediaQuery.of(context).size.width;
 
     return Container(
       width: double.infinity,
       // padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
       padding: EdgeInsets.symmetric(horizontal: sw * 0.05, vertical: sw * 0.06),
-      decoration: _cardDecoration(sw),
+      decoration: _cardDecoration(sw, isDark),
       child: Column(
         children: [
           Text(
@@ -643,9 +699,13 @@ class AyahOfDayCard extends StatelessWidget {
               // fontSize: 14,
               fontSize: sw * 0.035,
               fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white : Colors.black,
             ),
           ),
-          const Divider(height: 30, color: Color(0xFFEEEEEE)),
+          Divider(
+            height: 30,
+            color: isDark ? Colors.grey.shade800 : const Color(0xFFEEEEEE),
+          ),
           Text(
             "فَإِنَّ مَعَ الْعُسْرِ يُسْرًا ﴿٥﴾\nإِنَّ مَعَ الْعُسْرِ يُسْرًا ﴿٦﴾",
             textAlign: TextAlign.center,
@@ -654,6 +714,7 @@ class AyahOfDayCard extends StatelessWidget {
               fontSize: sw * 0.05,
               fontWeight: FontWeight.bold,
               height: 1.5,
+              color: isDark ? Colors.white : Colors.black,
             ),
           ),
           // const SizedBox(height: 15),
@@ -664,7 +725,7 @@ class AyahOfDayCard extends StatelessWidget {
             // style: GoogleFonts.playfairDisplay(fontSize: 15, color: kTextDark),
             style: GoogleFonts.playfairDisplay(
               fontSize: sw * 0.038,
-              color: kTextDark,
+              color: isDark ? Colors.white : kTextDark,
             ),
           ),
           // const SizedBox(height: 15),
@@ -672,7 +733,10 @@ class AyahOfDayCard extends StatelessWidget {
           Text(
             localizeDigits(tr("surah_reference"), context),
             // style: const TextStyle(fontSize: 12, color: kTextGrey),
-            style: TextStyle(fontSize: sw * 0.03, color: kTextGrey),
+            style: TextStyle(
+              fontSize: sw * 0.03,
+              color: isDark ? Colors.grey[400] : kTextGrey,
+            ),
           ),
         ],
       ),
@@ -682,9 +746,9 @@ class AyahOfDayCard extends StatelessWidget {
 
 // --- HELPERS ---
 
-BoxDecoration _cardDecoration(double sw) {
+BoxDecoration _cardDecoration(double sw, bool isDark) {
   return BoxDecoration(
-    color: kCardColor,
+    color: isDark ? const Color(0xFF1E1E1E) : kCardColor,
     // borderRadius: BorderRadius.circular(20),
     borderRadius: BorderRadius.circular(sw * 0.05),
     boxShadow: [

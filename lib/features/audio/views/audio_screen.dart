@@ -27,6 +27,7 @@ class _AudioScreenState extends State<AudioScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final sh = MediaQuery.of(context).size.height;
     final sw = MediaQuery.of(context).size.width;
 
@@ -41,7 +42,9 @@ class _AudioScreenState extends State<AudioScreen> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFF5F5F5),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () => controller.fetchAudios(category: "All"),
@@ -62,7 +65,14 @@ class _AudioScreenState extends State<AudioScreen> {
                       children: [
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.6,
-                          child: Center(child: Text(tr("no_audio_found"))),
+                          child: Center(
+                            child: Text(
+                              tr("no_audio_found"),
+                              style: TextStyle(
+                                color: isDark ? Colors.white : Colors.black,
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     );
@@ -109,6 +119,7 @@ class AudioCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final controller = AudioController.instance;
     final sh = MediaQuery.of(context).size.height;
     final sw = MediaQuery.of(context).size.width;
@@ -128,8 +139,11 @@ class AudioCard extends StatelessWidget {
           vertical: sh * 0.012,
         ),
         decoration: BoxDecoration(
-          border: Border.all(color: const Color(0xFFA6A6A6), width: 1),
-          color: Colors.white,
+          border: Border.all(
+            color: isDark ? Colors.grey.shade800 : const Color(0xFFA6A6A6),
+            width: 1,
+          ),
+          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
           // borderRadius: BorderRadius.circular(16),
           borderRadius: BorderRadius.circular(sw * 0.04),
         ),
@@ -166,6 +180,7 @@ class AudioCard extends StatelessWidget {
                       // fontSize: 20,
                       fontSize: sw * 0.045,
                       fontWeight: FontWeight.w400,
+                      color: isDark ? Colors.white : Colors.black,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -199,7 +214,7 @@ class AudioCard extends StatelessWidget {
                     style: TextStyle(
                       // fontSize: 12,
                       fontSize: sw * 0.03,
-                      color: Colors.black,
+                      color: isDark ? Colors.white : Colors.black,
                       fontWeight: FontWeight.w400,
                     ),
                   );
@@ -228,7 +243,9 @@ class AudioCard extends StatelessWidget {
                     Icons.more_horiz,
                     // size: 18,
                     size: sw * 0.045,
-                    color: const Color.fromARGB(255, 0, 0, 0),
+                    color: isDark
+                        ? Colors.grey[400]
+                        : const Color.fromARGB(255, 0, 0, 0),
                   ),
                 ),
               ],

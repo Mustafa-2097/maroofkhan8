@@ -198,6 +198,9 @@ class SurahCard extends StatelessWidget {
                       // fontSize: 16,
                       fontSize: sw * 0.04,
                       fontWeight: FontWeight.bold,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black,
                     ),
                   ),
                   Text(
