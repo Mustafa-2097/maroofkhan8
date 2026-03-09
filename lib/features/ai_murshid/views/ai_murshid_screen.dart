@@ -23,7 +23,6 @@ class _ChatScreenState extends State<ChatScreen> {
   bool isTyping = false;
 
   final Color rustBrown = const Color(0xFF80381C);
-  final Color bgColor = const Color(0xFFF8F9FF);
 
   Future<void> _addTypingMessage(String fullText) async {
     final chatMessage = ChatMessage(text: '', isUser: false, isTyping: true);
@@ -70,45 +69,62 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     context.locale; // Force rebuild on locale change
     return Scaffold(
-      backgroundColor: bgColor,
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFF8F9FF),
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(80),
+        preferredSize: Size.fromHeight(sh * 0.09),
         child: SafeArea(
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              border: Border(bottom: BorderSide(color: Color(0xFFEEEEEE))),
+            padding: EdgeInsets.symmetric(horizontal: sw * 0.04, vertical: 8),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+              border: Border(
+                bottom: BorderSide(
+                  color: isDark
+                      ? Colors.grey.shade900
+                      : const Color(0xFFEEEEEE),
+                ),
+              ),
             ),
             child: Row(
               children: [
                 if (Navigator.canPop(context))
                   IconButton(
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.arrow_back_ios,
-                      color: Colors.grey,
-                      size: 20,
+                      color: isDark ? Colors.white70 : Colors.grey,
+                      size: sw * 0.05,
                     ),
                     onPressed: () => Navigator.pop(context),
                   ),
                 // Logo Circle
                 Container(
-                  height: 50,
-                  width: 50,
+                  height: sw * 0.12,
+                  width: sw * 0.12,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.grey.shade300, width: 2),
+                    border: Border.all(
+                      color: isDark
+                          ? Colors.grey.shade800
+                          : Colors.grey.shade300,
+                      width: 2,
+                    ),
                   ),
                   child: Center(
                     child: Image.asset(
                       'assets/images/onboarding02.png',
-                      height: 100,
+                      height: sw * 0.2, // Proportional height
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: sw * 0.03),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,23 +132,21 @@ class _ChatScreenState extends State<ChatScreen> {
                     Text(
                       tr("nav_al_murshid"),
                       style: GoogleFonts.playfairDisplay(
-                        fontSize: 18,
+                        fontSize: sw * 0.045,
                         fontWeight: FontWeight.bold,
-                        color: const Color(0xFF2E2E2E),
+                        color: isDark ? Colors.white : const Color(0xFF2E2E2E),
                       ),
                     ),
                     Text(
                       tr("your_spiritual_guide"),
                       style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey.shade500,
+                        fontSize: sw * 0.03,
+                        color: isDark ? Colors.grey[500] : Colors.grey.shade500,
                         letterSpacing: 0.5,
                       ),
                     ),
                   ],
                 ),
-                // const Spacer(),
-                // const Icon(Icons.more_horiz, color: Colors.black),
               ],
             ),
           ),
@@ -146,29 +160,31 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: Text(
                       tr("learn_islam_ai"),
                       style: GoogleFonts.playfairDisplay(
-                        fontSize: 22,
+                        fontSize: sw * 0.055,
                         fontWeight: FontWeight.w600,
-                        color: Colors.grey.shade400,
+                        color: isDark ? Colors.grey[700] : Colors.grey.shade400,
                       ),
                       textAlign: TextAlign.center,
                     ),
                   )
                 : ListView.builder(
                     controller: _scrollController,
-                    padding: const EdgeInsets.all(20),
+                    padding: EdgeInsets.all(sw * 0.05),
                     itemCount: messages.length + (isTyping ? 1 : 0),
                     itemBuilder: (context, index) {
                       if (index == messages.length && isTyping) {
                         return Align(
                           alignment: Alignment.centerLeft,
                           child: Container(
-                            margin: const EdgeInsets.only(bottom: 12),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
+                            margin: EdgeInsets.only(bottom: sh * 0.015),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: sw * 0.04,
                               vertical: 10,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.grey.shade300,
+                              color: isDark
+                                  ? const Color(0xFF1E1E1E)
+                                  : Colors.grey.shade300,
                               borderRadius: BorderRadius.circular(15),
                             ),
                             child: const ThreeDotTyping(),
@@ -186,13 +202,21 @@ class _ChatScreenState extends State<ChatScreen> {
                         child: Stack(
                           children: [
                             Container(
-                              margin: const EdgeInsets.only(bottom: 12, top: 8),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
+                              margin: EdgeInsets.only(
+                                bottom: sh * 0.015,
+                                top: 8,
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: sw * 0.04,
                                 vertical: 10,
                               ),
+                              constraints: BoxConstraints(maxWidth: sw * 0.75),
                               decoration: BoxDecoration(
-                                color: isUser ? rustBrown : Colors.white,
+                                color: isUser
+                                    ? rustBrown
+                                    : (isDark
+                                          ? const Color(0xFF1E1E1E)
+                                          : Colors.white),
                                 borderRadius: BorderRadius.only(
                                   topLeft: const Radius.circular(15),
                                   topRight: const Radius.circular(15),
@@ -203,7 +227,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                     ? []
                                     : [
                                         BoxShadow(
-                                          color: Colors.black.withOpacity(0.05),
+                                          color: Colors.black.withOpacity(
+                                            isDark ? 0.3 : 0.05,
+                                          ),
                                           blurRadius: 6,
                                           offset: const Offset(0, 3),
                                         ),
@@ -219,15 +245,21 @@ class _ChatScreenState extends State<ChatScreen> {
                                         style: TextStyle(
                                           color: isUser
                                               ? Colors.white
-                                              : Colors.black87,
-                                          fontSize: 14,
+                                              : (isDark
+                                                    ? Colors.white.withOpacity(
+                                                        0.9,
+                                                      )
+                                                    : Colors.black87),
+                                          fontSize: sw * 0.035,
                                         ),
                                       ),
                                       if (message.isTyping)
-                                        const TextSpan(
+                                        TextSpan(
                                           text: '▍',
                                           style: TextStyle(
-                                            color: Colors.black54,
+                                            color: isDark
+                                                ? Colors.white54
+                                                : Colors.black54,
                                           ),
                                         ),
                                     ],
@@ -261,13 +293,17 @@ class _ChatScreenState extends State<ChatScreen> {
                                   child: Container(
                                     padding: const EdgeInsets.all(4),
                                     decoration: BoxDecoration(
-                                      color: Colors.grey.shade200,
+                                      color: isDark
+                                          ? Colors.grey.shade900
+                                          : Colors.grey.shade200,
                                       shape: BoxShape.circle,
                                     ),
-                                    child: const Icon(
+                                    child: Icon(
                                       Icons.copy,
-                                      size: 14,
-                                      color: Colors.black54,
+                                      size: sw * 0.03,
+                                      color: isDark
+                                          ? Colors.white54
+                                          : Colors.black54,
                                     ),
                                   ),
                                 ),
@@ -390,24 +426,34 @@ class _VoiceInputBarState extends State<VoiceInputBar> {
 
   @override
   Widget build(BuildContext context) {
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     context.locale; // Force rebuild on locale change
     return Padding(
-      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 120),
+      padding: EdgeInsets.only(
+        left: sw * 0.05,
+        right: sw * 0.05,
+        bottom: sh * 0.15,
+      ),
       child: Stack(
         alignment: Alignment.centerRight,
         clipBehavior: Clip.none,
         children: [
           AnimatedContainer(
             duration: const Duration(milliseconds: 250),
-            height: 70,
+            height: sh * 0.08,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
               borderRadius: BorderRadius.circular(40),
-              border: Border.all(color: Colors.grey.shade200),
+              border: Border.all(
+                color: isDark ? Colors.grey.shade900 : Colors.grey.shade200,
+              ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.02),
+                  color: Colors.black.withOpacity(isDark ? 0.3 : 0.02),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -415,7 +461,7 @@ class _VoiceInputBarState extends State<VoiceInputBar> {
             ),
             child: Row(
               children: [
-                const SizedBox(width: 25),
+                SizedBox(width: sw * 0.06),
 
                 Expanded(
                   child: AnimatedSwitcher(
@@ -431,14 +477,18 @@ class _VoiceInputBarState extends State<VoiceInputBar> {
                               vertical: 8,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF8F9FA),
+                              color: isDark
+                                  ? const Color(0xFF252525)
+                                  : const Color(0xFFF8F9FA),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
                               tr("speak_now"),
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Color(0xFF4A4A4A),
+                              style: TextStyle(
+                                fontSize: sw * 0.03,
+                                color: isDark
+                                    ? Colors.white70
+                                    : const Color(0xFF4A4A4A),
                               ),
                             ),
                           )
@@ -448,14 +498,20 @@ class _VoiceInputBarState extends State<VoiceInputBar> {
                             enabled: !isListening,
                             maxLines: null,
                             minLines: 1,
+                            style: TextStyle(
+                              color: isDark ? Colors.white : Colors.black,
+                            ),
                             decoration: InputDecoration(
                               hintText: tr("type_a_message"),
+                              hintStyle: TextStyle(
+                                color: isDark ? Colors.white38 : Colors.grey,
+                              ),
                               border: InputBorder.none,
-                              contentPadding: const EdgeInsets.only(
+                              contentPadding: EdgeInsets.only(
                                 left: 0,
-                                top: 12,
-                                bottom: 12,
-                                right: 110,
+                                top: sh * 0.015,
+                                bottom: sh * 0.015,
+                                right: sw * 0.25,
                               ),
                             ),
                             onChanged: (_) {
@@ -490,14 +546,14 @@ class _VoiceInputBarState extends State<VoiceInputBar> {
                   },
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 250),
-                    height: isListening ? 60 : 40,
-                    width: isListening ? 60 : 40,
+                    height: isListening ? sw * 0.15 : sw * 0.1,
+                    width: isListening ? sw * 0.15 : sw * 0.1,
                     decoration: BoxDecoration(
-                      color: Colors.grey,
+                      color: isDark ? Colors.grey[800] : Colors.grey,
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey,
+                          color: isDark ? Colors.black26 : Colors.grey,
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
@@ -506,12 +562,12 @@ class _VoiceInputBarState extends State<VoiceInputBar> {
                     child: Icon(
                       isListening ? Icons.mic : Icons.mic_none,
                       color: Colors.white,
-                      size: isListening ? 30 : 22,
+                      size: isListening ? sw * 0.075 : sw * 0.055,
                     ),
                   ),
                 ),
 
-                const SizedBox(width: 8),
+                SizedBox(width: sw * 0.02),
 
                 // Send Button
                 GestureDetector(
@@ -528,16 +584,16 @@ class _VoiceInputBarState extends State<VoiceInputBar> {
 
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
-                    height: 42,
-                    width: 42,
+                    height: sw * 0.105,
+                    width: sw * 0.105,
                     decoration: BoxDecoration(
                       color: _controller.text.trim().isEmpty || isListening
-                          ? Colors.grey.shade300
+                          ? (isDark ? Colors.white10 : Colors.grey.shade300)
                           : Colors.blueAccent,
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.shade300,
+                          color: isDark ? Colors.black12 : Colors.grey.shade300,
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
@@ -546,9 +602,9 @@ class _VoiceInputBarState extends State<VoiceInputBar> {
                     child: Icon(
                       Icons.send,
                       color: _controller.text.trim().isEmpty || isListening
-                          ? Colors.grey
+                          ? (isDark ? Colors.white24 : Colors.grey)
                           : Colors.white,
-                      size: 20,
+                      size: sw * 0.05,
                     ),
                   ),
                 ),
@@ -629,11 +685,12 @@ class _ThreeDotTypingState extends State<ThreeDotTyping>
 class Dot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       width: 4,
       height: 4,
-      decoration: const BoxDecoration(
-        color: Colors.grey,
+      decoration: BoxDecoration(
+        color: isDark ? Colors.white70 : Colors.grey,
         shape: BoxShape.circle,
       ),
     );
