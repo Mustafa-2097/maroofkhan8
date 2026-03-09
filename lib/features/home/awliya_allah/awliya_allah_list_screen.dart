@@ -20,8 +20,12 @@ class _AwliyaAllahListScreenState extends State<AwliyaAllahListScreen> {
   Widget build(BuildContext context) {
     final controller = Get.put(AwliyaAllahController());
     const Color primaryBrown = Color(0xFF8D3C1F);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFFDFDFD),
       appBar: AppBar(
         title: HeaderSection(title: tr("awliya_allah_title")),
         centerTitle: true,
@@ -47,11 +51,14 @@ class _AwliyaAllahListScreenState extends State<AwliyaAllahListScreen> {
             child: Container(
               height: 50,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.grey.shade300),
+                border: Border.all(
+                  color: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+                ),
               ),
               child: TextField(
+                style: TextStyle(color: isDark ? Colors.white : Colors.black87),
                 onChanged: (val) => controller.searchQuery.value = val,
                 decoration: InputDecoration(
                   hintText: tr("search"),
@@ -82,7 +89,11 @@ class _AwliyaAllahListScreenState extends State<AwliyaAllahListScreen> {
                 itemCount: controller.filteredAwliyaList.length,
                 itemBuilder: (context, index) {
                   final item = controller.filteredAwliyaList[index];
-                  return AwliyaCard(awliya: item, buttonColor: primaryBrown);
+                  return AwliyaCard(
+                    awliya: item,
+                    buttonColor: primaryBrown,
+                    isDark: isDark,
+                  );
                 },
               );
             }),
@@ -96,11 +107,13 @@ class _AwliyaAllahListScreenState extends State<AwliyaAllahListScreen> {
 class AwliyaCard extends StatelessWidget {
   final AwliyaAllah awliya;
   final Color buttonColor;
+  final bool isDark;
 
   const AwliyaCard({
     super.key,
     required this.awliya,
     required this.buttonColor,
+    this.isDark = false,
   });
 
   @override
@@ -113,11 +126,11 @@ class AwliyaCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 15),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
               blurRadius: 10,
               offset: const Offset(0, 2),
             ),
@@ -130,9 +143,14 @@ class AwliyaCard extends StatelessWidget {
               backgroundImage: awliya.image.isNotEmpty
                   ? NetworkImage(awliya.image)
                   : null,
-              backgroundColor: Colors.grey.shade200,
+              backgroundColor: isDark
+                  ? Colors.grey.shade800
+                  : Colors.grey.shade200,
               child: awliya.image.isEmpty
-                  ? const Icon(Icons.person, color: Colors.grey)
+                  ? Icon(
+                      Icons.person,
+                      color: isDark ? Colors.grey.shade400 : Colors.grey,
+                    )
                   : null,
             ),
             const SizedBox(width: 15),
@@ -145,6 +163,7 @@ class AwliyaCard extends StatelessWidget {
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
+                      color: isDark ? Colors.white : Colors.black87,
                     ),
                   ),
                   const SizedBox(height: 4),

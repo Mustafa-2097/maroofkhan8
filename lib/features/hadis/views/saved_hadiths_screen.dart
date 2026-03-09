@@ -12,16 +12,17 @@ class SavedHadithsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = HadithController.instance;
-    const Color primaryBrown = Color(0xFF8D3C1F);
-    const Color background = Color(0xFFFBFBFD);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final Color background = isDark
+        ? const Color(0xFF121212)
+        : const Color(0xFFFBFBFD);
     const Color textDark = Color(0xFF2E2E2E);
     const Color textGrey = Color(0xFF757575);
 
     return Scaffold(
       backgroundColor: background,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
@@ -31,13 +32,15 @@ class SavedHadithsScreen extends StatelessWidget {
         title: Text(
           tr("saved_hadiths"),
           style: GoogleFonts.ebGaramond(
-            color: Colors.black,
+            color: isDark ? Colors.white : Colors.black,
             fontWeight: FontWeight.bold,
             fontSize: 22,
           ),
         ),
       ),
       body: Obx(() {
+        final controller = HadithController.instance;
+        const Color primaryBrown = Color(0xFF8D3C1F);
         if (controller.isSavedLoading.value &&
             controller.savedHadiths.isEmpty) {
           return const Center(
@@ -76,12 +79,14 @@ class SavedHadithsScreen extends StatelessWidget {
               margin: const EdgeInsets.only(bottom: 15),
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade200),
+                border: Border.all(
+                  color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.02),
+                    color: Colors.black.withOpacity(isDark ? 0.2 : 0.02),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -97,7 +102,7 @@ class SavedHadithsScreen extends StatelessWidget {
                     style: GoogleFonts.ebGaramond(
                       fontSize: 15,
                       height: 1.5,
-                      color: textDark,
+                      color: isDark ? Colors.white70 : textDark,
                     ),
                   ),
                   const SizedBox(height: 12),

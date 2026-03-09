@@ -15,6 +15,7 @@ class QuickStartFeature {
   final String titleKey;
   final IconData? icon;
   final String? imagePath;
+  final String? darkImagePath;
   final Widget Function() destination;
   final Color Function(bool isDark, Color primary) colorBuilder;
   final bool isPinkCard;
@@ -23,6 +24,7 @@ class QuickStartFeature {
     required this.titleKey,
     this.icon,
     this.imagePath,
+    this.darkImagePath,
     required this.destination,
     required this.colorBuilder,
     this.isPinkCard = false,
@@ -93,6 +95,7 @@ class DashboardController extends GetxController {
     QuickStartFeature(
       titleKey: "feature_zakat_calculator",
       imagePath: "assets/images/zakat.png",
+      darkImagePath: "assets/images/zakat_white.png",
       destination: () => const ZakatCalculator(),
       colorBuilder: (isDark, primary) =>
           isDark ? Colors.pink.withOpacity(0.15) : const Color(0xFFE94E77),
