@@ -35,8 +35,9 @@ class ZakatCalculator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.locale;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark ? const Color(0xFF121212) : kBackground,
       appBar: AppBar(
         title: HeaderSection(title: tr("zakat")),
         centerTitle: true,
@@ -47,13 +48,6 @@ class ZakatCalculator extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      // appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      //   elevation: 0,
-      //   centerTitle: true,
-      //   title: Text("Zakat", style: GoogleFonts.playfairDisplay(color: Colors.black, fontWeight: FontWeight.bold)),
-      // ),
-      //bottomNavigationBar: _buildBottomNav(0),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
@@ -71,7 +65,7 @@ class ZakatCalculator extends StatelessWidget {
               },
               child: Container(
                 padding: const EdgeInsets.all(16),
-                decoration: _cardDecoration(),
+                decoration: _cardDecoration(isDark),
                 child: Row(
                   children: [
                     Container(
@@ -91,6 +85,7 @@ class ZakatCalculator extends StatelessWidget {
                           style: GoogleFonts.playfairDisplay(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
+                            color: isDark ? Colors.white : kTextDark,
                           ),
                         ),
                         Text(
@@ -112,14 +107,14 @@ class ZakatCalculator extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(15),
                 border: const Border(
                   left: BorderSide(color: kPrimaryBrown, width: 4),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
                     blurRadius: 10,
                   ),
                 ],
@@ -138,7 +133,7 @@ class ZakatCalculator extends StatelessWidget {
                       Text(
                         tr("hadith_on_zakat"),
                         style: TextStyle(
-                          color: Colors.green[800],
+                          color: Colors.green[isDark ? 400 : 800],
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -150,6 +145,7 @@ class ZakatCalculator extends StatelessWidget {
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 14,
                       fontStyle: FontStyle.italic,
+                      color: isDark ? Colors.white70 : kTextDark,
                     ),
                   ),
                   const SizedBox(height: 5),
@@ -171,6 +167,7 @@ class ZakatCalculator extends StatelessWidget {
               style: GoogleFonts.playfairDisplay(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
+                color: isDark ? Colors.white : kTextDark,
               ),
             ),
             Text(
@@ -189,6 +186,7 @@ class ZakatCalculator extends StatelessWidget {
                 tr("what_is_zakat"),
                 tr("what_is_zakat_sub"),
                 kPrimaryBrown,
+                isDark,
               ),
             ),
             GestureDetector(
@@ -200,6 +198,7 @@ class ZakatCalculator extends StatelessWidget {
                 tr("who_must_pay_zakat"),
                 tr("who_must_pay_zakat_sub"),
                 kPrimaryBrown,
+                isDark,
               ),
             ),
             GestureDetector(
@@ -211,6 +210,7 @@ class ZakatCalculator extends StatelessWidget {
                 tr("nisab_hawl"),
                 tr("nisab_hawl_sub"),
                 kPrimaryBrown,
+                isDark,
               ),
             ),
             GestureDetector(
@@ -222,6 +222,7 @@ class ZakatCalculator extends StatelessWidget {
                 tr("assets_included"),
                 tr("assets_included_sub"),
                 kPrimaryBrown,
+                isDark,
               ),
             ),
             GestureDetector(
@@ -233,6 +234,7 @@ class ZakatCalculator extends StatelessWidget {
                 tr("who_can_receive"),
                 tr("who_can_receive_sub"),
                 kPrimaryBrown,
+                isDark,
               ),
             ),
             GestureDetector(
@@ -244,6 +246,7 @@ class ZakatCalculator extends StatelessWidget {
                 tr("who_cannot_receive"),
                 tr("who_cannot_receive_sub"),
                 kPrimaryBrown,
+                isDark,
               ),
             ),
 
@@ -254,11 +257,17 @@ class ZakatCalculator extends StatelessWidget {
     );
   }
 
-  Widget _ruleItem(IconData icon, String title, String sub, Color color) {
+  Widget _ruleItem(
+    IconData icon,
+    String title,
+    String sub,
+    Color color,
+    bool isDark,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
-      decoration: _cardDecoration(),
+      decoration: _cardDecoration(isDark),
       child: Row(
         children: [
           Container(
@@ -276,9 +285,10 @@ class ZakatCalculator extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
+                    color: isDark ? Colors.white : kTextDark,
                   ),
                 ),
                 Text(
@@ -304,10 +314,11 @@ class ZakatCalculatorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.locale;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final controller = Get.put(ZakatController());
 
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark ? const Color(0xFF121212) : kBackground,
 
       appBar: AppBar(
         title: Column(
@@ -336,7 +347,7 @@ class ZakatCalculatorScreen extends StatelessWidget {
             // Header Card
             Container(
               padding: const EdgeInsets.all(16),
-              decoration: _cardDecoration(),
+              decoration: _cardDecoration(isDark),
               child: Row(
                 children: [
                   Container(
@@ -359,6 +370,7 @@ class ZakatCalculatorScreen extends StatelessWidget {
                         style: GoogleFonts.playfairDisplay(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
+                          color: isDark ? Colors.white : kTextDark,
                         ),
                       ),
                       Text(
@@ -433,54 +445,61 @@ class ZakatCalculatorScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // Inputs
             _inputField(
               Icons.attach_money,
               tr("cash_in_hand"),
               controller.cashController,
               tr("usd"),
+              isDark,
             ),
             _inputField(
               Icons.trending_up,
               tr("gold_price_per_gram"),
               controller.goldPriceController,
               tr("usd"),
+              isDark,
             ),
             _inputField(
               Icons.diamond_outlined,
               tr("gold_label"),
               controller.goldGramsController,
               tr("grams"),
+              isDark,
             ),
             _inputField(
               Icons.trending_up,
               tr("silver_price_per_gram"),
               controller.silverPriceController,
               tr("usd"),
+              isDark,
             ),
             _inputField(
               Icons.link,
               tr("silver_label"),
               controller.silverGramsController,
               tr("grams"),
+              isDark,
             ),
             _inputField(
               Icons.store,
               tr("business_assets"),
               controller.businessAssetsController,
               tr("usd"),
+              isDark,
             ),
             _inputField(
               Icons.credit_card,
               tr("savings_investments"),
               controller.savingsInvestmentsController,
               tr("usd"),
+              isDark,
             ),
             _inputField(
               Icons.money_off,
               tr("liabilities_debts"),
               controller.liabilitiesController,
               tr("usd"),
+              isDark,
             ),
 
             const SizedBox(height: 20),
@@ -490,7 +509,9 @@ class ZakatCalculatorScreen extends StatelessWidget {
               () => Container(
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
+                  color: isDark
+                      ? const Color(0xFF1E1E1E)
+                      : Colors.grey.shade100,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
@@ -499,7 +520,10 @@ class ZakatCalculatorScreen extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         tr("summary"),
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : kTextDark,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -579,11 +603,12 @@ class ZakatCalculatorScreen extends StatelessWidget {
     String label,
     TextEditingController controller,
     String suffix,
+    bool isDark,
   ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
       padding: const EdgeInsets.all(12),
-      decoration: _cardDecoration(),
+      decoration: _cardDecoration(isDark),
       child: Column(
         children: [
           Row(
@@ -602,9 +627,10 @@ class ZakatCalculatorScreen extends StatelessWidget {
                   const SizedBox(width: 10),
                   Text(
                     label,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
+                      color: isDark ? Colors.white : kTextDark,
                     ),
                   ),
                 ],
@@ -617,7 +643,7 @@ class ZakatCalculatorScreen extends StatelessWidget {
             height: 45,
             padding: const EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
-              color: kBackground,
+              color: isDark ? const Color(0xFF2A2A2A) : kBackground,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
@@ -628,7 +654,10 @@ class ZakatCalculatorScreen extends StatelessWidget {
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                     ),
-                    style: const TextStyle(fontSize: 14),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: isDark ? Colors.white : kTextDark,
+                    ),
                     decoration: const InputDecoration(
                       border: InputBorder.none,
                       isDense: true,
@@ -760,10 +789,11 @@ ${tr("shared_via")}
   @override
   Widget build(BuildContext context) {
     context.locale;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final controller = Get.find<ZakatController>();
 
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark ? const Color(0xFF121212) : kBackground,
       appBar: AppBar(
         title: HeaderSection(title: tr("zakat_calculator_title")),
         centerTitle: true,
@@ -783,7 +813,7 @@ ${tr("shared_via")}
             // Short Header
             Container(
               padding: const EdgeInsets.all(12),
-              decoration: _cardDecoration(),
+              decoration: _cardDecoration(isDark),
               child: Row(
                 children: [
                   Container(
@@ -801,7 +831,10 @@ ${tr("shared_via")}
                   const SizedBox(width: 15),
                   Text(
                     "${tr("zakat_calculator_title")}\n${tr("enter_assets_below")}",
-                    style: const TextStyle(fontSize: 12),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: isDark ? Colors.white70 : kTextDark,
+                    ),
                   ),
                 ],
               ),
@@ -871,14 +904,15 @@ ${tr("shared_via")}
               () => Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(15),
-                decoration: _cardDecoration(),
+                decoration: _cardDecoration(isDark),
                 child: Column(
                   children: [
                     Text(
                       "${tr("zakat_status_colon")} ${controller.isAboveNisab.value ? tr("eligible") : tr("not_eligible")}",
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
+                        color: isDark ? Colors.white : kTextDark,
                       ),
                     ),
                     Text(
@@ -969,13 +1003,16 @@ ${tr("shared_via")}
             Obx(
               () => Container(
                 padding: const EdgeInsets.all(15),
-                decoration: _cardDecoration(),
+                decoration: _cardDecoration(isDark),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       tr("breakdown"),
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : kTextDark,
+                      ),
                     ),
                     const SizedBox(height: 15),
                     _breakdownRow(
@@ -1035,14 +1072,14 @@ ${tr("shared_via")}
             Container(
               padding: const EdgeInsets.all(15),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(15),
                 border: const Border(
                   left: BorderSide(color: kPrimaryBrown, width: 3),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
                     blurRadius: 10,
                   ),
                 ],
@@ -1075,6 +1112,7 @@ ${tr("shared_via")}
                   child: _outlineButton(
                     Icons.download,
                     tr("save"),
+                    isDark: isDark,
                     onTap: () => _downloadZakatDetails(context, controller),
                   ),
                 ),
@@ -1083,6 +1121,7 @@ ${tr("shared_via")}
                   child: _outlineButton(
                     Icons.share,
                     tr("share"),
+                    isDark: isDark,
                     onTap: () {
                       final text =
                           "${tr("zakat_calculator_title")} ${tr("summary")}:\n"
@@ -1125,8 +1164,8 @@ ${tr("shared_via")}
                     Navigator.popUntil(context, (route) => route.isFirst),
                 child: Text(
                   tr("back_to_home"),
-                  style: const TextStyle(
-                    color: Colors.black,
+                  style: TextStyle(
+                    color: isDark ? Colors.white70 : Colors.black,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -1184,26 +1223,39 @@ ${tr("shared_via")}
     );
   }
 
-  Widget _outlineButton(IconData icon, String label, {VoidCallback? onTap}) {
+  Widget _outlineButton(
+    IconData icon,
+    String label, {
+    required bool isDark,
+    VoidCallback? onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         height: 40,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
           borderRadius: BorderRadius.circular(8),
+          border: isDark ? Border.all(color: Colors.grey.shade800) : null,
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 2),
+            BoxShadow(
+              color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+              blurRadius: 2,
+            ),
           ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 16, color: kTextDark),
+            Icon(icon, size: 16, color: isDark ? Colors.white70 : kTextDark),
             const SizedBox(width: 5),
             Text(
               label,
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : kTextDark,
+              ),
             ),
           ],
         ),
@@ -1252,13 +1304,13 @@ ${tr("shared_via")}
 //   );
 // }
 
-BoxDecoration _cardDecoration() {
+BoxDecoration _cardDecoration(bool isDark) {
   return BoxDecoration(
-    color: Colors.white,
+    color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
     borderRadius: BorderRadius.circular(15),
     boxShadow: [
       BoxShadow(
-        color: Colors.black.withOpacity(0.04),
+        color: Colors.black.withOpacity(isDark ? 0.2 : 0.04),
         blurRadius: 10,
         offset: const Offset(0, 4),
       ),

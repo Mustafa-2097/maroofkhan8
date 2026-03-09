@@ -40,9 +40,13 @@ class _HadithListDetailsScreenState extends State<HadithListDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     context.locale;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     const Color primaryBrown = Color(0xFF8D3C1F);
 
     return Scaffold(
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFF8F9FE),
       body: SafeArea(
         child: Column(
           children: [
@@ -53,12 +57,12 @@ class _HadithListDetailsScreenState extends State<HadithListDetailsScreen> {
               child: Row(
                 children: [
                   _backButton(),
-                  const Expanded(
+                  Expanded(
                     child: Divider(
                       indent: 10,
                       endIndent: 10,
-                      color: Colors.grey,
-                      thickness: 0.7,
+                      color: isDark ? Colors.white : Colors.grey,
+                      thickness: 0.9,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -71,7 +75,7 @@ class _HadithListDetailsScreenState extends State<HadithListDetailsScreen> {
                         style: GoogleFonts.playfairDisplay(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black87,
+                          color: isDark ? Colors.white : Colors.black87,
                         ),
                         children: [
                           TextSpan(text: "${widget.bookName}-"),
@@ -86,12 +90,13 @@ class _HadithListDetailsScreenState extends State<HadithListDetailsScreen> {
                   ),
                   const SizedBox(width: 8),
                   const Icon(Icons.circle, size: 4, color: Color(0xFF8D3C1F)),
-                  const Expanded(
+                  Expanded(
                     child: Divider(
                       indent: 10,
                       endIndent: 10,
-                      color: Colors.grey,
-                      thickness: 0.7,
+                      color: isDark ? Colors.white : Colors.grey,
+                      // color: Color.fromARGB(255, 255, 255, 255),
+                      thickness: 0.9,
                     ),
                   ),
                   const SizedBox(width: 40), // Placeholder for balance
@@ -111,11 +116,18 @@ class _HadithListDetailsScreenState extends State<HadithListDetailsScreen> {
                       height: 45,
                       padding: const EdgeInsets.symmetric(horizontal: 15),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.grey.shade200),
+                        border: Border.all(
+                          color: isDark
+                              ? Colors.grey.shade800
+                              : Colors.grey.shade200,
+                        ),
                       ),
                       child: TextField(
+                        style: TextStyle(
+                          color: isDark ? Colors.white : Colors.black87,
+                        ),
                         onChanged: (value) =>
                             controller.hadithSearchQuery.value = value,
                         decoration: InputDecoration(
@@ -179,15 +191,21 @@ class _HadithListDetailsScreenState extends State<HadithListDetailsScreen> {
   }
 
   Widget _iconContainer(IconData icon) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       height: 45,
       width: 45,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(
+          color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+        ),
       ),
-      child: Icon(icon, color: Colors.grey.shade300),
+      child: Icon(
+        icon,
+        color: isDark ? Colors.grey.shade600 : Colors.grey.shade300,
+      ),
     );
   }
 }
@@ -208,15 +226,16 @@ class HadithCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withOpacity(isDark ? 0.2 : 0.03),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -238,16 +257,19 @@ class HadithCard extends StatelessWidget {
           ],
           Text(
             hadith.hadith,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               height: 1.5,
-              color: Color(0xFF2E2E2E),
+              color: isDark ? Colors.white70 : const Color(0xFF2E2E2E),
             ),
           ),
           const SizedBox(height: 15),
           Text(
             "$bookName • ${tr('hadith')} ${localizeDigits(hadith.number, context)}",
-            style: const TextStyle(fontSize: 11, color: Colors.grey),
+            style: TextStyle(
+              fontSize: 11,
+              color: isDark ? Colors.grey.shade500 : Colors.grey,
+            ),
           ),
           const Divider(height: 30, color: Color(0xFFEEEEEE)),
           Row(
