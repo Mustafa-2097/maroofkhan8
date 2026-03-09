@@ -56,9 +56,9 @@ class SubscriptionPage extends StatelessWidget {
                       children: [
                         IconButton(
                           onPressed: () => Get.back(),
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.arrow_back,
-                            color: Colors.black,
+                            color: isDark ? Colors.white : Colors.black,
                             size: 24,
                           ),
                         ),
@@ -67,7 +67,7 @@ class SubscriptionPage extends StatelessWidget {
                             'SUBSCRIPTION',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              color: Colors.black,
+                              color: isDark ? Colors.white : Colors.black,
                               fontSize: 18.sp,
                               fontWeight: FontWeight.bold,
                             ),
@@ -101,7 +101,9 @@ class SubscriptionPage extends StatelessWidget {
                               Text(
                                 'SUBSCRIBE TO PREMIUM',
                                 style: TextStyle(
-                                  color: AppColors.blackColor,
+                                  color: isDark
+                                      ? Colors.white
+                                      : AppColors.blackColor,
                                   fontSize: 22.sp,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -117,7 +119,10 @@ class SubscriptionPage extends StatelessWidget {
                                 child: Text(
                                   'Enjoy watching Full-HD videos, without restrictions and without ads',
                                   style: TextStyle(
-                                    color: Colors.grey[600],
+                                    color: isDark
+                                        ? Colors.grey[300]
+                                        : Colors.grey[600],
+                                    // color: Colors.grey[600],
                                     fontSize: 14.sp,
                                     height: 1.4,
                                   ),
@@ -198,13 +203,17 @@ class SubscriptionPage extends StatelessWidget {
     bool isMostPopular = false,
     required VoidCallback onSeeMore,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       width: cardWidth,
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         borderRadius: BorderRadius.circular(26.r),
-        border: Border.all(color: Colors.grey.shade300, width: 1.2),
+        border: Border.all(
+          color: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+          width: 1.2,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -256,7 +265,7 @@ class SubscriptionPage extends StatelessWidget {
                       Text(
                         '\$$price',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: isDark ? Colors.white : Colors.black,
                           fontSize: 28.sp,
                           fontWeight: FontWeight.bold,
                         ),
@@ -265,7 +274,7 @@ class SubscriptionPage extends StatelessWidget {
                       Text(
                         '/$type',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: isDark ? Colors.grey[300] : Colors.black,
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w400,
                         ),
@@ -277,7 +286,7 @@ class SubscriptionPage extends StatelessWidget {
             ),
           ),
           SizedBox(height: 10.h),
-          Divider(color: Colors.grey.shade200),
+          Divider(color: isDark ? Colors.grey.shade700 : Colors.grey.shade200),
           SizedBox(height: 10.h),
 
           // Features
@@ -316,18 +325,26 @@ class SubscriptionPage extends StatelessWidget {
   }
 
   Widget _buildFeatureRow(String text) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Icon(Icons.check, color: AppColors.primaryColorLight, size: 18.r),
-        SizedBox(width: 12.w),
-        Expanded(
-          child: Text(
-            text,
-            style: TextStyle(color: Colors.black, fontSize: 14.sp),
-          ),
-        ),
-      ],
+    return Builder(
+      builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.check, color: AppColors.primaryColorLight, size: 18.r),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: Text(
+                text,
+                style: TextStyle(
+                  color: isDark ? Colors.grey[300] : Colors.black,
+                  fontSize: 14.sp,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

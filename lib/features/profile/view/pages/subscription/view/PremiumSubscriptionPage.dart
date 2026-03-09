@@ -8,17 +8,24 @@ class PremiumSubscriptionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
     const Color primaryBrown = AppColors.primaryColorLight;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FB), 
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFF8F9FB),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           onPressed: () => Get.back(),
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(
+            Icons.arrow_back,
+            color: isDark ? Colors.white : Colors.black,
+          ),
         ),
       ),
       body: SafeArea(
@@ -27,11 +34,14 @@ class PremiumSubscriptionPage extends StatelessWidget {
           children: [
             //SizedBox(height: 10.h),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24.w),
+              padding: EdgeInsets.symmetric(horizontal: sw * 0.06),
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 40.h),
+                padding: EdgeInsets.symmetric(
+                  horizontal: sw * 0.05,
+                  vertical: sh * 0.05,
+                ),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                   borderRadius: BorderRadius.circular(24.r),
                   boxShadow: [
                     BoxShadow(
@@ -51,7 +61,7 @@ class PremiumSubscriptionPage extends StatelessWidget {
                         fontSize: 22.sp,
                         fontWeight: FontWeight.w500,
                         fontFamily: 'Serif',
-                        color: Colors.black87,
+                        color: isDark ? Colors.white : Colors.black87,
                       ),
                     ),
                     SizedBox(height: 30.h),
@@ -117,46 +127,50 @@ class PremiumSubscriptionPage extends StatelessWidget {
     required String text,
     bool showDownloadIcon = false,
   }) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 20.h),
-      child: Row(
-        children: [
-          // Circular Icon Container
-          Container(
-            padding: EdgeInsets.all(10.w),
-            decoration: const BoxDecoration(
-              color: AppColors.primaryColorLight,
-              //color: Color(0xFF8D441D), // Brown background
-              shape: BoxShape.circle,
-            ),
-            child: Stack(
-              alignment: Alignment.bottomRight,
-              children: [
-                Icon(icon, color: Colors.white, size: 24.sp),
-                if (showDownloadIcon)
-                  const Icon(
-                    Icons.arrow_drop_down,
-                    color: Colors.white,
-                    size: 12,
-                  ),
-              ],
-            ),
-          ),
-          SizedBox(width: 16.w),
-          // Feature Text
-          Expanded(
-            child: Text(
-              text,
-              style: TextStyle(
-                fontSize: 15.sp,
-                color: Colors.black,
-                fontWeight: FontWeight.w400,
-                fontFamily: 'Serif',
+    return Builder(
+      builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return Padding(
+          padding: EdgeInsets.only(bottom: 20.h),
+          child: Row(
+            children: [
+              // Circular Icon Container
+              Container(
+                padding: EdgeInsets.all(10.w),
+                decoration: const BoxDecoration(
+                  color: AppColors.primaryColorLight,
+                  shape: BoxShape.circle,
+                ),
+                child: Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    Icon(icon, color: Colors.white, size: 24.sp),
+                    if (showDownloadIcon)
+                      const Icon(
+                        Icons.arrow_drop_down,
+                        color: Colors.white,
+                        size: 12,
+                      ),
+                  ],
+                ),
               ),
-            ),
+              SizedBox(width: 16.w),
+              // Feature Text
+              Expanded(
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    color: isDark ? Colors.grey[300] : Colors.black,
+                    fontWeight: FontWeight.w400,
+                    fontFamily: 'Serif',
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

@@ -14,36 +14,45 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sw = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: isDark ? const Color(0xFF121212) : Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios_new,
-            color: Colors.black,
+            color: isDark ? Colors.white : Colors.black,
             size: 20,
           ),
           onPressed: () {
             Get.back();
           },
         ),
-        title: const Text(
+        title: Text(
           'Subscription',
-          style: TextStyle(color: Colors.black, fontSize: 18),
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black,
+            fontSize: 18,
+          ),
         ),
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        padding: EdgeInsets.symmetric(horizontal: sw * 0.06),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-            const Text(
+            Text(
               'Select the payment method you want to use.',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: isDark ? Colors.white : Colors.black,
+              ),
             ),
             const SizedBox(height: 30),
 
@@ -88,6 +97,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   Widget _buildPaymentOption(String title, IconData icon, {String? imagePath}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     bool isSelected = selectedMethod == title;
 
     return GestureDetector(
@@ -96,9 +106,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         decoration: BoxDecoration(
           // Change color based on selection
-          color: isSelected ? const Color(0xFF8D401E) : Colors.white,
+          color: isSelected
+              ? const Color(0xFF8D401E)
+              : (isDark ? const Color(0xFF1E1E1E) : Colors.white),
           borderRadius: BorderRadius.circular(16),
-          border: isSelected ? null : Border.all(color: Colors.grey.shade200),
+          border: isSelected
+              ? null
+              : Border.all(
+                  color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+                ),
           boxShadow: isSelected
               ? []
               : [
