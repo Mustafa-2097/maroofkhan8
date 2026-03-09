@@ -30,7 +30,12 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFFDFDFD),
       body: SafeArea(
         child: Obx(() {
           if (controller.isDetailLoading.value) {
@@ -66,9 +71,15 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
                     backgroundImage: awliya.image.isNotEmpty
                         ? NetworkImage(awliya.image)
                         : null,
-                    backgroundColor: Colors.grey.shade200,
+                    backgroundColor: isDark
+                        ? Colors.grey.shade800
+                        : Colors.grey.shade200,
                     child: awliya.image.isEmpty
-                        ? const Icon(Icons.person, size: 90, color: Colors.grey)
+                        ? Icon(
+                            Icons.person,
+                            size: 90,
+                            color: isDark ? Colors.grey.shade400 : Colors.grey,
+                          )
                         : null,
                   ),
                 ),
@@ -81,7 +92,7 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
                   style: GoogleFonts.playfairDisplay(
                     fontSize: 24,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFF2E2E2E),
+                    color: isDark ? Colors.white : const Color(0xFF2E2E2E),
                   ),
                 ),
                 const SizedBox(height: 5),
@@ -90,7 +101,7 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
                   style: GoogleFonts.amiri(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black54,
+                    color: isDark ? Colors.white70 : Colors.black54,
                   ),
                 ),
 
@@ -100,10 +111,10 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      _tabButton(tr("biography"), 0),
-                      _tabButton(tr("teachings"), 1),
-                      _tabButton(tr("karamat"), 2),
-                      _tabButton(tr("quotes"), 3),
+                      _tabButton(tr("biography"), 0, isDark),
+                      _tabButton(tr("teachings"), 1, isDark),
+                      _tabButton(tr("karamat"), 2, isDark),
+                      _tabButton(tr("quotes"), 3, isDark),
                     ],
                   ),
                 ),
@@ -116,14 +127,14 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
                     _getTabTitle(),
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 22,
-                      color: const Color(0xFF2E2E2E),
+                      color: isDark ? Colors.white : const Color(0xFF2E2E2E),
                     ),
                   ),
                 ),
 
                 const SizedBox(height: 15),
 
-                _buildTabBody(awliya),
+                _buildTabBody(awliya, isDark),
 
                 const SizedBox(height: 40),
               ],
@@ -147,29 +158,38 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
     }
   }
 
-  Widget _buildTabBody(AwliyaAllah awliya) {
+  Widget _buildTabBody(AwliyaAllah awliya, bool isDark) {
     switch (selectedTabIndex) {
       case 1:
-        return _contentListTab(awliya.teachings, tr("teachings"));
+        return _contentListTab(
+          awliya.teachings,
+          tr("teachings"),
+          isDark: isDark,
+        );
       case 2:
-        return _contentListTab(awliya.karamats, tr("karamat"));
+        return _contentListTab(awliya.karamats, tr("karamat"), isDark: isDark);
       case 3:
-        return _contentListTab(awliya.quotes, tr("quotes"), isQuote: true);
+        return _contentListTab(
+          awliya.quotes,
+          tr("quotes"),
+          isQuote: true,
+          isDark: isDark,
+        );
       default:
-        return _biographyTab(awliya);
+        return _biographyTab(awliya, isDark);
     }
   }
 
-  Widget _biographyTab(AwliyaAllah awliya) {
+  Widget _biographyTab(AwliyaAllah awliya, bool isDark) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(25),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -177,27 +197,36 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
       ),
       child: Column(
         children: [
-          _infoRow(tr("label_name"), awliya.name),
+          _infoRow(tr("label_name"), awliya.name, isDark),
           _infoRow(
             tr("label_born"),
             localizeDigits(awliya.dateOfBirth ?? tr("not_available"), context),
+            isDark,
           ),
           _infoRow(
             tr("label_passed_away"),
             localizeDigits(awliya.dateOfDeath ?? tr("not_available"), context),
+            isDark,
           ),
           _infoRow(
             tr("label_position"),
             awliya.position ?? tr("not_available"),
+            isDark,
           ),
           _infoRow(
             tr("label_institution"),
             awliya.institution ?? tr("not_available"),
+            isDark,
           ),
-          _infoRow(tr("label_works"), awliya.works ?? tr("not_available")),
+          _infoRow(
+            tr("label_works"),
+            awliya.works ?? tr("not_available"),
+            isDark,
+          ),
           _infoRow(
             tr("label_known_for"),
             awliya.knownFor ?? tr("not_available"),
+            isDark,
           ),
         ],
       ),
@@ -208,6 +237,7 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
     List<AwliyaContentItem>? items,
     String type, {
     bool isQuote = false,
+    bool isDark = false,
   }) {
     if (items == null || items.isEmpty) {
       return Center(
@@ -225,23 +255,33 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
     return Column(
       children: items
           .map(
-            (item) =>
-                _actionCard(item.title, item.description, isQuote: isQuote),
+            (item) => _actionCard(
+              item.title,
+              item.description,
+              isDark,
+              isQuote: isQuote,
+            ),
           )
           .toList(),
     );
   }
 
-  Widget _actionCard(String title, String body, {bool isQuote = false}) {
+  Widget _actionCard(
+    String title,
+    String body,
+    bool isDark, {
+    bool isQuote = false,
+  }) {
     return _ActionCardWidget(
       title: title,
       body: body,
       isQuote: isQuote,
       primaryBrown: primaryBrown,
+      isDark: isDark,
     );
   }
 
-  Widget _tabButton(String label, int index) {
+  Widget _tabButton(String label, int index, bool isDark) {
     final bool isSelected = selectedTabIndex == index;
 
     return GestureDetector(
@@ -254,12 +294,14 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
         margin: const EdgeInsets.only(right: 12),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? primaryBrown : Colors.white,
+          color: isSelected
+              ? primaryBrown
+              : (isDark ? Colors.grey.shade800 : Colors.white),
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             if (!isSelected)
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
+                color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
                 blurRadius: 5,
               ),
           ],
@@ -267,7 +309,9 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? Colors.white : Colors.grey.shade600,
+            color: isSelected
+                ? Colors.white
+                : (isDark ? Colors.white70 : Colors.grey.shade600),
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -275,7 +319,7 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
     );
   }
 
-  Widget _infoRow(String label, String value) {
+  Widget _infoRow(String label, String value, bool isDark) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 18.0),
       child: Row(
@@ -288,7 +332,7 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
               style: GoogleFonts.playfairDisplay(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: Colors.black87,
+                color: isDark ? Colors.white70 : Colors.black87,
               ),
             ),
           ),
@@ -297,7 +341,7 @@ class _AwliyaAllahDetailsScreenState extends State<AwliyaAllahDetailsScreen> {
               value,
               style: GoogleFonts.playfairDisplay(
                 fontSize: 14,
-                color: Colors.black54,
+                color: isDark ? Colors.white : Colors.black54,
                 height: 1.4,
               ),
             ),
@@ -313,12 +357,14 @@ class _ActionCardWidget extends StatefulWidget {
   final String body;
   final bool isQuote;
   final Color primaryBrown;
+  final bool isDark;
 
   const _ActionCardWidget({
     required this.title,
     required this.body,
     this.isQuote = false,
     required this.primaryBrown,
+    this.isDark = false,
   });
 
   @override
@@ -335,12 +381,15 @@ class _ActionCardWidgetState extends State<_ActionCardWidget> {
       margin: const EdgeInsets.only(bottom: 15),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(width: 1, color: Colors.grey.shade200),
+        color: widget.isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        border: Border.all(
+          width: 1,
+          color: widget.isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+        ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: Colors.black.withOpacity(widget.isDark ? 0.2 : 0.03),
             blurRadius: 10,
           ),
         ],
@@ -351,7 +400,7 @@ class _ActionCardWidgetState extends State<_ActionCardWidget> {
             text: widget.body,
             style: GoogleFonts.playfairDisplay(
               fontSize: 13,
-              color: Colors.black54,
+              color: widget.isDark ? Colors.white70 : Colors.black54,
               height: 1.4,
               fontStyle: widget.isQuote ? FontStyle.italic : FontStyle.normal,
             ),
@@ -374,7 +423,7 @@ class _ActionCardWidgetState extends State<_ActionCardWidget> {
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  color: widget.isDark ? Colors.white : Colors.black87,
                 ),
               ),
               const SizedBox(height: 8),
@@ -384,7 +433,7 @@ class _ActionCardWidgetState extends State<_ActionCardWidget> {
                 overflow: isExpanded ? null : TextOverflow.ellipsis,
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 13,
-                  color: Colors.black54,
+                  color: widget.isDark ? Colors.white70 : Colors.black54,
                   height: 1.4,
                   fontStyle: widget.isQuote
                       ? FontStyle.italic

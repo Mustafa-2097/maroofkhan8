@@ -30,9 +30,10 @@ class _AhleBaitListScreenState extends State<AhleBaitListScreen> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(AhleBaitController());
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark ? const Color(0xFF121212) : kBackground,
       appBar: AppBar(
         title: HeaderSection(title: tr("ahle_bait_title")),
         centerTitle: true,
@@ -61,7 +62,7 @@ class _AhleBaitListScreenState extends State<AhleBaitListScreen> {
                 text: TextSpan(
                   style: GoogleFonts.playfairDisplay(
                     fontSize: 14,
-                    color: Colors.black87,
+                    color: isDark ? Colors.white70 : Colors.black87,
                   ),
                   children: [TextSpan(text: tr("ahle_bait_desc"))],
                 ),
@@ -73,11 +74,16 @@ class _AhleBaitListScreenState extends State<AhleBaitListScreen> {
                 height: 45,
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey.shade200),
+                  border: Border.all(
+                    color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+                  ),
                 ),
                 child: TextField(
+                  style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black87,
+                  ),
                   onChanged: (val) => controller.searchQuery.value = val,
                   decoration: InputDecoration(
                     hintText: tr("search"),
@@ -112,7 +118,7 @@ class _AhleBaitListScreenState extends State<AhleBaitListScreen> {
                     itemCount: controller.filteredAhlalbaytList.length,
                     itemBuilder: (context, index) {
                       final item = controller.filteredAhlalbaytList[index];
-                      return _ahleBaitCard(context, item);
+                      return _ahleBaitCard(context, item, isDark);
                     },
                   );
                 }),
@@ -124,7 +130,7 @@ class _AhleBaitListScreenState extends State<AhleBaitListScreen> {
     );
   }
 
-  Widget _ahleBaitCard(BuildContext context, AhleBait item) {
+  Widget _ahleBaitCard(BuildContext context, AhleBait item, bool isDark) {
     return GestureDetector(
       onTap: () {
         Get.to(() => AhleBaitDetailScreen(item: item));
@@ -133,11 +139,11 @@ class _AhleBaitListScreenState extends State<AhleBaitListScreen> {
         margin: const EdgeInsets.only(bottom: 15),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
               blurRadius: 10,
               offset: const Offset(0, 2),
             ),
@@ -150,9 +156,14 @@ class _AhleBaitListScreenState extends State<AhleBaitListScreen> {
               backgroundImage: item.image.isNotEmpty
                   ? NetworkImage(item.image)
                   : null,
-              backgroundColor: Colors.grey.shade200,
+              backgroundColor: isDark
+                  ? Colors.grey.shade800
+                  : Colors.grey.shade200,
               child: item.image.isEmpty
-                  ? const Icon(Icons.person, color: Colors.grey)
+                  ? Icon(
+                      Icons.person,
+                      color: isDark ? Colors.grey.shade400 : Colors.grey,
+                    )
                   : null,
             ),
             const SizedBox(width: 15),
@@ -165,6 +176,7 @@ class _AhleBaitListScreenState extends State<AhleBaitListScreen> {
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
+                      color: isDark ? Colors.white : Colors.black87,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -220,8 +232,10 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark ? const Color(0xFF121212) : kBackground,
       body: SafeArea(
         child: Obx(() {
           if (controller.isDetailLoading.value) {
@@ -256,9 +270,15 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
                   backgroundImage: member.image.isNotEmpty
                       ? NetworkImage(member.image)
                       : null,
-                  backgroundColor: Colors.grey.shade200,
+                  backgroundColor: isDark
+                      ? Colors.grey.shade800
+                      : Colors.grey.shade200,
                   child: member.image.isEmpty
-                      ? const Icon(Icons.person, size: 50, color: Colors.grey)
+                      ? Icon(
+                          Icons.person,
+                          size: 50,
+                          color: isDark ? Colors.grey.shade400 : Colors.grey,
+                        )
                       : null,
                 ),
                 const SizedBox(height: 15),
@@ -267,6 +287,7 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
                   style: GoogleFonts.playfairDisplay(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : Colors.black87,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -275,19 +296,19 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _tabButton(tr("biography"), 0),
+                    _tabButton(tr("biography"), 0, isDark),
                     const SizedBox(width: 10),
-                    _tabButton(tr("story"), 1),
+                    _tabButton(tr("story"), 1, isDark),
                     const SizedBox(width: 10),
-                    _tabButton(tr("quotes"), 2),
+                    _tabButton(tr("quotes"), 2, isDark),
                   ],
                 ),
                 const SizedBox(height: 20),
 
                 // Content Handling
-                if (_currentTab == 0) _buildBiographySection(member),
-                if (_currentTab == 1) _buildStoryPlayerSection(member),
-                if (_currentTab == 2) _buildQuotesSection(member),
+                if (_currentTab == 0) _buildBiographySection(member, isDark),
+                if (_currentTab == 1) _buildStoryPlayerSection(member, isDark),
+                if (_currentTab == 2) _buildQuotesSection(member, isDark),
               ],
             ),
           );
@@ -296,14 +317,16 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
     );
   }
 
-  Widget _tabButton(String text, int index) {
+  Widget _tabButton(String text, int index, bool isDark) {
     bool isActive = _currentTab == index;
     return GestureDetector(
       onTap: () => setState(() => _currentTab = index),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isActive ? kPrimaryBrown : kDarkButton,
+          color: isActive
+              ? kPrimaryBrown
+              : (isDark ? Colors.grey.shade800 : kDarkButton),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(
@@ -319,7 +342,7 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
   }
 
   // --- TAB CONTENT 1: BIOGRAPHY ---
-  Widget _buildBiographySection(AhleBait member) {
+  Widget _buildBiographySection(AhleBait member, bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -328,31 +351,33 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
           style: GoogleFonts.playfairDisplay(
             fontSize: 18,
             fontWeight: FontWeight.w600,
+            color: isDark ? Colors.white : Colors.black87,
           ),
         ),
         const SizedBox(height: 15),
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
+                color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
                 blurRadius: 10,
               ),
             ],
           ),
           child: Column(
             children: [
-              _bioRow(tr("label_name"), member.name),
-              _bioRow(tr("label_relation"), member.relation),
+              _bioRow(tr("label_name"), member.name, isDark),
+              _bioRow(tr("label_relation"), member.relation, isDark),
               _bioRow(
                 tr("label_born"),
                 localizeDigits(
                   member.dateOfBirth ?? tr("not_available"),
                   context,
                 ),
+                isDark,
               ),
               _bioRow(
                 tr("label_died"),
@@ -360,19 +385,27 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
                   member.dateOfDeath ?? tr("not_available"),
                   context,
                 ),
+                isDark,
               ),
               _bioRow(
                 tr("label_position"),
                 member.position ?? tr("not_available"),
+                isDark,
               ),
               _bioRow(
                 tr("label_institution"),
                 member.institution ?? tr("not_available"),
+                isDark,
               ),
-              _bioRow(tr("label_works"), member.work ?? tr("not_available")),
+              _bioRow(
+                tr("label_works"),
+                member.work ?? tr("not_available"),
+                isDark,
+              ),
               _bioRow(
                 tr("label_known_for"),
                 member.knownFor ?? tr("not_available"),
+                isDark,
               ),
             ],
           ),
@@ -381,7 +414,7 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
     );
   }
 
-  Widget _bioRow(String label, String value) {
+  Widget _bioRow(String label, String value, bool isDark) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15.0),
       child: Row(
@@ -391,15 +424,19 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
             width: 80,
             child: Text(
               label,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+                color: isDark ? Colors.white70 : Colors.black87,
+              ),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12,
-                color: Colors.black87,
+                color: isDark ? Colors.white : Colors.black87,
                 height: 1.4,
               ),
             ),
@@ -410,7 +447,7 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
   }
 
   // --- TAB CONTENT 2: STORY / PLAYER ---
-  Widget _buildStoryPlayerSection(AhleBait member) {
+  Widget _buildStoryPlayerSection(AhleBait member, bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -419,6 +456,7 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
           style: GoogleFonts.playfairDisplay(
             fontSize: 18,
             fontWeight: FontWeight.w600,
+            color: isDark ? Colors.white : Colors.black87,
           ),
         ),
         const SizedBox(height: 15),
@@ -427,23 +465,23 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
           width: double.infinity,
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
             borderRadius: BorderRadius.circular(15),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
+                color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
                 blurRadius: 10,
               ),
             ],
           ),
           child: Column(
             children: [
-              const Align(
+              Align(
                 alignment: Alignment.topRight,
                 child: Icon(
                   Icons.bookmark_border,
                   size: 20,
-                  color: Colors.grey,
+                  color: isDark ? Colors.white54 : Colors.grey,
                 ),
               ),
               Text(
@@ -453,7 +491,7 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
                 textAlign: TextAlign.left,
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 14,
-                  color: Colors.black87,
+                  color: isDark ? Colors.white70 : Colors.black87,
                   height: 1.6,
                 ),
               ),
@@ -519,26 +557,32 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
             border: Border.all(color: kPrimaryBrown.withValues(alpha: 0.5)),
-            color: Colors.white,
+            color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              // _bottomAction(Icons.headset, tr("listen"), true),
-              // Container(height: 30, width: 1, color: Colors.grey.shade300),
+              // _bottomAction(Icons.headset, tr("listen"), true, isDark),
+              // Container(height: 30, width: 1, color: isDark ? Colors.grey.shade800 : Colors.grey.shade300),
               _bottomAction(
                 Icons.auto_awesome,
                 tr("ai_explanation"),
                 false,
+                isDark,
                 onTap: () {
                   Get.to(() => const ChatScreen());
                 },
               ),
-              Container(height: 30, width: 1, color: Colors.grey.shade300),
+              Container(
+                height: 30,
+                width: 1,
+                color: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+              ),
               _bottomAction(
                 Icons.share_outlined,
                 tr("share"),
                 false,
+                isDark,
                 onTap: () {
                   final shareText =
                       "${member.name}\n\n"
@@ -549,8 +593,17 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
                   Share.share(shareText);
                 },
               ),
-              Container(height: 30, width: 1, color: Colors.grey.shade300),
-              _bottomAction(Icons.download_outlined, tr("download"), false),
+              Container(
+                height: 30,
+                width: 1,
+                color: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+              ),
+              _bottomAction(
+                Icons.download_outlined,
+                tr("download"),
+                false,
+                isDark,
+              ),
             ],
           ),
         ),
@@ -559,7 +612,7 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
     );
   }
 
-  Widget _buildQuotesSection(AhleBait member) {
+  Widget _buildQuotesSection(AhleBait member, bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -568,6 +621,7 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
           style: GoogleFonts.playfairDisplay(
             fontSize: 18,
             fontWeight: FontWeight.w600,
+            color: isDark ? Colors.white : Colors.black87,
           ),
         ),
         const SizedBox(height: 15),
@@ -585,11 +639,11 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
               margin: const EdgeInsets.only(bottom: 15),
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(15),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
+                    color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
                     blurRadius: 10,
                   ),
                 ],
@@ -602,14 +656,15 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
+                      color: isDark ? Colors.white : Colors.black87,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     quote.description,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
-                      color: Colors.black54,
+                      color: isDark ? Colors.white70 : Colors.black54,
                       height: 1.5,
                       fontStyle: FontStyle.italic,
                     ),
@@ -625,7 +680,8 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
   Widget _bottomAction(
     IconData icon,
     String label,
-    bool isActive, {
+    bool isActive,
+    bool isDark, {
     VoidCallback? onTap,
   }) {
     return GestureDetector(
@@ -633,13 +689,21 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 20, color: isActive ? kPrimaryBrown : Colors.black),
+          Icon(
+            icon,
+            size: 20,
+            color: isActive
+                ? kPrimaryBrown
+                : (isDark ? Colors.white : Colors.black),
+          ),
           const SizedBox(height: 4),
           Text(
             label,
             style: TextStyle(
               fontSize: 9,
-              color: isActive ? kPrimaryBrown : Colors.black,
+              color: isActive
+                  ? kPrimaryBrown
+                  : (isDark ? Colors.white : Colors.black),
               fontWeight: FontWeight.bold,
             ),
           ),
