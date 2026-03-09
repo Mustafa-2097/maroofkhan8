@@ -93,26 +93,34 @@ class ProfileScreen extends StatelessWidget {
                           tr("your_plan_status"), // "Your Plan Status",
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
-                        InkWell(
-                          onTap: () => Get.to(() => SubscriptionPage()),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              tr("upgrade"), // "Upgrade",
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.onPrimary,
-                                fontWeight: FontWeight.bold,
+                        Obx(() {
+                          // Hide upgrade button if already on Premium
+                          final current = controller.currentPlan.value?.toLowerCase() ?? "";
+                          if (current == "premium") return const SizedBox.shrink();
+
+                          return InkWell(
+                            onTap: () => Get.to(() => SubscriptionPage()),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                tr("upgrade"), // "Upgrade",
+                                style: TextStyle(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimary,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          ),
-                        ),
+                          );
+                        }),
                       ],
                     ),
                     const Divider(height: 24),
@@ -129,20 +137,24 @@ class ProfileScreen extends StatelessWidget {
                           ),
                           child: Row(
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.auto_awesome,
                                 size: 20,
                                 color: Colors.white,
-                                // color: Theme.of(context).colorScheme.onPrimary,
                               ),
                               const SizedBox(width: 8),
-                              Text(
-                                tr("basic_plan"), // "Basic Plan",
-                                style: TextStyle(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onPrimary,
-                                  fontWeight: FontWeight.bold,
+                              Obx(
+                                () => Text(
+                                  controller.isSubscribed.value
+                                      ? (controller.currentPlan.value ??
+                                            tr("basic_plan"))
+                                      : tr("free_plan"),
+                                  style: TextStyle(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ],
@@ -150,10 +162,17 @@ class ProfileScreen extends StatelessWidget {
                         ),
 
                         const Spacer(),
-                        Text(
-                          "${tr('expires')}: 12/2024", // "Expires: 12/2024",
-                          style: Theme.of(context).textTheme.labelMedium,
-                        ),
+                        Obx(() {
+                          if (!controller.isSubscribed.value) return const SizedBox.shrink();
+                          return Text(
+                            tr("active"),
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          );
+                        }),
                       ],
                     ),
                   ],

@@ -14,8 +14,8 @@ class VerificationCodeController extends GetxController {
   /// OTP value
   var otp = "".obs;
 
-  /// Timer countdown 20 seconds
-  var secondsRemaining = 20.obs;
+  /// Timer countdown 60 seconds
+  var secondsRemaining = 60.obs;
   Timer? _timer;
 
   /// Whether user can resend OTP
@@ -38,7 +38,7 @@ class VerificationCodeController extends GetxController {
 
   /// Start 20-second countdown
   void startTimer() {
-    secondsRemaining.value = 20;
+    secondsRemaining.value = 60;
     canResend.value = false;
 
     _timer?.cancel();

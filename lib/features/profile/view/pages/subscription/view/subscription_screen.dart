@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:maroofkhan8/core/constant/app_colors.dart';
 import 'package:maroofkhan8/features/profile/view/pages/subscription/controller/subscription_controller.dart';
 import 'package:maroofkhan8/features/profile/view/pages/subscription/widgets/subscription_bottom_sheet.dart';
+import 'package:maroofkhan8/features/profile/controller/profile_controller.dart';
 
 class SubscriptionPage extends StatelessWidget {
   SubscriptionPage({super.key});
@@ -12,157 +13,110 @@ class SubscriptionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = Theme.of(context).colorScheme.surface;
-
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: isDark
-              ? LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    backgroundColor.withValues(alpha: 0.95),
-                    backgroundColor,
-                    backgroundColor,
-                  ],
-                )
-              : LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.grey.shade50,
-                    Colors.grey.shade100,
-                    Colors.white,
-                  ],
-                ),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () => Get.back(),
+          icon: const Icon(Icons.arrow_back),
         ),
-        child: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final isWide = constraints.maxWidth > 700;
-              final horizontalPadding = constraints.maxWidth * 0.05;
+        title: Text(
+          'SUBSCRIPTION',
+          style: Theme.of(
+            context,
+          ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isWide = constraints.maxWidth > 700;
+            final horizontalPadding = constraints.maxWidth * 0.05;
 
-              return Column(
-                children: [
-                  // Header
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: horizontalPadding,
-                      vertical: 16.h,
-                    ),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          onPressed: () => Get.back(),
-                          icon: Icon(
-                            Icons.arrow_back,
-                            color: isDark ? Colors.white : Colors.black,
-                            size: 24,
-                          ),
+            return Column(
+              children: [
+                Expanded(
+                  child: Obx(() {
+                    if (controller.isLoading.value) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    if (controller.subscriptionPlans.isEmpty) {
+                      return const Center(
+                        child: Text("No Subscription Plans available"),
+                      );
+                    }
+
+                    return SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: horizontalPadding,
                         ),
-                        Expanded(
-                          child: Text(
-                            'SUBSCRIPTION',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: isDark ? Colors.white : Colors.black,
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.bold,
+                        child: Column(
+                          children: [
+                            // Title
+                            Text(
+                              'SUBSCRIBE TO PREMIUM',
+                              style: Theme.of(context).textTheme.headlineSmall
+                                  ?.copyWith(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                              textAlign: TextAlign.center,
                             ),
-                          ),
-                        ),
-                        SizedBox(width: 40.w), // For symmetry
-                      ],
-                    ),
-                  ),
+                            SizedBox(height: 8.h),
 
-                  Expanded(
-                    child: Obx(() {
-                      if (controller.isLoading.value) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-
-                      if (controller.subscriptionPlans.isEmpty) {
-                        return const Center(
-                          child: Text("No Subscription Plans available"),
-                        );
-                      }
-
-                      return SingleChildScrollView(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: horizontalPadding,
-                          ),
-                          child: Column(
-                            children: [
-                              // Title
-                              Text(
-                                'SUBSCRIBE TO PREMIUM',
-                                style: TextStyle(
-                                  color: isDark
-                                      ? Colors.white
-                                      : AppColors.blackColor,
-                                  fontSize: 22.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                            // Subtitle
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: isWide ? 100.w : 20.w,
+                              ),
+                              child: Text(
+                                'Enjoy watching Full-HD videos, without restrictions and without ads',
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(
+                                      color: Theme.of(context).disabledColor,
+                                      height: 1.4,
+                                    ),
                                 textAlign: TextAlign.center,
                               ),
-                              SizedBox(height: 8.h),
+                            ),
+                            SizedBox(height: 30.h),
 
-                              // Subtitle
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: isWide ? 100.w : 20.w,
-                                ),
-                                child: Text(
-                                  'Enjoy watching Full-HD videos, without restrictions and without ads',
-                                  style: TextStyle(
-                                    color: isDark
-                                        ? Colors.grey[300]
-                                        : Colors.grey[600],
-                                    // color: Colors.grey[600],
-                                    fontSize: 14.sp,
-                                    height: 1.4,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
+                            // Subscription Plans
+                            if (isWide)
+                              Wrap(
+                                spacing: 20.w,
+                                runSpacing: 20.h,
+                                alignment: WrapAlignment.center,
+                                children: _buildPlanCards(context, isWide),
+                              )
+                            else
+                              Column(
+                                children: _buildPlanCards(context, isWide)
+                                    .map(
+                                      (card) => Padding(
+                                        padding: EdgeInsets.only(bottom: 20.h),
+                                        child: card,
+                                      ),
+                                    )
+                                    .toList(),
                               ),
-                              SizedBox(height: 30.h),
-
-                              // Subscription Plans
-                              if (isWide)
-                                Wrap(
-                                  spacing: 20.w,
-                                  runSpacing: 20.h,
-                                  alignment: WrapAlignment.center,
-                                  children: _buildPlanCards(context, isWide),
-                                )
-                              else
-                                Column(
-                                  children: _buildPlanCards(context, isWide)
-                                      .map(
-                                        (card) => Padding(
-                                          padding: EdgeInsets.only(
-                                            bottom: 20.h,
-                                          ),
-                                          child: card,
-                                        ),
-                                      )
-                                      .toList(),
-                                ),
-                              SizedBox(height: 30.h),
-                            ],
-                          ),
+                            SizedBox(height: 30.h),
+                          ],
                         ),
-                      );
-                    }),
-                  ),
-                ],
-              );
-            },
-          ),
+                      ),
+                    );
+                  }),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -170,7 +124,13 @@ class SubscriptionPage extends StatelessWidget {
 
   List<Widget> _buildPlanCards(BuildContext context, bool isWide) {
     final cardWidth = isWide ? 400.w : double.infinity;
+    final profileController = Get.find<ProfileController>();
+
     return controller.subscriptionPlans.map((plan) {
+      final bool isCurrent =
+          profileController.currentPlan.value?.toLowerCase() ==
+          plan.title?.toLowerCase();
+
       return _buildPlanCard(
         context: context,
         cardWidth: cardWidth,
@@ -182,6 +142,7 @@ class SubscriptionPage extends StatelessWidget {
         type: plan.type ?? 'PLAN',
         features: plan.features ?? [],
         isMostPopular: plan.title?.toLowerCase() == 'premium',
+        isCurrent: isCurrent,
         onSeeMore: () {
           if (plan.id != null) {
             controller.fetchSingleSubscriptionPlan(plan.id!);
@@ -201,6 +162,7 @@ class SubscriptionPage extends StatelessWidget {
     required String type,
     required List<String> features,
     bool isMostPopular = false,
+    bool isCurrent = false,
     required VoidCallback onSeeMore,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -208,15 +170,15 @@ class SubscriptionPage extends StatelessWidget {
       width: cardWidth,
       padding: EdgeInsets.all(20.w),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(26.r),
         border: Border.all(
-          color: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+          color: isDark ? Colors.white10 : Colors.black12,
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -231,12 +193,32 @@ class SubscriptionPage extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(
-                    color: AppColors.primaryColorLight,
-                    fontSize: 22.sp,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                if (isCurrent) ...[
+                  SizedBox(height: 4.h),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 8.w,
+                      vertical: 2.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(4.r),
+                    ),
+                    child: Text(
+                      "Current Plan",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
                 SizedBox(height: 10),
                 Image.asset(
                   "assets/images/subscription_logo.png",
@@ -264,19 +246,17 @@ class SubscriptionPage extends StatelessWidget {
                       ],
                       Text(
                         '\$$price',
-                        style: TextStyle(
-                          color: isDark ? Colors.white : Colors.black,
-                          fontSize: 28.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.headlineMedium
+                            ?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurface,
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
                       SizedBox(width: 12.w),
                       Text(
                         '/$type',
-                        style: TextStyle(
-                          color: isDark ? Colors.grey[300] : Colors.black,
-                          fontSize: 15.sp,
-                          fontWeight: FontWeight.w400,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: Theme.of(context).disabledColor,
                         ),
                       ),
                     ],
@@ -286,7 +266,7 @@ class SubscriptionPage extends StatelessWidget {
             ),
           ),
           SizedBox(height: 10.h),
-          Divider(color: isDark ? Colors.grey.shade700 : Colors.grey.shade200),
+          Divider(color: Theme.of(context).dividerColor),
           SizedBox(height: 10.h),
 
           // Features
@@ -327,18 +307,20 @@ class SubscriptionPage extends StatelessWidget {
   Widget _buildFeatureRow(String text) {
     return Builder(
       builder: (context) {
-        final isDark = Theme.of(context).brightness == Brightness.dark;
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.check, color: AppColors.primaryColorLight, size: 18.r),
+            Icon(
+              Icons.check,
+              color: Theme.of(context).colorScheme.primary,
+              size: 18.r,
+            ),
             SizedBox(width: 12.w),
             Expanded(
               child: Text(
                 text,
-                style: TextStyle(
-                  color: isDark ? Colors.grey[300] : Colors.black,
-                  fontSize: 14.sp,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ),

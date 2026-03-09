@@ -109,12 +109,15 @@ class ApiEndpoints {
   static const String audio = '$baseUrl/audio';
   static String singleAudio(String id) => '$baseUrl/audio/$id';
   static const String guidedMeditation = '$baseUrl/sufism/guided-meditation';
-  static String singleGuidedMeditation(String id) =>
-      '$baseUrl/sufism/guided-meditation/$id';
+  static String singleGuidedMeditation(String id) => '$baseUrl/sufism/guided-meditation/$id';
   static const String islamicTeacher = '$baseUrl/sufism/islamic-teacher';
-  static String singleIslamicTeacher(String id) =>
-      '$baseUrl/sufism/islamic-teacher/$id';
+  static String singleIslamicTeacher(String id) => '$baseUrl/sufism/islamic-teacher/$id';
 
   static const String bannerQuote = '$baseUrl/banner-quote';
   static const String contactUs = '$baseUrl/contact-us';
+
+  /// Payments
+  static String createCheckoutSession(String planId) => '$baseUrl/payments/create-checkout-session/$planId';
+  static const String createDonationSession = '$baseUrl/payments/create-donation-session';
+  static const String paymentHistory = '$baseUrl/payments';
 }

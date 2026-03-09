@@ -9,6 +9,8 @@ class ProfileController extends GetxController {
   var name = "Checking...".obs;
   var email = "Checking...".obs;
   var avatar = "".obs;
+  var isSubscribed = false.obs;
+  var currentPlan = RxnString();
 
   @override
   void onInit() {
@@ -23,6 +25,7 @@ class ProfileController extends GetxController {
       if (response['success'] == true) {
         final data = response['data'];
         email.value = data['email'] ?? "No Email";
+        isSubscribed.value = data['subscribed'] ?? false;
 
         final profile = data['profile'];
         if (profile != null) {
@@ -33,6 +36,13 @@ class ProfileController extends GetxController {
             name.value = "User";
           }
           avatar.value = profile['avatar'] ?? "";
+        }
+
+        // Ideally the API would return the plan details if subscribed
+        // Let's check if there's any subscription details in the response
+        if (data['subscription'] != null &&
+            data['subscription']['plan'] != null) {
+          currentPlan.value = data['subscription']['plan']['title'];
         }
       }
     } catch (e) {

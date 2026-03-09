@@ -3,6 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maroofkhan8/core/constant/app_colors.dart';
+import 'package:maroofkhan8/core/network/api_service.dart';
+import 'package:maroofkhan8/core/network/api_endpoints.dart';
+import 'package:maroofkhan8/core/utils/snackbar_utils.dart';
+import 'package:maroofkhan8/features/profile/view/pages/subscription/view/PaymentWebView.dart';
 
 class DonationScreen extends StatefulWidget {
   const DonationScreen({super.key});
@@ -18,7 +22,7 @@ class _DonationScreenState extends State<DonationScreen> {
     text: '0',
   );
 
-  final List<double> suggestedAmounts = [10, 20, 50, 100, 200, 500, 1000];
+  final List<double> suggestedAmounts = [50, 100, 200, 500, 1000];
 
   @override
   void dispose() {
@@ -28,10 +32,11 @@ class _DonationScreenState extends State<DonationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: const Color(0xFFF9FAFF),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
@@ -40,7 +45,7 @@ class _DonationScreenState extends State<DonationScreen> {
         title: Text(
           'Donation',
           style: GoogleFonts.playfairDisplay(
-            color: AppColors.blackColor,
+            color: isDark ? Colors.white : AppColors.blackColor,
             fontWeight: FontWeight.bold,
             fontSize: 18.sp,
           ),
@@ -67,18 +72,15 @@ class _DonationScreenState extends State<DonationScreen> {
                   SizedBox(height: 20.h),
                   Text(
                     'Your charity can change a life',
-                    style: GoogleFonts.playfairDisplay(
-                      fontSize: 22.sp,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.blackColor,
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                   SizedBox(height: 5.h),
                   Text(
                     'Give sincerely for Allah\'s pleasure',
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      color: Colors.grey.shade500,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      color: Theme.of(context).disabledColor,
                     ),
                   ),
                   // Donation Type Section
@@ -88,9 +90,9 @@ class _DonationScreenState extends State<DonationScreen> {
                   Text(
                     'Choose Amount',
                     style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.blackColor,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      color: isDark ? Colors.white : AppColors.blackColor,
                     ),
                   ),
                   SizedBox(height: 10.h),
@@ -113,7 +115,9 @@ class _DonationScreenState extends State<DonationScreen> {
                               vertical: 8.h,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.grey.shade400,
+                              color: isDark
+                                  ? Colors.grey.shade800
+                                  : Colors.grey.shade400,
                               borderRadius: BorderRadius.circular(20.r),
                               border: isSelected
                                   ? Border.all(
@@ -142,9 +146,9 @@ class _DonationScreenState extends State<DonationScreen> {
                   Text(
                     'Or Enter Custom Amount',
                     style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.blackColor,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      color: isDark ? Colors.white : AppColors.blackColor,
                     ),
                   ),
                   SizedBox(height: 10.h),
@@ -158,8 +162,13 @@ class _DonationScreenState extends State<DonationScreen> {
                     },
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Theme.of(context).colorScheme.surface,
                       hintText: '0',
+                      hintStyle: TextStyle(
+                        color: isDark
+                            ? Colors.grey.shade400
+                            : Colors.grey.shade600,
+                      ),
                       contentPadding: EdgeInsets.symmetric(
                         horizontal: 15.w,
                         vertical: 15.h,
@@ -183,11 +192,14 @@ class _DonationScreenState extends State<DonationScreen> {
                 ],
               ),
             ),
+            SizedBox(height: 20.h),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(20),
+                ),
               ),
               child: Column(
                 children: [
@@ -199,17 +211,16 @@ class _DonationScreenState extends State<DonationScreen> {
                         children: [
                           Text(
                             'Total Donation',
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              color: Colors.grey,
-                            ),
+                            style: Theme.of(context).textTheme.bodyLarge,
                           ),
                           Text(
                             selectedAmount.toStringAsFixed(2),
                             style: TextStyle(
                               fontSize: 20.sp,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.blackColor,
+                              color: isDark
+                                  ? Colors.white
+                                  : AppColors.blackColor,
                             ),
                           ),
                         ],
@@ -217,9 +228,9 @@ class _DonationScreenState extends State<DonationScreen> {
                       Text(
                         'JazakAllahu Khairan',
                         style: TextStyle(
-                          fontSize: 12.sp,
-                          color: Colors.blue.shade400,
-                          fontWeight: FontWeight.w500,
+                          fontSize: 16.sp,
+                          color: isDark ? Colors.blue.shade500 : Colors.blue,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
@@ -229,14 +240,68 @@ class _DonationScreenState extends State<DonationScreen> {
                     width: double.infinity,
                     height: 55.h,
                     child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryColorLight,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.r),
-                        ),
-                        elevation: 0,
-                      ),
+                      onPressed: () async {
+                        if (selectedAmount < 50) {
+                          Get.snackbar(
+                            "Minimum Amount Required",
+                            "The minimum donation amount is 50 to process the payment.",
+                            backgroundColor: Colors.orange,
+                            colorText: Colors.white,
+                          );
+                          return;
+                        }
+
+                        // Show loading indicator
+                        Get.dialog(
+                          const Center(child: CircularProgressIndicator()),
+                          barrierDismissible: false,
+                        );
+
+                        try {
+                          final response = await ApiService.post(
+                            ApiEndpoints.createDonationSession,
+                            body: {"amount": selectedAmount.toInt()},
+                            showErrorSnackbar: false,
+                          );
+
+                          if (Get.isDialogOpen ?? false)
+                            Get.back(); // Close loading dialog
+
+                          if (response['success'] == true &&
+                              response['data'] != null &&
+                              response['data']['url'] != null) {
+                            final sessionUrl = response['data']['url'];
+                            final result = await Get.to(
+                              () => PaymentWebView(url: sessionUrl),
+                            );
+                            if (result == true) {
+                              setState(() {
+                                _customAmountController.text = '0';
+                                selectedAmount = 200.0;
+                              });
+                            }
+                          } else {
+                            Get.snackbar(
+                              "Error",
+                              "Could not create donation session",
+                              backgroundColor: AppColors.redColor.withOpacity(
+                                0.9,
+                              ),
+                              colorText: Colors.white,
+                            );
+                          }
+                        } catch (e) {
+                          if (Get.isDialogOpen ?? false) {
+                            Get.back(); // Close loading dialog
+                          }
+                          // Show error snackbar manually after dialog closes
+                          SnackbarUtils.showSnackbar(
+                            "Error",
+                            e.toString(),
+                            isError: true,
+                          );
+                        }
+                      },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -249,9 +314,9 @@ class _DonationScreenState extends State<DonationScreen> {
                             ),
                           ),
                           Icon(
-                            Icons.bookmark_border,
+                            Icons.favorite_border_rounded,
                             color: Colors.white,
-                            size: 20.sp,
+                            size: 24.sp,
                           ),
                         ],
                       ),

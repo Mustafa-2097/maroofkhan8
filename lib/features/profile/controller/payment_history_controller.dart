@@ -1,40 +1,30 @@
 import 'package:get/get.dart';
+import '../../../../core/network/api_service.dart';
+import '../../../../core/network/api_endpoints.dart';
+import '../model/payment_history_model.dart';
 
 class PaymentHistoryController extends GetxController {
-  // Mock data for payments
-  final List<Map<String, dynamic>> transactions = [
-    {
-      "method": "Stripe",
-      "id": "123456789",
-      "amount": "\$9.00",
-      "status": "Confirmed",
-      "date": "16 Sep 2026 11:21 AM",
-      "logo": "assets/images/stripe.png",
-    },
-    {
-      "method": "Stripe",
-      "id": "12345678",
-      "amount": "\$9.00",
-      "status": "Confirmed",
-      "date": "16 Sep 2026 11:21 AM",
-      "logo": "assets/images/stripe.png",
-    },
-    {
-      "method": "Stripe",
-      "id": "12345679",
-      "amount": "\$9.00",
-      "status": "Confirmed",
-      "date": "16 Sep 2026 11:21 AM",
-      "logo": "assets/images/stripe.png",
-    },
-    {
-      "method": "Stripe",
-      "id": "12345689",
-      "amount": "\$9.00",
-      "status": "Confirmed",
-      "date": "16 Sep 2026 11:21 AM",
-      "logo": "assets/images/stripe.png",
-    },
-    // Add more mock items here
-  ].obs;
+  var isLoading = false.obs;
+  var transactions = <PaymentTransaction>[].obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchTransactions();
+  }
+
+  Future<void> fetchTransactions() async {
+    isLoading.value = true;
+    try {
+      final response = await ApiService.get(ApiEndpoints.paymentHistory);
+      if (response['success'] == true) {
+        final historyResponse = PaymentHistoryResponse.fromJson(response);
+        transactions.value = historyResponse.data ?? [];
+      }
+    } catch (e) {
+      print("Error fetching payment history: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }

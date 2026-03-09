@@ -43,6 +43,7 @@ class ApiService {
     String url, {
     Map<String, String>? headers,
     Map<String, dynamic>? body,
+    bool showErrorSnackbar = true,
   }) async {
     try {
       final finalHeaders = await _getHeaders(headers);
@@ -79,7 +80,7 @@ class ApiService {
       }
     } catch (e) {
       final friendlyMsg = _friendlyError(e);
-      if (friendlyMsg != null) {
+      if (friendlyMsg != null && showErrorSnackbar) {
         SnackbarUtils.showSnackbar("Error", friendlyMsg, isError: true);
       }
       rethrow;
@@ -91,6 +92,7 @@ class ApiService {
     String url, {
     Map<String, String>? headers,
     Map<String, dynamic>? queryParameters,
+    bool showErrorSnackbar = true,
   }) async {
     try {
       final finalHeaders = await _getHeaders(headers);
@@ -123,7 +125,7 @@ class ApiService {
       }
     } catch (e) {
       final friendlyMsg = _friendlyError(e);
-      if (friendlyMsg != null) {
+      if (friendlyMsg != null && showErrorSnackbar) {
         SnackbarUtils.showSnackbar("Error", friendlyMsg, isError: true);
       }
       rethrow;
@@ -135,6 +137,7 @@ class ApiService {
     String url, {
     Map<String, String>? headers,
     Map<String, dynamic>? body,
+    bool showErrorSnackbar = true,
   }) async {
     try {
       final finalHeaders = await _getHeaders(headers);
@@ -171,7 +174,7 @@ class ApiService {
       }
     } catch (e) {
       final friendlyMsg = _friendlyError(e);
-      if (friendlyMsg != null) {
+      if (friendlyMsg != null && showErrorSnackbar) {
         SnackbarUtils.showSnackbar("Error", friendlyMsg, isError: true);
       }
       rethrow;
@@ -183,6 +186,7 @@ class ApiService {
     String url, {
     Map<String, String>? headers,
     Map<String, dynamic>? body,
+    bool showErrorSnackbar = true,
   }) async {
     try {
       final finalHeaders = await _getHeaders(headers);
@@ -219,7 +223,7 @@ class ApiService {
       }
     } catch (e) {
       final friendlyMsg = _friendlyError(e);
-      if (friendlyMsg != null) {
+      if (friendlyMsg != null && showErrorSnackbar) {
         SnackbarUtils.showSnackbar("Error", friendlyMsg, isError: true);
       }
       rethrow;
@@ -231,6 +235,7 @@ class ApiService {
     String url, {
     Map<String, String>? headers,
     Map<String, dynamic>? body,
+    bool showErrorSnackbar = true,
   }) async {
     try {
       final finalHeaders = await _getHeaders(headers);
@@ -267,7 +272,7 @@ class ApiService {
       }
     } catch (e) {
       final friendlyMsg = _friendlyError(e);
-      if (friendlyMsg != null) {
+      if (friendlyMsg != null && showErrorSnackbar) {
         SnackbarUtils.showSnackbar("Error", friendlyMsg, isError: true);
       }
       rethrow;
@@ -281,6 +286,7 @@ class ApiService {
     Map<String, String>? fields,
     File? imageFile,
     String imageFieldName = 'profileImage',
+    bool showErrorSnackbar = true,
   }) async {
     try {
       final request = http.MultipartRequest('PATCH', Uri.parse(url));
@@ -333,7 +339,7 @@ class ApiService {
       }
     } catch (e) {
       final friendlyMsg = _friendlyError(e);
-      if (friendlyMsg != null) {
+      if (friendlyMsg != null && showErrorSnackbar) {
         SnackbarUtils.showSnackbar("Error", friendlyMsg, isError: true);
       }
       rethrow;

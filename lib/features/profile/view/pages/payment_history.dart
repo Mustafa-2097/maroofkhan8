@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../controller/payment_history_controller.dart';
+import '../../model/payment_history_model.dart';
 
 class PaymentHistory extends StatelessWidget {
   const PaymentHistory({super.key});
@@ -28,8 +30,16 @@ class PaymentHistory extends StatelessWidget {
         centerTitle: true,
       ),
       body: SafeArea(
-        child: Obx(
-          () => ListView.separated(
+        child: Obx(() {
+          if (controller.isLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (controller.transactions.isEmpty) {
+            return const Center(child: Text("No transactions found"));
+          }
+
+          return ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             itemCount: controller.transactions.length,
             separatorBuilder: (context, index) => const SizedBox(height: 16),
@@ -37,18 +47,27 @@ class PaymentHistory extends StatelessWidget {
               final tx = controller.transactions[index];
               return _TransactionCard(tx: tx, isDark: isDark);
             },
-          ),
-        ),
+          );
+        }),
       ),
     );
   }
 }
 
 class _TransactionCard extends StatelessWidget {
-  final Map<String, dynamic> tx;
+  final PaymentTransaction tx;
   final bool isDark;
 
   const _TransactionCard({required this.tx, required this.isDark});
+
+  String _formatDate(String dateStr) {
+    try {
+      DateTime dateTime = DateTime.parse(dateStr).toLocal();
+      return DateFormat('d MMM yyyy, h:mm a').format(dateTime);
+    } catch (e) {
+      return dateStr;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +91,11 @@ class _TransactionCard extends StatelessWidget {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.asset(tx['logo'], fit: BoxFit.contain),
+              child: tx.logo != null && tx.logo!.startsWith('assets')
+                  ? Image.asset(tx.logo!, fit: BoxFit.contain)
+                  : tx.logo != null
+                  ? Image.network(tx.logo!, fit: BoxFit.contain)
+                  : const Icon(Icons.payment),
             ),
           ),
           const SizedBox(width: 12),
@@ -83,17 +106,16 @@ class _TransactionCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Transfer via ${tx['method']}",
+                  "Transfer via ${tx.method ?? 'Stripe'}",
                   style: Theme.of(
                     context,
                   ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  "ID: ${tx['id']}",
+                  "ID: ${tx.id ?? 'N/A'}",
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
-                Text(tx['date'], style: Theme.of(context).textTheme.labelSmall),
               ],
             ),
           ),
@@ -103,26 +125,48 @@ class _TransactionCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                tx['amount'],
+                tx.amount != null
+                    ? (tx.amount!.contains('\$')
+                          ? tx.amount!
+                          : '\$${tx.amount}')
+                    : '\$0.00',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: Theme.of(context).colorScheme.primary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 2),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
-                  color: Colors.green.withOpacity(0.2),
+                  color:
+                      (tx.status?.toLowerCase() == 'confirmed' ||
+                          tx.status?.toLowerCase() == 'succeeded' ||
+                          tx.status?.toLowerCase() == 'active' ||
+                          tx.status?.toLowerCase() == 'completed' ||
+                          tx.status?.toLowerCase() == 'paid')
+                      ? Colors.green.withOpacity(0.2)
+                      : Colors.orange.withOpacity(0.2),
                 ),
                 child: Text(
-                  tx['status'],
+                  tx.status ?? 'Pending',
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: Colors.green,
+                    color:
+                        (tx.status?.toLowerCase() == 'confirmed' ||
+                            tx.status?.toLowerCase() == 'succeeded' ||
+                            tx.status?.toLowerCase() == 'active' ||
+                            tx.status?.toLowerCase() == 'completed' ||
+                            tx.status?.toLowerCase() == 'paid')
+                        ? Colors.green
+                        : Colors.orange,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+              ),
+              Text(
+                tx.date != null ? _formatDate(tx.date!) : "No Date",
+                style: Theme.of(context).textTheme.labelLarge,
               ),
             ],
           ),

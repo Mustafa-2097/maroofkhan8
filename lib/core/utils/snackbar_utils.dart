@@ -13,14 +13,21 @@ class SnackbarUtils {
       message,
       snackPosition: SnackPosition.TOP,
       backgroundColor: isError
-          ? AppColors.primaryColorLight
-          : AppColors.primaryColorLight,
+          ? AppColors.redColor.withOpacity(0.9)
+          : AppColors.primaryColorLight.withOpacity(0.9),
       colorText: Colors.white,
       margin: const EdgeInsets.all(15),
-      borderRadius: 10,
+      borderRadius: 12,
       duration: const Duration(seconds: 3),
       isDismissible: true,
       forwardAnimationCurve: Curves.easeOutBack,
+      icon: Icon(
+        isError ? Icons.error_outline : Icons.check_circle_outline,
+        color: Colors.white,
+      ),
+      shouldIconPulse: true,
+      barBlur: 10,
+      overlayBlur: 0.5,
     );
   }
 }

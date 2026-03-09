@@ -46,4 +46,24 @@ class SubscriptionController extends GetxController {
       isSingleLoading.value = false;
     }
   }
+
+  Future<String?> createCheckoutSession(String planId) async {
+    isLoading.value = true;
+    try {
+      final response = await ApiService.post(
+        ApiEndpoints.createCheckoutSession(planId),
+        body: {},
+        showErrorSnackbar: false,
+      );
+      if (response['success'] == true) {
+        return response['data']['url'];
+      }
+      return null;
+    } catch (e) {
+      print("Error creating checkout session: $e");
+      rethrow; // Rethrow to let the UI handle the error message
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }
