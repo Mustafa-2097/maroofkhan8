@@ -21,9 +21,14 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(DhikrController());
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFF8F9FE),
       appBar: AppBar(
         title: HeaderSection(title: tr("dhikr")),
         centerTitle: true,
@@ -32,10 +37,10 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
         leading: widget.hideBack
             ? null
             : IconButton(
-                icon: const Icon(
+                icon: Icon(
                   Icons.arrow_back_ios,
-                  color: Colors.grey,
-                  size: 20,
+                  color: isDark ? Colors.white70 : Colors.grey,
+                  size: sw * 0.05,
                 ),
                 onPressed: () => Navigator.pop(context),
               ),
@@ -47,10 +52,17 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
           );
         }
         if (controller.tasbihList.isEmpty) {
-          return Center(child: Text(tr("no_dhikr_found")));
+          return Center(
+            child: Text(
+              tr("no_dhikr_found"),
+              style: TextStyle(
+                color: isDark ? Colors.grey[400] : Colors.black87,
+              ),
+            ),
+          );
         }
         return ListView.builder(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(sw * 0.05),
           itemCount: controller.tasbihList.length,
           itemBuilder: (context, index) {
             final dhikr = controller.tasbihList[index];
@@ -58,12 +70,21 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
               onTap: () =>
                   Get.to(() => DhikrCounterScreen(initialIndex: index)),
               child: Container(
-                margin: const EdgeInsets.only(bottom: 15),
-                padding: const EdgeInsets.all(20),
+                margin: EdgeInsets.only(bottom: sh * 0.018),
+                padding: EdgeInsets.all(sw * 0.05),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                   borderRadius: BorderRadius.circular(15),
-                  border: Border.all(color: Colors.grey.shade200),
+                  border: Border.all(
+                    color: isDark ? Colors.grey.shade900 : Colors.grey.shade200,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(isDark ? 0.3 : 0.03),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
                 child: Stack(
                   children: [
@@ -72,28 +93,29 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                       children: [
                         Text(
                           dhikr.arabic,
-                          style: const TextStyle(
-                            fontSize: 18,
+                          style: TextStyle(
+                            fontSize: sw * 0.045,
                             fontWeight: FontWeight.bold,
+                            color: isDark ? Colors.white : Colors.black,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: sh * 0.01),
                         Text(
                           dhikr.pronunciation,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey,
+                          style: TextStyle(
+                            fontSize: sw * 0.033,
+                            color: isDark ? Colors.grey[400] : Colors.grey,
                           ),
                         ),
                       ],
                     ),
-                    const Positioned(
+                    Positioned(
                       bottom: 0,
                       right: 0,
                       child: Icon(
                         Icons.arrow_circle_right_outlined,
                         color: primaryBrown,
-                        size: 20,
+                        size: sw * 0.05,
                       ),
                     ),
                   ],
@@ -155,9 +177,14 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
     }
     final dhikr = controller.tasbihList[currentIndex];
     final int target = dhikr.count;
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFF8F9FE),
       appBar: AppBar(
         title: HeaderSection(title: tr("dhikr")),
         centerTitle: true,
@@ -166,27 +193,27 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
         leading: widget.hideBack
             ? null
             : IconButton(
-                icon: const Icon(
+                icon: Icon(
                   Icons.arrow_back_ios,
-                  color: Colors.grey,
-                  size: 20,
+                  color: isDark ? Colors.white70 : Colors.grey,
+                  size: sw * 0.05,
                 ),
                 onPressed: () => Navigator.pop(context),
               ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(25.0),
+        padding: EdgeInsets.all(sw * 0.06),
         child: Column(
           children: [
             // Top Card
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(sw * 0.05),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(15),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.03),
+                    color: Colors.black.withOpacity(isDark ? 0.3 : 0.03),
                     blurRadius: 10,
                     offset: const Offset(0, 5),
                   ),
@@ -196,7 +223,11 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
                 children: [
                   IconButton(
                     onPressed: _previousDhikr,
-                    icon: const Icon(Icons.arrow_drop_up, color: primaryBrown),
+                    icon: Icon(
+                      Icons.arrow_drop_up,
+                      color: primaryBrown,
+                      size: sw * 0.075,
+                    ),
                   ),
                   Expanded(
                     child: Column(
@@ -204,25 +235,29 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
                         Text(
                           dhikr.arabic,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 16,
+                          style: TextStyle(
+                            fontSize: sw * 0.04,
                             fontWeight: FontWeight.bold,
+                            color: isDark ? Colors.white : Colors.black,
                           ),
                         ),
+                        SizedBox(height: sh * 0.005),
                         Text(
                           dhikr.pronunciation,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
+                          style: TextStyle(
+                            fontSize: sw * 0.03,
+                            color: isDark ? Colors.grey[400] : Colors.grey,
                           ),
                         ),
+                        SizedBox(height: sh * 0.005),
                         Text(
                           "${tr("meaning_colon")} ${dhikr.meaning}",
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 12,
+                          style: TextStyle(
+                            fontSize: sw * 0.03,
                             fontWeight: FontWeight.w600,
+                            color: isDark ? Colors.grey[300] : Colors.black87,
                           ),
                         ),
                       ],
@@ -230,22 +265,29 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
                   ),
                   IconButton(
                     onPressed: _nextDhikr,
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.arrow_drop_down,
                       color: primaryBrown,
+                      size: sw * 0.075,
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 30),
+            SizedBox(height: sh * 0.035),
             // Counter Section
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(30),
+              padding: EdgeInsets.all(sw * 0.07),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(isDark ? 0.3 : 0.03),
+                    blurRadius: 15,
+                  ),
+                ],
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -258,21 +300,23 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
                         Icons.refresh,
                         () => setState(() => count = 0),
                       ),
-                      const SizedBox(width: 15),
+                      SizedBox(width: sw * 0.04),
                       _pillButton(tr("listen"), Icons.volume_up_outlined),
                     ],
                   ),
-                  const SizedBox(height: 50),
+                  SizedBox(height: sh * 0.06),
                   Stack(
                     alignment: Alignment.center,
                     children: [
                       SizedBox(
-                        height: 220,
-                        width: 220,
+                        height: sw * 0.55,
+                        width: sw * 0.55,
                         child: CircularProgressIndicator(
                           value: target > 0 ? count / target : 0,
-                          strokeWidth: 12,
-                          backgroundColor: Colors.grey.shade200,
+                          strokeWidth: sw * 0.03,
+                          backgroundColor: isDark
+                              ? Colors.grey.shade900
+                              : Colors.grey.shade200,
                           valueColor: const AlwaysStoppedAnimation<Color>(
                             primaryBrown,
                           ),
@@ -284,8 +328,9 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
                           Text(
                             localizeDigits("$count", context),
                             style: GoogleFonts.playfairDisplay(
-                              fontSize: 70,
+                              fontSize: sw * 0.17,
                               fontWeight: FontWeight.bold,
+                              color: isDark ? Colors.white : Colors.black,
                             ),
                           ),
                           Text(
@@ -293,40 +338,42 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
                             style: TextStyle(
                               color: primaryBrown,
                               fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                              fontSize: sw * 0.045,
                             ),
                           ),
                           Text(
                             localizeDigits("$target", context),
-                            style: const TextStyle(
-                              fontSize: 22,
-                              color: Colors.grey,
+                            style: TextStyle(
+                              fontSize: sw * 0.055,
+                              color: isDark ? Colors.grey[500] : Colors.grey,
                             ),
                           ),
                         ],
                       ),
                     ],
                   ),
-                  const SizedBox(height: 50),
+                  SizedBox(height: sh * 0.06),
                   // Tap Button
                   SizedBox(
                     width: double.infinity,
-                    height: 55,
+                    height: sh * 0.065,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryBrown,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
+                        elevation: 0,
                       ),
                       onPressed: () => setState(() {
                         if (count < target) count++;
                       }),
                       child: Text(
                         tr("tap_to_count"),
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
-                          fontSize: 18,
+                          fontSize: sw * 0.045,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -341,18 +388,22 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
   }
 
   Widget _pillButton(String label, IconData icon, [VoidCallback? onTap]) {
+    final sw = MediaQuery.of(context).size.width;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 120,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        width: sw * 0.3,
+        padding: EdgeInsets.symmetric(horizontal: sw * 0.03, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: Colors.grey),
+          color: isDark ? const Color(0xFF252525) : Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+          ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
               blurRadius: 5,
             ),
           ],
@@ -360,15 +411,22 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 11,
-                color: Color.fromARGB(221, 0, 0, 0),
+            Expanded(
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: sw * 0.028,
+                  color: isDark ? Colors.white70 : Colors.black87,
+                ),
               ),
             ),
-            const SizedBox(width: 5),
-            Icon(icon, size: 14, color: Colors.grey),
+            SizedBox(width: sw * 0.01),
+            Icon(
+              icon,
+              size: sw * 0.035,
+              color: isDark ? Colors.grey[400] : Colors.grey,
+            ),
           ],
         ),
       ),

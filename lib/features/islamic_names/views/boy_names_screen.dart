@@ -6,9 +6,6 @@ import '../controller/islamic_name_controller.dart';
 import 'saved_islamic_names_screen.dart';
 
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
-const Color kBackground = Color(0xFFFBFBFD);
-const Color kTextDark = Color(0xFF2E2E2E);
-const Color kTextGrey = Color(0xFF757575);
 
 class BoyNamesScreen extends StatelessWidget {
   const BoyNamesScreen({super.key});
@@ -16,24 +13,32 @@ class BoyNamesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<IslamicNameController>();
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFFBFBFD),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: isDark ? Colors.white70 : Colors.grey,
+            size: sw * 0.05,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
         title: Text(
-          // "Islamic Boy's Name",
           tr("islamic_boys_name_title"),
           style: GoogleFonts.ebGaramond(
-            color: Colors.black,
+            color: isDark ? Colors.white : Colors.black,
             fontWeight: FontWeight.bold,
-            fontSize: 22,
+            fontSize: sw * 0.05,
           ),
         ),
       ),
@@ -50,52 +55,67 @@ class BoyNamesScreen extends StatelessWidget {
           children: [
             // Search Bar & Saved Button
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              padding: EdgeInsets.symmetric(
+                horizontal: sw * 0.05,
+                vertical: sh * 0.018,
+              ),
               child: Row(
                 children: [
                   Expanded(
                     child: Container(
-                      height: 45,
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      height: sh * 0.055,
+                      padding: EdgeInsets.symmetric(horizontal: sw * 0.04),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.grey.shade200),
+                        border: Border.all(
+                          color: isDark
+                              ? Colors.grey.shade900
+                              : Colors.grey.shade200,
+                        ),
                       ),
                       child: TextField(
                         onChanged: (val) =>
                             controller.boySearchQuery.value = val,
+                        style: TextStyle(
+                          color: isDark ? Colors.white : Colors.black,
+                        ),
                         decoration: InputDecoration(
-                          // hintText: "Search",
                           hintText: tr("search_hint"),
                           hintStyle: TextStyle(
-                            color: Colors.grey.shade300,
-                            fontSize: 14,
+                            color: isDark
+                                ? Colors.grey[600]
+                                : Colors.grey.shade300,
+                            fontSize: sw * 0.035,
                           ),
                           border: InputBorder.none,
                           isCollapsed: true,
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 12,
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: sh * 0.015,
                           ),
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: sw * 0.025),
                   GestureDetector(
                     onTap: () => Get.to(() => const SavedIslamicNamesScreen()),
                     child: Container(
-                      height: 45,
-                      width: 45,
+                      height: sh * 0.055,
+                      width: sh * 0.055,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                         borderRadius: BorderRadius.circular(22),
-                        border: Border.all(color: Colors.grey.shade200),
+                        border: Border.all(
+                          color: isDark
+                              ? Colors.grey.shade900
+                              : Colors.grey.shade200,
+                        ),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.bookmark_border,
-                        color: Colors.grey,
-                        size: 20,
+                        color: isDark ? Colors.white70 : Colors.grey,
+                        size: sw * 0.05,
                       ),
                     ),
                   ),
@@ -106,20 +126,32 @@ class BoyNamesScreen extends StatelessWidget {
             // List of Names
             Expanded(
               child: boyNames.isEmpty
-                  // ? const Center(child: Text("No names found"))
-                  ? Center(child: Text(tr("no_names_found")))
+                  ? Center(
+                      child: Text(
+                        tr("no_names_found"),
+                        style: TextStyle(
+                          color: isDark ? Colors.grey[400] : Colors.black,
+                        ),
+                      ),
+                    )
                   : ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding: EdgeInsets.symmetric(horizontal: sw * 0.05),
                       itemCount: boyNames.length,
                       itemBuilder: (context, index) {
                         final name = boyNames[index];
                         return Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          padding: const EdgeInsets.all(15),
+                          margin: EdgeInsets.only(bottom: sh * 0.012),
+                          padding: EdgeInsets.all(sw * 0.04),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: isDark
+                                ? const Color(0xFF1E1E1E)
+                                : Colors.white,
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.grey.shade200),
+                            border: Border.all(
+                              color: isDark
+                                  ? Colors.grey.shade900
+                                  : Colors.grey.shade200,
+                            ),
                           ),
                           child: Row(
                             children: [
@@ -132,29 +164,34 @@ class BoyNamesScreen extends StatelessWidget {
                                         Text(
                                           name.name,
                                           style: GoogleFonts.ebGaramond(
-                                            fontSize: 16,
+                                            fontSize: sw * 0.04,
                                             fontWeight: FontWeight.w600,
-                                            color: kTextDark,
+                                            color: isDark
+                                                ? Colors.white
+                                                : const Color(0xFF2E2E2E),
                                           ),
                                         ),
-                                        const SizedBox(width: 10),
+                                        SizedBox(width: sw * 0.025),
                                         Text(
                                           "– ${name.arabic}",
                                           style: GoogleFonts.amiri(
-                                            fontSize: 16,
+                                            fontSize: sw * 0.04,
                                             fontWeight: FontWeight.bold,
-                                            color: kTextDark,
+                                            color: isDark
+                                                ? Colors.white
+                                                : const Color(0xFF2E2E2E),
                                           ),
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 5),
+                                    SizedBox(height: sh * 0.006),
                                     Text(
-                                      // "Meaning: ${name.meaning}",
                                       "${tr("meaning_colon")} ${name.meaning}",
                                       style: GoogleFonts.ebGaramond(
-                                        fontSize: 14,
-                                        color: kTextGrey,
+                                        fontSize: sw * 0.035,
+                                        color: isDark
+                                            ? Colors.grey[400]
+                                            : const Color(0xFF757575),
                                       ),
                                     ),
                                   ],
@@ -168,8 +205,8 @@ class BoyNamesScreen extends StatelessWidget {
                                       : Icons.bookmark_border,
                                   color: name.isSaved
                                       ? kPrimaryBrown
-                                      : Colors.grey,
-                                  size: 20,
+                                      : (isDark ? Colors.white38 : Colors.grey),
+                                  size: sw * 0.05,
                                 ),
                               ),
                             ],

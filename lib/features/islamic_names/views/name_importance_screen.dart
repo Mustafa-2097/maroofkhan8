@@ -3,79 +3,89 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
-const Color kBackground = Color(0xFFFBFBFD);
-const Color kTextDark = Color(0xFF2E2E2E);
-const Color kTextGrey = Color(0xFF757575);
 
 class NameImportanceScreen extends StatelessWidget {
   const NameImportanceScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFFBFBFD),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: isDark ? Colors.white70 : Colors.grey,
+            size: sw * 0.05,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
         title: Text(
-          // "Islamic Name",
           tr("islamic_names"),
           style: GoogleFonts.ebGaramond(
-            color: Colors.black,
+            color: isDark ? Colors.white : Colors.black,
             fontWeight: FontWeight.bold,
-            fontSize: 22,
+            fontSize: sw * 0.055,
           ),
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        padding: EdgeInsets.symmetric(
+          horizontal: sw * 0.05,
+          vertical: sh * 0.03,
+        ),
         child: Column(
           children: [
             // Title Header Card
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(sw * 0.04),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade100),
+                border: Border.all(
+                  color: isDark ? Colors.grey.shade900 : Colors.grey.shade100,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.02),
+                    color: Colors.black.withOpacity(isDark ? 0.3 : 0.02),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
                 ],
               ),
               child: Text(
-                // "The Importance of Giving a Beautiful\nName to a Child in Islam",
                 tr("importance_of_name"),
                 textAlign: TextAlign.center,
                 style: GoogleFonts.ebGaramond(
-                  fontSize: 20,
+                  fontSize: sw * 0.05,
                   fontWeight: FontWeight.bold,
-                  color: kTextDark,
+                  color: isDark ? Colors.white : const Color(0xFF2E2E2E),
                   height: 1.2,
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: sh * 0.03),
 
             // Content Card
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(sw * 0.05),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.02),
+                    color: Colors.black.withOpacity(isDark ? 0.3 : 0.02),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -84,20 +94,11 @@ class NameImportanceScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _paragraph(
-                    // "In Islam, giving a child a beautiful and meaningful name is very important. A name carries identity, dignity, and has an influence on a person’s character and personality. Islam encourages parents to choose names with good meanings, as a person will be called by their name in this world and in the Hereafter.",
-                    tr("importance_content_1"),
-                  ),
+                  _paragraph(context, tr("importance_content_1")),
                   const SizedBox(height: 16),
-                  _paragraph(
-                    // "The Prophet Muhammad (ﷺ) emphasized choosing good names and discouraged names with bad or negative meanings. A good name reflects faith, good character, and a positive identity. Therefore, parents should select names that have pleasant meanings, are easy to pronounce, and are aligned with Islamic values.",
-                    tr("importance_content_2"),
-                  ),
+                  _paragraph(context, tr("importance_content_2")),
                   const SizedBox(height: 16),
-                  _paragraph(
-                    // "Giving a child a beautiful name is not only a parental responsibility but also a Sunnah, and it is considered a way of making du‘a (supplication) for the child’s good future.",
-                    tr("importance_content_3"),
-                  ),
+                  _paragraph(context, tr("importance_content_3")),
                 ],
               ),
             ),
@@ -107,12 +108,14 @@ class NameImportanceScreen extends StatelessWidget {
     );
   }
 
-  Widget _paragraph(String text) {
+  Widget _paragraph(BuildContext context, String text) {
+    final sw = MediaQuery.of(context).size.width;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Text(
       text,
       style: GoogleFonts.ebGaramond(
-        fontSize: 16,
-        color: kTextDark,
+        fontSize: sw * 0.04,
+        color: isDark ? Colors.grey[300] : const Color(0xFF2E2E2E),
         height: 1.4,
       ),
       textAlign: TextAlign.justify,

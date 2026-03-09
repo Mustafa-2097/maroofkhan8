@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:maroofkhan8/features/Islam_meditation/controller/meditation_controller.dart';
 import 'package:maroofkhan8/features/home/dhikr/dhikr_screen.dart';
 import 'package:maroofkhan8/features/sufism/controller/sufism_controller.dart';
@@ -26,6 +26,7 @@ const Color kPrimaryBrown = Color(0xFF8D3C1F);
 const Color kTextDark = Color(0xFF2E2E2E);
 const Color kTextGrey = Color(0xFF757575);
 const Color kBackground = Color(0xFFFDFDFD);
+const Color kDarkBlack = Color(0xFF1E120D);
 
 // ==========================================
 // SCREEN 1: SUFISM HOME
@@ -40,6 +41,8 @@ class SufismHomeScreen extends StatelessWidget {
     final sufismController = Get.put(SufismController());
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SafeArea(
         child: RefreshIndicator(
@@ -49,7 +52,10 @@ class SufismHomeScreen extends StatelessWidget {
           },
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+            padding: EdgeInsets.symmetric(
+              horizontal: sw * 0.04,
+              vertical: sh * 0.012,
+            ),
             child: Column(
               children: [
                 HeaderSection(title: tr("sufism")),
@@ -78,7 +84,9 @@ class SufismHomeScreen extends StatelessWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: isDark
+                        ? Theme.of(context).colorScheme.surface
+                        : Colors.white,
                     borderRadius: BorderRadius.circular(15),
                     boxShadow: [
                       BoxShadow(
@@ -100,13 +108,14 @@ class SufismHomeScreen extends StatelessWidget {
                       Text(
                         tr("sufi_quote_arabic"),
                         textAlign: TextAlign.center,
+
                         style: GoogleFonts.amiri(
-                          color: Colors.black,
-                          fontSize: 18.sp,
+                          color: isDark ? Colors.white : Colors.black,
+                          fontSize: sw * 0.045,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 8.h),
+                      SizedBox(height: sh * 0.01),
                       // const SizedBox(height: 10),
                       // Text(
                       //   "Man ‘arafa nafsahu ‘arafa rabbahu.",
@@ -120,12 +129,12 @@ class SufismHomeScreen extends StatelessWidget {
                         tr("sufi_quote_transliteration"),
                         textAlign: TextAlign.center,
                         style: GoogleFonts.outfit(
-                          color: Colors.black,
-                          fontSize: 14.sp,
+                          color: isDark ? Colors.white : Colors.black,
+                          fontSize: sw * 0.035,
                           fontStyle: FontStyle.italic,
                         ),
                       ),
-                      SizedBox(height: 12.h),
+                      SizedBox(height: sh * 0.015),
                       // const SizedBox(height: 5),
                       // const Text(
                       //   "Whoever knows himself knows his Lord.\"",
@@ -135,11 +144,21 @@ class SufismHomeScreen extends StatelessWidget {
                       Text(
                         tr("sufi_quote"),
                         textAlign: TextAlign.center,
-                        style: GoogleFonts.outfit(
-                          color: Colors.black,
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        //style: Theme.of(context).textTheme.headlineMedium,
+                        style: isDark
+                            ? Theme.of(context).textTheme.titleLarge?.copyWith(
+                                color: Theme.of(context).colorScheme.primary,
+                              )
+                            : Theme.of(context).textTheme.titleLarge?.copyWith(
+                                color: Colors.black,
+                                fontSize: sw * 0.045,
+                                fontWeight: FontWeight.w600,
+                              ),
+                        // style: GoogleFonts.outfit(
+                        //   color: isDark ? Colors.white : Colors.black,
+                        //   fontSize: 16.sp,
+                        //   fontWeight: FontWeight.w500,
+                        // ),
                       ),
                       // const SizedBox(height: 10),
                       HeaderDecorationMini(
@@ -185,6 +204,7 @@ class SufismHomeScreen extends StatelessWidget {
                   style: GoogleFonts.playfairDisplay(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : Colors.black,
                   ),
                 ),
                 const SizedBox(height: 15),
@@ -262,6 +282,7 @@ class SufismHomeScreen extends StatelessWidget {
                   style: GoogleFonts.playfairDisplay(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : Colors.black,
                   ),
                 ),
                 const SizedBox(height: 15),
@@ -291,7 +312,7 @@ class SufismHomeScreen extends StatelessWidget {
                   return Container(
                     padding: const EdgeInsets.all(15),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                       borderRadius: BorderRadius.circular(15),
                       boxShadow: [
                         BoxShadow(
@@ -380,6 +401,9 @@ class SufismHomeScreen extends StatelessWidget {
     List<GuidedMeditationData> allMeditations = const [],
     int index = 0,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
     return GestureDetector(
       onTap: () {
         if (medData != null) {
@@ -396,10 +420,13 @@ class SufismHomeScreen extends StatelessWidget {
         }
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+        margin: EdgeInsets.only(bottom: sh * 0.014),
+        padding: EdgeInsets.symmetric(
+          vertical: sh * 0.014,
+          horizontal: sw * 0.04,
+        ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
           borderRadius: BorderRadius.circular(30),
           boxShadow: [
             BoxShadow(
@@ -416,21 +443,25 @@ class SufismHomeScreen extends StatelessWidget {
               backgroundColor: kPrimaryBrown,
               child: Icon(Icons.donut_large, color: Colors.white, size: 18),
             ),
-            const SizedBox(width: 15),
+            SizedBox(width: sw * 0.04),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     titleArabic.isNotEmpty ? '$title ($titleArabic)' : title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 13,
+                      fontSize: sw * 0.033,
+                      color: isDark ? Colors.white : Colors.black,
                     ),
                   ),
                   Text(
                     sub,
-                    style: const TextStyle(fontSize: 10, color: kTextGrey),
+                    style: TextStyle(
+                      fontSize: sw * 0.025,
+                      color: isDark ? Colors.grey[400] : kTextGrey,
+                    ),
                   ),
                 ],
               ),
@@ -452,6 +483,8 @@ class SufismHomeScreen extends StatelessWidget {
     String imgUrl, {
     String? teacherId,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sw = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
         if (teacherId != null) {
@@ -469,11 +502,16 @@ class SufismHomeScreen extends StatelessWidget {
         }
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        padding: EdgeInsets.symmetric(
+          vertical: sw * 0.03,
+          horizontal: sw * 0.02,
+        ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF2A2A2A) : Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade200),
+          border: Border.all(
+            color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+          ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.02),
@@ -494,7 +532,10 @@ class SufismHomeScreen extends StatelessWidget {
               title,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 12, color: kTextGrey),
+              style: TextStyle(
+                fontSize: sw * 0.03,
+                color: isDark ? Colors.grey[300] : kTextGrey,
+              ),
             ),
           ],
         ),
@@ -511,11 +552,13 @@ class GuidedMeditationListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
     final sufismController = SufismController.instance;
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark ? const Color(0xFF121212) : kBackground,
       appBar: AppBar(
-        // title: const HeaderSection(title: "Guided Meditation"),
         title: HeaderSection(title: tr("guided_meditation")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
@@ -527,23 +570,26 @@ class GuidedMeditationListScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: sw * 0.05),
           child: Column(
             children: [
-              const SizedBox(height: 10),
+              SizedBox(height: sh * 0.012),
               // Simple Border Search
               Container(
-                height: 45,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+                height: sh * 0.055,
+                padding: EdgeInsets.symmetric(horizontal: sw * 0.025),
                 decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey.shade300),
+                  border: Border.all(
+                    color: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+                  ),
                 ),
                 child: TextField(
                   onChanged: (val) =>
                       sufismController.guidedMeditationSearchQuery.value = val,
+                  style: TextStyle(color: isDark ? Colors.white : Colors.black),
                   decoration: InputDecoration(
-                    // hintText: "Search",
                     hintText: tr("search"),
                     hintStyle: const TextStyle(
                       fontSize: 14,
@@ -558,7 +604,7 @@ class GuidedMeditationListScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: sh * 0.025),
               // List
               Expanded(
                 child: Obx(() {
@@ -578,13 +624,15 @@ class GuidedMeditationListScreen extends StatelessWidget {
                       final med = list[index];
                       return _meditationTile(
                         context,
-                        // med.name ?? "Untitled",
                         med.name ?? tr("untitled"),
                         med.nameArabic ?? "",
                         med.meaning ?? "",
                         medData: med,
                         allMeditations: list,
                         index: index,
+                        isDark: isDark,
+                        sw: sw,
+                        sh: sh,
                       );
                     },
                   );
@@ -605,6 +653,9 @@ class GuidedMeditationListScreen extends StatelessWidget {
     GuidedMeditationData? medData,
     List<GuidedMeditationData> allMeditations = const [],
     int index = 0,
+    bool isDark = false,
+    double sw = 0,
+    double sh = 0,
   }) {
     return GestureDetector(
       onTap: () {
@@ -622,10 +673,13 @@ class GuidedMeditationListScreen extends StatelessWidget {
         }
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+        margin: EdgeInsets.only(bottom: sh > 0 ? sh * 0.014 : 12),
+        padding: EdgeInsets.symmetric(
+          vertical: sh > 0 ? sh * 0.014 : 12,
+          horizontal: sw > 0 ? sw * 0.04 : 15,
+        ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
           borderRadius: BorderRadius.circular(30),
           boxShadow: [
             BoxShadow(
@@ -649,14 +703,18 @@ class GuidedMeditationListScreen extends StatelessWidget {
                 children: [
                   Text(
                     titleArabic.isNotEmpty ? '$title ($titleArabic)' : title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 13,
+                      fontSize: sw > 0 ? sw * 0.033 : 13,
+                      color: isDark ? Colors.white : Colors.black,
                     ),
                   ),
                   Text(
                     sub,
-                    style: const TextStyle(fontSize: 10, color: kTextGrey),
+                    style: TextStyle(
+                      fontSize: sw > 0 ? sw * 0.025 : 10,
+                      color: isDark ? Colors.grey[400] : kTextGrey,
+                    ),
                   ),
                 ],
               ),
@@ -681,11 +739,13 @@ class IslamicTeachersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
     final sufismController = SufismController.instance;
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark ? const Color(0xFF121212) : kBackground,
       appBar: AppBar(
-        // title: const HeaderSection(title: "Islamic Teachers"),
         title: HeaderSection(title: tr("islamic_teachers")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
@@ -697,23 +757,26 @@ class IslamicTeachersScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: sw * 0.05),
           child: Column(
             children: [
-              const SizedBox(height: 10),
+              SizedBox(height: sh * 0.012),
               // Simple Border Search
               Container(
-                height: 45,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+                height: sh * 0.055,
+                padding: EdgeInsets.symmetric(horizontal: sw * 0.025),
                 decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey.shade300),
+                  border: Border.all(
+                    color: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+                  ),
                 ),
                 child: TextField(
                   onChanged: (val) =>
                       sufismController.teacherSearchQuery.value = val,
+                  style: TextStyle(color: isDark ? Colors.white : Colors.black),
                   decoration: InputDecoration(
-                    // hintText: "Search",
                     hintText: tr("search"),
                     hintStyle: const TextStyle(
                       fontSize: 14,
@@ -728,7 +791,7 @@ class IslamicTeachersScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: sh * 0.025),
               // List
               Expanded(
                 child: Obx(() {
@@ -759,6 +822,9 @@ class IslamicTeachersScreen extends StatelessWidget {
 }
 
 Widget _teacherCard(BuildContext context, IslamicTeacherData teacher) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  final sw = MediaQuery.of(context).size.width;
+  final sh = MediaQuery.of(context).size.height;
   return GestureDetector(
     onTap: () => Navigator.push(
       context,
@@ -767,10 +833,10 @@ Widget _teacherCard(BuildContext context, IslamicTeacherData teacher) {
       ),
     ),
     child: Container(
-      margin: const EdgeInsets.only(bottom: 15),
-      padding: const EdgeInsets.all(12),
+      margin: EdgeInsets.only(bottom: sh * 0.018),
+      padding: EdgeInsets.all(sw * 0.03),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -783,29 +849,29 @@ Widget _teacherCard(BuildContext context, IslamicTeacherData teacher) {
       child: Row(
         children: [
           CircleAvatar(
-            radius: 28,
+            radius: sw * 0.07,
             backgroundImage: NetworkImage(teacher.image ?? ""),
             backgroundColor: Colors.grey.shade200,
           ),
-          const SizedBox(width: 15),
+          SizedBox(width: sw * 0.04),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  // teacher.title ?? "Untitled",
                   teacher.title ?? tr("untitled"),
                   style: GoogleFonts.playfairDisplay(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: sw * 0.04,
+                    color: isDark ? Colors.white : Colors.black,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   teacher.subtitle ?? "",
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: kTextGrey,
+                  style: TextStyle(
+                    fontSize: sw * 0.03,
+                    color: isDark ? Colors.grey[400] : kTextGrey,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -813,8 +879,8 @@ Widget _teacherCard(BuildContext context, IslamicTeacherData teacher) {
             ),
           ),
           Container(
-            height: 35,
-            width: 35,
+            height: sw * 0.09,
+            width: sw * 0.09,
             decoration: BoxDecoration(
               color: kPrimaryBrown,
               borderRadius: BorderRadius.circular(8),
@@ -866,25 +932,27 @@ class _TeachingDetailsScreenState extends State<TeachingDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
     if (isLoading) {
-      return const Scaffold(
-        backgroundColor: kBackground,
-        body: Center(child: CircularProgressIndicator()),
+      return Scaffold(
+        backgroundColor: isDark ? const Color(0xFF121212) : kBackground,
+        body: const Center(child: CircularProgressIndicator()),
       );
     }
     if (teacherData == null) {
       return Scaffold(
-        backgroundColor: kBackground,
-        // body: Center(child: Text("Teacher details not found")),
+        backgroundColor: isDark ? const Color(0xFF121212) : kBackground,
         body: Center(child: Text(tr("teacher_details_not_found"))),
       );
     }
 
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark ? const Color(0xFF121212) : kBackground,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(sw * 0.05),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -900,38 +968,42 @@ class _TeachingDetailsScreenState extends State<TeachingDetailsScreen> {
                 ),
               ),
               CircleAvatar(
-                radius: 50,
+                radius: sw * 0.13,
                 backgroundImage: NetworkImage(teacherData!.image ?? ""),
                 backgroundColor: Colors.grey.shade200,
               ),
-              const SizedBox(height: 15),
+              SizedBox(height: sh * 0.018),
               Text(
                 teacherData!.title ?? "",
                 style: GoogleFonts.playfairDisplay(
-                  fontSize: 20,
+                  fontSize: sw * 0.05,
                   fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : Colors.black,
                 ),
               ),
-              const SizedBox(height: 5),
+              SizedBox(height: sh * 0.006),
               Text(
                 teacherData!.subtitle ?? "",
                 textAlign: TextAlign.center,
-                style: GoogleFonts.ebGaramond(fontSize: 16, color: kTextGrey),
+                style: GoogleFonts.ebGaramond(
+                  fontSize: sw * 0.04,
+                  color: isDark ? Colors.grey[400] : kTextGrey,
+                ),
               ),
-              const SizedBox(height: 25),
+              SizedBox(height: sh * 0.03),
 
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  // "His Teaching",
                   tr("his_teaching"),
                   style: GoogleFonts.playfairDisplay(
-                    fontSize: 18,
+                    fontSize: sw * 0.045,
                     fontWeight: FontWeight.w600,
+                    color: isDark ? Colors.white : Colors.black,
                   ),
                 ),
               ),
-              const SizedBox(height: 15),
+              SizedBox(height: sh * 0.018),
 
               if (teacherData!.teachings == null ||
                   teacherData!.teachings!.isEmpty)
@@ -959,13 +1031,18 @@ class _TeachingDetailsScreenState extends State<TeachingDetailsScreen> {
     String title,
     String description,
   ) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
     return Container(
-      margin: const EdgeInsets.only(bottom: 15),
-      padding: const EdgeInsets.all(15),
+      margin: EdgeInsets.only(bottom: sh * 0.018),
+      padding: EdgeInsets.all(sw * 0.04),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Colors.grey.shade100),
+        border: Border.all(
+          color: isDark ? Colors.grey.shade800 : Colors.grey.shade100,
+        ),
         boxShadow: [
           BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 5),
         ],
@@ -977,17 +1054,22 @@ class _TeachingDetailsScreenState extends State<TeachingDetailsScreen> {
             title,
             style: GoogleFonts.playfairDisplay(
               fontWeight: FontWeight.bold,
-              fontSize: 16,
+              fontSize: sw * 0.04,
+              color: isDark ? Colors.white : Colors.black,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: sh * 0.01),
           Text(
             description,
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 13, color: kTextGrey, height: 1.5),
+            style: TextStyle(
+              fontSize: sw * 0.033,
+              color: isDark ? Colors.grey[400] : kTextGrey,
+              height: 1.5,
+            ),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: sh * 0.012),
           Align(
             alignment: Alignment.centerRight,
             child: GestureDetector(
@@ -996,56 +1078,64 @@ class _TeachingDetailsScreenState extends State<TeachingDetailsScreen> {
                   context: context,
                   isScrollControlled: true,
                   backgroundColor: Colors.transparent,
-                  builder: (context) => Container(
-                    constraints: BoxConstraints(
-                      maxHeight: MediaQuery.of(context).size.height * 0.8,
-                    ),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(25),
+                  builder: (context) {
+                    final isDarkSheet =
+                        Theme.of(context).brightness == Brightness.dark;
+                    return Container(
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height * 0.8,
                       ),
-                    ),
-                    padding: const EdgeInsets.all(25),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Center(
-                          child: Container(
-                            width: 40,
-                            height: 4,
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade300,
-                              borderRadius: BorderRadius.circular(2),
-                            ),
-                          ),
+                      decoration: BoxDecoration(
+                        color: isDarkSheet
+                            ? const Color(0xFF1E1E1E)
+                            : Colors.white,
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(25),
                         ),
-                        const SizedBox(height: 20),
-                        Text(
-                          title,
-                          style: GoogleFonts.playfairDisplay(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: kPrimaryBrown,
-                          ),
-                        ),
-                        const SizedBox(height: 15),
-                        Flexible(
-                          child: SingleChildScrollView(
-                            child: Text(
-                              description,
-                              style: GoogleFonts.ebGaramond(
-                                fontSize: 18,
-                                height: 1.6,
-                                color: Colors.black87,
+                      ),
+                      padding: EdgeInsets.all(sw * 0.06),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Center(
+                            child: Container(
+                              width: 40,
+                              height: 4,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade300,
+                                borderRadius: BorderRadius.circular(2),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
+                          const SizedBox(height: 20),
+                          Text(
+                            title,
+                            style: GoogleFonts.playfairDisplay(
+                              fontSize: sw * 0.055,
+                              fontWeight: FontWeight.bold,
+                              color: kPrimaryBrown,
+                            ),
+                          ),
+                          const SizedBox(height: 15),
+                          Flexible(
+                            child: SingleChildScrollView(
+                              child: Text(
+                                description,
+                                style: GoogleFonts.ebGaramond(
+                                  fontSize: sw * 0.045,
+                                  height: 1.6,
+                                  color: isDarkSheet
+                                      ? Colors.grey[300]
+                                      : Colors.black87,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 );
               },
               child: Container(
@@ -1058,7 +1148,6 @@ class _TeachingDetailsScreenState extends State<TeachingDetailsScreen> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  // "Read More",
                   tr("read_more"),
                   style: const TextStyle(color: Colors.white, fontSize: 10),
                 ),
@@ -1172,9 +1261,9 @@ class ExploreMoreGrid extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       crossAxisCount: 4,
-      childAspectRatio: 0.75, // Increased vertical space
-      mainAxisSpacing: 12.h,
-      crossAxisSpacing: 8.w,
+      childAspectRatio: 0.75,
+      mainAxisSpacing: MediaQuery.of(context).size.height * 0.015,
+      crossAxisSpacing: MediaQuery.of(context).size.width * 0.02,
       children: [
         GestureDetector(
           onTap: () {
@@ -1357,7 +1446,7 @@ class _GridCard extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: isDark ? Colors.white : Colors.black87,
-                fontSize: 11.sp,
+                fontSize: MediaQuery.of(context).size.width * 0.028,
               ),
             ),
           ),

@@ -18,14 +18,17 @@ class CustomHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sw = MediaQuery.of(context).size.width;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20.0),
       child: Row(
         children: [
-          const Expanded(
+          Expanded(
             child: Divider(
-              color: Color(0xFF8D4B33),
-              indent: 40,
+              color: const Color(0xFF8D4B33),
+              indent: sw * 0.1,
               endIndent: 10,
               thickness: 0.8,
             ),
@@ -33,17 +36,17 @@ class CustomHeader extends StatelessWidget {
           Text(
             title.toUpperCase(),
             style: GoogleFonts.ebGaramond(
-              fontSize: 10,
+              fontSize: sw * 0.025,
               letterSpacing: 2.0,
               fontWeight: FontWeight.w600,
               color: const Color(0xFF8D4B33),
             ),
           ),
-          const Expanded(
+          Expanded(
             child: Divider(
-              color: Color(0xFF8D4B33),
+              color: const Color(0xFF8D4B33),
               indent: 10,
-              endIndent: 40,
+              endIndent: sw * 0.1,
               thickness: 0.8,
             ),
           ),
@@ -67,16 +70,22 @@ class CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.symmetric(horizontal: sw * 0.06, vertical: sh * 0.01),
+      padding: EdgeInsets.all(sw * 0.04),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.withOpacity(0.1)),
+        border: Border.all(
+          color: isDark ? Colors.grey.shade800 : Colors.grey.withOpacity(0.1),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withOpacity(isDark ? 0.2 : 0.03),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -84,8 +93,12 @@ class CategoryCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, size: 28, color: Colors.black87),
-          const SizedBox(width: 16),
+          Icon(
+            icon,
+            size: sw * 0.07,
+            color: isDark ? const Color(0xFF8D4B33) : Colors.black87,
+          ),
+          SizedBox(width: sw * 0.04),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,15 +106,16 @@ class CategoryCard extends StatelessWidget {
                 Text(
                   title,
                   style: GoogleFonts.playfairDisplay(
-                    fontSize: 16,
+                    fontSize: sw * 0.04,
                     fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : Colors.black,
                   ),
                 ),
                 Text(
                   subtitle,
                   style: GoogleFonts.ebGaramond(
-                    fontSize: 13,
-                    color: Colors.grey[600],
+                    fontSize: sw * 0.033,
+                    color: isDark ? Colors.grey[400] : Colors.grey[600],
                   ),
                 ),
               ],
@@ -134,23 +148,31 @@ class MainMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(MeditationController());
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sh = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFFDFDFD),
       appBar: AppBar(
-        // title: const HeaderSection(title: "Islaah & Meditation"),
         title: HeaderSection(title: tr("islaah_meditation")),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: isDark ? Colors.white70 : Colors.grey,
+            size: 20,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 20),
+            SizedBox(height: sh * 0.025),
             Expanded(
               child: Obx(() {
                 if (controller.isLoading.value) {
@@ -158,8 +180,12 @@ class MainMenuScreen extends StatelessWidget {
                 }
                 if (controller.meditationList.isEmpty) {
                   return Center(
-                    // child: const Text("No meditation records found"),
-                    child: Text(tr("no_meditation_records")),
+                    child: Text(
+                      tr("no_meditation_records"),
+                      style: TextStyle(
+                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      ),
+                    ),
                   );
                 }
 
@@ -171,7 +197,6 @@ class MainMenuScreen extends StatelessWidget {
                       onTap: () async {
                         if (med.id == null) return;
 
-                        // Show loading
                         Get.dialog(
                           const Center(child: CircularProgressIndicator()),
                           barrierDismissible: false,
@@ -181,7 +206,6 @@ class MainMenuScreen extends StatelessWidget {
                           med.id!,
                         );
 
-                        // Close loading
                         Get.back();
 
                         if (fullMed != null) {
@@ -194,16 +218,12 @@ class MainMenuScreen extends StatelessWidget {
                           );
                         } else {
                           Get.snackbar(
-                            // "Error",
-                            // "Could not fetch meditation details",
                             tr("error_colon"),
                             tr("fetch_meditation_error"),
                           );
                         }
                       },
                       child: CategoryCard(
-                        // title: med.title ?? "Untitled",
-                        // subtitle: med.subtitle ?? "",
                         title:
                             tr(
                               "meditation_${med.id}_title",
@@ -230,7 +250,7 @@ class MainMenuScreen extends StatelessWidget {
   }
 }
 
-// 2. Meditation Player Screen (Matches Screen 5, 6, 7)
+// 2. Meditation Player Screen
 class MeditationPlayerScreen extends StatefulWidget {
   final MeditationData? meditation;
   final GuidedMeditationData? guidedMeditation;
@@ -258,7 +278,6 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
   Duration position = Duration.zero;
   bool isTrackLoading = false;
 
-  // Tracks the current guided meditation being played
   late GuidedMeditationData? _currentGuided;
   late int _currentIndex;
 
@@ -271,7 +290,6 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
     _currentIndex = widget.initialIndex;
     player = AudioPlayer();
 
-    // Set source
     final audioUrl = _audioUrl;
     if (audioUrl != null && audioUrl.isNotEmpty) {
       player.setSourceUrl(audioUrl);
@@ -286,7 +304,6 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
     player.onPositionChanged.listen((p) {
       if (mounted) setState(() => position = p);
     });
-    // Auto-advance to next when track completes
     player.onPlayerComplete.listen((_) => _nextTrack());
   }
 
@@ -300,7 +317,6 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
     String twoDigits(int n) => n.toString().padLeft(2, "0");
     String twoDigitMinutes = twoDigits(d.inMinutes.remainder(60));
     String twoDigitSeconds = twoDigits(d.inSeconds.remainder(60));
-    // return "$twoDigitMinutes:$twoDigitSeconds";
     return localizeDigits("$twoDigitMinutes:$twoDigitSeconds", context);
   }
 
@@ -315,10 +331,9 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
   Future<void> _startSession() async {
     final audioUrl = _audioUrl;
     if (audioUrl == null || audioUrl.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        // const SnackBar(content: Text("No audio available for this session")),
-        SnackBar(content: Text(tr("no_audio_available"))),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(tr("no_audio_available"))));
       return;
     }
     await player.play(UrlSource(audioUrl));
@@ -344,7 +359,6 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
     });
     await player.stop();
 
-    // Fetch the full record (with audio file) from the API
     final fetched = await SufismController.instance.fetchGuidedMeditationById(
       list[index].id!,
     );
@@ -372,7 +386,6 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
   Future<void> _prevTrack() async {
     final list = widget.allGuidedMeditations;
     if (list.isEmpty) return;
-    // If more than 3 seconds in, restart; otherwise go to previous
     if (position.inSeconds > 3) {
       await player.seek(Duration.zero);
     } else {
@@ -383,60 +396,75 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // const title = "Inner Peace";
-    // const subtitle = "Calm your heart, balance your\nmind";
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+
     final title = tr("inner_peace");
     final subtitle = tr("calm_heart_placeholder");
-    // final title =
-    //     //  _currentGuided?.name ??
-    //     widget.meditation?.title ?? "Inner Peace";
-    // final subtitle =
-    //     //_currentGuided?.meaning ??
-    //     widget.meditation?.subtitle ?? "Calm your heart, balance your\nmind";
     final arabicTitle = _currentGuided?.name ?? widget.meditation?.title;
     final hasList = widget.allGuidedMeditations.length > 1;
 
+    // Theme-aware colors
+    final bgColor = isDark ? const Color(0xFF121212) : const Color(0xFFFDFDFD);
+    final textColor = isDark ? Colors.white : Colors.black;
+    final subtitleColor = isDark
+        ? Colors.grey[400]
+        : Colors.grey.withOpacity(0.95);
+    final iconColor = isDark ? Colors.white70 : Colors.black87;
+    final disabledColor = isDark ? Colors.grey[700] : Colors.grey[300];
+    final sliderInactiveColor = isDark ? Colors.grey[700] : Colors.grey[300];
+
     return Scaffold(
+      backgroundColor: bgColor,
       appBar: AppBar(
         title: HeaderSection(title: title),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: isDark ? Colors.white70 : Colors.grey,
+            size: 20,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 20),
-            Text(
-              subtitle,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.ebGaramond(
-                fontSize: 18,
-                fontStyle: FontStyle.italic,
-                color: Colors.black87,
+            SizedBox(height: sh * 0.025),
+            // Subtitle
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: sw * 0.06),
+              child: Text(
+                subtitle,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.ebGaramond(
+                  fontSize: sw * 0.045,
+                  fontStyle: FontStyle.italic,
+                  color: subtitleColor,
+                ),
               ),
             ),
             if (arabicTitle != null) ...[
-              const SizedBox(height: 10),
+              SizedBox(height: sh * 0.012),
               Text(
                 arabicTitle,
                 style: GoogleFonts.amiri(
-                  fontSize: 22,
+                  fontSize: sw * 0.055,
                   fontWeight: FontWeight.bold,
                   color: const Color(0xFF8D4B33),
                 ),
               ),
             ],
             const Spacer(),
-            // The Circular Image
+            // Circular meditation image
             Center(
               child: Container(
-                width: 200,
-                height: 200,
+                width: sw * 0.5,
+                height: sw * 0.5,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: const DecorationImage(
@@ -445,42 +473,55 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
                     ),
                     fit: BoxFit.cover,
                   ),
-                  border: Border.all(color: const Color(0xFFF0E6E1), width: 8),
+                  border: Border.all(
+                    color: isDark
+                        ? const Color(0xFF3D2B20)
+                        : const Color(0xFFF0E6E1),
+                    width: sw * 0.02,
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 30),
+            SizedBox(height: sh * 0.035),
+            // Teacher title
             Text(
-              // "Al Murshid",
               tr("al_murshid_title"),
               style: GoogleFonts.playfairDisplay(
-                fontSize: 22,
+                fontSize: sw * 0.055,
                 fontWeight: FontWeight.bold,
+                color: textColor,
               ),
             ),
-            const SizedBox(height: 10),
-            Text(
-              // "Take a deep breath and remember Allah.\nPause if needed. Focus on your heart",
-              tr("remember_allah_placeholder"),
-              textAlign: TextAlign.center,
-              style: GoogleFonts.ebGaramond(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                color: Colors.grey.withOpacity(0.95),
+            SizedBox(height: sh * 0.012),
+            // Instructions
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: sw * 0.08),
+              child: Text(
+                tr("remember_allah_placeholder"),
+                textAlign: TextAlign.center,
+                style: GoogleFonts.ebGaramond(
+                  fontSize: sw * 0.038,
+                  fontWeight: FontWeight.w600,
+                  color: subtitleColor,
+                ),
               ),
             ),
             const Spacer(),
             // Audio Controls
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
+              padding: EdgeInsets.symmetric(horizontal: sw * 0.07),
               child: Column(
                 children: [
+                  // Seekbar row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         formatDuration(position),
-                        style: GoogleFonts.ebGaramond(fontSize: 12),
+                        style: GoogleFonts.ebGaramond(
+                          fontSize: sw * 0.03,
+                          color: isDark ? Colors.grey[400] : Colors.black87,
+                        ),
                       ),
                       Expanded(
                         child: Slider(
@@ -493,15 +534,19 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
                             player.seek(Duration(milliseconds: newPos.round()));
                           },
                           activeColor: const Color(0xFF8D4B33),
-                          inactiveColor: Colors.grey[300],
+                          inactiveColor: sliderInactiveColor,
                         ),
                       ),
                       Text(
                         formatDuration(duration),
-                        style: GoogleFonts.ebGaramond(fontSize: 12),
+                        style: GoogleFonts.ebGaramond(
+                          fontSize: sw * 0.03,
+                          color: isDark ? Colors.grey[400] : Colors.black87,
+                        ),
                       ),
                     ],
                   ),
+                  // Play controls row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -509,24 +554,27 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
                         onTap: hasList ? _prevTrack : null,
                         child: Icon(
                           Icons.skip_previous_outlined,
-                          size: 30,
-                          color: hasList ? Colors.black87 : Colors.grey[300],
+                          size: sw * 0.075,
+                          color: hasList ? iconColor : disabledColor,
                         ),
                       ),
-                      const SizedBox(width: 25),
+                      SizedBox(width: sw * 0.06),
                       GestureDetector(
                         onTap: isTrackLoading ? null : _togglePlay,
                         child: Container(
-                          padding: const EdgeInsets.all(4),
+                          padding: EdgeInsets.all(sw * 0.01),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(width: 1),
+                            border: Border.all(
+                              width: 1.5,
+                              color: isDark ? Colors.white38 : Colors.black87,
+                            ),
                           ),
                           child: isTrackLoading
-                              ? const SizedBox(
-                                  width: 35,
-                                  height: 35,
-                                  child: CircularProgressIndicator(
+                              ? SizedBox(
+                                  width: sw * 0.088,
+                                  height: sw * 0.088,
+                                  child: const CircularProgressIndicator(
                                     strokeWidth: 2,
                                     color: Color(0xFF8D4B33),
                                   ),
@@ -535,17 +583,18 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
                                   playerState == PlayerState.playing
                                       ? Icons.pause_rounded
                                       : Icons.play_arrow_rounded,
-                                  size: 35,
+                                  size: sw * 0.088,
+                                  color: textColor,
                                 ),
                         ),
                       ),
-                      const SizedBox(width: 25),
+                      SizedBox(width: sw * 0.06),
                       GestureDetector(
                         onTap: hasList ? _nextTrack : null,
                         child: Icon(
                           Icons.skip_next_outlined,
-                          size: 30,
-                          color: hasList ? Colors.black87 : Colors.grey[300],
+                          size: sw * 0.075,
+                          color: hasList ? iconColor : disabledColor,
                         ),
                       ),
                     ],
@@ -553,31 +602,31 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 40),
+            SizedBox(height: sh * 0.045),
             // Bottom Action Buttons
             Padding(
-              padding: const EdgeInsets.only(bottom: 50),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              padding: EdgeInsets.only(bottom: sh * 0.06),
+              child: Wrap(
+                alignment: WrapAlignment.center,
+                spacing: sw * 0.02,
+                runSpacing: sh * 0.012,
                 children: [
                   _buildBottomBtn(
-                    // "Start Session",
                     tr("start_session"),
                     const Color(0xFF0D5D4E),
+                    sw: sw,
                     onTap: _startSession,
                   ),
-                  const SizedBox(width: 8),
                   _buildBottomBtn(
-                    // "Keep Breathing",
                     tr("keep_breathing"),
                     const Color(0xFF8D4B33),
+                    sw: sw,
                     onTap: _keepBreathing,
                   ),
-                  const SizedBox(width: 8),
                   _buildBottomBtn(
-                    // "End Session",
                     tr("end_session"),
                     const Color(0xFF1B2344),
+                    sw: sw,
                     onTap: _endSession,
                   ),
                 ],
@@ -593,11 +642,15 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
     String text,
     Color color, {
     required VoidCallback onTap,
+    required double sw,
   }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        padding: EdgeInsets.symmetric(
+          horizontal: sw * 0.035,
+          vertical: sw * 0.02,
+        ),
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(4),
@@ -606,7 +659,7 @@ class _MeditationPlayerScreenState extends State<MeditationPlayerScreen> {
           text,
           style: GoogleFonts.ebGaramond(
             color: Colors.white,
-            fontSize: 12,
+            fontSize: sw * 0.03,
             fontWeight: FontWeight.w600,
           ),
         ),
