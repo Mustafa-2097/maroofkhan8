@@ -57,12 +57,12 @@ class _HadithListDetailsScreenState extends State<HadithListDetailsScreen> {
               child: Row(
                 children: [
                   _backButton(),
-                  const Expanded(
+                  Expanded(
                     child: Divider(
                       indent: 10,
                       endIndent: 10,
-                      color: Colors.grey,
-                      thickness: 0.7,
+                      color: isDark ? Colors.white : Colors.grey,
+                      thickness: 0.9,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -90,12 +90,13 @@ class _HadithListDetailsScreenState extends State<HadithListDetailsScreen> {
                   ),
                   const SizedBox(width: 8),
                   const Icon(Icons.circle, size: 4, color: Color(0xFF8D3C1F)),
-                  const Expanded(
+                  Expanded(
                     child: Divider(
                       indent: 10,
                       endIndent: 10,
-                      color: Colors.grey,
-                      thickness: 0.7,
+                      color: isDark ? Colors.white : Colors.grey,
+                      // color: Color.fromARGB(255, 255, 255, 255),
+                      thickness: 0.9,
                     ),
                   ),
                   const SizedBox(width: 40), // Placeholder for balance

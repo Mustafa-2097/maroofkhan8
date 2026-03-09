@@ -180,7 +180,7 @@ class HeaderDecoration extends StatelessWidget {
             child: Divider(
               indent: 10,
               endIndent: 10,
-              color: isDark ? Colors.grey.shade700 : Colors.grey,
+              color: isDark ? Colors.white : Colors.grey,
               thickness: 0.7,
             ),
           ),
@@ -203,7 +203,7 @@ class HeaderDecoration extends StatelessWidget {
             child: Divider(
               indent: 10,
               endIndent: 10,
-              color: isDark ? Colors.grey.shade700 : Colors.grey,
+              color: isDark ? Colors.white : Colors.grey,
               thickness: 0.7,
             ),
           ),
