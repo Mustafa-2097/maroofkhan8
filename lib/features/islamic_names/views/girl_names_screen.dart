@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -27,7 +28,8 @@ class GirlNamesScreen extends StatelessWidget {
         ),
         centerTitle: true,
         title: Text(
-          "Islamic Girl's Name",
+          // "Islamic Girl's Name",
+          tr("islamic_girls_name_title"),
           style: GoogleFonts.ebGaramond(
             color: Colors.black,
             fontWeight: FontWeight.bold,
@@ -64,7 +66,8 @@ class GirlNamesScreen extends StatelessWidget {
                         onChanged: (val) =>
                             controller.girlSearchQuery.value = val,
                         decoration: InputDecoration(
-                          hintText: "Search",
+                          // hintText: "Search",
+                          hintText: tr("search_hint"),
                           hintStyle: TextStyle(
                             color: Colors.grey.shade300,
                             fontSize: 14,
@@ -103,7 +106,8 @@ class GirlNamesScreen extends StatelessWidget {
             // List of Names
             Expanded(
               child: girlNames.isEmpty
-                  ? const Center(child: Text("No names found"))
+                  // ? const Center(child: Text("No names found"))
+                  ? Center(child: Text(tr("no_names_found")))
                   : ListView.builder(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       itemCount: girlNames.length,
@@ -146,7 +150,8 @@ class GirlNamesScreen extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 5),
                                     Text(
-                                      "Meaning: ${name.meaning}",
+                                      // "Meaning: ${name.meaning}",
+                                      "${tr("meaning_colon")} ${name.meaning}",
                                       style: GoogleFonts.ebGaramond(
                                         fontSize: 14,
                                         color: kTextGrey,

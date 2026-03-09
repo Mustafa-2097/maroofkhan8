@@ -11,7 +11,7 @@ class SufismController extends GetxController {
   static SufismController get instance => Get.find();
 
   final MeditationController meditationController =
-      Get.find<MeditationController>();
+  Get.find<MeditationController>();
 
   var searchQuery = "".obs;
   var teacherSearchQuery = "".obs;
@@ -105,9 +105,9 @@ class SufismController extends GetxController {
     return teacherList
         .where(
           (t) => t.title!.toLowerCase().contains(
-            teacherSearchQuery.value.toLowerCase(),
-          ),
-        )
+        teacherSearchQuery.value.toLowerCase(),
+      ),
+    )
         .toList();
   }
 
@@ -118,13 +118,13 @@ class SufismController extends GetxController {
     return guidedMeditationList
         .where(
           (m) =>
-              (m.name ?? "").toLowerCase().contains(
-                guidedMeditationSearchQuery.value.toLowerCase(),
-              ) ||
-              (m.meaning ?? "").toLowerCase().contains(
-                guidedMeditationSearchQuery.value.toLowerCase(),
-              ),
-        )
+      (m.name ?? "").toLowerCase().contains(
+        guidedMeditationSearchQuery.value.toLowerCase(),
+      ) ||
+          (m.meaning ?? "").toLowerCase().contains(
+            guidedMeditationSearchQuery.value.toLowerCase(),
+          ),
+    )
         .toList();
   }
 
@@ -136,9 +136,9 @@ class SufismController extends GetxController {
     return meditationController.meditationList
         .where(
           (med) =>
-              (med.title ?? "").toLowerCase().contains(query) ||
-              (med.subtitle ?? "").toLowerCase().contains(query),
-        )
+      (med.title ?? "").toLowerCase().contains(query) ||
+          (med.subtitle ?? "").toLowerCase().contains(query),
+    )
         .toList();
   }
 }

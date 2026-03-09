@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -179,8 +180,10 @@ class SalawatController extends GetxController {
         }
 
         Get.snackbar(
-          "Success",
-          newState ? "Added to saved" : "Removed from saved",
+          // "Success",
+          // newState ? "Added to saved" : "Removed from saved",
+          tr("success"),
+          newState ? tr("added_to_bookmarks") : tr("removed_from_bookmarks"),
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: kPrimaryBrown,
           colorText: Colors.white,
@@ -238,18 +241,23 @@ class SalawatController extends GetxController {
 
   Future<void> downloadSalawat(SalawatData salawat) async {
     if (salawat.audio == null) {
-      Get.snackbar("Error", "No audio file available for download");
+      // Get.snackbar("Error", "No audio file available for download");
+      Get.snackbar(tr("error"), tr("no_audio_available"));
       return;
     }
     Get.snackbar(
-      "Download Started",
-      "Downloading audio for ${salawat.title}...",
+      // "Download Started",
+      // "Downloading audio for ${salawat.title}...",
+      tr("download_started"),
+      tr("downloading_audio_for", args: [salawat.title ?? tr("untitled")]),
       snackPosition: SnackPosition.BOTTOM,
     );
     await Future.delayed(const Duration(seconds: 2));
     Get.snackbar(
-      "Download Complete",
-      "Audio for ${salawat.title} has been saved.",
+      // "Download Complete",
+      // "Audio for ${salawat.title} has been saved.",
+      tr("download_complete"),
+      tr("audio_saved_desc", args: [salawat.title ?? tr("untitled")]),
       snackPosition: SnackPosition.BOTTOM,
     );
   }
@@ -276,7 +284,8 @@ class SalawatController extends GetxController {
   Future<void> playSalawat(SalawatData salawat) async {
     final audioUrl = salawat.file ?? salawat.audio;
     if (audioUrl == null) {
-      Get.snackbar("Error", "No audio file available for playback");
+      // Get.snackbar("Error", "No audio file available for playback");
+      Get.snackbar(tr("error"), tr("no_audio_available"));
       return;
     }
 

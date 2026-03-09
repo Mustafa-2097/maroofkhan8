@@ -13,6 +13,7 @@ import '../model/tafsir_model.dart' as tm;
 import '../model/audio_model.dart' as am;
 import '../model/static_surah_data.dart';
 import '../../../core/offline_storage/shared_pref.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class QuranController extends GetxController {
   var surahList = <SurahModel>[].obs;
@@ -43,10 +44,20 @@ class QuranController extends GetxController {
     return surahList
         .where(
           (s) =>
+              // s.name.toLowerCase().contains(searchQuery.value.toLowerCase()) ||
+              // s.translatedName.toLowerCase().contains(
+              //   searchQuery.value.toLowerCase(),
+              // ) ||
               s.name.toLowerCase().contains(searchQuery.value.toLowerCase()) ||
               s.translatedName.toLowerCase().contains(
                 searchQuery.value.toLowerCase(),
               ) ||
+              tr(
+                "surah_${s.id}_name",
+              ).toLowerCase().contains(searchQuery.value.toLowerCase()) ||
+              tr(
+                "surah_${s.id}_trans",
+              ).toLowerCase().contains(searchQuery.value.toLowerCase()) ||
               s.id.toString() == searchQuery.value,
         )
         .toList();
@@ -68,12 +79,28 @@ class QuranController extends GetxController {
     return lastReadList
         .where(
           (lr) =>
+              // (lr.chapter?.name ?? '').toLowerCase().contains(
+              //   searchQuery.value.toLowerCase(),
+              // ) ||
+              // (lr.chapter?.nameTranslated ?? '').toLowerCase().contains(
+              //   searchQuery.value.toLowerCase(),
+              // ) ||
               (lr.chapter?.name ?? '').toLowerCase().contains(
                 searchQuery.value.toLowerCase(),
               ) ||
               (lr.chapter?.nameTranslated ?? '').toLowerCase().contains(
                 searchQuery.value.toLowerCase(),
               ) ||
+              (lr.chapter != null
+                  ? tr(
+                      "surah_${lr.chapter!.id}_name",
+                    ).toLowerCase().contains(searchQuery.value.toLowerCase())
+                  : false) ||
+              (lr.chapter != null
+                  ? tr(
+                      "surah_${lr.chapter!.id}_trans",
+                    ).toLowerCase().contains(searchQuery.value.toLowerCase())
+                  : false) ||
               (lr.chapter?.chapterNumber ?? 0).toString() == searchQuery.value,
         )
         .toList();
@@ -425,10 +452,22 @@ class QuranController extends GetxController {
       }
 
       print("DEBUG: Attempting to play: ${surahAudio.value!.url}");
-      // If the player is already loaded with this source, just resume
+
+      /* Old Logic:
       if (playerState.value == PlayerState.paused ||
           playerState.value == PlayerState.stopped ||
           playerState.value == PlayerState.completed) {
+        await audioPlayer.resume();
+      } else if (playerState.value != PlayerState.playing) {
+        await audioPlayer.play(UrlSource(surahAudio.value!.url!));
+      }
+      */
+
+      // New Logic: If the player is completed or stopped, play from source again
+      if (playerState.value == PlayerState.completed ||
+          playerState.value == PlayerState.stopped) {
+        await audioPlayer.play(UrlSource(surahAudio.value!.url!));
+      } else if (playerState.value == PlayerState.paused) {
         await audioPlayer.resume();
       } else if (playerState.value != PlayerState.playing) {
         await audioPlayer.play(UrlSource(surahAudio.value!.url!));
@@ -447,6 +486,10 @@ class QuranController extends GetxController {
   }
 
   Future<void> resetAudio() async {
+    // await audioPlayer.seek(Duration.zero);
+    // await playAudio();
+
+    await stopAudio();
     await audioPlayer.seek(Duration.zero);
     await playAudio();
   }
@@ -620,9 +663,13 @@ class QuranController extends GetxController {
 
         if (response['success'] == true) {
           surahBookmarkIds.remove(surah.id);
+          // SnackbarUtils.showSnackbar(
+          //   "Success",
+          //   "${surah.name} removed from bookmarks",
+          // );
           SnackbarUtils.showSnackbar(
-            "Success",
-            "${surah.name} removed from bookmarks",
+            tr("success"),
+            "${tr("surah_${surah.id}_name")} ${tr("removed_from_bookmarks")}",
           );
         }
       } else {
@@ -634,9 +681,13 @@ class QuranController extends GetxController {
         if (response['success'] == true) {
           final relationId = response['data']['id'].toString();
           surahBookmarkIds[surah.id] = relationId;
+          // SnackbarUtils.showSnackbar(
+          //   "Success",
+          //   "${surah.name} added to bookmarks",
+          // );
           SnackbarUtils.showSnackbar(
-            "Success",
-            "${surah.name} added to bookmarks",
+            tr("success"),
+            "${tr("surah_${surah.id}_name")} ${tr("added_to_bookmarks")}",
           );
         }
       }
@@ -647,9 +698,13 @@ class QuranController extends GetxController {
   }
 
   Future<void> downloadSurahAudio(SurahModel surah) async {
+    // SnackbarUtils.showSnackbar(
+    //   "Download",
+    //   "Starting download for ${surah.name}...",
+    // );
     SnackbarUtils.showSnackbar(
-      "Download",
-      "Starting download for ${surah.name}...",
+      tr("download"),
+      "${tr("starting_download_for")} ${tr("surah_${surah.id}_name")}...",
     );
   }
 
