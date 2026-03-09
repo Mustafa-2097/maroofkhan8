@@ -9,6 +9,7 @@ class CustomAppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const Color kDarkBlack = Color(0xFF1E120D);
     final sh = MediaQuery.of(context).size.height;
     final sw = MediaQuery.of(context).size.width;
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -27,7 +28,8 @@ class CustomAppDrawer extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               color: isDark
-                  ? Theme.of(context).colorScheme.surface
+                  ? //Theme.of(context).colorScheme.surface
+                    kDarkBlack
                   : Colors.white,
               borderRadius: BorderRadius.only(
                 topRight: Radius.circular(20.r),
