@@ -33,6 +33,7 @@ class _HadithScreenState extends State<HadithScreen> {
   @override
   Widget build(BuildContext context) {
     context.locale;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
         title: HeaderSection(title: tr("al_hadith")),
@@ -65,11 +66,18 @@ class _HadithScreenState extends State<HadithScreen> {
                       height: 45,
                       padding: const EdgeInsets.symmetric(horizontal: 15),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.grey.shade200),
+                        border: Border.all(
+                          color: isDark
+                              ? Colors.grey.shade800
+                              : Colors.grey.shade200,
+                        ),
                       ),
                       child: TextField(
+                        style: TextStyle(
+                          color: isDark ? Colors.white : Colors.black87,
+                        ),
                         onChanged: (val) {
                           controller.searchQuery.value = val;
                         },
@@ -91,13 +99,19 @@ class _HadithScreenState extends State<HadithScreen> {
                       height: 45,
                       width: 45,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.grey.shade200),
+                        border: Border.all(
+                          color: isDark
+                              ? Colors.grey.shade800
+                              : Colors.grey.shade200,
+                        ),
                       ),
                       child: Icon(
                         Icons.bookmark_outline,
-                        color: Colors.grey.shade300,
+                        color: isDark
+                            ? Colors.grey.shade600
+                            : Colors.grey.shade300,
                       ),
                     ),
                   ),
@@ -139,6 +153,7 @@ class _HadithScreenState extends State<HadithScreen> {
 
   // Book List for Screen 1
   Widget _buildBookList() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Obx(() {
       if (controller.isLoading.value) {
         return const Center(child: CircularProgressIndicator());
@@ -160,11 +175,11 @@ class _HadithScreenState extends State<HadithScreen> {
               margin: const EdgeInsets.only(bottom: 15),
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.03),
+                    color: Colors.black.withOpacity(isDark ? 0.2 : 0.03),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -196,6 +211,7 @@ class _HadithScreenState extends State<HadithScreen> {
                           style: GoogleFonts.playfairDisplay(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
+                            color: isDark ? Colors.white : Colors.black87,
                           ),
                         ),
                         Text(
@@ -203,7 +219,9 @@ class _HadithScreenState extends State<HadithScreen> {
                           style: GoogleFonts.playfairDisplay(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
-                            color: const Color(0xFFA6A6A6),
+                            color: isDark
+                                ? Colors.grey.shade500
+                                : const Color(0xFFA6A6A6),
                           ),
                         ),
                         Text(
@@ -211,7 +229,9 @@ class _HadithScreenState extends State<HadithScreen> {
                           style: GoogleFonts.playfairDisplay(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
-                            color: const Color(0xFFA6A6A6),
+                            color: isDark
+                                ? Colors.grey.shade500
+                                : const Color(0xFFA6A6A6),
                           ),
                         ),
                         Text(
@@ -219,7 +239,9 @@ class _HadithScreenState extends State<HadithScreen> {
                           style: GoogleFonts.playfairDisplay(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
-                            color: const Color(0xFFA6A6A6),
+                            color: isDark
+                                ? Colors.grey.shade500
+                                : const Color(0xFFA6A6A6),
                           ),
                         ),
                       ],
@@ -248,6 +270,7 @@ class _HadithScreenState extends State<HadithScreen> {
 
   // Hadith Detail List for Screen 2 & 3
   Widget _buildHadithList() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Obx(() {
       if (controller.isPopularLoading.value) {
         return const Center(child: CircularProgressIndicator());
@@ -265,11 +288,11 @@ class _HadithScreenState extends State<HadithScreen> {
             margin: const EdgeInsets.only(bottom: 15),
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.03),
+                  color: Colors.black.withOpacity(isDark ? 0.2 : 0.03),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -281,10 +304,10 @@ class _HadithScreenState extends State<HadithScreen> {
                 const SizedBox(height: 10),
                 Text(
                   item.hadith,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     height: 1.5,
-                    color: Colors.black87,
+                    color: isDark ? Colors.white70 : Colors.black87,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -371,6 +394,7 @@ class _HadithScreenState extends State<HadithScreen> {
 
   // Last Read Hadith List for Screen 3
   Widget _buildLastReadList() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Obx(() {
       if (controller.isLastReadLoading.value) {
         return const Center(child: CircularProgressIndicator());
@@ -388,11 +412,11 @@ class _HadithScreenState extends State<HadithScreen> {
             margin: const EdgeInsets.only(bottom: 15),
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.03),
+                  color: Colors.black.withOpacity(isDark ? 0.2 : 0.03),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -404,10 +428,10 @@ class _HadithScreenState extends State<HadithScreen> {
                 const SizedBox(height: 10),
                 Text(
                   item.hadith,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     height: 1.5,
-                    color: Colors.black87,
+                    color: isDark ? Colors.white70 : Colors.black87,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -503,6 +527,7 @@ class _HadithScreenState extends State<HadithScreen> {
 
   Widget _tabButton(String text, int index, {IconData? icon}) {
     bool isSelected = _selectedIndex == index;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Expanded(
       child: GestureDetector(
         onTap: () => setState(() => _selectedIndex = index),
@@ -510,8 +535,10 @@ class _HadithScreenState extends State<HadithScreen> {
           height: 38,
           decoration: BoxDecoration(
             color: isSelected
-                ? (index == 2 ? primaryBrown : darkBlack)
-                : Colors.white,
+                ? primaryBrown
+                : isDark
+                ? Colors.white
+                : Colors.black,
             borderRadius: BorderRadius.circular(20),
             border: isSelected ? null : Border.all(color: Colors.grey.shade200),
           ),
@@ -522,16 +549,27 @@ class _HadithScreenState extends State<HadithScreen> {
                 Icon(
                   icon,
                   size: 14,
-                  color: isSelected ? Colors.white : Colors.black,
+                  color: isSelected
+                      ? Colors.white
+                      : isDark
+                      ? Colors.black
+                      : Colors.white,
                 ),
                 const SizedBox(width: 5),
               ],
-              Text(
-                text,
-                style: TextStyle(
-                  color: isSelected ? Colors.white : Colors.black,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
+              Flexible(
+                child: Text(
+                  text,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: isSelected
+                        ? Colors.white
+                        : isDark
+                        ? Colors.black
+                        : Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ],

@@ -14,11 +14,11 @@ class ZakatWhoMustPayScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.locale;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: kBackground,
-
+      backgroundColor: isDark ? const Color(0xFF121212) : kBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
@@ -30,7 +30,7 @@ class ZakatWhoMustPayScreen extends StatelessWidget {
             Text(
               tr("zakat"),
               style: GoogleFonts.ebGaramond(
-                color: Colors.black,
+                color: isDark ? Colors.white : Colors.black,
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
               ),
@@ -50,12 +50,14 @@ class ZakatWhoMustPayScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade100),
+                border: Border.all(
+                  color: isDark ? Colors.grey.shade800 : Colors.grey.shade100,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.03),
+                    color: Colors.black.withOpacity(isDark ? 0.2 : 0.03),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -86,7 +88,7 @@ class ZakatWhoMustPayScreen extends StatelessWidget {
                           style: GoogleFonts.ebGaramond(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
-                            color: kTextDark,
+                            color: isDark ? Colors.white : kTextDark,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -110,11 +112,11 @@ class ZakatWhoMustPayScreen extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.02),
+                    color: Colors.black.withOpacity(isDark ? 0.2 : 0.02),
                     blurRadius: 15,
                     offset: const Offset(0, 8),
                   ),
@@ -128,21 +130,22 @@ class ZakatWhoMustPayScreen extends StatelessWidget {
                     style: GoogleFonts.ebGaramond(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: kTextDark,
+                      color: isDark ? Colors.white : kTextDark,
                       height: 1.4,
                     ),
                   ),
                   const SizedBox(height: 20),
-
-                  _checkListItem(tr("cond_adult_sane")),
-                  _checkListItem(tr("cond_free")),
-                  _checkListItem(tr("cond_nisab")),
-                  _checkListItem(localizeDigits(tr("cond_hawl"), context)),
-                  _checkListItem(tr("cond_nature")),
-
+                  _checkListItem(tr("cond_adult_sane"), isDark),
+                  _checkListItem(tr("cond_free"), isDark),
+                  _checkListItem(tr("cond_nisab"), isDark),
+                  _checkListItem(
+                    localizeDigits(tr("cond_hawl"), context),
+                    isDark,
+                  ),
+                  _checkListItem(tr("cond_nature"), isDark),
                   const SizedBox(height: 20),
-                  _contentParagraph(tr("exempt_notice")),
-                  _contentParagraph(tr("nisab_reset_notice")),
+                  _contentParagraph(tr("exempt_notice"), isDark),
+                  _contentParagraph(tr("nisab_reset_notice"), isDark),
                 ],
               ),
             ),
@@ -152,14 +155,14 @@ class ZakatWhoMustPayScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 border: const Border(
                   left: BorderSide(color: kPrimaryBrown, width: 4),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.02),
+                    color: Colors.black.withOpacity(isDark ? 0.2 : 0.02),
                     blurRadius: 15,
                     offset: const Offset(0, 8),
                   ),
@@ -168,11 +171,11 @@ class ZakatWhoMustPayScreen extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 4.0),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
                     child: Icon(
                       Icons.menu_book_outlined,
-                      color: kTextDark,
+                      color: isDark ? Colors.white70 : kTextDark,
                       size: 20,
                     ),
                   ),
@@ -186,7 +189,7 @@ class ZakatWhoMustPayScreen extends StatelessWidget {
                           style: GoogleFonts.ebGaramond(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: kTextDark,
+                            color: isDark ? Colors.white : kTextDark,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -210,7 +213,7 @@ class ZakatWhoMustPayScreen extends StatelessWidget {
     );
   }
 
-  Widget _checkListItem(String text) {
+  Widget _checkListItem(String text, bool isDark) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Row(
@@ -227,7 +230,7 @@ class ZakatWhoMustPayScreen extends StatelessWidget {
               text,
               style: GoogleFonts.ebGaramond(
                 fontSize: 15,
-                color: kTextDark,
+                color: isDark ? Colors.white70 : kTextDark,
                 height: 1.3,
               ),
             ),
@@ -237,14 +240,14 @@ class ZakatWhoMustPayScreen extends StatelessWidget {
     );
   }
 
-  Widget _contentParagraph(String text) {
+  Widget _contentParagraph(String text, bool isDark) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Text(
         text,
         style: GoogleFonts.ebGaramond(
           fontSize: 15,
-          color: kTextDark,
+          color: isDark ? Colors.white70 : kTextDark,
           height: 1.5,
         ),
       ),

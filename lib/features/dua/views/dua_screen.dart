@@ -23,6 +23,7 @@ class FilterChipRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final controller = DuaController.instance;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -40,13 +41,21 @@ class FilterChipRow extends StatelessWidget {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: isActive ? kBrown : kBlack,
+                  color: isActive
+                      ? kBrown
+                      : isDark
+                      ? Colors.white
+                      : Colors.black,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   tr(controller.getCategoryKey(index)),
                   style: GoogleFonts.ebGaramond(
-                    color: Colors.white,
+                    color: isActive
+                        ? Colors.white
+                        : isDark
+                        ? Colors.black
+                        : Colors.white,
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
@@ -68,15 +77,16 @@ class DuaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -96,6 +106,7 @@ class DuaCard extends StatelessWidget {
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     height: 1.5,
+                    color: isDark ? Colors.white : Colors.black,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -103,7 +114,7 @@ class DuaCard extends StatelessWidget {
                   title,
                   style: GoogleFonts.ebGaramond(
                     fontSize: 13,
-                    color: Colors.grey[600],
+                    color: isDark ? Colors.grey.shade400 : Colors.grey[600],
                   ),
                 ),
               ],
@@ -142,8 +153,12 @@ class _DuaListScreenState extends State<DuaListScreen> {
   @override
   Widget build(BuildContext context) {
     context.locale;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final DuaController controller = Get.put(DuaController());
     return Scaffold(
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFF8F9FE),
       appBar: AppBar(
         title: HeaderSection(title: tr("dua")),
         centerTitle: true,
@@ -170,17 +185,26 @@ class _DuaListScreenState extends State<DuaListScreen> {
                   margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey.shade200),
+                    border: Border.all(
+                      color: isDark
+                          ? Colors.grey.shade800
+                          : Colors.grey.shade200,
+                    ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.02),
+                        color: Colors.black.withValues(
+                          alpha: isDark ? 0.2 : 0.02,
+                        ),
                         blurRadius: 10,
                       ),
                     ],
                   ),
                   child: TextField(
+                    style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black87,
+                    ),
                     onChanged: (v) => controller.updateSearch(v),
                     decoration: InputDecoration(
                       hintText: tr("search_duas"),
@@ -301,7 +325,11 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
   @override
   Widget build(BuildContext context) {
     context.locale;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFF8F9FE),
       appBar: AppBar(
         title: HeaderSection(title: tr("duas")),
         centerTitle: true,
@@ -312,21 +340,6 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-
-      // appBar: AppBar(
-      //   backgroundColor: Colors.white,
-      //   elevation: 0,
-      //   leading: IconButton(
-      //     icon: const Icon(Icons.arrow_back_ios, color: Colors.black54),
-      //     onPressed: () => Navigator.pop(context),
-      //   ),
-
-      //   title: Text(
-      //     "Duas",
-      //     style: GoogleFonts.ebGaramond(color: Colors.black, fontSize: 18),
-      //   ),
-      //   centerTitle: true,
-      // ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -334,36 +347,24 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
             // Top Pills for Detail
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildSmallPill(tr("dua"), true),
-                // _buildSmallPill("Translation", false),
-                // _buildSmallPill("Tafsir", false),
-              ],
+              children: [_buildSmallPill(tr("dua"), true, isDark)],
             ),
             const SizedBox(height: 25),
             // Dua Content Card
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(15),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.03),
+                    color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
                     blurRadius: 10,
                   ),
                 ],
               ),
               child: Column(
                 children: [
-                  // const Align(
-                  //   alignment: Alignment.topRight,
-                  //   child: Icon(
-                  //     Icons.favorite_border,
-                  //     color: Colors.grey,
-                  //     size: 20,
-                  //   ),
-                  // ),
                   Text(
                     widget.dua.arabic ?? "",
                     textAlign: TextAlign.center,
@@ -371,6 +372,7 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
                     style: GoogleFonts.amiri(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
+                      color: isDark ? Colors.white : Colors.black,
                     ),
                   ),
                   const SizedBox(height: 15),
@@ -380,7 +382,7 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
                     style: GoogleFonts.ebGaramond(
                       fontSize: 14,
                       fontStyle: FontStyle.italic,
-                      color: Colors.black54,
+                      color: isDark ? Colors.grey.shade400 : Colors.black54,
                     ),
                   ),
                 ],
@@ -432,7 +434,7 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
               width: double.infinity,
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Column(
@@ -449,7 +451,11 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
                   const SizedBox(height: 8),
                   Text(
                     widget.dua.meaning ?? "",
-                    style: GoogleFonts.ebGaramond(fontSize: 14, height: 1.4),
+                    style: GoogleFonts.ebGaramond(
+                      fontSize: 14,
+                      height: 1.4,
+                      color: isDark ? Colors.white70 : Colors.black87,
+                    ),
                   ),
                 ],
               ),
@@ -460,17 +466,28 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
     );
   }
 
-  Widget _buildSmallPill(String text, bool active) {
+  Widget _buildSmallPill(String text, bool active, bool isDark) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 4),
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       decoration: BoxDecoration(
-        color: active ? kBrown : kBlack,
+        color: active
+            ? kBrown
+            : isDark
+            ? Colors.white
+            : Colors.black,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
         text,
-        style: GoogleFonts.ebGaramond(color: Colors.white, fontSize: 12),
+        style: GoogleFonts.ebGaramond(
+          color: active
+              ? Colors.white
+              : isDark
+              ? Colors.black
+              : Colors.white,
+          fontSize: 12,
+        ),
       ),
     );
   }

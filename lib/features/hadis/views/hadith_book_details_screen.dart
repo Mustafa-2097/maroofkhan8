@@ -36,8 +36,11 @@ class _HadithBookDetailsScreenState extends State<HadithBookDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     context.locale;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFF8F9FE),
       body: SafeArea(
         child: Column(
           children: [
@@ -94,44 +97,60 @@ class _HadithBookDetailsScreenState extends State<HadithBookDetailsScreen> {
   }
 
   Widget _buildChapterItem(HadithChapter chapter) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-          child: Row(
-            children: [
-              HexagonBadge(number: localizeDigits(chapter.number, context)),
-              const SizedBox(width: 15),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      chapter.name,
-                      style: GoogleFonts.playfairDisplay(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF2E2E2E),
+        Container(
+          color: isDark ? const Color(0xFF121212) : const Color(0xFFF8F9FE),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+            child: Row(
+              children: [
+                HexagonBadge(number: localizeDigits(chapter.number, context)),
+                const SizedBox(width: 15),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        chapter.name,
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: isDark
+                              ? Colors.white
+                              : const Color(0xFF2E2E2E),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      "${tr('hadith_chapter')}  |  ${localizeDigits(chapter.number, context)}",
-                      style: GoogleFonts.playfairDisplay(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: const Color(0xFFA6A6A6),
+                      const SizedBox(height: 2),
+                      Text(
+                        "${tr('hadith_chapter')}  |  ${localizeDigits(chapter.number, context)}",
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: isDark
+                              ? Colors.grey.shade500
+                              : const Color(0xFFA6A6A6),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+                Icon(
+                  Icons.chevron_right,
+                  color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
+                  size: 20,
+                ),
+              ],
+            ),
           ),
         ),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          child: Divider(height: 1, color: Colors.grey),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Divider(
+            height: 1,
+            color: isDark ? Colors.grey.shade800 : const Color(0xFFEEEEEE),
+          ),
         ),
       ],
     );
@@ -144,6 +163,7 @@ class HeaderDecoration extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
@@ -156,15 +176,14 @@ class HeaderDecoration extends StatelessWidget {
               size: 20,
             ),
           ),
-          const Expanded(
+          Expanded(
             child: Divider(
               indent: 10,
               endIndent: 10,
-              color: Colors.grey,
+              color: isDark ? Colors.grey.shade700 : Colors.grey,
               thickness: 0.7,
             ),
           ),
-
           const Icon(Icons.circle, size: 4, color: Color(0xFF8D3C1F)),
           const SizedBox(width: 8),
           Flexible(
@@ -174,21 +193,21 @@ class HeaderDecoration extends StatelessWidget {
               style: GoogleFonts.playfairDisplay(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: const Color(0xFF2E2E2E),
+                color: isDark ? Colors.white : const Color(0xFF2E2E2E),
               ),
             ),
           ),
           const SizedBox(width: 8),
           const Icon(Icons.circle, size: 4, color: Color(0xFF8D3C1F)),
-          const Expanded(
+          Expanded(
             child: Divider(
               indent: 10,
               endIndent: 10,
-              color: Colors.grey,
+              color: isDark ? Colors.grey.shade700 : Colors.grey,
               thickness: 0.7,
             ),
           ),
-          const SizedBox(width: 30), // Balancing for back button
+          const SizedBox(width: 30),
         ],
       ),
     );
@@ -200,6 +219,7 @@ class SearchBarSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final controller = HadithController.instance;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -210,11 +230,14 @@ class SearchBarSection extends StatelessWidget {
               height: 45,
               padding: const EdgeInsets.symmetric(horizontal: 15),
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 255, 255, 255),
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.grey.shade200),
+                border: Border.all(
+                  color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+                ),
               ),
               child: TextField(
+                style: TextStyle(color: isDark ? Colors.white : Colors.black87),
                 onChanged: (value) =>
                     controller.chapterSearchQuery.value = value,
                 decoration: InputDecoration(
@@ -232,11 +255,16 @@ class SearchBarSection extends StatelessWidget {
               height: 45,
               width: 45,
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 255, 255, 255),
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.grey.shade200),
+                border: Border.all(
+                  color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+                ),
               ),
-              child: Icon(Icons.bookmark_outline, color: Colors.grey.shade300),
+              child: Icon(
+                Icons.bookmark_outline,
+                color: isDark ? Colors.grey.shade600 : Colors.grey.shade300,
+              ),
             ),
           ),
         ],

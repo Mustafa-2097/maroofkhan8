@@ -14,10 +14,11 @@ class NisabHawlScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.locale;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: kBackground,
+      backgroundColor: isDark ? const Color(0xFF121212) : kBackground,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: isDark ? const Color(0xFF1A1A1A) : Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
@@ -29,7 +30,7 @@ class NisabHawlScreen extends StatelessWidget {
             Text(
               tr("zakat"),
               style: GoogleFonts.ebGaramond(
-                color: Colors.black,
+                color: isDark ? Colors.white : Colors.black,
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
               ),
@@ -45,16 +46,17 @@ class NisabHawlScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: Column(
           children: [
-            // 1. Top Card: Nisab & Hawl
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade100),
+                border: Border.all(
+                  color: isDark ? Colors.grey.shade800 : Colors.grey.shade100,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.03),
+                    color: Colors.black.withOpacity(isDark ? 0.2 : 0.03),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -85,7 +87,7 @@ class NisabHawlScreen extends StatelessWidget {
                           style: GoogleFonts.ebGaramond(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
-                            color: kTextDark,
+                            color: isDark ? Colors.white : kTextDark,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -104,16 +106,15 @@ class NisabHawlScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
 
-            // 2. Main content Card
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.02),
+                    color: Colors.black.withOpacity(isDark ? 0.2 : 0.02),
                     blurRadius: 15,
                     offset: const Offset(0, 8),
                   ),
@@ -127,7 +128,7 @@ class NisabHawlScreen extends StatelessWidget {
                     style: GoogleFonts.ebGaramond(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: kTextDark,
+                      color: isDark ? Colors.white : kTextDark,
                       height: 1.4,
                     ),
                   ),
@@ -136,41 +137,43 @@ class NisabHawlScreen extends StatelessWidget {
                     tr("nisab_values_title"),
                     style: GoogleFonts.ebGaramond(
                       fontSize: 15,
-                      color: kTextDark,
+                      color: isDark ? Colors.white70 : kTextDark,
                       height: 1.4,
                     ),
                   ),
                   const SizedBox(height: 12),
                   _checkListItem(
                     localizeDigits(tr("gold_nisab_value"), context),
+                    isDark,
                   ),
                   _checkListItem(
                     localizeDigits(tr("silver_nisab_value"), context),
+                    isDark,
                   ),
                   _checkListItem(
                     localizeDigits(tr("hawl_meaning_lunar_year"), context),
+                    isDark,
                   ),
-                  _checkListItem(tr("wealth_fluctuation")),
-                  _bulletItem(tr("hawl_meaning_lunar_year")),
-                  _bulletItem(tr("wealth_fluctuation_notice")),
-                  _bulletItem(tr("price_change_notice")),
+                  _checkListItem(tr("wealth_fluctuation"), isDark),
+                  _bulletItem(tr("hawl_meaning_lunar_year"), isDark),
+                  _bulletItem(tr("wealth_fluctuation_notice"), isDark),
+                  _bulletItem(tr("price_change_notice"), isDark),
                 ],
               ),
             ),
             const SizedBox(height: 24),
 
-            // 3. Need More Guidance Card
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 border: const Border(
                   left: BorderSide(color: kPrimaryBrown, width: 4),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.02),
+                    color: Colors.black.withOpacity(isDark ? 0.2 : 0.02),
                     blurRadius: 15,
                     offset: const Offset(0, 8),
                   ),
@@ -179,11 +182,11 @@ class NisabHawlScreen extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 4.0),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
                     child: Icon(
                       Icons.menu_book_outlined,
-                      color: kTextDark,
+                      color: isDark ? Colors.white70 : kTextDark,
                       size: 20,
                     ),
                   ),
@@ -197,7 +200,7 @@ class NisabHawlScreen extends StatelessWidget {
                           style: GoogleFonts.ebGaramond(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: kTextDark,
+                            color: isDark ? Colors.white : kTextDark,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -221,7 +224,7 @@ class NisabHawlScreen extends StatelessWidget {
     );
   }
 
-  Widget _checkListItem(String text) {
+  Widget _checkListItem(String text, bool isDark) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Row(
@@ -238,7 +241,7 @@ class NisabHawlScreen extends StatelessWidget {
               text,
               style: GoogleFonts.ebGaramond(
                 fontSize: 15,
-                color: kTextDark,
+                color: isDark ? Colors.white70 : kTextDark,
                 height: 1.3,
               ),
             ),
@@ -248,15 +251,19 @@ class NisabHawlScreen extends StatelessWidget {
     );
   }
 
-  Widget _bulletItem(String text) {
+  Widget _bulletItem(String text, bool isDark) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 8.0),
-            child: Icon(Icons.circle, color: kTextDark, size: 4),
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Icon(
+              Icons.circle,
+              color: isDark ? Colors.white70 : kTextDark,
+              size: 4,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -264,7 +271,7 @@ class NisabHawlScreen extends StatelessWidget {
               text,
               style: GoogleFonts.ebGaramond(
                 fontSize: 15,
-                color: kTextDark,
+                color: isDark ? Colors.white70 : kTextDark,
                 height: 1.4,
               ),
             ),
