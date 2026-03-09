@@ -37,6 +37,10 @@ class _UserNavBarState extends State<CustomBottomNavBar> {
 
   @override
   Widget build(BuildContext context) {
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     context.locale; // Register dependency
     final keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
@@ -67,17 +71,19 @@ class _UserNavBarState extends State<CustomBottomNavBar> {
           AnimatedPositioned(
             duration: const Duration(milliseconds: 350),
             curve: Curves.easeInOutCubic,
-            left: 20,
-            right: 20,
-            bottom: keyboardOpen ? -100 : (_isNavbarVisible ? 25 : -100),
+            left: sw * 0.05,
+            right: sw * 0.05,
+            bottom: keyboardOpen
+                ? -sh * 0.15
+                : (_isNavbarVisible ? sh * 0.03 : -sh * 0.15),
             child: Container(
-              height: 70,
+              height: sh * 0.08,
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
+                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+                borderRadius: BorderRadius.circular(sw * 0.05),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -87,26 +93,31 @@ class _UserNavBarState extends State<CustomBottomNavBar> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildNavItem(
+                    context,
                     icon: Icons.home_outlined,
                     labelKey: "nav_home",
                     index: 0,
                   ),
                   _buildNavItem(
+                    context,
                     icon: Icons.auto_awesome_outlined,
                     labelKey: "nav_al_murshid",
                     index: 1,
                   ),
                   _buildNavItem(
+                    context,
                     icon: Icons.menu_book_outlined,
                     labelKey: "nav_quran",
                     index: 2,
                   ),
                   _buildNavItem(
+                    context,
                     icon: Icons.import_contacts, // Quran Icon
                     labelKey: "nav_hadith",
                     index: 3,
                   ),
                   _buildNavItem(
+                    context,
                     icon: Icons.man_outlined,
                     labelKey: "nav_sufism",
                     index: 4,
@@ -120,39 +131,45 @@ class _UserNavBarState extends State<CustomBottomNavBar> {
     );
   }
 
-  Widget _buildNavItem({
+  Widget _buildNavItem(
+    BuildContext context, {
     required IconData icon,
     required String labelKey,
     required int index,
   }) {
+    final sw = MediaQuery.of(context).size.width;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Expanded(
       child: GestureDetector(
         onTap: () => changeIndex(index),
         behavior: HitTestBehavior.opaque,
         child: Obx(() {
           final isSelected = currentIndex.value == index;
-          final Color color = isSelected ? primaryBrown : Colors.grey.shade400;
+          final Color color = isSelected
+              ? primaryBrown
+              : (isDark ? Colors.white38 : Colors.grey.shade400);
 
           return Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: color, size: 26),
-              const SizedBox(height: 4),
+              Icon(icon, color: color, size: sw * 0.065),
+              SizedBox(height: sw * 0.01),
               Text(
                 tr(labelKey),
                 style: TextStyle(
                   color: color,
-                  fontSize: 10,
+                  fontSize: sw * 0.025,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                 ),
               ),
-              // Fixed the error line below
+              // Indicator Dot
               if (isSelected)
                 Container(
-                  margin: const EdgeInsets.only(top: 4), // Corrected this line
-                  height: 4,
-                  width: 4,
+                  margin: EdgeInsets.only(top: sw * 0.01),
+                  height: sw * 0.01,
+                  width: sw * 0.01,
                   decoration: BoxDecoration(
                     color: primaryBrown,
                     shape: BoxShape.circle,

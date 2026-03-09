@@ -28,8 +28,8 @@ class CustomAppDrawer extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               color: isDark
-                  ? //Theme.of(context).colorScheme.surface
-                    kDarkBlack
+                  ? Theme.of(context).colorScheme.surface
+                  //kDarkBlack
                   : Colors.white,
               borderRadius: BorderRadius.only(
                 topRight: Radius.circular(20.r),
