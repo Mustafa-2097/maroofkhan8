@@ -65,11 +65,14 @@ class _AudioListScreenState extends State<AudioListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final sh = MediaQuery.of(context).size.height;
     final sw = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF9F9F9),
+      backgroundColor: isDark
+          ? const Color(0xFF121212)
+          : const Color(0xFFF9F9F9),
       appBar: AppBar(
         title: HeaderSection(title: "Audio List"),
         centerTitle: true,
@@ -108,6 +111,7 @@ class _AudioListScreenState extends State<AudioListScreen> {
                       },
                       sw,
                       sh,
+                      isDark,
                     ),
                   ),
                 );
@@ -158,12 +162,18 @@ class _AudioListScreenState extends State<AudioListScreen> {
                         shape: RoundedRectangleBorder(
                           // borderRadius: BorderRadius.circular(16),
                           borderRadius: BorderRadius.circular(sw * 0.04),
-                          side: BorderSide(color: Colors.grey.shade300),
+                          side: BorderSide(
+                            color: isDark
+                                ? Colors.grey.shade800
+                                : Colors.grey.shade300,
+                          ),
                         ),
                         child: Container(
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: isDark
+                                ? const Color(0xFF1E1E1E)
+                                : Colors.white,
                             // borderRadius: BorderRadius.circular(16),
                             borderRadius: BorderRadius.circular(sw * 0.04),
                           ),
@@ -175,8 +185,15 @@ class _AudioListScreenState extends State<AudioListScreen> {
                               return SizedBox(
                                 // height: 100,
                                 height: sh * 0.12,
-                                child: const Center(
-                                  child: Text("No featured audio"),
+                                child: Center(
+                                  child: Text(
+                                    "No featured audio",
+                                    style: TextStyle(
+                                      color: isDark
+                                          ? Colors.white
+                                          : Colors.black,
+                                    ),
+                                  ),
                                 ),
                               );
                             }
@@ -224,6 +241,9 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                                     fontSize: sw * 0.06,
                                                     fontWeight: FontWeight.bold,
                                                     height: 1.1,
+                                                    color: isDark
+                                                        ? Colors.white
+                                                        : Colors.black,
                                                   ),
                                                 ),
                                                 Text(
@@ -256,10 +276,16 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                                     Icon(
                                                       Icons.share,
                                                       size: sw * 0.05,
+                                                      color: Colors.black,
                                                     ),
                                                     // SizedBox(width: 8),
                                                     SizedBox(width: sw * 0.02),
-                                                    const Text('Share'),
+                                                    const Text(
+                                                      'Share',
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                      ),
+                                                    ),
                                                   ],
                                                 ),
                                               ),
@@ -289,6 +315,9 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                               // fontSize: 14,
                                               fontSize: sw * 0.035,
                                               fontWeight: FontWeight.w500,
+                                              color: isDark
+                                                  ? Colors.white
+                                                  : Colors.black,
                                             ),
                                           ),
                                           Expanded(
@@ -363,6 +392,9 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                               // fontSize: 14,
                                               fontSize: sw * 0.035,
                                               fontWeight: FontWeight.w500,
+                                              color: isDark
+                                                  ? Colors.white
+                                                  : Colors.black,
                                             ),
                                           ),
                                         ],
@@ -413,7 +445,8 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                           SizedBox(width: sw * 0.04),
                                           _buildActionButton(
                                             icon: Icons.file_download_outlined,
-                                            label: 'Download (Premium)',
+                                            label: 'Download',
+                                            // label: 'Download (Premium)',
                                             onPressed: () {
                                               controller.downloadAudio(
                                                 featuredAudio,
@@ -474,6 +507,7 @@ class _AudioListScreenState extends State<AudioListScreen> {
     VoidCallback onTap,
     double sw,
     double sh,
+    bool isDark,
   ) {
     return GestureDetector(
       onTap: onTap,
@@ -484,7 +518,9 @@ class _AudioListScreenState extends State<AudioListScreen> {
           vertical: sh * 0.01,
         ),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF8D3C1F) : const Color(0xFF1A1A1A),
+          color: isSelected
+              ? const Color(0xFF8D3C1F)
+              : (isDark ? const Color(0xFF2A2A2A) : const Color(0xFF1A1A1A)),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Center(

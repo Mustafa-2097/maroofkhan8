@@ -141,17 +141,20 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
                 ),
                 const SizedBox(width: 5),
               ],
-              Text(
-                label,
-                style: TextStyle(
-                  color: isSelected
-                      ? Colors.white
-                      : isDark
-                      ? Colors.black
-                      : Colors.white,
-                  // fontSize: 16,
-                  fontSize: MediaQuery.of(context).size.width * 0.038,
-                  fontWeight: FontWeight.w500,
+              Flexible(
+                child: Text(
+                  label,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: isSelected
+                        ? Colors.white
+                        : isDark
+                        ? Colors.black
+                        : Colors.white,
+                    // fontSize: 16,
+                    fontSize: MediaQuery.of(context).size.width * 0.038,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ],
@@ -240,6 +243,11 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
                       )
                     : null,
                 isLastRead: true,
+                onDelete: lastRead.id != null
+                    ? () {
+                        controller.deleteLastReadRecord(lastRead.id!);
+                      }
+                    : null,
               );
             },
           );
@@ -297,6 +305,7 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
     VoidCallback? onDelete,
     bool isLastRead = false,
   }) {
+    var isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: () {
         if (surah != null) {
@@ -324,6 +333,7 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
                           // fontSize: 16,
                           fontSize: MediaQuery.of(context).size.width * 0.04,
                           fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : Colors.black,
                         ),
                       ),
                       // const SizedBox(height: 2),
@@ -752,14 +762,23 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                     const SizedBox(width: 8),
                     Text(
                       "${tr("verse")} ${localizeDigits(tafsir.startKey ?? '', context)}:",
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 10),
                 Text(
                   plainContent,
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black87,
+                  ),
                 ),
               ],
             ),
@@ -770,6 +789,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
   }
 
   Widget _verseItem(vm.Data verse) {
+    var isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Column(
@@ -792,6 +812,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                           fontSize: MediaQuery.of(context).size.width * 0.055,
                           fontWeight: FontWeight.bold,
                           height: 1.8,
+                          color: isDark ? Colors.white : Colors.black,
                         ),
                       ),
                     ),
@@ -815,7 +836,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                       style: TextStyle(
                         // fontSize: 14,
                         fontSize: MediaQuery.of(context).size.width * 0.035,
-                        color: Colors.black87,
+                        color: isDark ? AppColors.whiteColor : Colors.black87,
                       ),
                     ),
                   ],
@@ -826,9 +847,10 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                 children: [
                   Text(
                     localizeDigits("${verse.number ?? ''}", context),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
+                      color: isDark ? Colors.white : Colors.black,
                     ),
                   ),
                   const SizedBox(height: 5),
@@ -875,6 +897,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
 
   // ── AI Explanation inline chat ──────────────────────────────────────────
   Widget _buildAiExplanation() {
+    var isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       children: [
         // Chat messages
@@ -922,7 +945,9 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                             vertical: 10,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
+                            color: isDark
+                                ? Colors.grey.shade800
+                                : Colors.grey.shade200,
                             borderRadius: BorderRadius.circular(14),
                           ),
                           child: const _TypingIndicator(),
@@ -945,7 +970,11 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                           maxWidth: MediaQuery.of(context).size.width * 0.78,
                         ),
                         decoration: BoxDecoration(
-                          color: isUser ? kPrimaryBrown : Colors.grey.shade100,
+                          color: isUser
+                              ? kPrimaryBrown
+                              : (isDark
+                                    ? Colors.grey.shade800
+                                    : Colors.grey.shade100),
                           borderRadius: BorderRadius.only(
                             topLeft: const Radius.circular(14),
                             topRight: const Radius.circular(14),
@@ -963,7 +992,9 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                         child: SelectableText(
                           msg['text'] as String,
                           style: TextStyle(
-                            color: isUser ? Colors.white : Colors.black87,
+                            color: isUser
+                                ? Colors.white
+                                : (isDark ? Colors.white : Colors.black87),
                             fontSize: 14,
                           ),
                         ),
@@ -984,9 +1015,11 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                 height: 60,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDark ? kDarkBlack : Colors.white,
                   borderRadius: BorderRadius.circular(40),
-                  border: Border.all(color: Colors.grey.shade200),
+                  border: Border.all(
+                    color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+                  ),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.02),
