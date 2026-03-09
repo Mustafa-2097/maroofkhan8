@@ -363,14 +363,14 @@ class _IslamicStoriesDetailScreenState
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _ActionButton(
-                      icon: Icons.headset,
-                      label: tr("listen"),
-                      isActive: true,
-                      onTap: () {
-                        // TODO: Implement listen functionality
-                      },
-                    ),
+                    // _ActionButton(
+                    //   icon: Icons.headset,
+                    //   label: tr("listen"),
+                    //   isActive: true,
+                    //   onTap: () {
+                    //     // TODO: Implement listen functionality
+                    //   },
+                    // ),
                     _ActionButton(
                       icon: Icons.auto_awesome,
                       label: tr("ai_explanation"),

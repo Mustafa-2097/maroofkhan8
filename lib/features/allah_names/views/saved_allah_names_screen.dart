@@ -74,9 +74,11 @@ class SavedAllahNamesScreen extends StatelessWidget {
             return NameCard(
               data: nameItem,
               onTap: () {
+                controller.isPlayingFromSaved.value = true;
+                controller.currentAudioIndex.value = index;
                 showDialog(
                   context: context,
-                  builder: (_) => PlayerDialog(data: nameItem),
+                  builder: (_) => const PlayerDialog(),
                 );
               },
             );

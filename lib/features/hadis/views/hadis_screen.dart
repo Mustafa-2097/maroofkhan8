@@ -349,6 +349,7 @@ class _HadithScreenState extends State<HadithScreen> {
                             bookName: item.reference.isNotEmpty
                                 ? item.reference
                                 : "Popular",
+                            bookSlug: item.book ?? "popular",
                             chapterNum: item.chapterNo?.toString() ?? "N/A",
                           ),
                         );
@@ -413,7 +414,7 @@ class _HadithScreenState extends State<HadithScreen> {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
-                    "— ${tr("book_${item.book}_name")}",
+                    "— ${tr("book_${item.book}_name").contains("book_") ? item.book : tr("book_${item.book}_name")}",
                     style: TextStyle(
                       color: primaryBrown,
                       fontSize: 12,
@@ -466,7 +467,11 @@ class _HadithScreenState extends State<HadithScreen> {
                           HadishTafsirDetailsScreen(
                             hadithText: item.hadith,
                             hadithNumber: item.hadithNo ?? "N/A",
-                            bookName: item.book,
+                            bookName:
+                                tr("book_${item.book}_name").contains("book_")
+                                ? item.book
+                                : tr("book_${item.book}_name"),
+                            bookSlug: item.book,
                             chapterNum: item.chapterNo ?? "N/A",
                           ),
                         );

@@ -4,6 +4,7 @@ import '../../../../core/network/api_endpoints.dart';
 import '../models/allah_name_model.dart';
 import '../data/static_allah_names.dart';
 import 'package:flutter/foundation.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class AllahNamesController extends GetxController {
   static AllahNamesController get instance => Get.find();
@@ -13,6 +14,13 @@ class AllahNamesController extends GetxController {
   var searchQuery = "".obs;
   var selectedFilterIndex = 0.obs; // 0: All, 1: Meaning, 2: Audio
   var currentAudioIndex = 0.obs;
+  var isPlayingFromSaved = false.obs;
+
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  var isPlaying = false.obs;
+  var currentPlayingId = "".obs;
+  var position = Duration.zero.obs;
+  var duration = Duration.zero.obs;
 
   List<AllahName> get filteredNamesList {
     List<AllahName> list = namesList;
@@ -40,6 +48,9 @@ class AllahNamesController extends GetxController {
     return list;
   }
 
+  List<AllahName> get activeList =>
+      isPlayingFromSaved.value ? savedNamesList : filteredNamesList;
+
   void updateSearchQuery(String query) {
     searchQuery.value = query;
   }
@@ -53,7 +64,7 @@ class AllahNamesController extends GetxController {
   }
 
   void nextAudio() {
-    final list = filteredNamesList;
+    final list = activeList;
     if (list.isEmpty) return;
     if (currentAudioIndex.value < list.length - 1) {
       currentAudioIndex.value++;
@@ -63,7 +74,7 @@ class AllahNamesController extends GetxController {
   }
 
   void previousAudio() {
-    final list = filteredNamesList;
+    final list = activeList;
     if (list.isEmpty) return;
     if (currentAudioIndex.value > 0) {
       currentAudioIndex.value--;
@@ -80,6 +91,56 @@ class AllahNamesController extends GetxController {
     super.onInit();
     fetchAllahNames();
     fetchSavedNames();
+
+    _audioPlayer.onPlayerStateChanged.listen((state) {
+      isPlaying.value = state == PlayerState.playing;
+      if (state == PlayerState.completed) {
+        currentPlayingId.value = "";
+        position.value = Duration.zero;
+      }
+    });
+
+    _audioPlayer.onPositionChanged.listen((p) {
+      position.value = p;
+    });
+
+    _audioPlayer.onDurationChanged.listen((d) {
+      duration.value = d;
+    });
+  }
+
+  @override
+  void onClose() {
+    _audioPlayer.dispose();
+    super.onClose();
+  }
+
+  Future<void> playNameAudio(AllahName item) async {
+    if (item.file.isEmpty) return;
+
+    if (currentPlayingId.value == item.id && isPlaying.value) {
+      await _audioPlayer.pause();
+    } else {
+      if (currentPlayingId.value != item.id) {
+        await _audioPlayer.stop();
+        position.value = Duration.zero;
+        duration.value = Duration.zero;
+        await _audioPlayer.play(UrlSource(item.file));
+        currentPlayingId.value = item.id;
+      } else {
+        await _audioPlayer.resume();
+      }
+    }
+  }
+
+  void seekAudio(double seconds) {
+    _audioPlayer.seek(Duration(seconds: seconds.toInt()));
+  }
+
+  String formatDuration(Duration d) {
+    String minutes = d.inMinutes.toString().padLeft(2, '0');
+    String seconds = (d.inSeconds % 60).toString().padLeft(2, '0');
+    return "$minutes:$seconds";
   }
 
   Future<void> fetchAllahNames() async {
@@ -119,6 +180,7 @@ class AllahNamesController extends GetxController {
             arabic: name.arabic,
             pronunciation: name.pronunciation,
             meaning: name.meaning,
+            file: name.file,
             isSaved: true,
           );
         }).toList();
@@ -152,6 +214,7 @@ class AllahNamesController extends GetxController {
           arabic: item.arabic,
           pronunciation: item.pronunciation,
           meaning: item.meaning,
+          file: item.file,
           isSaved: isSaved,
         );
       }
@@ -202,6 +265,7 @@ class AllahNamesController extends GetxController {
             arabic: realItem.arabic,
             pronunciation: realItem.pronunciation,
             meaning: realItem.meaning,
+            file: realItem.file,
             isSaved: !isCurrentlySaved,
           );
           namesList.refresh();

@@ -397,7 +397,7 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _actionIcon(Icons.headset_outlined, tr("listen")),
+                  //_actionIcon(Icons.headset_outlined, tr("listen")),
                   _actionIcon(
                     Icons.auto_awesome_outlined,
                     tr("ai_explanation"),
