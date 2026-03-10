@@ -94,9 +94,14 @@ class ProfileScreen extends StatelessWidget {
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         Obx(() {
-                          // Hide upgrade button if already on Premium
-                          final current = controller.currentPlan.value?.toLowerCase() ?? "";
-                          if (current == "premium") return const SizedBox.shrink();
+                          // Hide upgrade button if already on Premium or any subscription
+                          final current =
+                              controller.currentPlan.value?.toLowerCase() ?? "";
+                          if (controller.isSubscribed.value &&
+                              (current == "premium" ||
+                                  current == "premium_plan")) {
+                            return const SizedBox.shrink();
+                          }
 
                           return InkWell(
                             onTap: () => Get.to(() => SubscriptionPage()),
@@ -143,29 +148,31 @@ class ProfileScreen extends StatelessWidget {
                                 color: Colors.white,
                               ),
                               const SizedBox(width: 8),
-                              Obx(
-                                () => Text(
-                                  controller.isSubscribed.value
-                                      ? (controller.currentPlan.value ??
-                                            tr("basic_plan"))
-                                      : tr("free_plan"),
+                              Obx(() {
+                                String planKey = controller.isSubscribed.value
+                                    ? (controller.currentPlan.value ??
+                                          "basic_plan")
+                                    : "free_plan";
+                                return Text(
+                                  tr(planKey),
                                   style: TextStyle(
                                     color: Theme.of(
                                       context,
                                     ).colorScheme.onPrimary,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                ),
-                              ),
+                                );
+                              }),
                             ],
                           ),
                         ),
 
                         const Spacer(),
                         Obx(() {
-                          if (!controller.isSubscribed.value) return const SizedBox.shrink();
+                          if (!controller.isSubscribed.value)
+                            return const SizedBox.shrink();
                           return Text(
-                            tr("active"),
+                            tr("Active"),
                             style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(
                                   color: Colors.green,

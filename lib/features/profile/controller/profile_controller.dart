@@ -38,11 +38,24 @@ class ProfileController extends GetxController {
           avatar.value = profile['avatar'] ?? "";
         }
 
-        // Ideally the API would return the plan details if subscribed
-        // Let's check if there's any subscription details in the response
+        // Check if there's any subscription details in the response
         if (data['subscription'] != null &&
             data['subscription']['plan'] != null) {
           currentPlan.value = data['subscription']['plan']['title'];
+        }
+
+        // Fallback for currentPlan if subscribed but no title found
+        if (isSubscribed.value &&
+            (currentPlan.value == null || currentPlan.value!.isEmpty)) {
+          currentPlan.value = "premium_plan";
+        }
+
+        // Normalize if it's already "Premium" from API to use our key
+        if (currentPlan.value?.toLowerCase() == "premium") {
+          currentPlan.value = "premium_plan";
+        }
+        if (currentPlan.value?.toLowerCase() == "basic") {
+          currentPlan.value = "basic_plan";
         }
       }
     } catch (e) {

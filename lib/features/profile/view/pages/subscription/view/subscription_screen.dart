@@ -290,11 +290,15 @@ class SubscriptionPage extends StatelessWidget {
               child: Text(
                 'See more',
                 style: TextStyle(
-                  color: AppColors.primaryColorLight,
+                  color: isDark
+                      ? AppColors.primaryColorDark
+                      : AppColors.primaryColorLight,
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w400,
                   decoration: TextDecoration.underline,
-                  decorationColor: AppColors.primaryColorLight,
+                  decorationColor: isDark
+                      ? AppColors.primaryColorDark
+                      : AppColors.primaryColorLight,
                 ),
               ),
             ),

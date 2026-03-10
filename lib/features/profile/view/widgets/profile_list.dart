@@ -155,7 +155,7 @@ class _ProfileListState extends State<ProfileList> {
           //   label: 'Language',
           //   //onTap: () => Get.to(() => NotificationSettingPage()),
           // ),
-          SizedBox(height: 18.h),
+          //SizedBox(height: 18.h),
 
           /// About Section
           _SectionHeader(title: tr('about')), // 'About'),
@@ -193,174 +193,119 @@ class _ProfileListState extends State<ProfileList> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      isScrollControlled: true, // Allows full height control
-      isDismissible: true, // Allows swipe down to dismiss
-      enableDrag: true, // Allows dragging the bottom sheet
+      isScrollControlled: true,
       builder: (_) {
-        return DraggableScrollableSheet(
-          initialChildSize: 0.4, // Initial height (40% of screen)
-          minChildSize: 0.4, // Minimum height when swiping down
-          maxChildSize: 0.6, // Maximum height when swiping up
-          builder: (context, scrollController) {
-            return Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: isDark
-                    ? Theme.of(context).colorScheme.surface
-                    : Colors.white,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(24),
+        return Container(
+          padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+          decoration: BoxDecoration(
+            color: isDark
+                ? Theme.of(context).colorScheme.surface
+                : Colors.white,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 20),
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
+                  borderRadius: BorderRadius.circular(2),
                 ),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+              Container(
+                height: 60,
+                width: 60,
+                decoration: BoxDecoration(
+                  color: Colors.red.shade500,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.warning_amber_rounded,
+                  color: Colors.white,
+                  size: 36,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                tr("logout").toUpperCase(),
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 1,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                tr("logout_confirmation"),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withOpacity(0.7),
+                ),
+              ),
+              const SizedBox(height: 32),
+              Row(
                 children: [
-                  // Draggable handle indicator
-                  Container(
-                    width: 40,
-                    height: 4,
-                    margin: const EdgeInsets.only(bottom: 20),
-                    decoration: BoxDecoration(
-                      color: isDark
-                          ? Colors.grey.shade600
-                          : Colors.grey.shade400,
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-
-                  /// WARNING ICON
-                  Container(
-                    height: 60,
-                    width: 60,
-                    decoration: BoxDecoration(
-                      color: Colors.red.shade500,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.warning_amber_rounded,
-                      color: Colors.white,
-                      size: 36,
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  /// TITLE
-                  Text(
-                    tr("logout").toUpperCase(), // "LOGOUT",
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 1,
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  /// DESCRIPTION
-                  Text(
-                    tr(
-                      "logout_confirmation",
-                    ), // "Are you sure you want to log out? " "You will need to sign in again to access your account.",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withOpacity(0.7),
-                    ),
-                  ),
-
-                  const SizedBox(height: 32),
-
-                  /// BUTTONS - Wrap in Container to prevent swiping issues
-                  Container(
-                    constraints: const BoxConstraints(
-                      minHeight: 56, // Minimum button height
-                    ),
-                    child: Row(
-                      children: [
-                        /// CANCEL
-                        Expanded(
-                          child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              side: BorderSide(
-                                color: isDark
-                                    ? Colors.grey.shade600
-                                    : Colors.grey.shade400,
-                                width: 1.5,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              backgroundColor: isDark
-                                  ? Colors.grey.shade900.withOpacity(0.3)
-                                  : Colors.transparent,
-                            ),
-                            onPressed: () => Navigator.pop(context),
-                            child: Text(
-                              tr("cancel"), // "Cancel",
-                              style: Theme.of(context).textTheme.bodyLarge
-                                  ?.copyWith(
-                                    color: isDark
-                                        ? Colors.white
-                                        : Colors.black87,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                            ),
-                          ),
+                  Expanded(
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(
+                          color: isDark
+                              ? Colors.grey.shade600
+                              : Colors.grey.shade400,
+                          width: 1.5,
                         ),
-
-                        const SizedBox(width: 16),
-
-                        /// LOGOUT
-                        Expanded(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red.shade500,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              elevation: 0,
-                              shadowColor: Colors.transparent,
-                            ),
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => SignInSignUpPage(),
-                                ),
-                              );
-                              // TODO: handle logout logic
-                            },
-                            child: Text(
-                              tr("logout"), // "Logout",
-                              style: Theme.of(context).textTheme.bodyLarge
-                                  ?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                            ),
-                          ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      ],
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(
+                        tr("cancel"),
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: isDark ? Colors.white : Colors.black87,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
                   ),
-
-                  const SizedBox(height: 16),
-
-                  // Safe area spacer for devices with notches
-                  SizedBox(
-                    height: MediaQuery.of(context).viewInsets.bottom > 0
-                        ? MediaQuery.of(context).viewInsets.bottom
-                        : 0,
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red.shade500,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        elevation: 0,
+                      ),
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (_) => SignInSignUpPage()),
+                        );
+                      },
+                      child: Text(
+                        tr("logout"),
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
-            );
-          },
+              SizedBox(height: MediaQuery.of(context).padding.bottom + 10),
+            ],
+          ),
         );
       },
     );
