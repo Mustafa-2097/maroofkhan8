@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -43,7 +44,7 @@ class _DonationScreenState extends State<DonationScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          'Donation',
+          tr('donation'),
           style: GoogleFonts.playfairDisplay(
             color: isDark ? Colors.white : AppColors.blackColor,
             fontWeight: FontWeight.bold,
@@ -71,14 +72,14 @@ class _DonationScreenState extends State<DonationScreen> {
                   ),
                   SizedBox(height: 20.h),
                   Text(
-                    'Your charity can change a life',
+                    tr('charity_change_life'),
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                   SizedBox(height: 5.h),
                   Text(
-                    'Give sincerely for Allah\'s pleasure',
+                    tr('give_sincerely'),
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       color: Theme.of(context).disabledColor,
                     ),
@@ -88,7 +89,7 @@ class _DonationScreenState extends State<DonationScreen> {
 
                   // Choose Amount Section
                   Text(
-                    'Choose Amount',
+                    tr('choose_amount'),
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
@@ -144,7 +145,7 @@ class _DonationScreenState extends State<DonationScreen> {
 
                   // Or Enter Custom Amount Section
                   Text(
-                    'Or Enter Custom Amount',
+                    tr('enter_custom_amount'),
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
@@ -210,7 +211,7 @@ class _DonationScreenState extends State<DonationScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Total Donation',
+                            tr('total_donation'),
                             style: Theme.of(context).textTheme.bodyLarge,
                           ),
                           Text(
@@ -226,7 +227,7 @@ class _DonationScreenState extends State<DonationScreen> {
                         ],
                       ),
                       Text(
-                        'JazakAllahu Khairan',
+                        tr('jazakallahu_khairan'),
                         style: TextStyle(
                           fontSize: 16.sp,
                           color: isDark ? Colors.blue.shade500 : Colors.blue,
@@ -306,7 +307,7 @@ class _DonationScreenState extends State<DonationScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Pay & Donate ',
+                            '${tr('pay_donate')} ',
                             style: TextStyle(
                               fontSize: 18.sp,
                               fontWeight: FontWeight.bold,

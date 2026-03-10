@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -37,7 +38,7 @@ class ChangePassword extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Old Password",
+                  tr("old_password"),
                   style: Theme.of(
                     context,
                   ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
@@ -46,23 +47,22 @@ class ChangePassword extends StatelessWidget {
                 Obx(
                   () => _TextField(
                     controller: controller.oldPasswordController,
-                    hintText: "Enter your old password",
+                    hintText: tr("enter_old_password"),
                     isDark: isDark,
                     isPassword: true,
                     obscureText: !controller.isOldPasswordVisible.value,
                     toggleVisibility: controller.toggleOldPasswordVisibility,
                     validator: (value) {
                       if (value == null || value.isEmpty)
-                        return "Old Password is required";
-                      if (value.length < 6)
-                        return "Password must be at least 6 characters";
+                        return tr("old_password_required");
+                      if (value.length < 6) return tr("password_min_length");
                       return null;
                     },
                   ),
                 ),
                 SizedBox(height: 20.h),
                 Text(
-                  "New Password",
+                  tr("new_password"),
                   style: Theme.of(
                     context,
                   ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
@@ -71,23 +71,22 @@ class ChangePassword extends StatelessWidget {
                 Obx(
                   () => _TextField(
                     controller: controller.passwordController,
-                    hintText: "Enter your new password",
+                    hintText: tr("enter_new_password"),
                     isDark: isDark,
                     isPassword: true,
                     obscureText: !controller.isNewPasswordVisible.value,
                     toggleVisibility: controller.toggleNewPasswordVisibility,
                     validator: (value) {
                       if (value == null || value.isEmpty)
-                        return "New password is required";
-                      if (value.length < 6)
-                        return "Password must be at least 6 characters";
+                        return tr("new_password_required");
+                      if (value.length < 6) return tr("password_min_length");
                       return null;
                     },
                   ),
                 ),
                 SizedBox(height: 20.h),
                 Text(
-                  "Confirm Password",
+                  tr("confirm_password"),
                   style: Theme.of(
                     context,
                   ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
@@ -96,7 +95,7 @@ class ChangePassword extends StatelessWidget {
                 Obx(
                   () => _TextField(
                     controller: controller.confirmPasswordController,
-                    hintText: "Confirm your new password",
+                    hintText: tr("confirm_new_password"),
                     isDark: isDark,
                     isPassword: true,
                     obscureText: !controller.isConfirmPasswordVisible.value,
@@ -104,9 +103,9 @@ class ChangePassword extends StatelessWidget {
                         controller.toggleConfirmPasswordVisibility,
                     validator: (value) {
                       if (value == null || value.isEmpty)
-                        return "Confirm password is required";
+                        return tr("confirm_password_required");
                       if (value != controller.passwordController.text)
-                        return "Passwords do not match";
+                        return tr("passwords_not_match");
                       return null;
                     },
                   ),
@@ -125,7 +124,7 @@ class ChangePassword extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      "Change Password",
+                      tr("change_password"),
                       style: TextStyle(
                         fontSize: 16.sp,
                         fontWeight: FontWeight.bold,

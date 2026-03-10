@@ -24,7 +24,7 @@ class SubscriptionPage extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
         ),
         title: Text(
-          'SUBSCRIPTION',
+          tr('subscription').toUpperCase(),
           style: Theme.of(
             context,
           ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
@@ -46,9 +46,7 @@ class SubscriptionPage extends StatelessWidget {
                     }
 
                     if (controller.subscriptionPlans.isEmpty) {
-                      return const Center(
-                        child: Text("No Subscription Plans available"),
-                      );
+                      return Center(child: Text(tr("no_subscription_plans")));
                     }
 
                     return SingleChildScrollView(
@@ -60,7 +58,7 @@ class SubscriptionPage extends StatelessWidget {
                           children: [
                             // Title
                             Text(
-                              'SUBSCRIBE TO PREMIUM',
+                              tr('subscribe_to_premium'),
                               style: Theme.of(context).textTheme.headlineSmall
                                   ?.copyWith(
                                     color: Theme.of(
@@ -78,7 +76,7 @@ class SubscriptionPage extends StatelessWidget {
                                 horizontal: isWide ? 100.w : 20.w,
                               ),
                               child: Text(
-                                'Enjoy watching Full-HD videos, without restrictions and without ads',
+                                tr('subscription_subtitle'),
                                 style: Theme.of(context).textTheme.bodyMedium
                                     ?.copyWith(
                                       color: Theme.of(context).disabledColor,
@@ -289,7 +287,7 @@ class SubscriptionPage extends StatelessWidget {
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
               child: Text(
-                'See more',
+                tr('see_more'),
                 style: TextStyle(
                   color: isDark
                       ? AppColors.primaryColorDark

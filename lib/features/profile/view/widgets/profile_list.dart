@@ -66,7 +66,7 @@ class _ProfileListState extends State<ProfileList> {
           /// Personal Info Section
           _DrawerItem(
             icon: Icons.person_outline,
-            label: 'personal_data', // 'Personal Data',
+            label: 'profile_details', // 'personal_data',
             onTap: () => Get.to(() => const PersonalData()),
           ),
           // _DrawerItem(
@@ -172,7 +172,7 @@ class _ProfileListState extends State<ProfileList> {
           ),
           _DrawerItem(
             icon: Icons.lock_outline,
-            label: 'privacy_policy', // 'Privacy & Policy',
+            label: 'terms_conditions', // 'privacy_policy',
             onTap: () => Get.to(() => const TermsConditions()),
           ),
 

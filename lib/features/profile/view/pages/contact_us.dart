@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controller/contact_us_controller.dart';
@@ -16,7 +17,7 @@ class ContactUs extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          "CONTACT US",
+          tr("contact_us").toUpperCase(),
           style: Theme.of(
             context,
           ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
@@ -35,10 +36,10 @@ class ContactUs extends StatelessWidget {
                   const SizedBox(height: 8),
 
                   /// FULL NAME
-                  _Label(text: "Full Name"),
+                  _Label(text: tr("full_name")),
                   _TextField(
                     controller: controller.nameController,
-                    hint: "User Name",
+                    hint: tr("full_name"),
                     suffixIcon: Icon(
                       Icons.lock_outline,
                       color: isDark ? Colors.white70 : Colors.black45,
@@ -48,10 +49,10 @@ class ContactUs extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   /// EMAIL
-                  _Label(text: "Email"),
+                  _Label(text: tr("email")),
                   _TextField(
                     controller: controller.emailController,
-                    hint: "user@gmail.com",
+                    hint: tr("email"),
                     suffixIcon: Icon(
                       Icons.lock_outline,
                       color: isDark ? Colors.white70 : Colors.black45,
@@ -61,17 +62,17 @@ class ContactUs extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   /// MESSAGE BOX
-                  _Label(text: "Message *"),
+                  _Label(text: "${tr("message")} *"),
                   _TextField(
                     controller: controller.messageController,
-                    hint: "Write your message here...",
+                    hint: tr("message_hint"),
                     maxLines: 6,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Message is required";
+                        return tr("message_required");
                       }
                       if (value.length < 10) {
-                        return "Message must be at least 10 characters";
+                        return tr("message_min_length");
                       }
                       return null;
                     },
@@ -84,7 +85,7 @@ class ContactUs extends StatelessWidget {
                     height: 50,
                     child: ElevatedButton(
                       onPressed: () => controller.contactChange(_formKey),
-                      child: Text("Send Message"),
+                      child: Text(tr("send_message")),
                     ),
                   ),
                 ],

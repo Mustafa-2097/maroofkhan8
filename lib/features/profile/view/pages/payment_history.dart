@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -22,7 +23,7 @@ class PaymentHistory extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
         title: Text(
-          "PAYMENT HISTORY",
+          tr("payment_history").toUpperCase(),
           style: Theme.of(
             context,
           ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
@@ -36,7 +37,7 @@ class PaymentHistory extends StatelessWidget {
           }
 
           if (controller.transactions.isEmpty) {
-            return const Center(child: Text("No transactions found"));
+            return Center(child: Text(tr("no_transactions")));
           }
 
           return ListView.separated(
@@ -106,14 +107,14 @@ class _TransactionCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Transfer via ${tx.method ?? 'Stripe'}",
+                  "${tr("transfer_via")} ${tx.method ?? 'Stripe'}",
                   style: Theme.of(
                     context,
                   ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  "ID: ${tx.id ?? 'N/A'}",
+                  "${tr("transaction_id")}: ${tx.id ?? 'N/A'}",
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
               ],
@@ -150,7 +151,7 @@ class _TransactionCard extends StatelessWidget {
                       : Colors.orange.withOpacity(0.2),
                 ),
                 child: Text(
-                  tx.status ?? 'Pending',
+                  tr(tx.status?.toLowerCase() ?? 'pending'),
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
                     color:
                         (tx.status?.toLowerCase() == 'confirmed' ||
@@ -165,7 +166,7 @@ class _TransactionCard extends StatelessWidget {
                 ),
               ),
               Text(
-                tx.date != null ? _formatDate(tx.date!) : "No Date",
+                tx.date != null ? _formatDate(tx.date!) : tr("no_date"),
                 style: Theme.of(context).textTheme.labelLarge,
               ),
             ],
