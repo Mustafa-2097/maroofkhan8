@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:maroofkhan8/features/auth/signin_signup/view/signin_signup_page.dart';
 import 'package:maroofkhan8/features/profile/view/pages/change_password.dart';
+import 'package:maroofkhan8/core/theme/theme_service.dart';
 import 'package:maroofkhan8/features/profile/view/pages/contact_us.dart';
 import 'package:maroofkhan8/features/profile/view/pages/payment_history.dart';
 import 'package:maroofkhan8/features/profile/view/pages/personal_data.dart';
@@ -29,7 +30,7 @@ class _ProfileListState extends State<ProfileList> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    isDark = Theme.of(context).brightness == Brightness.dark;
+    isDark = ThemeService().isDarkMode();
     // Sync UI with current locale on open
     selectedLanguage = context.locale.languageCode;
   }
@@ -116,11 +117,9 @@ class _ProfileListState extends State<ProfileList> {
               activeColor: Colors.orange,
               onChanged: (value) {
                 setState(() {
-                  isDark = value; // This moves the toggle instantly
+                  isDark = value;
                 });
-
-                // Tell GetX to change the theme
-                Get.changeThemeMode(value ? ThemeMode.dark : ThemeMode.light);
+                ThemeService().switchTheme(value);
               },
             ),
           ),

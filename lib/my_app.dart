@@ -8,6 +8,7 @@ import 'package:maroofkhan8/features/home/views/dashboard_screen.dart';
 import 'package:maroofkhan8/splash/view/splash_screen.dart';
 import 'bottom_nav_bar.dart';
 import 'core/theme/theme.dart';
+import 'core/theme/theme_service.dart';
 import 'onboarding/view/onboarding_screen.dart';
 
 class MyApp extends StatelessWidget {
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
             },
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
-            themeMode: ThemeMode.system,
+            themeMode: ThemeService().theme,
             home: SplashScreen(),
           ),
         );
