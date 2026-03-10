@@ -703,12 +703,12 @@ class QuickStartGrid extends StatelessWidget {
       final features = controller.filteredFeatures;
 
       if (features.isEmpty) {
-        return const Padding(
-          padding: EdgeInsets.symmetric(vertical: 20),
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: sh * 0.02),
           child: Center(
             child: Text(
-              "No features found matching your search.",
-              style: TextStyle(color: Colors.grey),
+              tr("no_features_found"),
+              style: const TextStyle(color: Colors.grey),
             ),
           ),
         );
