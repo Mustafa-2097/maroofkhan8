@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 // import '../../core/constant/image_path.dart';
 import '../Controller/splash_controller.dart';
 import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SplashScreen extends StatelessWidget {
   SplashScreen({super.key});
@@ -18,10 +19,10 @@ class SplashScreen extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          SizedBox(height: 200.h),
+          SizedBox(height: sh * 0.25),
           Image.asset('assets/images/onboarding01.png', height: sh * 0.38),
           Text(
-            "AI Murshid",
+            tr("ai_murshid"),
             style: Theme.of(context).textTheme.headlineLarge?.copyWith(
               color: Color(0xFFEE7600).withValues(alpha: 0.8),
             ),

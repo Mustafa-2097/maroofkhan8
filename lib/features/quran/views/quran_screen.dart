@@ -659,6 +659,15 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  IconButton(
+                    onPressed: () => controller.resetAudio(),
+                    icon: Icon(
+                      Icons.restart_alt,
+                      // size: 30,
+                      size: MediaQuery.of(context).size.width * 0.075,
+                      color: isDark ? AppColors.whiteColor : Colors.black87,
+                    ),
+                  ),
                   GestureDetector(
                     onLongPress: () =>
                         controller.seekRelative(const Duration(seconds: -5)),
@@ -671,15 +680,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                       ),
                     ),
                   ),
-                  IconButton(
-                    onPressed: () => controller.resetAudio(),
-                    icon: Icon(
-                      Icons.restart_alt,
-                      // size: 30,
-                      size: MediaQuery.of(context).size.width * 0.075,
-                      color: isDark ? AppColors.whiteColor : Colors.black87,
-                    ),
-                  ),
+
                   // const SizedBox(width: 10),
                   SizedBox(width: MediaQuery.of(context).size.width * 0.025),
                   IconButton(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../controller/onboarding_controller.dart';
 
 class OnboardingScreen extends GetView<OnboardingController> {
@@ -10,6 +11,7 @@ class OnboardingScreen extends GetView<OnboardingController> {
   @override
   Widget build(BuildContext context) {
     final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: PageView(
@@ -21,25 +23,22 @@ class OnboardingScreen extends GetView<OnboardingController> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Assalamu’alaikum",
+                tr("assalamualaikum"),
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                   color: Color(0xFFEE7600).withValues(alpha: 0.8),
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 6),
+              SizedBox(height: sh * 0.01),
               Text(
-                "Welcome to Digital Khanqah",
+                tr("welcome_to_digital_khanqah"),
                 style: Theme.of(context).textTheme.headlineLarge,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 32),
-              Image.asset(
-                'assets/images/onboarding01.png',
-                height: 355,
-              ),
+              SizedBox(height: sh * 0.04),
+              Image.asset('assets/images/onboarding01.png', height: sh * 0.4),
               Text(
-                "AI Murshid",
+                tr("ai_murshid"),
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                   color: Color(0xFFEE7600).withValues(alpha: 0.8),
                 ),
@@ -52,47 +51,45 @@ class OnboardingScreen extends GetView<OnboardingController> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                'assets/images/onboarding02.png',
-                height: 100,
-              ),
-              SizedBox(height: 44.h),
+              Image.asset('assets/images/onboarding02.png', height: sh * 0.12),
+              SizedBox(height: sh * 0.05),
               Text(
-                "AI Murshid",
+                tr("ai_murshid"),
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                   color: Color(0xFFEE7600).withValues(alpha: 0.8),
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 6.h),
+              SizedBox(height: sh * 0.01),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal:50),
+                padding: EdgeInsets.symmetric(horizontal: sw * 0.1),
                 child: Text(
-                  "Your 24/7 AI Spiritual Guide Embodies wisdom of Sufi Awliya Powered by advanced AI",
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontSize: sw*0.037,
-                  ),
+                  tr("ai_spiritual_guide_desc"),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleMedium?.copyWith(fontSize: sw * 0.037),
                   textAlign: TextAlign.center,
                 ),
               ),
-              SizedBox(height: 22.h),
-              _FeatureChip(label: 'Real-time Chat'),
-              _FeatureChip(label: 'Quran & Sunnah'),
-              _FeatureChip(label: 'Spiritual Wisdom'),
+              SizedBox(height: sh * 0.03),
+              _FeatureChip(label: tr("real_time_chat")),
+              _FeatureChip(label: tr("quran_sunnah")),
+              _FeatureChip(label: tr("spiritual_wisdom")),
             ],
-          )
+          ),
         ],
       ),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.fromLTRB(24.w, 0, 24.w, 111.h),
+        padding: EdgeInsets.fromLTRB(sw * 0.06, 0, sw * 0.06, sh * 0.12),
         child: SizedBox(
-          height: 48.h,
-          child: Obx(() => ElevatedButton(
+          height: sh * 0.06,
+          child: Obx(
+            () => ElevatedButton(
               onPressed: controller.onGetStarted,
               child: Text(
                 controller.currentIndex.value == 0
-                    ? 'Continue'
-                    : 'Get Started',
+                    ? tr("continue_btn")
+                    : tr("get_started"),
               ),
             ),
           ),
@@ -108,24 +105,23 @@ class _FeatureChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
     return Padding(
-      padding: EdgeInsets.only(bottom: 8.h),
+      padding: EdgeInsets.only(bottom: sh * 0.01),
       child: SizedBox(
-        width: 180.w,
+        width: sw * 0.5,
         child: OutlinedButton(
           style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
             padding: MaterialStateProperty.all(
-              EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+              EdgeInsets.symmetric(horizontal: sw * 0.04, vertical: sh * 0.01),
             ),
             shape: MaterialStateProperty.all(
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
             ),
           ),
           onPressed: null,
-          child: Text(
-            label,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          child: Text(label, style: Theme.of(context).textTheme.titleMedium),
         ),
       ),
     );

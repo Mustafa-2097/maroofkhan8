@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:maroofkhan8/features/profile/view/pages/subscription/view/PremiumSubscriptionPage.dart';
+
 import 'package:maroofkhan8/features/profile/view/pages/subscription/view/subscription_screen.dart';
 import 'package:maroofkhan8/features/profile/view/widgets/profile_list.dart';
 import '../controller/profile_controller.dart';
@@ -86,19 +86,26 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          tr("your_plan_status"), // "Your Plan Status",
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        Obx(() {
-                          // Hide upgrade button if already on Premium
-                          final current = controller.currentPlan.value?.toLowerCase() ?? "";
-                          if (current == "premium") return const SizedBox.shrink();
+                    Obx(() {
+                      // Hide upgrade button and center text if user has any active subscription
+                      if (controller.isSubscribed.value) {
+                        return Center(
+                          child: Text(
+                            tr("your_plan_status"), // "Your Plan Status",
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                        );
+                      }
 
-                          return InkWell(
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            tr("your_plan_status"), // "Your Plan Status",
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          InkWell(
                             onTap: () => Get.to(() => SubscriptionPage()),
                             child: Container(
                               padding: const EdgeInsets.symmetric(
@@ -119,10 +126,10 @@ class ProfileScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-                          );
-                        }),
-                      ],
-                    ),
+                          ),
+                        ],
+                      );
+                    }),
                     const Divider(height: 24),
                     Row(
                       children: [
@@ -143,29 +150,32 @@ class ProfileScreen extends StatelessWidget {
                                 color: Colors.white,
                               ),
                               const SizedBox(width: 8),
-                              Obx(
-                                () => Text(
-                                  controller.isSubscribed.value
-                                      ? (controller.currentPlan.value ??
-                                            tr("basic_plan"))
-                                      : tr("free_plan"),
+                              Obx(() {
+                                String planKey = controller.isSubscribed.value
+                                    ? (controller.currentPlan.value ??
+                                          "basic_plan")
+                                    : "free_plan";
+                                return Text(
+                                  tr(planKey),
                                   style: TextStyle(
                                     color: Theme.of(
                                       context,
                                     ).colorScheme.onPrimary,
                                     fontWeight: FontWeight.bold,
                                   ),
-                                ),
-                              ),
+                                );
+                              }),
                             ],
                           ),
                         ),
 
                         const Spacer(),
                         Obx(() {
-                          if (!controller.isSubscribed.value) return const SizedBox.shrink();
+                          if (!controller.isSubscribed.value) {
+                            return const SizedBox.shrink();
+                          }
                           return Text(
-                            tr("active"),
+                            tr("Active"),
                             style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(
                                   color: Colors.green,

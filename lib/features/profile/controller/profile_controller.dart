@@ -25,7 +25,7 @@ class ProfileController extends GetxController {
       if (response['success'] == true) {
         final data = response['data'];
         email.value = data['email'] ?? "No Email";
-        isSubscribed.value = data['subscribed'] ?? false;
+        // isSubscribed.value is evaluated later
 
         final profile = data['profile'];
         if (profile != null) {
@@ -38,11 +38,16 @@ class ProfileController extends GetxController {
           avatar.value = profile['avatar'] ?? "";
         }
 
-        // Ideally the API would return the plan details if subscribed
-        // Let's check if there's any subscription details in the response
-        if (data['subscription'] != null &&
-            data['subscription']['plan'] != null) {
-          currentPlan.value = data['subscription']['plan']['title'];
+        isSubscribed.value =
+            data['subscribed'] ?? (data['subscription'] != null);
+
+        // Check if there's any subscription details in the response
+        if (data['subscription'] != null) {
+          if (data['subscription']['title'] != null) {
+            currentPlan.value = data['subscription']['title'];
+          } else if (data['subscription']['plan'] != null) {
+            currentPlan.value = data['subscription']['plan']['title'];
+          }
         }
       }
     } catch (e) {

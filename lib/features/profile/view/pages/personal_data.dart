@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:country_picker/country_picker.dart';
 import 'package:get/get.dart';
@@ -17,7 +18,7 @@ class PersonalData extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          "Profile Details",
+          tr("profile_details"),
           style: Theme.of(
             context,
           ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
@@ -107,28 +108,28 @@ class PersonalData extends StatelessWidget {
                   const SizedBox(height: 32),
 
                   /// --- Form Fields (Using your Project Standards) ---
-                  const _Label(text: "Full Name"),
+                  const _Label(text: "full_name"),
                   _TextField(
                     controller: controller.nameController,
-                    hint: "Enter your name",
+                    hint: tr("enter_your_name"),
                   ),
 
                   const SizedBox(height: 16),
-                  const _Label(text: "Phone Number"),
+                  const _Label(text: "phone_number"),
                   _TextField(
                     controller: controller.phoneController,
-                    hint: "12345678",
+                    hint: "12345678", // Keep as sample
                   ),
 
                   const SizedBox(height: 16),
-                  const _Label(text: "Email"),
+                  const _Label(text: "email"),
                   _TextField(
                     controller: controller.emailController,
                     hint: "example@gmail.com",
                   ),
 
                   const SizedBox(height: 16),
-                  const _Label(text: "Country / Region"),
+                  const _Label(text: "country_region"),
                   Obx(
                     () => _DropdownField(
                       value: controller.selectedCountry.value,
@@ -141,13 +142,14 @@ class PersonalData extends StatelessWidget {
                                 "${country.flagEmoji} ${country.name}";
                           },
                           countryListTheme: CountryListThemeData(
+                            bottomSheetHeight: 450, // Approximately 5 items
                             borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(20),
                               topRight: Radius.circular(20),
                             ),
                             inputDecoration: InputDecoration(
-                              labelText: 'Search',
-                              hintText: 'Start typing to search',
+                              labelText: tr('search'),
+                              hintText: tr('search'),
                               prefixIcon: const Icon(Icons.search),
                               border: OutlineInputBorder(
                                 borderSide: BorderSide(
@@ -167,7 +169,7 @@ class PersonalData extends StatelessWidget {
                   ),
 
                   const SizedBox(height: 16),
-                  const _Label(text: "Gender"),
+                  const _Label(text: "gender"),
                   Obx(
                     () => _DropdownField(
                       value: controller.selectedGender.value,
@@ -179,10 +181,10 @@ class PersonalData extends StatelessWidget {
                                 : Colors.white,
                             child: ListView(
                               shrinkWrap: true,
-                              children: ["Male", "Female", "Other"]
+                              children: ["male", "female", "other"]
                                   .map(
                                     (g) => ListTile(
-                                      title: Text(g),
+                                      title: Text(tr(g)),
                                       onTap: () {
                                         controller.selectedGender.value = g;
                                         Get.back();
@@ -198,7 +200,7 @@ class PersonalData extends StatelessWidget {
                   ),
 
                   const SizedBox(height: 16),
-                  const _Label(text: "Date of Birth"),
+                  const _Label(text: "date_of_birth"),
                   GestureDetector(
                     onTap: () async {
                       DateTime? picked = await showDatePicker(
@@ -206,6 +208,68 @@ class PersonalData extends StatelessWidget {
                         initialDate: DateTime.now(),
                         firstDate: DateTime(1900),
                         lastDate: DateTime.now(),
+                        builder: (context, child) {
+                          final isDarkLocal =
+                              Theme.of(context).brightness == Brightness.dark;
+                          return Theme(
+                            data: Theme.of(context).copyWith(
+                              datePickerTheme: DatePickerThemeData(
+                                headerBackgroundColor: isDarkLocal
+                                    ? const Color(0xFF2A2438)
+                                    : Colors.white,
+                                headerForegroundColor: isDarkLocal
+                                    ? AppColors.primaryColorDark
+                                    : AppColors.primaryColorLight,
+                                headerHelpStyle: TextStyle(
+                                  // "SELECT DATE" text
+                                  color: isDarkLocal
+                                      ? AppColors.primaryColorDark.withOpacity(
+                                          0.8,
+                                        )
+                                      : AppColors.primaryColorLight.withOpacity(
+                                          0.8,
+                                        ),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              textButtonTheme: TextButtonThemeData(
+                                style: TextButton.styleFrom(
+                                  shape: const StadiumBorder(),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 10,
+                                  ),
+                                  backgroundColor: isDarkLocal
+                                      ? AppColors.primaryColorDark.withOpacity(
+                                          0.15,
+                                        )
+                                      : AppColors.primaryColorLight.withOpacity(
+                                          0.1,
+                                        ),
+                                  foregroundColor: isDarkLocal
+                                      ? AppColors.primaryColorDark
+                                      : AppColors.primaryColorLight,
+                                  textStyle: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            child: Center(
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  maxWidth: 360,
+                                  maxHeight: 520,
+                                ),
+                                child: Transform.scale(
+                                  scale: 0.9,
+                                  child: child!,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       );
                       if (picked != null) {
                         controller.dobController.text =
@@ -232,7 +296,7 @@ class PersonalData extends StatelessWidget {
                     height: 48,
                     child: ElevatedButton(
                       onPressed: controller.saveProfile,
-                      child: const Text("Save Changes"),
+                      child: Text(tr("save_changes")),
                     ),
                   ),
                   const SizedBox(height: 40),
@@ -257,7 +321,7 @@ class _Label extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: Text(
-        text,
+        tr(text),
         style: Theme.of(
           context,
         ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -23,7 +24,7 @@ class SubscriptionPage extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
         ),
         title: Text(
-          'SUBSCRIPTION',
+          tr('subscription').toUpperCase(),
           style: Theme.of(
             context,
           ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
@@ -45,9 +46,7 @@ class SubscriptionPage extends StatelessWidget {
                     }
 
                     if (controller.subscriptionPlans.isEmpty) {
-                      return const Center(
-                        child: Text("No Subscription Plans available"),
-                      );
+                      return Center(child: Text(tr("no_subscription_plans")));
                     }
 
                     return SingleChildScrollView(
@@ -59,7 +58,7 @@ class SubscriptionPage extends StatelessWidget {
                           children: [
                             // Title
                             Text(
-                              'SUBSCRIBE TO PREMIUM',
+                              tr('subscribe_to_premium'),
                               style: Theme.of(context).textTheme.headlineSmall
                                   ?.copyWith(
                                     color: Theme.of(
@@ -77,7 +76,7 @@ class SubscriptionPage extends StatelessWidget {
                                 horizontal: isWide ? 100.w : 20.w,
                               ),
                               child: Text(
-                                'Enjoy watching Full-HD videos, without restrictions and without ads',
+                                tr('subscription_subtitle'),
                                 style: Theme.of(context).textTheme.bodyMedium
                                     ?.copyWith(
                                       color: Theme.of(context).disabledColor,
@@ -134,7 +133,7 @@ class SubscriptionPage extends StatelessWidget {
       return _buildPlanCard(
         context: context,
         cardWidth: cardWidth,
-        title: plan.title ?? 'No Title',
+        title: _getLocalizedPlanTitle(plan.title),
         price: '${plan.price ?? 0}',
         previousPrice: plan.previousPrice != null
             ? '${plan.previousPrice}'
@@ -210,7 +209,7 @@ class SubscriptionPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(4.r),
                     ),
                     child: Text(
-                      "Current Plan",
+                      tr("current_plan"),
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 10.sp,
@@ -288,13 +287,17 @@ class SubscriptionPage extends StatelessWidget {
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
               child: Text(
-                'See more',
+                tr('see_more'),
                 style: TextStyle(
-                  color: AppColors.primaryColorLight,
+                  color: isDark
+                      ? AppColors.primaryColorDark
+                      : AppColors.primaryColorLight,
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w400,
                   decoration: TextDecoration.underline,
-                  decorationColor: AppColors.primaryColorLight,
+                  decorationColor: isDark
+                      ? AppColors.primaryColorDark
+                      : AppColors.primaryColorLight,
                 ),
               ),
             ),
@@ -302,6 +305,15 @@ class SubscriptionPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _getLocalizedPlanTitle(String? title) {
+    if (title == null) return 'No Title';
+    final lowercaseTitle = title.toLowerCase();
+    if (lowercaseTitle.contains('premium')) return tr('premium_plan');
+    if (lowercaseTitle.contains('basic')) return tr('basic_plan');
+    if (lowercaseTitle.contains('free')) return tr('free_plan');
+    return title;
   }
 
   Widget _buildFeatureRow(String text) {
