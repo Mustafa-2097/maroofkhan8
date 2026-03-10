@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -134,7 +135,7 @@ class SubscriptionPage extends StatelessWidget {
       return _buildPlanCard(
         context: context,
         cardWidth: cardWidth,
-        title: plan.title ?? 'No Title',
+        title: _getLocalizedPlanTitle(plan.title),
         price: '${plan.price ?? 0}',
         previousPrice: plan.previousPrice != null
             ? '${plan.previousPrice}'
@@ -210,7 +211,7 @@ class SubscriptionPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(4.r),
                     ),
                     child: Text(
-                      "Current Plan",
+                      tr("current_plan"),
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 10.sp,
@@ -306,6 +307,15 @@ class SubscriptionPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _getLocalizedPlanTitle(String? title) {
+    if (title == null) return 'No Title';
+    final lowercaseTitle = title.toLowerCase();
+    if (lowercaseTitle.contains('premium')) return tr('premium_plan');
+    if (lowercaseTitle.contains('basic')) return tr('basic_plan');
+    if (lowercaseTitle.contains('free')) return tr('free_plan');
+    return title;
   }
 
   Widget _buildFeatureRow(String text) {
