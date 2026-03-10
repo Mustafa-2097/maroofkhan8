@@ -141,6 +141,7 @@ class PersonalData extends StatelessWidget {
                                 "${country.flagEmoji} ${country.name}";
                           },
                           countryListTheme: CountryListThemeData(
+                            bottomSheetHeight: 450, // Approximately 5 items
                             borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(20),
                               topRight: Radius.circular(20),
@@ -206,6 +207,68 @@ class PersonalData extends StatelessWidget {
                         initialDate: DateTime.now(),
                         firstDate: DateTime(1900),
                         lastDate: DateTime.now(),
+                        builder: (context, child) {
+                          final isDarkLocal =
+                              Theme.of(context).brightness == Brightness.dark;
+                          return Theme(
+                            data: Theme.of(context).copyWith(
+                              datePickerTheme: DatePickerThemeData(
+                                headerBackgroundColor: isDarkLocal
+                                    ? const Color(0xFF2A2438)
+                                    : Colors.white,
+                                headerForegroundColor: isDarkLocal
+                                    ? AppColors.primaryColorDark
+                                    : AppColors.primaryColorLight,
+                                headerHelpStyle: TextStyle(
+                                  // "SELECT DATE" text
+                                  color: isDarkLocal
+                                      ? AppColors.primaryColorDark.withOpacity(
+                                          0.8,
+                                        )
+                                      : AppColors.primaryColorLight.withOpacity(
+                                          0.8,
+                                        ),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              textButtonTheme: TextButtonThemeData(
+                                style: TextButton.styleFrom(
+                                  shape: const StadiumBorder(),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 10,
+                                  ),
+                                  backgroundColor: isDarkLocal
+                                      ? AppColors.primaryColorDark.withOpacity(
+                                          0.15,
+                                        )
+                                      : AppColors.primaryColorLight.withOpacity(
+                                          0.1,
+                                        ),
+                                  foregroundColor: isDarkLocal
+                                      ? AppColors.primaryColorDark
+                                      : AppColors.primaryColorLight,
+                                  textStyle: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            child: Center(
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  maxWidth: 360,
+                                  maxHeight: 520,
+                                ),
+                                child: Transform.scale(
+                                  scale: 0.9,
+                                  child: child!,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       );
                       if (picked != null) {
                         controller.dobController.text =
