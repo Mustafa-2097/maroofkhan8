@@ -14,6 +14,9 @@ import '../model/audio_model.dart' as am;
 import '../model/static_surah_data.dart';
 import '../../../core/offline_storage/shared_pref.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class QuranController extends GetxController {
   var surahList = <SurahModel>[].obs;
@@ -698,14 +701,108 @@ class QuranController extends GetxController {
   }
 
   Future<void> downloadSurahAudio(SurahModel surah) async {
-    // SnackbarUtils.showSnackbar(
-    //   "Download",
-    //   "Starting download for ${surah.name}...",
-    // );
-    SnackbarUtils.showSnackbar(
-      tr("download"),
-      "${tr("starting_download_for")} ${tr("surah_${surah.id}_name")}...",
-    );
+    try {
+      // 1. Show "Starting download" snackbar
+      SnackbarUtils.showSnackbar(
+        tr("download"),
+        "${tr("starting_download_for")} ${tr("surah_${surah.id}_name")}...",
+      );
+
+      // 2. Fetch the audio URL for this surah
+      final token = await SharedPreferencesHelper.getToken();
+      final headers = {
+        if (token != null) 'Authorization': '$token',
+        if (token != null) 'token': '$token',
+        if (token != null) 'access_token': '$token',
+      };
+      final url = Uri.parse(ApiEndpoints.surahAudio(surah.id.toString()));
+      final response = await http
+          .get(url, headers: headers)
+          .timeout(const Duration(seconds: 30));
+
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        throw Exception(
+          "Failed to fetch audio URL (Status: ${response.statusCode})",
+        );
+      }
+
+      final decoded = jsonDecode(response.body);
+      final audioData = am.AudioResponse.fromJson(decoded).data;
+      if (audioData == null || audioData.url == null) {
+        throw Exception("Audio URL not found for this surah.");
+      }
+
+      final downloadUrl = audioData.url!;
+
+      // 3. Permission check for mobile
+      if (Platform.isAndroid || Platform.isIOS) {
+        var status = await Permission.storage.status;
+        if (!status.isGranted) {
+          status = await Permission.storage.request();
+          if (!status.isGranted) {
+            // Check for manageExternalStorage if on Android 11+
+            if (Platform.isAndroid) {
+              status = await Permission.manageExternalStorage.request();
+              if (!status.isGranted) {
+                throw Exception("Storage permission denied");
+              }
+            } else {
+              throw Exception("Storage permission denied");
+            }
+          }
+        }
+      }
+
+      // 4. Get download directory
+      Directory? dir;
+      if (Platform.isAndroid) {
+        // Try Downloads folder for user convenience
+        dir = Directory('/storage/emulated/0/Download');
+        if (!await dir.exists()) {
+          dir = await getExternalStorageDirectory();
+        }
+      } else if (Platform.isIOS) {
+        dir = await getApplicationDocumentsDirectory();
+      } else {
+        // Desktop
+        dir = await getDownloadsDirectory();
+      }
+
+      if (dir == null) throw Exception("Could not find download directory.");
+
+      // Ensure directory exists
+      if (!await dir.exists()) {
+        await dir.create(recursive: true);
+      }
+
+      // Sanitize filename
+      final fileName =
+          "surah_${surah.id}_${surah.name.replaceAll(RegExp(r'[^\w\s]'), '')}.mp3";
+      final filePath = "${dir.path}/$fileName";
+      final file = File(filePath);
+
+      // 5. Download the file
+      final audioResponse = await http.get(Uri.parse(downloadUrl));
+      if (audioResponse.statusCode == 200) {
+        await file.writeAsBytes(audioResponse.bodyBytes);
+
+        // 6. Show "Download complete" snackbar
+        SnackbarUtils.showSnackbar(
+          tr("download_complete"),
+          "${tr("surah_${surah.id}_name")} ${tr("downloaded_successfully_at")}\n$filePath",
+        );
+      } else {
+        throw Exception(
+          "Failed to download audio file (Status: ${audioResponse.statusCode})",
+        );
+      }
+    } catch (e) {
+      print("Download error: $e");
+      SnackbarUtils.showSnackbar(
+        tr("error"),
+        "${tr("download_failed")}: ${e.toString().replaceAll('Exception: ', '')}",
+      );
+    }
   }
 
   void _syncSavedSurahs() {

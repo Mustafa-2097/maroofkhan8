@@ -440,5 +440,7 @@
   "logout_confirmation": "Are you sure you want to log out? You will need to sign in again to access your account.",
   "cancel": "Cancel",
   "about": "About",
-  "logout": "Logout"
+  "logout": "Logout",
+  "downloaded_successfully_at": "downloaded successfully at",
+  "download_failed": "Download failed"
 }

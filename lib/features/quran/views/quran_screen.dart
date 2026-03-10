@@ -538,6 +538,9 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
           if (index == 1) {
             controller.fetchSurahTafsir(widget.surah.id);
           }
+          if (index != 0) {
+            controller.pauseAudio();
+          }
           setState(() => _activeDetailTab = index);
         },
         child: Container(
@@ -894,7 +897,6 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
     );
   }
 
-  // ── AI Explanation inline chat ──────────────────────────────────────────
   // ── AI Explanation inline chat (Matches Ai Murshid Design) ────────────────
   Widget _buildAiExplanation() {
     final sw = MediaQuery.of(context).size.width;
