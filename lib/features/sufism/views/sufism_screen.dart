@@ -181,7 +181,11 @@ class SufismHomeScreen extends StatelessWidget {
                 // 3. Explore more Section
                 Row(
                   children: [
-                    Icon(Icons.explore_outlined, color: primaryColor, size: 24),
+                    Icon(
+                      Icons.explore_outlined,
+                      color: kPrimaryBrown,
+                      size: 24,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       "Explore",
