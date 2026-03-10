@@ -38,14 +38,21 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: isDark ? Colors.white70 : Colors.grey,
-            size: sw * 0.05,
+        leadingWidth: 40,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12),
+          child: IconButton(
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: isDark ? Colors.white70 : Colors.grey,
+              size: sw * 0.05,
+            ),
+            onPressed: () => Navigator.pop(context),
           ),
-          onPressed: () => Navigator.pop(context),
         ),
+        actions: [const SizedBox(width: 40)],
       ),
       body: SafeArea(
         child: Column(

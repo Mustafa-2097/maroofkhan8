@@ -41,16 +41,23 @@ class _MainContainerState extends State<QuranScreen> {
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
+        leadingWidth: 30,
         leading: widget.hideBack
             ? null
-            : IconButton(
-                icon: const Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.grey,
-                  size: 20,
+            : Padding(
+                padding: const EdgeInsets.only(left: 12),
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: const Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.grey,
+                    size: 20,
+                  ),
+                  onPressed: () => Navigator.pop(context),
                 ),
-                onPressed: () => Navigator.pop(context),
               ),
+        actions: [if (!widget.hideBack) const SizedBox(width: 40)],
       ),
       body: const QuranTabsScreen(),
     );

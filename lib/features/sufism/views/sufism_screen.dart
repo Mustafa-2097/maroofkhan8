@@ -567,10 +567,21 @@ class GuidedMeditationListScreen extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+        leadingWidth: 40,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12),
+          child: IconButton(
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.grey,
+              size: 20,
+            ),
+            onPressed: () => Navigator.pop(context),
+          ),
         ),
+        actions: [const SizedBox(width: 40)],
       ),
       body: SafeArea(
         child: Padding(
@@ -754,10 +765,21 @@ class IslamicTeachersScreen extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.grey, size: 20),
+        leadingWidth: 40,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12),
+          child: IconButton(
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.grey,
+              size: 20,
+            ),
+            onPressed: () => Navigator.pop(context),
+          ),
         ),
+        actions: [const SizedBox(width: 40)],
       ),
       body: SafeArea(
         child: Padding(
