@@ -25,7 +25,7 @@ class ProfileController extends GetxController {
       if (response['success'] == true) {
         final data = response['data'];
         email.value = data['email'] ?? "No Email";
-        isSubscribed.value = data['subscribed'] ?? false;
+        // isSubscribed.value is evaluated later
 
         final profile = data['profile'];
         if (profile != null) {
@@ -38,24 +38,16 @@ class ProfileController extends GetxController {
           avatar.value = profile['avatar'] ?? "";
         }
 
+        isSubscribed.value =
+            data['subscribed'] ?? (data['subscription'] != null);
+
         // Check if there's any subscription details in the response
-        if (data['subscription'] != null &&
-            data['subscription']['plan'] != null) {
-          currentPlan.value = data['subscription']['plan']['title'];
-        }
-
-        // Fallback for currentPlan if subscribed but no title found
-        if (isSubscribed.value &&
-            (currentPlan.value == null || currentPlan.value!.isEmpty)) {
-          currentPlan.value = "premium_plan";
-        }
-
-        // Normalize if it's already "Premium" from API to use our key
-        if (currentPlan.value?.toLowerCase() == "premium") {
-          currentPlan.value = "premium_plan";
-        }
-        if (currentPlan.value?.toLowerCase() == "basic") {
-          currentPlan.value = "basic_plan";
+        if (data['subscription'] != null) {
+          if (data['subscription']['title'] != null) {
+            currentPlan.value = data['subscription']['title'];
+          } else if (data['subscription']['plan'] != null) {
+            currentPlan.value = data['subscription']['plan']['title'];
+          }
         }
       }
     } catch (e) {
