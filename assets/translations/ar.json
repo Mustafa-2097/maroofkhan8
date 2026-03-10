@@ -1,4 +1,4 @@
- {
+{
   "quick_start": "البدء السريع",
   "see_all": "عرض الكل",
   "feature_quran": "القرآن",
@@ -12,6 +12,8 @@
   "day_streak": "أيام\nمتتالية",
   "surah": "سورة",
   "saved": "محفوظ",
+  "time": "وقت",
+  "min": "دقيقة",
   "greeting": "السلام عليكم",
   "greeting_subtitle": "أتمنى أن يجد قلبك السلام اليوم",
   "digital_khanqah": "الخانقاه الرقمية",
@@ -662,5 +664,7 @@
   "logout_confirmation": "هل أنت متأكد أنك تريد تسجيل الخروج؟ ستحتاج إلى تسجيل الدخول مرة أخرى للوصول إلى حسابك.",
   "cancel": "إلغاء",
   "about": "حول",
-  "logout": "تسجيل الخروج"
+  "logout": "تسجيل الخروج",
+  "downloaded_successfully_at": "تم تحميله بنجاح في",
+  "download_failed": "فشل التحميل"
 }

@@ -12,6 +12,9 @@ class SignInSignUpPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sh = MediaQuery.of(context).size.height;
+    final sw = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -22,7 +25,7 @@ class SignInSignUpPage extends StatelessWidget {
               () => Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 24),
+                  SizedBox(height: sh * 0.03),
 
                   /// Title
                   Center(
@@ -35,7 +38,7 @@ class SignInSignUpPage extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 8),
+                  SizedBox(height: sh * 0.01),
 
                   /// Subtitle
                   Center(
@@ -46,12 +49,12 @@ class SignInSignUpPage extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 24),
+                  SizedBox(height: sh * 0.03),
 
                   /// Toggle buttons
                   _AuthToggle(),
 
-                  const SizedBox(height: 32),
+                  SizedBox(height: sh * 0.04),
 
                   if (!controller.isLogin.value) ...[
                     _Label(text: 'Full Name *'),
@@ -62,7 +65,7 @@ class SignInSignUpPage extends StatelessWidget {
                           ? "Name is required"
                           : null,
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: sh * 0.02),
                   ],
 
                   _Label(text: 'Email *'),
@@ -78,12 +81,12 @@ class SignInSignUpPage extends StatelessWidget {
                     },
                   ),
 
-                  const SizedBox(height: 16),
+                  SizedBox(height: sh * 0.02),
 
                   if (!controller.isLogin.value) ...[
                     _Label(text: 'Phone Number *'),
                     _PhoneField(),
-                    const SizedBox(height: 16),
+                    SizedBox(height: sh * 0.02),
                   ],
 
                   ///
@@ -116,7 +119,7 @@ class SignInSignUpPage extends StatelessWidget {
 
                   /// Confirm Password (Signup Only)
                   if (!controller.isLogin.value) ...[
-                    const SizedBox(height: 16),
+                    SizedBox(height: sh * 0.02),
                     _Label(text: 'Confirm password *'),
                     _TextField(
                       controller: controller.confirmPasswordController,
@@ -156,12 +159,12 @@ class SignInSignUpPage extends StatelessWidget {
                       ),
                     ),
 
-                  const SizedBox(height: 24),
+                  SizedBox(height: sh * 0.03),
 
                   /// LogIn or SignUp button
                   SizedBox(
                     width: double.infinity,
-                    height: 48,
+                    height: sh * 0.06,
                     child: ElevatedButton(
                       onPressed: controller.submit,
                       child: Text(
@@ -170,7 +173,7 @@ class SignInSignUpPage extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 24),
+                  SizedBox(height: sh * 0.03),
 
                   /// Social login
                   Center(
@@ -184,7 +187,7 @@ class SignInSignUpPage extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 16),
+                  SizedBox(height: sh * 0.02),
 
                   /// Google Logo
                   Center(
@@ -196,8 +199,8 @@ class SignInSignUpPage extends StatelessWidget {
                           final isDark = theme.brightness == Brightness.dark;
 
                           return Container(
-                            height: 50,
-                            width: 50,
+                            height: sw * 0.12,
+                            width: sw * 0.12,
                             decoration: BoxDecoration(
                               border: Border.all(
                                 width: 1,
@@ -209,7 +212,7 @@ class SignInSignUpPage extends StatelessWidget {
                             ),
                             child: Image.asset(
                               'assets/images/google.png',
-                              height: 50,
+                              height: sw * 0.1,
                             ),
                           );
                         },
@@ -229,8 +232,9 @@ class SignInSignUpPage extends StatelessWidget {
 class _AuthToggle extends GetView<SignInSignUpController> {
   @override
   Widget build(BuildContext context) {
+    final sh = MediaQuery.of(context).size.height;
     return Container(
-      height: 40,
+      height: sh * 0.05,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(10),
@@ -273,8 +277,8 @@ class _ToggleButton extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          height: 30,
-          margin: EdgeInsets.only(left: 6, right: 6),
+          height: 30, // Keeping this fixed or using sh? Let's use it relative.
+          margin: const EdgeInsets.only(left: 6, right: 6),
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: selected

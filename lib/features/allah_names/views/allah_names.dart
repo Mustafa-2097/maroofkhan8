@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
+import 'package:maroofkhan8/core/constant/widgets/header.dart';
 import '../controllers/allah_names_controller.dart';
 import '../models/allah_name_model.dart';
 import 'saved_allah_names_screen.dart';
@@ -32,13 +33,34 @@ class _NamesOfAllahScreenState extends State<NamesOfAllahScreen> {
 
     return Scaffold(
       backgroundColor: backgroundColor,
+      appBar: AppBar(
+        title: HeaderSection(title: tr("names_99")),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leadingWidth: 40,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12),
+          child: IconButton(
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: isDark ? Colors.white70 : Colors.grey,
+              size: sw * 0.05,
+            ),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
+        actions: [const SizedBox(width: 40)],
+      ),
       body: SafeArea(
         child: Column(
           children: [
             SizedBox(height: sh * 0.012),
 
             // 1. Header
-            HeaderWithLines(title: tr("names_99")),
+            //HeaderWithLines(title: tr("names_99")),
             SizedBox(height: sh * 0.025),
 
             // 2. Search Bar
@@ -261,14 +283,15 @@ class AudioPlayerSection extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Icon(
-                    Icons.volume_up_outlined,
-                    color: isDark ? Colors.white38 : Colors.grey.shade400,
-                    size: sw * 0.06,
-                  ),
-                ),
+                // Align(
+                //   alignment: Alignment.topRight,
+                //   child: Icon(
+                //     Icons.volume_up_outlined,
+                //     color: isDark ? Colors.white38 : Colors.grey.shade400,
+                //     size: sw * 0.06,
+                //   ),
+                // ),
+                SizedBox(height: sh * 0.012),
                 Text(
                   data.arabic,
                   style: GoogleFonts.amiri(
@@ -768,62 +791,62 @@ class PlayerDialog extends StatelessWidget {
 }
 
 // --- SHARED HEADER ---
-class HeaderWithLines extends StatelessWidget {
-  final String title;
-  const HeaderWithLines({super.key, required this.title});
+// class HeaderWithLines extends StatelessWidget {
+//   final String title;
+//   const HeaderWithLines({super.key, required this.title});
 
-  @override
-  Widget build(BuildContext context) {
-    final sw = MediaQuery.of(context).size.width;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+//   @override
+//   Widget build(BuildContext context) {
+//     final sw = MediaQuery.of(context).size.width;
+//     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: sw * 0.05),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: sw * 0.1,
-                height: 1,
-                color: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
-              ),
-              const SizedBox(width: 5),
-              const Icon(Icons.circle, size: 3, color: kPrimaryBrown),
-              const SizedBox(width: 8),
-              Text(
-                title,
-                style: GoogleFonts.playfairDisplay(
-                  fontSize: sw * 0.045,
-                  fontWeight: FontWeight.w600,
-                  color: isDark ? Colors.white : const Color(0xFF2E2E2E),
-                ),
-              ),
-              const SizedBox(width: 8),
-              const Icon(Icons.circle, size: 3, color: kPrimaryBrown),
-              const SizedBox(width: 5),
-              Container(
-                width: sw * 0.1,
-                height: 1,
-                color: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
-              ),
-            ],
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: IconButton(
-              icon: Icon(
-                Icons.arrow_back_ios,
-                color: isDark ? Colors.white70 : Colors.grey,
-                size: sw * 0.05,
-              ),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+//     return Padding(
+//       padding: EdgeInsets.symmetric(horizontal: sw * 0.05),
+//       child: Stack(
+//         alignment: Alignment.center,
+//         children: [
+//           Row(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [
+//               Container(
+//                 width: sw * 0.1,
+//                 height: 1,
+//                 color: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+//               ),
+//               const SizedBox(width: 5),
+//               const Icon(Icons.circle, size: 3, color: kPrimaryBrown),
+//               const SizedBox(width: 8),
+//               Text(
+//                 title,
+//                 style: GoogleFonts.playfairDisplay(
+//                   fontSize: sw * 0.045,
+//                   fontWeight: FontWeight.w600,
+//                   color: isDark ? Colors.white : const Color(0xFF2E2E2E),
+//                 ),
+//               ),
+//               const SizedBox(width: 8),
+//               const Icon(Icons.circle, size: 3, color: kPrimaryBrown),
+//               const SizedBox(width: 5),
+//               Container(
+//                 width: sw * 0.1,
+//                 height: 1,
+//                 color: isDark ? Colors.grey.shade800 : Colors.grey.shade300,
+//               ),
+//             ],
+//           ),
+//           Align(
+//             alignment: Alignment.centerLeft,
+//             child: IconButton(
+//               icon: Icon(
+//                 Icons.arrow_back_ios,
+//                 color: isDark ? Colors.white70 : Colors.grey,
+//                 size: sw * 0.05,
+//               ),
+//               onPressed: () => Navigator.pop(context),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }

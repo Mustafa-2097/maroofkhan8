@@ -10,6 +10,8 @@ class ResetPassword extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sh = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -19,7 +21,7 @@ class ResetPassword extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 44),
+                SizedBox(height: sh * 0.05),
                 Center(
                   child: Text(
                     'Create New Password',
@@ -28,7 +30,8 @@ class ResetPassword extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: sh * 0.02),
+
                 /// Subtitle
                 Text(
                   'Your new password must be different from previous used passwords.',
@@ -37,58 +40,71 @@ class ResetPassword extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 32),
+                SizedBox(height: sh * 0.04),
 
                 /// Create a password
                 _Label(text: 'Create a password *'),
-                Obx(() => _TextField(
-                  controller: controller.passwordController,
-                  hint: 'must be 6 characters',
-                  obscure: !controller.isPasswordVisible.value,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) return 'Password is required';
-                    if (value.length < 6) return 'Password must be at least 6 characters';
-                    return null;
-                  },
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      controller.isPasswordVisible.value ? Icons.visibility : Icons.visibility_off,
-                      color: Theme.of(context).disabledColor,
+                Obx(
+                  () => _TextField(
+                    controller: controller.passwordController,
+                    hint: 'must be 6 characters',
+                    obscure: !controller.isPasswordVisible.value,
+                    validator: (value) {
+                      if (value == null || value.isEmpty)
+                        return 'Password is required';
+                      if (value.length < 6)
+                        return 'Password must be at least 6 characters';
+                      return null;
+                    },
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        controller.isPasswordVisible.value
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: Theme.of(context).disabledColor,
+                      ),
+                      onPressed: controller.togglePasswordVisibility,
                     ),
-                    onPressed: controller.togglePasswordVisibility,
                   ),
-                )),
+                ),
 
-                const SizedBox(height: 16),
+                SizedBox(height: sh * 0.02),
 
                 /// Confirm password
                 _Label(text: 'Confirm password *'),
-                Obx(() => _TextField(
-                  controller: controller.confirmPasswordController,
-                  hint: 'repeat password',
-                  obscure: !controller.isConfirmPasswordVisible.value,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) return 'Please confirm your password';
-                    if (value != controller.passwordController.text) return 'Passwords do not match';
-                    return null;
-                  },
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      controller.isConfirmPasswordVisible.value ? Icons.visibility : Icons.visibility_off,
-                      color: Theme.of(context).disabledColor,
+                Obx(
+                  () => _TextField(
+                    controller: controller.confirmPasswordController,
+                    hint: 'repeat password',
+                    obscure: !controller.isConfirmPasswordVisible.value,
+                    validator: (value) {
+                      if (value == null || value.isEmpty)
+                        return 'Please confirm your password';
+                      if (value != controller.passwordController.text)
+                        return 'Passwords do not match';
+                      return null;
+                    },
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        controller.isConfirmPasswordVisible.value
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: Theme.of(context).disabledColor,
+                      ),
+                      onPressed: controller.toggleConfirmPasswordVisibility,
                     ),
-                    onPressed: controller.toggleConfirmPasswordVisibility,
                   ),
-                )),
+                ),
 
-                const SizedBox(height: 32),
+                SizedBox(height: sh * 0.04),
 
                 /// Reset Password button
                 SizedBox(
                   width: double.infinity,
-                  height: 48,
+                  height: sh * 0.06,
                   child: ElevatedButton(
-                    onPressed: () => controller.resetPassword(), // Call the method
+                    onPressed: () =>
+                        controller.resetPassword(), // Call the method
                     child: const Text('Reset Password'),
                   ),
                 ),
@@ -143,13 +159,17 @@ class _TextField extends StatelessWidget {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
-            color: isDark ? AppColors.primaryColorDark : AppColors.primaryColorLight,
+            color: isDark
+                ? AppColors.primaryColorDark
+                : AppColors.primaryColorLight,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
-            color: isDark ? AppColors.primaryColorDark : AppColors.primaryColorLight,
+            color: isDark
+                ? AppColors.primaryColorDark
+                : AppColors.primaryColorLight,
             width: 2,
           ),
         ),

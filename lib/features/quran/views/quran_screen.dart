@@ -17,7 +17,6 @@ import 'package:http/http.dart' as http;
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../../../core/network/api_endpoints.dart';
 import 'saved_suras_screen.dart';
-import 'dart:math' as math;
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -42,16 +41,23 @@ class _MainContainerState extends State<QuranScreen> {
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
+        leadingWidth: 30,
         leading: widget.hideBack
             ? null
-            : IconButton(
-                icon: const Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.grey,
-                  size: 20,
+            : Padding(
+                padding: const EdgeInsets.only(left: 12),
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: const Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.grey,
+                    size: 20,
+                  ),
+                  onPressed: () => Navigator.pop(context),
                 ),
-                onPressed: () => Navigator.pop(context),
               ),
+        actions: [if (!widget.hideBack) const SizedBox(width: 40)],
       ),
       body: const QuranTabsScreen(),
     );
@@ -539,6 +545,9 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
           if (index == 1) {
             controller.fetchSurahTafsir(widget.surah.id);
           }
+          if (index != 0) {
+            controller.pauseAudio();
+          }
           setState(() => _activeDetailTab = index);
         },
         child: Container(
@@ -895,9 +904,12 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
     );
   }
 
-  // ── AI Explanation inline chat ──────────────────────────────────────────
+  // ── AI Explanation inline chat (Matches Ai Murshid Design) ────────────────
   Widget _buildAiExplanation() {
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
     var isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Column(
       children: [
         // Chat messages
@@ -909,17 +921,18 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                     children: [
                       Icon(
                         Icons.auto_awesome,
-                        size: 40,
+                        size: sw * 0.1,
                         color: kPrimaryBrown.withValues(alpha: 0.4),
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        // "${tr("ask_anything_about")}\n${widget.surah.name}",
                         "${tr("ask_anything_about")}\n${tr("surah_${widget.surah.id}_name")}",
                         textAlign: TextAlign.center,
                         style: GoogleFonts.playfairDisplay(
-                          fontSize: 16,
-                          color: Colors.grey.shade400,
+                          fontSize: sw * 0.045,
+                          color: isDark
+                              ? Colors.grey.shade600
+                              : Colors.grey.shade400,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -928,10 +941,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                 )
               : ListView.builder(
                   controller: _aiScrollController,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
+                  padding: EdgeInsets.all(sw * 0.05),
                   itemCount: _aiMessages.length + (_aiIsTyping ? 1 : 0),
                   itemBuilder: (context, index) {
                     if (index == _aiMessages.length && _aiIsTyping) {
@@ -939,90 +949,143 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                       return Align(
                         alignment: Alignment.centerLeft,
                         child: Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
+                          margin: EdgeInsets.only(bottom: sh * 0.015),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: sw * 0.04,
                             vertical: 10,
                           ),
                           decoration: BoxDecoration(
                             color: isDark
-                                ? Colors.grey.shade800
-                                : Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(14),
+                                ? const Color(0xFF1E1E1E)
+                                : Colors.grey.shade300,
+                            borderRadius: BorderRadius.circular(15),
                           ),
-                          child: const _TypingIndicator(),
+                          child: const _ThreeDotTyping(),
                         ),
                       );
                     }
                     final msg = _aiMessages[index];
                     final isUser = msg['isUser'] as bool;
+                    final text = msg['text'] as String;
+
                     return Align(
                       alignment: isUser
                           ? Alignment.centerRight
                           : Alignment.centerLeft,
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 10,
-                        ),
-                        constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.78,
-                        ),
-                        decoration: BoxDecoration(
-                          color: isUser
-                              ? kPrimaryBrown
-                              : (isDark
-                                    ? Colors.grey.shade800
-                                    : Colors.grey.shade100),
-                          borderRadius: BorderRadius.only(
-                            topLeft: const Radius.circular(14),
-                            topRight: const Radius.circular(14),
-                            bottomLeft: Radius.circular(isUser ? 14 : 0),
-                            bottomRight: Radius.circular(isUser ? 0 : 14),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.04),
-                              blurRadius: 6,
-                              offset: const Offset(0, 2),
+                      child: Stack(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(bottom: sh * 0.015, top: 8),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: sw * 0.04,
+                              vertical: 10,
                             ),
-                          ],
-                        ),
-                        child: SelectableText(
-                          msg['text'] as String,
-                          style: TextStyle(
-                            color: isUser
-                                ? Colors.white
-                                : (isDark ? Colors.white : Colors.black87),
-                            fontSize: 14,
+                            constraints: BoxConstraints(maxWidth: sw * 0.75),
+                            decoration: BoxDecoration(
+                              color: isUser
+                                  ? const Color(0xFF80381C) // rustBrown
+                                  : (isDark
+                                        ? const Color(0xFF1E1E1E)
+                                        : Colors.white),
+                              borderRadius: BorderRadius.only(
+                                topLeft: const Radius.circular(15),
+                                topRight: const Radius.circular(15),
+                                bottomLeft: Radius.circular(isUser ? 15 : 0),
+                                bottomRight: Radius.circular(isUser ? 0 : 15),
+                              ),
+                              boxShadow: isUser
+                                  ? []
+                                  : [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(
+                                          isDark ? 0.3 : 0.05,
+                                        ),
+                                        blurRadius: 6,
+                                        offset: const Offset(0, 3),
+                                      ),
+                                    ],
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.only(top: isUser ? 0 : 8),
+                              child: Text(
+                                text,
+                                style: TextStyle(
+                                  color: isUser
+                                      ? Colors.white
+                                      : (isDark
+                                            ? Colors.white.withOpacity(0.9)
+                                            : Colors.black87),
+                                  fontSize: sw * 0.035,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
+                          // Copy button for AI messages
+                          if (!isUser)
+                            Positioned(
+                              right: 4,
+                              top: 12,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Clipboard.setData(ClipboardData(text: text));
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(tr("copied_to_clipboard")),
+                                      duration: const Duration(
+                                        milliseconds: 800,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: isDark
+                                        ? Colors.grey.shade900
+                                        : Colors.grey.shade200,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.copy,
+                                    size: sw * 0.03,
+                                    color: isDark
+                                        ? Colors.white54
+                                        : Colors.black54,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                     );
                   },
                 ),
         ),
-        // Input bar with mic (Ai Murshid Design)
+        // Input bar (Matches VoiceInputBar Design)
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          padding: EdgeInsets.only(
+            left: sw * 0.05,
+            right: sw * 0.05,
+            bottom: sh * 0.02,
+          ),
           child: Stack(
             alignment: Alignment.centerRight,
             clipBehavior: Clip.none,
             children: [
               AnimatedContainer(
                 duration: const Duration(milliseconds: 250),
-                height: 60,
+                height: sh * 0.08,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: isDark ? kDarkBlack : Colors.white,
+                  color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
                   borderRadius: BorderRadius.circular(40),
                   border: Border.all(
-                    color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
+                    color: isDark ? Colors.grey.shade900 : Colors.grey.shade200,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.02),
+                      color: Colors.black.withOpacity(isDark ? 0.3 : 0.02),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -1030,26 +1093,30 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                 ),
                 child: Row(
                   children: [
-                    const SizedBox(width: 20),
+                    SizedBox(width: sw * 0.06),
                     Expanded(
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 300),
                         child: _aiIsListening
                             ? Container(
-                                key: const ValueKey('listening'),
+                                key: const ValueKey('speakNow'),
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 16,
                                   vertical: 8,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFF8F9FA),
+                                  color: isDark
+                                      ? const Color(0xFF252525)
+                                      : const Color(0xFFF8F9FA),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
                                   tr("speak_now"),
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Color(0xFF4A4A4A),
+                                  style: TextStyle(
+                                    fontSize: sw * 0.03,
+                                    color: isDark
+                                        ? Colors.white70
+                                        : const Color(0xFF4A4A4A),
                                   ),
                                 ),
                               )
@@ -1057,28 +1124,28 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                                 key: const ValueKey('textField'),
                                 controller: _aiTextController,
                                 enabled: !_aiIsTyping,
-                                maxLines:
-                                    1, // Keep single line for Enter-to-send
-                                textInputAction: TextInputAction.send,
+                                style: TextStyle(
+                                  color: isDark ? Colors.white : Colors.black,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText:
+                                      "${tr("ask_about")} ${tr("surah_${widget.surah.id}_name")}...",
+                                  hintStyle: TextStyle(
+                                    color: isDark
+                                        ? Colors.white38
+                                        : Colors.grey,
+                                  ),
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.only(
+                                    right: sw * 0.25,
+                                  ),
+                                ),
+                                onChanged: (_) => setState(() {}),
                                 onSubmitted: (val) {
                                   if (!_aiIsTyping && val.trim().isNotEmpty) {
                                     _sendAiMessage();
                                   }
                                 },
-                                decoration: InputDecoration(
-                                  // hintText: "${tr("ask_about")} ${widget.surah.name}...",
-                                  hintText:
-                                      "${tr("ask_about")} ${tr("surah_${widget.surah.id}_name")}...",
-                                  hintStyle: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey.shade500,
-                                  ),
-                                  border: InputBorder.none,
-                                  contentPadding: const EdgeInsets.only(
-                                    right: 100, // Room for buttons
-                                  ),
-                                ),
-                                onChanged: (_) => setState(() {}),
                               ),
                       ),
                     ),
@@ -1087,7 +1154,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
               ),
               // Mic + Send Buttons
               Positioned(
-                right: 6,
+                right: 5,
                 child: Row(
                   children: [
                     // Mic Button
@@ -1116,7 +1183,6 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                               pauseFor: const Duration(seconds: 8),
                               listenFor: const Duration(seconds: 30),
                               partialResults: true,
-                              cancelOnError: false,
                               onResult: (result) {
                                 setState(() {
                                   _aiTextController.text =
@@ -1129,16 +1195,25 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                       },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 250),
-                        height: _aiIsListening ? 48 : 40,
-                        width: _aiIsListening ? 48 : 40,
+                        height: _aiIsListening ? sw * 0.12 : sw * 0.1,
+                        width: _aiIsListening ? sw * 0.12 : sw * 0.1,
                         decoration: BoxDecoration(
-                          color: _aiIsListening ? kPrimaryBrown : Colors.grey,
+                          color: _aiIsListening
+                              ? const Color(0xFF80381C)
+                              : (isDark ? Colors.grey[800] : Colors.grey),
                           shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: isDark ? Colors.black26 : Colors.grey,
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
                         child: Icon(
                           _aiIsListening ? Icons.mic : Icons.mic_none,
                           color: Colors.white,
-                          size: _aiIsListening ? 26 : 22,
+                          size: _aiIsListening ? sw * 0.065 : sw * 0.055,
                         ),
                       ),
                     ),
@@ -1151,24 +1226,33 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                           : _sendAiMessage,
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
-                        height: 42,
-                        width: 42,
+                        height: sw * 0.105,
+                        width: sw * 0.105,
                         decoration: BoxDecoration(
                           color:
                               _aiTextController.text.trim().isEmpty ||
                                   _aiIsTyping
-                              ? Colors.grey.shade300
-                              : kPrimaryBrown,
+                              ? (isDark ? Colors.white10 : Colors.grey.shade300)
+                              : Colors.blueAccent,
                           shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: isDark
+                                  ? Colors.black12
+                                  : Colors.grey.shade300,
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
                         child: Icon(
-                          Icons.send_rounded,
+                          Icons.send,
                           color:
                               _aiTextController.text.trim().isEmpty ||
                                   _aiIsTyping
-                              ? Colors.grey
+                              ? (isDark ? Colors.white24 : Colors.grey)
                               : Colors.white,
-                          size: 20,
+                          size: sw * 0.05,
                         ),
                       ),
                     ),
@@ -1280,43 +1364,60 @@ class _QuranAiService {
 
 // Small animated dot used in typing indicator
 class _Dot extends StatelessWidget {
-  final double offset;
-  const _Dot({this.offset = 0});
-
   @override
   Widget build(BuildContext context) {
-    return Transform.translate(
-      offset: Offset(0, offset),
-      child: Container(
-        width: 6,
-        height: 6,
-        decoration: BoxDecoration(
-          color: kPrimaryBrown.withValues(alpha: 0.6),
-          shape: BoxShape.circle,
-        ),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      width: 4,
+      height: 4,
+      decoration: BoxDecoration(
+        color: isDark ? Colors.white70 : Colors.grey,
+        shape: BoxShape.circle,
       ),
     );
   }
 }
 
-// Sine-wave animated typing indicator
-class _TypingIndicator extends StatefulWidget {
-  const _TypingIndicator();
+// Typing indicator mimicking the AI Murshid screen
+class _ThreeDotTyping extends StatefulWidget {
+  const _ThreeDotTyping();
   @override
-  State<_TypingIndicator> createState() => _TypingIndicatorState();
+  State<_ThreeDotTyping> createState() => _ThreeDotTypingState();
 }
 
-class _TypingIndicatorState extends State<_TypingIndicator>
+class _ThreeDotTypingState extends State<_ThreeDotTyping>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  late Animation<double> _dotOneAnim;
+  late Animation<double> _dotTwoAnim;
+  late Animation<double> _dotThreeAnim;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
+      duration: const Duration(milliseconds: 1000),
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
     )..repeat();
+
+    _dotOneAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.3, curve: Curves.easeInOut),
+      ),
+    );
+    _dotTwoAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.3, 0.6, curve: Curves.easeInOut),
+      ),
+    );
+    _dotThreeAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.6, 0.9, curve: Curves.easeInOut),
+      ),
+    );
   }
 
   @override
@@ -1327,27 +1428,16 @@ class _TypingIndicatorState extends State<_TypingIndicator>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: List.generate(3, (index) {
-            // Create a staggered sine wave offset
-            final double t = _controller.value;
-            // Phase shift for each dot (0.4 radians ≈ 23 degrees)
-            final double shift = (index * 0.4);
-            // Calculate sine value and scale to pixels
-            final double verticalOffset =
-                4 * math.sin((t * 2 * math.pi) - shift);
-
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: _Dot(offset: verticalOffset),
-            );
-          }),
-        );
-      },
+    return SizedBox(
+      width: 20,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          FadeTransition(opacity: _dotOneAnim, child: _Dot()),
+          FadeTransition(opacity: _dotTwoAnim, child: _Dot()),
+          FadeTransition(opacity: _dotThreeAnim, child: _Dot()),
+        ],
+      ),
     );
   }
 }

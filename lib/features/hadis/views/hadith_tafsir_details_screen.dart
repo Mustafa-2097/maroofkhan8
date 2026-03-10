@@ -10,6 +10,7 @@ import '../../ai_murshid/views/ai_murshid_screen.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:maroofkhan8/core/utils/localization_utils.dart';
+import 'package:maroofkhan8/core/utils/snackbar_utils.dart';
 
 class HadishTafsirDetailsScreen extends StatefulWidget {
   final String hadithText;
@@ -87,19 +88,13 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
 
         await file.writeAsString(textToSave);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              "${tr('download_success')} \n\n${tr('path')}: $filePath",
-            ),
-            backgroundColor: primaryBrown,
-          ),
+        SnackbarUtils.showSnackbar(
+          tr("download_complete"),
+          "${widget.bookName} ${localizeDigits(widget.hadithNumber, context)} ${tr("downloaded_successfully_at")}\n$filePath",
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Error: $e")));
+      SnackbarUtils.showSnackbar(tr("error"), "Error: $e", isError: true);
     }
   }
 
@@ -212,9 +207,7 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
               const SizedBox(height: 20),
 
               // --- TABS ---
-              Row(
-                children: [_tabButton(tr("tafsir"), darkBlack, Colors.white)],
-              ),
+              Row(children: [_tabButton(tr("tafsir"), true)]),
 
               const SizedBox(height: 25),
 
@@ -389,19 +382,29 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
     );
   }
 
-  Widget _tabButton(String text, Color bg, Color textColor) {
+  Widget _tabButton(String label, bool isSelected) {
+    var isDark = Theme.of(context).brightness == Brightness.dark;
     return Expanded(
       child: Container(
         height: 40,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: bg,
+          color: isSelected
+              ? primaryBrown
+              : isDark
+              ? Colors.white
+              : Colors.black,
           borderRadius: BorderRadius.circular(20),
+          border: isSelected ? null : Border.all(color: Colors.grey.shade200),
         ),
         child: Text(
-          text,
+          label,
           style: TextStyle(
-            color: textColor,
+            color: isSelected
+                ? Colors.white
+                : isDark
+                ? Colors.black
+                : Colors.white,
             fontWeight: FontWeight.bold,
             fontSize: 13,
           ),

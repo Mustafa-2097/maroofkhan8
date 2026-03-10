@@ -12,6 +12,8 @@
   "day_streak": "Day\nStreak",
   "surah": "Surah",
   "saved": "Saved",
+  "time": "Time",
+  "min": "min",
   "greeting": "Assalamu Alaikum",
   "greeting_subtitle": "May your heart find peace today",
   "digital_khanqah": "Digital Khanqah",
@@ -440,5 +442,7 @@
   "logout_confirmation": "Are you sure you want to log out? You will need to sign in again to access your account.",
   "cancel": "Cancel",
   "about": "About",
-  "logout": "Logout"
+  "logout": "Logout",
+  "downloaded_successfully_at": "downloaded successfully at",
+  "download_failed": "Download failed"
 }

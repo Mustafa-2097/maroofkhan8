@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -31,15 +32,48 @@ class QuickStartFeature {
   });
 }
 
-class DashboardController extends GetxController {
+class DashboardController extends GetxController with WidgetsBindingObserver {
   var searchQuery = ''.obs;
   var bannerQuote = {}.obs;
+  var userActivity = {}.obs;
   var isQuoteLoading = false.obs;
+  var isActivityLoading = false.obs;
+  Timer? _refreshTimer;
 
   @override
   void onInit() {
     super.onInit();
+    WidgetsBinding.instance.addObserver(this);
     fetchBannerQuote();
+    refreshAllData();
+    _startPeriodicRefresh();
+  }
+
+  @override
+  void onClose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _refreshTimer?.cancel();
+    super.onClose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      refreshAllData();
+    }
+  }
+
+  void refreshAllData() {
+    pingUser();
+    fetchUserActivity();
+  }
+
+  void _startPeriodicRefresh() {
+    _refreshTimer?.cancel();
+    // Ping every 30 seconds and refresh activity
+    _refreshTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
+      refreshAllData();
+    });
   }
 
   Future<void> fetchBannerQuote() async {
@@ -53,6 +87,31 @@ class DashboardController extends GetxController {
       if (e is! String) print("Error fetching banner quote: $e");
     } finally {
       isQuoteLoading.value = false;
+    }
+  }
+
+  Future<void> fetchUserActivity() async {
+    // Only show loading for the very first fetch or if data is empty
+    if (userActivity.isEmpty) isActivityLoading.value = true;
+    try {
+      final response = await ApiService.get(ApiEndpoints.userActivity);
+      if (response['success'] == true && response['data'] != null) {
+        userActivity.assignAll(response['data']);
+        debugPrint("User Activity Data Refreshed: $userActivity");
+      }
+    } catch (e) {
+      debugPrint("Error fetching user activity: $e");
+    } finally {
+      isActivityLoading.value = false;
+    }
+  }
+
+  Future<void> pingUser() async {
+    try {
+      await ApiService.get(ApiEndpoints.mePing);
+      debugPrint("User Pinged successfully");
+    } catch (e) {
+      debugPrint("Error pinging user: $e");
     }
   }
 

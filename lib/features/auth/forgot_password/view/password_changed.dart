@@ -7,6 +7,9 @@ class PasswordChange extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sh = MediaQuery.of(context).size.height;
+    final sw = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -14,15 +17,20 @@ class PasswordChange extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset("assets/images/success.png", width: 100, fit: BoxFit.cover),
-              const SizedBox(height: 24),
+              Image.asset(
+                "assets/images/success.png",
+                width: sw * 0.25,
+                fit: BoxFit.cover,
+              ),
+              SizedBox(height: sh * 0.03),
               Text(
                 'Password Changed',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                   color: Theme.of(context).colorScheme.primary,
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: sh * 0.015),
+
               /// Subtitle
               Text(
                 'Your password has been changed successfully.',
@@ -32,11 +40,11 @@ class PasswordChange extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
 
-              const SizedBox(height: 32),
+              SizedBox(height: sh * 0.04),
 
               SizedBox(
                 width: double.infinity,
-                height: 48,
+                height: sh * 0.06,
                 child: ElevatedButton(
                   onPressed: () => Get.offAll((() => SignInSignUpPage())),
                   child: const Text('Back to Login'),

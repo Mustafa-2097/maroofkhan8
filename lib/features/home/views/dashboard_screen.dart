@@ -1,14 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:maroofkhan8/features/profile/view/profile_screen.dart';
-import 'package:maroofkhan8/features/quran/views/quran_screen.dart';
-import '../../../core/constant/app_colors.dart';
 import '../../profile/controller/profile_controller.dart';
 import '../controller/dashboard_controller.dart';
 import 'custom_app_drawer.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -21,6 +19,9 @@ class DashboardScreen extends StatelessWidget {
     final backgroundColor = Theme.of(context).colorScheme.background;
     final sh = MediaQuery.of(context).size.height;
     final sw = MediaQuery.of(context).size.width;
+
+    Get.put(DashboardController());
+    Get.put(ProfileController());
 
     return Scaffold(
       drawer: const CustomAppDrawer(),
@@ -536,65 +537,75 @@ class YourJourneyRow extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
 
-    return Row(
-      children: [
-        // Card 1: 5 Day Streak (Purple)
-        Expanded(
-          child: _JourneyCard(
-            topText: tr("num_5"),
-            bottomText: tr("day_streak"),
-            color: isDark
-                ? primaryColor.withOpacity(0.15)
-                : const Color(0xFFDCD6FF),
-            icon: Icons.local_fire_department,
-            isDark: isDark,
-          ),
-        ),
-        const SizedBox(width: 8),
+    final DashboardController controller = Get.find<DashboardController>();
 
-        // Card 2: 1 Surah (Peach)
-        Expanded(
-          child: _JourneyCard(
-            topText: tr("num_1"),
-            bottomText: tr("surah"),
-            color: isDark
-                ? Colors.orange.withOpacity(0.15)
-                : const Color(0xFFFFD6CA),
-            icon: Icons.menu_book,
-            isDark: isDark,
-          ),
-        ),
-        const SizedBox(width: 8),
+    return Obx(() {
+      final activity = controller.userActivity;
+      final streak = activity['streak']?.toString() ?? "0";
+      final surahRead = activity['surahRead']?.toString() ?? "0";
+      final time = activity['time']?.toString() ?? "0";
+      final saved = activity['saved']?.toString() ?? "0";
 
-        // Card 3: 2h 15 min Surah (Green)
-        Expanded(
-          child: _JourneyCard(
-            topText: tr("time_2h_15m"),
-            bottomText: tr("surah"),
-            color: isDark
-                ? Colors.green.withOpacity(0.15)
-                : const Color(0xFFE6F5D8),
-            icon: Icons.schedule,
-            isDark: isDark,
+      return Row(
+        children: [
+          // Card 1: Streak (Purple)
+          Expanded(
+            child: _JourneyCard(
+              topText: localizeDigits(streak, context),
+              bottomText: tr("day_streak"),
+              color: isDark
+                  ? primaryColor.withOpacity(0.15)
+                  : const Color(0xFFDCD6FF),
+              icon: Icons.local_fire_department,
+              isDark: isDark,
+            ),
           ),
-        ),
-        const SizedBox(width: 8),
+          const SizedBox(width: 8),
 
-        // Card 4: 8 Saved (Pink)
-        Expanded(
-          child: _JourneyCard(
-            topText: tr("num_8"),
-            bottomText: tr("saved"),
-            color: isDark
-                ? Colors.pink.withOpacity(0.15)
-                : const Color(0xFFE94E77),
-            icon: Icons.bookmark_border,
-            isPinkCard: true,
-            isDark: isDark,
+          // Card 2: Surah Read (Peach)
+          Expanded(
+            child: _JourneyCard(
+              topText: localizeDigits(surahRead, context),
+              bottomText: tr("surah"),
+              color: isDark
+                  ? Colors.orange.withOpacity(0.15)
+                  : const Color(0xFFFFD6CA),
+              icon: Icons.menu_book,
+              isDark: isDark,
+            ),
           ),
-        ),
-      ],
-    );
+          const SizedBox(width: 8),
+
+          // Card 3: Time (Green)
+          Expanded(
+            child: _JourneyCard(
+              topText: localizeDigits(time, context) + tr("min"),
+              bottomText: tr("time"),
+              color: isDark
+                  ? Colors.green.withOpacity(0.15)
+                  : const Color(0xFFE6F5D8),
+              icon: Icons.schedule,
+              isDark: isDark,
+            ),
+          ),
+          const SizedBox(width: 8),
+
+          // Card 4: Saved (Pink)
+          Expanded(
+            child: _JourneyCard(
+              topText: localizeDigits(saved, context),
+              bottomText: tr("saved"),
+              color: isDark
+                  ? Colors.pink.withOpacity(0.15)
+                  : const Color(0xFFFFE6EB),
+              icon: Icons.bookmark_border,
+              isPinkCard: true,
+              isDark: isDark,
+            ),
+          ),
+        ],
+      );
+    });
   }
 }
 

@@ -3,11 +3,13 @@ import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'language_selection/controller/language_controller.dart';
+import 'core/theme/theme_service.dart';
 import 'my_app.dart';
 import 'package:get/get.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await ThemeService.init();
   await EasyLocalization.ensureInitialized();
 
   /// Register services globally so they can be found anywhere

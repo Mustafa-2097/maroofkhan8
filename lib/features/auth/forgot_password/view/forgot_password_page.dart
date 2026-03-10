@@ -8,6 +8,9 @@ class ForgotPasswordPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sh = MediaQuery.of(context).size.height;
+    final sw = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -17,7 +20,7 @@ class ForgotPasswordPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 24),
+                SizedBox(height: sh * 0.03),
 
                 /// Title
                 Center(
@@ -29,7 +32,7 @@ class ForgotPasswordPage extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(height: 8),
+                SizedBox(height: sh * 0.01),
 
                 /// Subtitle
                 Text(
@@ -39,9 +42,9 @@ class ForgotPasswordPage extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 32),
+                SizedBox(height: sh * 0.04),
 
-                const _Label(text: 'Email *'),
+                _Label(text: 'Email *'),
                 _TextField(
                   controller: controller.emailController,
                   hint: 'example@gmail.com',
@@ -57,19 +60,20 @@ class ForgotPasswordPage extends StatelessWidget {
                   },
                 ),
 
-                const SizedBox(height: 32),
+                SizedBox(height: sh * 0.04),
 
                 /// Submit button
                 SizedBox(
                   width: double.infinity,
-                  height: 48,
+                  height: sh * 0.06,
                   child: ElevatedButton(
-                    onPressed: () => controller.sendCode(), // Call the validation method
+                    onPressed: () =>
+                        controller.sendCode(), // Call the validation method
                     child: const Text('Send Code'),
                   ),
                 ),
 
-                const SizedBox(height: 24),
+                SizedBox(height: sh * 0.03),
 
                 /// Back to login
                 Row(
@@ -81,7 +85,7 @@ class ForgotPasswordPage extends StatelessWidget {
                         color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
-                    const SizedBox(width: 5),
+                    SizedBox(width: sw * 0.02),
                     InkWell(
                       onTap: () => Get.back(),
                       child: const Text(
@@ -91,7 +95,7 @@ class ForgotPasswordPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: sh * 0.02),
               ],
             ),
           ),
@@ -127,14 +131,13 @@ class _TextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField( // Changed from TextField to TextFormField
+    return TextFormField(
+      // Changed from TextField to TextFormField
       controller: controller,
       validator: validator, // Added validator to widget
       decoration: InputDecoration(
         hintText: hint,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
         // Error styling (matches your reference page style)
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),

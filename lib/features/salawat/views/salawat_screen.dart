@@ -591,7 +591,7 @@ class _SalawatDetailScreenState extends State<SalawatDetailScreen> {
                   //   isActive: true,
                   //   onTap: () {},
                   // ),
-                  _VerticalDivider(),
+                  //_VerticalDivider(),
                   _ActionButton(
                     icon: Icons.auto_awesome,
                     label: tr("ai_explanation"),

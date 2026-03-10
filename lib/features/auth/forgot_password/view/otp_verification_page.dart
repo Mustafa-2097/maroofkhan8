@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import '../../../../core/constant/app_colors.dart';
@@ -11,6 +11,8 @@ class OtpVerificationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final sh = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -18,7 +20,7 @@ class OtpVerificationPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 24),
+              SizedBox(height: sh * 0.03),
 
               /// Title
               Center(
@@ -30,7 +32,7 @@ class OtpVerificationPage extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 8),
+              SizedBox(height: sh * 0.01),
 
               /// Subtitle
               Text(
@@ -41,17 +43,17 @@ class OtpVerificationPage extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
 
-              const SizedBox(height: 32),
+              SizedBox(height: sh * 0.04),
 
               /// OTP Code Input
               OtpBox(onChanged: (value) => controller.otp.value = value),
 
-              const SizedBox(height: 32),
+              SizedBox(height: sh * 0.04),
 
               /// Submit button
               SizedBox(
                 width: double.infinity,
-                height: 48,
+                height: sh * 0.06,
                 child: ElevatedButton(
                   // CHANGE THIS: Call the controller method
                   onPressed: () => controller.verifyOtp(),
@@ -59,7 +61,7 @@ class OtpVerificationPage extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 24),
+              SizedBox(height: sh * 0.03),
 
               /// Resend code
               Center(
@@ -107,18 +109,18 @@ class OtpBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final sw = MediaQuery.of(context).size.width;
+    final sh = MediaQuery.of(context).size.height;
     return PinCodeTextField(
       appContext: context,
       length: 6,
       keyboardType: TextInputType.number,
-      //cursorColor: Colors.,
-      //textStyle: AppTextStyles.h224,
       animationType: AnimationType.fade,
       pinTheme: PinTheme(
         shape: PinCodeFieldShape.box,
-        borderRadius: BorderRadius.circular(12.r),
-        fieldHeight: 50.h,
-        fieldWidth: 50.w,
+        borderRadius: BorderRadius.circular(12),
+        fieldHeight: sh * 0.06,
+        fieldWidth: sw * 0.12,
         inactiveColor: isDark
             ? AppColors.primaryColorDark
             : AppColors.primaryColorLight,
