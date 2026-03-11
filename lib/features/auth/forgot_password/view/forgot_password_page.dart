@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:get/get.dart' hide Trans;
 import '../controller/forgot_password_controller.dart';
 
 class ForgotPasswordPage extends StatelessWidget {
@@ -25,7 +26,7 @@ class ForgotPasswordPage extends StatelessWidget {
                 /// Title
                 Center(
                   child: Text(
-                    'Forgot Password',
+                    tr('fp_title'),
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       color: Theme.of(context).colorScheme.primary,
                     ),
@@ -36,7 +37,7 @@ class ForgotPasswordPage extends StatelessWidget {
 
                 /// Subtitle
                 Text(
-                  'Don\'t worry! It occurs. Please enter the email address linked with your account.',
+                  tr('fp_subtitle'),
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     color: Theme.of(context).disabledColor,
                   ),
@@ -44,17 +45,17 @@ class ForgotPasswordPage extends StatelessWidget {
                 ),
                 SizedBox(height: sh * 0.04),
 
-                _Label(text: 'Email *'),
+                _Label(text: tr('auth_email_label')),
                 _TextField(
                   controller: controller.emailController,
-                  hint: 'example@gmail.com',
+                  hint: tr('fp_email_hint'),
                   // --- EMAIL VALIDATOR ---
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Email is required';
+                      return tr('fp_email_required');
                     }
                     if (!GetUtils.isEmail(value)) {
-                      return 'Please enter a valid email address';
+                      return tr('fp_email_invalid');
                     }
                     return null;
                   },
@@ -69,7 +70,7 @@ class ForgotPasswordPage extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () =>
                         controller.sendCode(), // Call the validation method
-                    child: const Text('Send Code'),
+                    child: Text(tr('fp_send_code')),
                   ),
                 ),
 
@@ -80,7 +81,7 @@ class ForgotPasswordPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Remember Password?',
+                      tr('fp_remember_password'),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(context).colorScheme.primary,
                       ),
@@ -88,8 +89,8 @@ class ForgotPasswordPage extends StatelessWidget {
                     SizedBox(width: sw * 0.02),
                     InkWell(
                       onTap: () => Get.back(),
-                      child: const Text(
-                        'Login',
+                      child: Text(
+                        tr('fp_login'),
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),

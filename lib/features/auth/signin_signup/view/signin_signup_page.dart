@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:get/get.dart' hide Trans;
 import '../../../../core/constant/app_colors.dart';
 import '../../forgot_password/view/forgot_password_page.dart';
 import '../controller/signin_signup_controller.dart';
@@ -30,7 +31,7 @@ class SignInSignUpPage extends StatelessWidget {
                   /// Title
                   Center(
                     child: Text(
-                      controller.isLogin.value ? 'Login' : 'Sign Up',
+                      controller.isLogin.value ? tr('auth_login') : tr('auth_signup'),
                       style: Theme.of(context).textTheme.headlineMedium
                           ?.copyWith(
                             color: Theme.of(context).colorScheme.primary,
@@ -43,7 +44,7 @@ class SignInSignUpPage extends StatelessWidget {
                   /// Subtitle
                   Center(
                     child: Text(
-                      'Log in or register to save your progress',
+                      tr('auth_subtitle'),
                       style: Theme.of(context).textTheme.headlineSmall
                           ?.copyWith(color: Theme.of(context).disabledColor),
                     ),
@@ -57,26 +58,26 @@ class SignInSignUpPage extends StatelessWidget {
                   SizedBox(height: sh * 0.04),
 
                   if (!controller.isLogin.value) ...[
-                    _Label(text: 'Full Name *'),
+                    _Label(text: tr('auth_full_name_label')),
                     _TextField(
                       controller: controller.nameController,
-                      hint: 'Your name',
+                      hint: tr('auth_name_hint'),
                       validator: (value) => value == null || value.isEmpty
-                          ? "Name is required"
+                          ? tr("auth_name_required")
                           : null,
                     ),
                     SizedBox(height: sh * 0.02),
                   ],
 
-                  _Label(text: 'Email *'),
+                  _Label(text: tr('auth_email_label')),
                   _TextField(
                     controller: controller.emailController,
-                    hint: 'Enter your email',
+                    hint: tr('auth_email_hint'),
                     validator: (value) {
                       if (value == null || value.isEmpty)
-                        return "Email is required";
+                        return tr("auth_email_required");
                       if (!GetUtils.isEmail(value))
-                        return "Enter a valid email";
+                        return tr("auth_email_invalid");
                       return null;
                     },
                   ),
@@ -84,7 +85,7 @@ class SignInSignUpPage extends StatelessWidget {
                   SizedBox(height: sh * 0.02),
 
                   if (!controller.isLogin.value) ...[
-                    _Label(text: 'Phone Number *'),
+                    _Label(text: tr('auth_phone_label')),
                     _PhoneField(),
                     SizedBox(height: sh * 0.02),
                   ],
@@ -92,18 +93,18 @@ class SignInSignUpPage extends StatelessWidget {
                   ///
                   _Label(
                     text: controller.isLogin.value
-                        ? 'Password'
-                        : 'Create a password *',
+                        ? tr('auth_password_label')
+                        : tr('auth_password_create_label'),
                   ),
                   _TextField(
                     controller: controller.passwordController,
-                    hint: 'Enter your password',
+                    hint: tr('auth_password_hint'),
                     obscure: !controller.isPasswordVisible.value,
                     validator: (value) {
                       if (value == null || value.isEmpty)
-                        return "Password is required";
+                        return tr("auth_password_required");
                       if (value.length < 6)
-                        return "Password must be at least 6 characters";
+                        return tr("auth_password_min_length");
                       return null;
                     },
                     suffixIcon: IconButton(
@@ -120,16 +121,16 @@ class SignInSignUpPage extends StatelessWidget {
                   /// Confirm Password (Signup Only)
                   if (!controller.isLogin.value) ...[
                     SizedBox(height: sh * 0.02),
-                    _Label(text: 'Confirm password *'),
+                    _Label(text: tr('auth_confirm_password_label')),
                     _TextField(
                       controller: controller.confirmPasswordController,
-                      hint: 'Repeat the password',
+                      hint: tr('auth_confirm_password_hint'),
                       obscure: !controller.isConfirmPasswordVisible.value,
                       validator: (value) {
                         if (value == null || value.isEmpty)
-                          return 'Please confirm your password';
+                          return tr('auth_confirm_password_required');
                         if (value != controller.passwordController.text)
-                          return "Passwords do not match";
+                          return tr("auth_passwords_not_match");
                         return null;
                       },
                       suffixIcon: IconButton(
@@ -150,7 +151,7 @@ class SignInSignUpPage extends StatelessWidget {
                       child: TextButton(
                         onPressed: () => Get.to(() => ForgotPasswordPage()),
                         child: Text(
-                          'Forgot password?',
+                          tr('auth_forgot_password'),
                           style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(
                                 color: Theme.of(context).colorScheme.primary,
@@ -168,7 +169,7 @@ class SignInSignUpPage extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: controller.submit,
                       child: Text(
-                        controller.isLogin.value ? 'Log in' : 'Sign Up',
+                        controller.isLogin.value ? tr('auth_login_button') : tr('auth_signup'),
                       ),
                     ),
                   ),
@@ -179,8 +180,8 @@ class SignInSignUpPage extends StatelessWidget {
                   Center(
                     child: Text(
                       controller.isLogin.value
-                          ? 'Other Login options'
-                          : 'Or Register with',
+                          ? tr('auth_other_options')
+                          : tr('auth_register_with'),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(context).colorScheme.error,
                       ),
@@ -244,12 +245,12 @@ class _AuthToggle extends GetView<SignInSignUpController> {
           // Add Obx here so the button colors update
           children: [
             _ToggleButton(
-              text: 'Sign in',
+              text: tr('auth_signin_toggle'),
               selected: controller.isLogin.value,
               onTap: controller.showLogin,
             ),
             _ToggleButton(
-              text: 'Register',
+              text: tr('auth_register_toggle'),
               selected: !controller.isLogin.value,
               onTap: controller.showRegister,
             ),
@@ -380,7 +381,7 @@ class _PhoneField extends GetView<SignInSignUpController> {
           controller.phoneError.value = null;
         },
         decoration: InputDecoration(
-          hintText: 'Your Phone Number',
+          hintText: tr('auth_phone_hint'),
           counterText: '',
           errorText: controller.phoneError.value,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),

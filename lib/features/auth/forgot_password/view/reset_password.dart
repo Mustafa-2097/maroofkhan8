@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:get/get.dart' hide Trans;
 import 'package:maroofkhan8/features/auth/forgot_password/controller/reset_password_controller.dart';
 
 import '../../../../core/constant/app_colors.dart';
@@ -24,7 +25,7 @@ class ResetPassword extends StatelessWidget {
                 SizedBox(height: sh * 0.05),
                 Center(
                   child: Text(
-                    'Create New Password',
+                    tr('reset_title'),
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       color: Theme.of(context).colorScheme.primary,
                     ),
@@ -34,7 +35,7 @@ class ResetPassword extends StatelessWidget {
 
                 /// Subtitle
                 Text(
-                  'Your new password must be different from previous used passwords.',
+                  tr('reset_subtitle'),
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     color: Theme.of(context).disabledColor,
                   ),
@@ -43,17 +44,17 @@ class ResetPassword extends StatelessWidget {
                 SizedBox(height: sh * 0.04),
 
                 /// Create a password
-                _Label(text: 'Create a password *'),
+                _Label(text: tr('reset_new_password_label')),
                 Obx(
                   () => _TextField(
                     controller: controller.passwordController,
-                    hint: 'must be 6 characters',
+                    hint: tr('reset_new_password_hint'),
                     obscure: !controller.isPasswordVisible.value,
                     validator: (value) {
                       if (value == null || value.isEmpty)
-                        return 'Password is required';
+                        return tr('reset_password_required');
                       if (value.length < 6)
-                        return 'Password must be at least 6 characters';
+                        return tr('reset_password_min_length');
                       return null;
                     },
                     suffixIcon: IconButton(
@@ -71,17 +72,17 @@ class ResetPassword extends StatelessWidget {
                 SizedBox(height: sh * 0.02),
 
                 /// Confirm password
-                _Label(text: 'Confirm password *'),
+                _Label(text: tr('reset_confirm_label')),
                 Obx(
                   () => _TextField(
                     controller: controller.confirmPasswordController,
-                    hint: 'repeat password',
+                    hint: tr('reset_confirm_hint'),
                     obscure: !controller.isConfirmPasswordVisible.value,
                     validator: (value) {
                       if (value == null || value.isEmpty)
-                        return 'Please confirm your password';
+                        return tr('reset_confirm_required');
                       if (value != controller.passwordController.text)
-                        return 'Passwords do not match';
+                        return tr('reset_passwords_not_match');
                       return null;
                     },
                     suffixIcon: IconButton(
@@ -105,7 +106,7 @@ class ResetPassword extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () =>
                         controller.resetPassword(), // Call the method
-                    child: const Text('Reset Password'),
+                    child: Text(tr('reset_button')),
                   ),
                 ),
               ],

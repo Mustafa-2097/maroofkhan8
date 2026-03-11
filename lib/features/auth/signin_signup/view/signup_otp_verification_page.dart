@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:get/get.dart' hide Trans;
 import 'package:pin_code_fields/pin_code_fields.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../controller/signup_otp_controller.dart';
@@ -31,7 +32,7 @@ class SignupOtpVerificationPage extends StatelessWidget {
               /// Title
               Center(
                 child: Text(
-                  'OTP Verification',
+                  tr('otp_title'),
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     color: Theme.of(context).colorScheme.primary,
                   ),
@@ -42,7 +43,7 @@ class SignupOtpVerificationPage extends StatelessWidget {
 
               /// Subtitle
               Text(
-                'Enter the verification code we just sent on your email address.',
+                tr('otp_subtitle'),
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: Theme.of(context).disabledColor,
                 ),
@@ -62,7 +63,7 @@ class SignupOtpVerificationPage extends StatelessWidget {
                 height: sh * 0.06,
                 child: ElevatedButton(
                   onPressed: () => controller.verifyOtp(),
-                  child: const Text('Verify'),
+                  child: Text(tr('otp_verify')),
                 ),
               ),
 
@@ -77,8 +78,8 @@ class SignupOtpVerificationPage extends StatelessWidget {
                         : null,
                     child: Text(
                       controller.canResend.value
-                          ? 'Resend OTP'
-                          : 'Resend OTP in ${controller.secondsRemaining.value}s',
+                          ? tr('otp_resend_otp')
+                          : tr('otp_resend_otp_in').replaceAll('{}', '${controller.secondsRemaining.value}'),
                       style: TextStyle(
                         color: controller.canResend.value
                             ? Theme.of(context).colorScheme.primary
