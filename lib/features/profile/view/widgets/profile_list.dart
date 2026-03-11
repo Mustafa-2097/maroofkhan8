@@ -15,6 +15,7 @@ import 'package:maroofkhan8/features/profile/view/pages/support_center.dart';
 import 'package:maroofkhan8/features/profile/view/pages/terms_conditions.dart';
 import 'package:maroofkhan8/features/profile/view/pages/donation_screen.dart';
 import 'package:maroofkhan8/splash/view/splash_screen.dart';
+import 'package:maroofkhan8/features/profile/controller/profile_controller.dart';
 
 class ProfileList extends StatefulWidget {
   const ProfileList({super.key});
@@ -55,6 +56,12 @@ class _ProfileListState extends State<ProfileList> {
     Locale locale = Locale(languageCode);
     await context.setLocale(locale);
     Get.updateLocale(locale);
+    // Send the selected language to the backend
+    if (Get.isRegistered<ProfileController>()) {
+      Get.find<ProfileController>().updateLanguage(languageCode);
+    } else {
+      Get.put(ProfileController()).updateLanguage(languageCode);
+    }
   }
 
   @override

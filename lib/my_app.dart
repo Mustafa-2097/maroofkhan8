@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,7 +36,10 @@ class MyApp extends StatelessWidget {
             builder: (context, child) {
               final easyLoading = EasyLoading.init();
               child = easyLoading(context, child);
-              return child;
+              return Directionality(
+                textDirection: ui.TextDirection.ltr,
+                child: child,
+              );
             },
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,

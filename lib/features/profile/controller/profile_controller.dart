@@ -79,4 +79,33 @@ class ProfileController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  Future<void> updateLanguage(String languageCode) async {
+    isLoading.value = true;
+    try {
+      String language;
+      switch (languageCode) {
+        case 'ar':
+          language = 'ARABIC';
+          break;
+        case 'ur':
+          language = 'URDU';
+          break;
+        case 'hi':
+          language = 'HINDI';
+          break;
+        default:
+          language = 'ENGLISH';
+      }
+
+      await ApiService.patch(
+        ApiEndpoints.profile,
+        body: {'language': language},
+      );
+    } catch (e) {
+      // Error handled by ApiService
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }
