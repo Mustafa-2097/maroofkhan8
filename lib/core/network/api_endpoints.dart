@@ -126,4 +126,6 @@ class ApiEndpoints {
   static const String createDonationSession =
       '$baseUrl/payments/create-donation-session';
   static const String paymentHistory = '$baseUrl/payments';
+  static String prayer(double lat, double long) =>
+      '$baseUrl/prayer?lat=$lat&long=$long';
 }
