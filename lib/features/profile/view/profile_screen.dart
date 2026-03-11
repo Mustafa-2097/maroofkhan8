@@ -89,12 +89,37 @@ class ProfileScreen extends StatelessWidget {
                     Obx(() {
                       // Hide upgrade button and center text if user has any active subscription
                       if (controller.isSubscribed.value) {
-                        return Center(
-                          child: Text(
-                            tr("your_plan_status"), // "Your Plan Status",
-                            style: Theme.of(context).textTheme.titleLarge
-                                ?.copyWith(fontWeight: FontWeight.bold),
-                          ),
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              tr("your_plan_status"), // "Your Plan Status",
+                              style: Theme.of(context).textTheme.titleLarge
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                (controller.currentPlanType.value ??
+                                        controller.currentPlan.value ??
+                                        "")
+                                    .toUpperCase(),
+                                style: TextStyle(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
                         );
                       }
 

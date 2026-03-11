@@ -645,6 +645,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                       ),
                     ),
                   ),
+
                   Text(
                     formatDuration(total),
                     style: TextStyle(
