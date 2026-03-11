@@ -197,7 +197,14 @@ class ProfileScreen extends StatelessWidget {
                         const Spacer(),
                         Obx(() {
                           if (!controller.isSubscribed.value) {
-                            return const SizedBox.shrink();
+                            return Text(
+                              tr("Inactive"),
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            );
                           }
                           return Text(
                             tr("Active"),
