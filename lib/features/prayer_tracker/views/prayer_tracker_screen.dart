@@ -656,12 +656,12 @@ class _PrayerTrackerScreennState extends State<PrayerTrackerScreenn> {
           SizedBox(height: sh * 0.018),
 
           // ── Duas & Reflection Card (unchanged) ──────────────────────
-          const DuasReflectionCard(),
-          SizedBox(height: sh * 0.018),
+          // const DuasReflectionCard(),
+          // SizedBox(height: sh * 0.018),
 
           // ── Special in Ramadan Card ──────────────────────────────
           //const SpecialRamadanCard(),
-          SizedBox(height: sh * 0.018),
+          //SizedBox(height: sh * 0.018),
 
           // ── Ramadan Countdown Card (dynamic sehri & iftar) ─────────
           RamadanCountdownCard(data: data),
@@ -705,7 +705,8 @@ class SunriseSunsetCard extends StatelessWidget {
               isDark,
               sw,
               Icons.wb_sunny_outlined,
-              tr("sunrise"),
+              'sunrise',
+              // tr("sunrise"),
               data.sunrise,
               const Color(0xFFE67E22), // Warm orange
             ),
@@ -724,7 +725,8 @@ class SunriseSunsetCard extends StatelessWidget {
               isDark,
               sw,
               Icons.wb_twilight_outlined,
-              tr("sunset"),
+              'sunset',
+              // tr("sunset"),
               data.sunset,
               const Color(0xFFD35400), // Deeper orange
             ),
@@ -786,61 +788,61 @@ class SunriseSunsetCard extends StatelessWidget {
   }
 }
 
-class DuasReflectionCard extends StatelessWidget {
-  const DuasReflectionCard({super.key});
+// class DuasReflectionCard extends StatelessWidget {
+//   const DuasReflectionCard({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final sh = MediaQuery.of(context).size.height;
-    final sw = MediaQuery.of(context).size.width;
+//   @override
+//   Widget build(BuildContext context) {
+//     final isDark = Theme.of(context).brightness == Brightness.dark;
+//     final sh = MediaQuery.of(context).size.height;
+//     final sw = MediaQuery.of(context).size.width;
 
-    return Container(
-      padding: EdgeInsets.all(sw * 0.04),
-      decoration: _cardDecoration(sw, isDark),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            tr("duas_reflection"),
-            style: GoogleFonts.playfairDisplay(
-              fontSize: sw * 0.032,
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : Colors.black,
-            ),
-          ),
-          Divider(
-            height: sh * 0.03,
-            color: isDark ? Colors.grey.shade800 : const Color(0xFFEEEEEE),
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: _brownButton(
-                  tr("dua_before_salah"),
-                  sw,
-                  showArrow: true,
-                  fullWidth: true,
-                  onTap: () => Get.to(() => const DuaListScreen()),
-                ),
-              ),
-              SizedBox(width: sw * 0.04),
-              Expanded(
-                child: _brownButton(
-                  tr("dua_after_salah"),
-                  sw,
-                  showArrow: true,
-                  fullWidth: true,
-                  onTap: () => Get.to(() => const DuaListScreen()),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
+//     return Container(
+//       padding: EdgeInsets.all(sw * 0.04),
+//       decoration: _cardDecoration(sw, isDark),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Text(
+//             tr("duas_reflection"),
+//             style: GoogleFonts.playfairDisplay(
+//               fontSize: sw * 0.032,
+//               fontWeight: FontWeight.bold,
+//               color: isDark ? Colors.white : Colors.black,
+//             ),
+//           ),
+//           Divider(
+//             height: sh * 0.03,
+//             color: isDark ? Colors.grey.shade800 : const Color(0xFFEEEEEE),
+//           ),
+//           Row(
+//             children: [
+//               Expanded(
+//                 child: _brownButton(
+//                   tr("dua_before_salah"),
+//                   sw,
+//                   showArrow: true,
+//                   fullWidth: true,
+//                   onTap: () => Get.to(() => const DuaListScreen()),
+//                 ),
+//               ),
+//               SizedBox(width: sw * 0.04),
+//               Expanded(
+//                 child: _brownButton(
+//                   tr("dua_after_salah"),
+//                   sw,
+//                   showArrow: true,
+//                   fullWidth: true,
+//                   onTap: () => Get.to(() => const DuaListScreen()),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 // class SpecialRamadanCard extends StatelessWidget {
 //   const SpecialRamadanCard({super.key});
