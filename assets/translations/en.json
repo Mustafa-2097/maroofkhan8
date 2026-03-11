@@ -1,4 +1,11 @@
 {
+  "choose_language": "Choose the language",
+  "language_selection_subtitle": "Select your preferred language below. This helps us serve you better.",
+  "select_language": "Select Language",
+  "english_lang": "English",
+  "arabic_lang": "Arabic",
+  "urdu_lang": "Urdu",
+  "hindi_lang": "Hindi",
   "quick_start": "Quick Start",
   "see_all": "See all",
   "feature_quran": "Quran",

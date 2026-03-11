@@ -9,19 +9,21 @@ class LanguageController extends GetxController {
 
   final languages = ['English', 'Arabic', 'Urdu', 'Hindi'];
 
-  void selectLanguage(String language, BuildContext context) {
+  void selectLanguage(String language) {
     selectedLanguage.value = language;
+  }
+
+  Future<void> onGetStarted(BuildContext context) async {
+    String language = selectedLanguage.value;
     Locale newLocale = const Locale('en');
     if (language == 'Arabic') newLocale = const Locale('ar');
     if (language == 'Urdu') newLocale = const Locale('ur');
     if (language == 'Hindi') newLocale = const Locale('hi');
 
-    context.setLocale(newLocale);
+    // Update locale properly by awaiting setLocale
+    await context.setLocale(newLocale);
     Get.updateLocale(newLocale);
-  }
 
-  void onGetStarted() {
-    // Save language / navigate next
     Get.offAll(() => SignInSignUpPage());
   }
 }

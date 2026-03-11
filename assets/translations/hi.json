@@ -1,4 +1,11 @@
 {
+  "choose_language": "भाषा चुनें",
+  "language_selection_subtitle": "नीचे अपनी पसंदीदा भाषा चुनें। इससे हमें आपकी बेहतर सेवा करने में मदद मिलती है।",
+  "select_language": "भाषा का चयन करें",
+  "english_lang": "अंग्रेज़ी",
+  "arabic_lang": "अरबी",
+  "urdu_lang": "उर्दू",
+  "hindi_lang": "हिंदी",
   "quick_start": "त्वरित प्रारंभ",
   "see_all": "सभी देखें",
   "feature_quran": "कुरान",

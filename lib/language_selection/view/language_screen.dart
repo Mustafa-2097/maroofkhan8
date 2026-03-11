@@ -25,7 +25,7 @@ class LanguageScreen extends GetView<LanguageController> {
                   'Choose the language',
                   style: theme.textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFFEE7600).withValues(alpha: 0.8),
+                    color: const Color(0xFFEE7600).withOpacity(0.8),
                   ),
                 ),
               ),
@@ -57,8 +57,7 @@ class LanguageScreen extends GetView<LanguageController> {
                       final isSelected = selectedLanguage == language;
                       return InkWell(
                         borderRadius: BorderRadius.circular(8),
-                        onTap: () =>
-                            controller.selectLanguage(language, context),
+                        onTap: () => controller.selectLanguage(language),
                         child: Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: 16.w,
@@ -105,7 +104,7 @@ class LanguageScreen extends GetView<LanguageController> {
         child: SizedBox(
           height: 48,
           child: ElevatedButton(
-            onPressed: controller.onGetStarted,
+            onPressed: () => controller.onGetStarted(context),
             child: const Text('Get Started'),
           ),
         ),
