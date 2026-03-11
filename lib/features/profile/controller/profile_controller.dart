@@ -12,6 +12,8 @@ class ProfileController extends GetxController {
   var isSubscribed = false.obs;
   var currentPlan = RxnString();
   var currentPlanType = RxnString();
+  var subscriptionEndDate = Rxn<DateTime>();
+  var subscriptionStartDate = Rxn<DateTime>();
 
   @override
   void onInit() {
@@ -55,6 +57,17 @@ class ProfileController extends GetxController {
           } else if (data['subscription']['plan'] != null &&
               data['subscription']['plan']['type'] != null) {
             currentPlanType.value = data['subscription']['plan']['type'];
+          }
+
+          if (data['subscription']['endDate'] != null) {
+            subscriptionEndDate.value = DateTime.tryParse(
+              data['subscription']['endDate'],
+            );
+          }
+          if (data['subscription']['startDate'] != null) {
+            subscriptionStartDate.value = DateTime.tryParse(
+              data['subscription']['startDate'],
+            );
           }
         }
       }

@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'package:maroofkhan8/core/utils/localization_utils.dart';
 import 'package:maroofkhan8/features/profile/view/pages/subscription/view/subscription_screen.dart';
 import 'package:maroofkhan8/features/profile/view/widgets/profile_list.dart';
 import '../controller/profile_controller.dart';
@@ -201,7 +202,12 @@ class ProfileScreen extends StatelessWidget {
                               tr("Inactive"),
                               style: Theme.of(context).textTheme.titleMedium
                                   ?.copyWith(
-                                    color: Colors.red,
+                                    color: const Color.fromARGB(
+                                      255,
+                                      153,
+                                      21,
+                                      11,
+                                    ),
                                     fontWeight: FontWeight.bold,
                                   ),
                             );
@@ -217,6 +223,73 @@ class ProfileScreen extends StatelessWidget {
                         }),
                       ],
                     ),
+                    // Subscription end date row (only for subscribed users)
+                    Obx(() {
+                      if (!controller.isSubscribed.value ||
+                          controller.subscriptionEndDate.value == null) {
+                        return const SizedBox.shrink();
+                      }
+                      final endDate = controller.subscriptionEndDate.value!;
+                      // Localized date format: day/month/year
+                      final formattedDate =
+                          "${localizeDigits(endDate.day.toString().padLeft(2, '0'), context)}"
+                          "/${localizeDigits(endDate.month.toString().padLeft(2, '0'), context)}"
+                          "/${localizeDigits(endDate.year.toString(), context)}";
+
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 12),
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? Colors.white.withValues(alpha: 0.06)
+                                : Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: isDark
+                                  ? Colors.white12
+                                  : Colors.grey.shade300,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.calendar_today_outlined,
+                                size: 16,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Expires on',
+                                // tr("subscription_expires_on"),
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: isDark
+                                          ? Colors.white60
+                                          : Colors.black54,
+                                    ),
+                              ),
+                              const Spacer(),
+                              Text(
+                                formattedDate,
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: isDark
+                                          ? Colors.white
+                                          : Colors.black87,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
                   ],
                 ),
               ),
