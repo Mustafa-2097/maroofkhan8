@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:get/get.dart' hide Trans;
 import 'package:pin_code_fields/pin_code_fields.dart';
 import '../../../../core/constant/app_colors.dart';
 import '../controller/otp_controller.dart';
@@ -25,7 +26,7 @@ class OtpVerificationPage extends StatelessWidget {
               /// Title
               Center(
                 child: Text(
-                  'OTP Verification',
+                  tr('otp_title'),
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     color: Theme.of(context).colorScheme.primary,
                   ),
@@ -36,7 +37,7 @@ class OtpVerificationPage extends StatelessWidget {
 
               /// Subtitle
               Text(
-                'Enter the verification code we just sent on your email address.',
+                tr('otp_subtitle'),
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: Theme.of(context).disabledColor,
                 ),
@@ -57,7 +58,7 @@ class OtpVerificationPage extends StatelessWidget {
                 child: ElevatedButton(
                   // CHANGE THIS: Call the controller method
                   onPressed: () => controller.verifyOtp(),
-                  child: const Text('Verify'),
+                  child: Text(tr('otp_verify')),
                 ),
               ),
 
@@ -69,7 +70,7 @@ class OtpVerificationPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Didn't receive code? ",
+                      tr('otp_no_code'),
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     Obx(
@@ -79,8 +80,8 @@ class OtpVerificationPage extends StatelessWidget {
                             : null,
                         child: Text(
                           controller.canResend.value
-                              ? "Resend"
-                              : "Resend in ${controller.secondsRemaining.value}s",
+                              ? tr('otp_resend')
+                              : tr('otp_resend_in').replaceAll('{}', '${controller.secondsRemaining.value}'),
                           style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(
                                 color: controller.canResend.value

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:get/get.dart' hide Trans;
 import '../../signin_signup/view/signin_signup_page.dart';
 
 class PasswordChange extends StatelessWidget {
@@ -24,7 +25,7 @@ class PasswordChange extends StatelessWidget {
               ),
               SizedBox(height: sh * 0.03),
               Text(
-                'Password Changed',
+                tr('pc_title'),
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                   color: Theme.of(context).colorScheme.primary,
                 ),
@@ -33,7 +34,7 @@ class PasswordChange extends StatelessWidget {
 
               /// Subtitle
               Text(
-                'Your password has been changed successfully.',
+                tr('pc_subtitle'),
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: Theme.of(context).disabledColor,
                 ),
@@ -47,7 +48,7 @@ class PasswordChange extends StatelessWidget {
                 height: sh * 0.06,
                 child: ElevatedButton(
                   onPressed: () => Get.offAll((() => SignInSignUpPage())),
-                  child: const Text('Back to Login'),
+                  child: Text(tr('pc_back_to_login')),
                 ),
               ),
             ],
