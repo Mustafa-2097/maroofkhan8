@@ -513,10 +513,10 @@ class _PrayerTrackerScreennState extends State<PrayerTrackerScreenn> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                // tr(
-                //   "current_prayer",
-                // ), // Need to add this to translations if missing
-                "Current Prayer",
+                tr(
+                  "current_prayer",
+                ), // Need to add this to translations if missing
+                // "Current Prayer",
                 style: TextStyle(
                   fontSize: sw * 0.03,
                   color: kPrimaryBrown,
