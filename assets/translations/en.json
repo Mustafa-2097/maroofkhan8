@@ -791,5 +791,10 @@
   "pc_subtitle": "Your password has been changed successfully.",
   "pc_back_to_login": "Back to Login",
   "otp_resend_otp": "Resend OTP",
-  "otp_resend_otp_in": "Resend OTP in {}s"
+  "otp_resend_otp_in": "Resend OTP in {}s",
+  "choose_gender": "Choose Gender",
+  "no_changes": "No Changes",
+  "data_already_exists": "Data already exists",
+  "user_data_updated": "User data updated",
+  "failed_to_update_profile": "Failed to update profile"
 }

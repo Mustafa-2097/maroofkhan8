@@ -14,6 +14,7 @@ class ProfileController extends GetxController {
   var currentPlanType = RxnString();
   var subscriptionEndDate = Rxn<DateTime>();
   var subscriptionStartDate = Rxn<DateTime>();
+  var gender = "".obs;
 
   @override
   void onInit() {
@@ -39,6 +40,7 @@ class ProfileController extends GetxController {
             name.value = "User";
           }
           avatar.value = profile['avatar'] ?? "";
+          gender.value = profile['gender'] ?? "";
         }
 
         isSubscribed.value =
@@ -102,6 +104,21 @@ class ProfileController extends GetxController {
         ApiEndpoints.profile,
         body: {'language': language},
       );
+    } catch (e) {
+      // Error handled by ApiService
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> updateGender(String genderValue) async {
+    isLoading.value = true;
+    try {
+      await ApiService.patch(
+        ApiEndpoints.profile,
+        body: {'gender': genderValue.toUpperCase()},
+      );
+      gender.value = genderValue.toUpperCase();
     } catch (e) {
       // Error handled by ApiService
     } finally {
