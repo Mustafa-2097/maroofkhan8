@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../../../../core/network/api_Service.dart';
 import '../../../../core/network/api_endpoints.dart';
 import '../../../../core/offline_storage/shared_pref.dart';
@@ -80,6 +81,73 @@ class SignInSignUpController extends GetxController {
       }
     }
   }
+
+  // ─── Google Sign-In ───────────────────────────────────────────────────────
+  // serverClientId = your Web Application OAuth 2.0 Client ID.
+  // This is REQUIRED on Android to generate the idToken the backend needs.
+  static const _webClientId = '47761947894-hondhs24je2tkjsi3rhus924nrp2c7h1';
+
+  Future<void> signInWithGoogle() async {
+    try {
+      EasyLoading.show(status: 'Connecting Google...');
+
+      // 1. Open Google account picker
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        serverClientId: _webClientId,
+        scopes: ['email', 'profile'],
+      );
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+
+      // User cancelled the picker
+      if (googleUser == null) {
+        EasyLoading.dismiss();
+        return;
+      }
+
+      // 2. Get auth tokens from the chosen account
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final String? idToken = googleAuth.idToken;
+      debugPrint("Google Auth Print: $googleAuth");
+
+      debugPrint("ID Token: ${googleAuth.idToken}");
+      debugPrint("Access Token: ${googleAuth.accessToken}");
+
+      if (idToken == null) {
+        EasyLoading.dismiss();
+        SnackbarUtils.showSnackbar(
+          'Google Sign-In Failed',
+          'Could not retrieve ID Token. Check your OAuth setup.',
+        );
+        return;
+      }
+
+      // 3. Send { idToken } to the backend  →  POST /auth/google
+      final response = await ApiService.post(
+        ApiEndpoints.googleAuth,
+        body: {'idToken': idToken},
+      );
+
+      EasyLoading.dismiss();
+
+      // 4. Save accessToken & navigate home
+      if (response['data'] != null && response['data']['accessToken'] != null) {
+        await SharedPreferencesHelper.saveToken(
+          response['data']['accessToken'],
+        );
+      }
+
+      SnackbarUtils.showSnackbar('Login successful', 'Welcome!');
+      Get.offAll(() => const CustomBottomNavBar());
+    } catch (e) {
+      EasyLoading.dismiss();
+      debugPrint('Google Sign-In Error: $e');
+      SnackbarUtils.showSnackbar(
+        'Error',
+        'Google Sign-In failed. Please try again.',
+      );
+    }
+  }
+  // ─────────────────────────────────────────────────────────────────────────
 
   Future<void> _loginUser() async {
     EasyLoading.show(status: 'Logging in...');

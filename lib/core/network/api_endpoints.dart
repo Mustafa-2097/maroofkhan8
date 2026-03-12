@@ -11,6 +11,7 @@ class ApiEndpoints {
   static const String verifySignUpOtp = '$baseUrl/auth/verify-otp';
   static const String resendOtp = '$baseUrl/auth/resend-otp';
   static const String login = '$baseUrl/auth/login';
+  static const String googleAuth = '$baseUrl/auth/google';
   static const String logout = '$baseUrl/auth/logout';
   static const String changePassword = '$baseUrl/auth/change-password';
 

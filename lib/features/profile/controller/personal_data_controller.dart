@@ -182,11 +182,11 @@ class PersonalDataController extends GetxController {
           // Strip emoji if present (e.g., "🇧🇩 Bangladesh" -> "Bangladesh")
           String countryValue = selectedCountry.value;
           if (countryValue.contains(" ") && countryValue.length > 2) {
-             // Check if first part looks like an emoji (rough check)
-             final parts = countryValue.split(" ");
-             if (parts.length > 1 && parts[0].runes.length <= 4) { // Emojis are often 2-4 runes
-                countryValue = parts.sublist(1).join(" ");
-             }
+            // Check if first part looks like an emoji (rough check)
+            final parts = countryValue.split(" ");
+            if (parts.length > 1 && parts[0].runes.length <= 4) { // Emojis are often 2-4 runes
+              countryValue = parts.sublist(1).join(" ");
+            }
           }
           changedFields['country'] = countryValue;
         }
@@ -254,7 +254,7 @@ class PersonalDataController extends GetxController {
         print("Error updating profile: $e");
         // Error handled by ApiService for patch
         if (profileImage.value != null) {
-           SnackbarUtils.showSnackbar(tr("error"), e.toString(), isError: true);
+          SnackbarUtils.showSnackbar(tr("error"), e.toString(), isError: true);
         }
       } finally {
         isLoading.value = false;

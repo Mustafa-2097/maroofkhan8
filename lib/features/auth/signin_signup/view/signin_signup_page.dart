@@ -199,21 +199,24 @@ class SignInSignUpPage extends StatelessWidget {
                           final theme = Theme.of(context);
                           final isDark = theme.brightness == Brightness.dark;
 
-                          return Container(
-                            height: sw * 0.12,
-                            width: sw * 0.12,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 1,
-                                color: isDark
-                                    ? Colors.grey.shade400
-                                    : Colors.grey.shade300,
+                          return GestureDetector(
+                            onTap: controller.signInWithGoogle,
+                            child: Container(
+                              height: sw * 0.12,
+                              width: sw * 0.12,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 1,
+                                  color: isDark
+                                      ? Colors.grey.shade400
+                                      : Colors.grey.shade300,
+                                ),
+                                borderRadius: BorderRadius.circular(30),
                               ),
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Image.asset(
-                              'assets/images/google.png',
-                              height: sw * 0.1,
+                              child: Image.asset(
+                                'assets/images/google.png',
+                                height: sw * 0.1,
+                              ),
                             ),
                           );
                         },

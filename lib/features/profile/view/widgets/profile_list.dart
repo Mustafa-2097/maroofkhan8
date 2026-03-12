@@ -17,6 +17,9 @@ import 'package:maroofkhan8/features/profile/view/pages/donation_screen.dart';
 import 'package:maroofkhan8/splash/view/splash_screen.dart';
 import 'package:maroofkhan8/features/profile/controller/profile_controller.dart';
 
+import 'package:google_sign_in/google_sign_in.dart';
+import '../../../../core/offline_storage/shared_pref.dart';
+
 class ProfileList extends StatefulWidget {
   const ProfileList({super.key});
 
@@ -320,11 +323,14 @@ class _ProfileListState extends State<ProfileList> {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         elevation: 0,
                       ),
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (_) => SignInSignUpPage()),
-                        );
+                      onPressed: () async {
+                        try {
+                          await GoogleSignIn().signOut();
+                        } catch (e) {
+                          debugPrint('Error signing out from Google: $e');
+                        }
+                        await SharedPreferencesHelper.clearToken();
+                        Get.offAll(() => SignInSignUpPage());
                       },
                       child: Text(
                         tr("logout"),
