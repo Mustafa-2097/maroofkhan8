@@ -48,40 +48,44 @@ class DashboardScreen extends StatelessWidget {
                 ),
         ),
         child: SafeArea(
-          child: SingleChildScrollView(
-            // padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-            padding: EdgeInsets.symmetric(
-              horizontal: sw * 0.04,
-              vertical: sh * 0.012,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const HeaderSection(),
-                // SizedBox(height: 20.h),
-                SizedBox(height: sh * 0.025),
-                const HeroSection(),
-                // SizedBox(height: 30.h),
-                SizedBox(height: sh * 0.035),
-
-                // 1. Your Journey Section
-                SectionHeader(title: tr("your_journey")),
-                // SizedBox(height: 15.h),
-                SizedBox(height: sh * 0.018),
-                const YourJourneyRow(),
-
-                // SizedBox(height: 30.h),
-                SizedBox(height: sh * 0.035),
-
-                // 2. Quick Start Section
-                SectionHeader(title: tr("quick_start")),
-                // SizedBox(height: 15.h),
-                SizedBox(height: sh * 0.018),
-                const QuickStartGrid(),
-
-                // SizedBox(height: 40.h),
-                SizedBox(height: sh * 0.05),
-              ],
+          child: RefreshIndicator(
+            onRefresh: () => Get.find<DashboardController>().refreshAllData(),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              // padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+              padding: EdgeInsets.symmetric(
+                horizontal: sw * 0.04,
+                vertical: sh * 0.012,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const HeaderSection(),
+                  // SizedBox(height: 20.h),
+                  SizedBox(height: sh * 0.025),
+                  const HeroSection(),
+                  // SizedBox(height: 30.h),
+                  SizedBox(height: sh * 0.035),
+    
+                  // 1. Your Journey Section
+                  SectionHeader(title: tr("your_journey")),
+                  // SizedBox(height: 15.h),
+                  SizedBox(height: sh * 0.018),
+                  const YourJourneyRow(),
+    
+                  // SizedBox(height: 30.h),
+                  SizedBox(height: sh * 0.035),
+    
+                  // 2. Quick Start Section
+                  SectionHeader(title: tr("quick_start")),
+                  // SizedBox(height: 15.h),
+                  SizedBox(height: sh * 0.018),
+                  const QuickStartGrid(),
+    
+                  // SizedBox(height: 40.h),
+                  SizedBox(height: sh * 0.05),
+                ],
+              ),
             ),
           ),
         ),
@@ -121,30 +125,42 @@ class HeaderSection extends StatelessWidget {
               ),
             ),
             // Logo Circle
-            Row(
-              children: [
-                Container(
-                  // height: 35,
-                  height: sh * 0.045,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.grey.shade300, width: 2),
-                  ),
-                  child: Center(
-                    child: Image.asset(
-                      'assets/images/onboarding02.png',
-                      // height: 100,
-                      height: sh * 0.1,
+            Flexible(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: sw * 0.02),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      // height: 35,
+                      height: sh * 0.045,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.grey.shade300, width: 2),
+                      ),
+                      child: Center(
+                        child: Image.asset(
+                          'assets/images/onboarding02.png',
+                          // height: 100,
+                          height: sh * 0.1,
+                        ),
+                      ),
                     ),
-                  ),
+                    // SizedBox(width: 10),
+                    SizedBox(width: sw * 0.02),
+                    Flexible(
+                      child: Text(
+                        tr("digital_khanqah"),
+                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontSize: sw * 0.045,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
-                // SizedBox(width: 10),
-                SizedBox(width: sw * 0.025),
-                Text(
-                  tr("digital_khanqah"),
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-              ],
+              ),
             ),
             InkWell(
               onTap: () => Get.to(() => ProfileScreen()),
@@ -436,29 +452,35 @@ class _HeroSectionState extends State<HeroSection> {
             //   ),
             // ),
             Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    data['title'] ?? "",
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        data['title'] ?? "",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        data['description'] ?? "",
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.amber,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 20),
-                  Text(
-                    data['description'] ?? "",
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.amber,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
 
@@ -721,11 +743,11 @@ class QuickStartGrid extends StatelessWidget {
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 4,
           // childAspectRatio: 0.75, // Increased vertical space
-          childAspectRatio: (sw / 4) / (sh * 0.15),
+          childAspectRatio: (sw / 4) / (sh * 0.16),
           // mainAxisSpacing: 12.h,
           mainAxisSpacing: sh * 0.015,
           // crossAxisSpacing: 8.w,
-          crossAxisSpacing: sw * 0.02,
+          crossAxisSpacing: sw * 0.015,
         ),
         itemBuilder: (context, index) {
           final feature = features[index];
