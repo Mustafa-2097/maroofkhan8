@@ -181,7 +181,7 @@ class PersonalData extends StatelessWidget {
                                 : Colors.white,
                             child: ListView(
                               shrinkWrap: true,
-                              children: ["male", "female", "other"]
+                              children: ["male", "female"]
                                   .map(
                                     (g) => ListTile(
                                       title: Text(tr(g)),

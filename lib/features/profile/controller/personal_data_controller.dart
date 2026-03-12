@@ -48,14 +48,12 @@ class PersonalDataController extends GetxController {
     String lower = uiGender.toLowerCase();
     if (lower == "male") return "MALE";
     if (lower == "female") return "FEMALE";
-    if (lower == "other") return "OTHER";
     return "";
   }
 
   String _mapGenderToUI(String? apiGender) {
     if (apiGender == "MALE") return "male";
     if (apiGender == "FEMALE") return "female";
-    if (apiGender == "OTHER") return "other";
     return "choose_gender";
   }
 
