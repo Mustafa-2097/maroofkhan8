@@ -118,14 +118,14 @@ class PersonalData extends StatelessWidget {
                   const _Label(text: "phone_number"),
                   _TextField(
                     controller: controller.phoneController,
-                    hint: "12345678", // Keep as sample
+                    hint: "Enter your phone number", // Keep as sample
                   ),
 
                   const SizedBox(height: 16),
                   const _Label(text: "email"),
                   _TextField(
                     controller: controller.emailController,
-                    hint: "example@gmail.com",
+                    hint: "Enter your email address",
                   ),
 
                   const SizedBox(height: 16),
@@ -172,7 +172,7 @@ class PersonalData extends StatelessWidget {
                   const _Label(text: "gender"),
                   Obx(
                     () => _DropdownField(
-                      value: controller.selectedGender.value,
+                      value: tr(controller.selectedGender.value),
                       onTap: () {
                         Get.bottomSheet(
                           Container(

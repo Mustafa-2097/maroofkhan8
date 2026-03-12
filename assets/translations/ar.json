@@ -790,5 +790,10 @@
   "pc_subtitle": "تم تغيير كلمة المرور بنجاح.",
   "pc_back_to_login": "العودة إلى تسجيل الدخول",
   "otp_resend_otp": "إعادة إرسال OTP",
-  "otp_resend_otp_in": "إعادة إرسال OTP خلال {}ث"
+  "otp_resend_otp_in": "إعادة إرسال OTP خلال {}ث",
+  "choose_gender": "اختر الجنس",
+  "no_changes": "لا توجد تغييرات",
+  "data_already_exists": "البيانات موجودة بالفعل",
+  "user_data_updated": "تم تحديث بيانات المستخدم",
+  "failed_to_update_profile": "فشل في تحديث الملف الشخصي"
 }

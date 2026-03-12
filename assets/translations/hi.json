@@ -790,5 +790,10 @@
   "pc_subtitle": "आपका पासवर्ड सफलतापूर्वक बदल दिया गया है।",
   "pc_back_to_login": "लॉग इन पर वापस जाएं",
   "otp_resend_otp": "OTP पुनः भेजें",
-  "otp_resend_otp_in": "OTP {}सेकंड में पुनः भेजें"
+  "otp_resend_otp_in": "OTP {}सेकंड में पुनः भेजें",
+  "choose_gender": "लिंग चुनें",
+  "no_changes": "कोई परिवर्तन नहीं",
+  "data_already_exists": "डेटा पहले से मौजूद है",
+  "user_data_updated": "उपयोगकर्ता डेटा अपडेट किया गया",
+  "failed_to_update_profile": "प्रोफ़ाइल अपडेट करने में विफल"
 }

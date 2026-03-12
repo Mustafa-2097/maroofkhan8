@@ -790,5 +790,10 @@
   "pc_subtitle": "آپ کا پاس ورڈ کامیابی سے تبدیل کر دیا گیا ہے۔",
   "pc_back_to_login": "لاگ ان پر واپس جائیں",
   "otp_resend_otp": "OTP دوبارہ بھیجیں",
-  "otp_resend_otp_in": "OTP {}سیکنڈ میں دوبارہ بھیجیں"
+  "otp_resend_otp_in": "OTP {}سیکنڈ میں دوبارہ بھیجیں",
+  "choose_gender": "جنس منتخب کریں",
+  "no_changes": "کوئی تبدیلی نہیں",
+  "data_already_exists": "ڈیٹا پہلے سے موجود ہے",
+  "user_data_updated": "صارف کا ڈیٹا اپ ڈیٹ ہو گیا",
+  "failed_to_update_profile": "پروفائل اپ ڈیٹ کرنے میں ناکام"
 }
