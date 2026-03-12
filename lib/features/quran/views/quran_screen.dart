@@ -546,7 +546,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
             controller.fetchSurahTafsir(widget.surah.id);
           }
           if (index != 0) {
-            controller.pauseAudio();
+            controller.stopAudio();
           }
           setState(() => _activeDetailTab = index);
         },
@@ -1162,6 +1162,7 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
                     // Mic Button
                     GestureDetector(
                       onTap: () async {
+                        controller.stopAudio();
                         if (_aiIsListening) {
                           _speech.stop();
                           setState(() => _aiIsListening = false);
