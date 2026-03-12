@@ -796,5 +796,8 @@
   "no_changes": "No Changes",
   "data_already_exists": "Data already exists",
   "user_data_updated": "User data updated",
-  "failed_to_update_profile": "Failed to update profile"
+  "failed_to_update_profile": "Failed to update profile",
+  "downloaded_successfully": "downloaded successfully",
+  "surah_deleted_from_offline": "Surah deleted from offline storage",
+  "failed_to_delete_surah": "Failed to delete surah"
 }

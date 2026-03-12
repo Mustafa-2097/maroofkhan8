@@ -67,7 +67,7 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
     await Future.wait([
       pingUser(),
       fetchUserActivity(),
-      fetchBannerQuote(), // Also refresh banner quote
+      //fetchBannerQuote(), // Also refresh banner quote
     ]);
   }
 
