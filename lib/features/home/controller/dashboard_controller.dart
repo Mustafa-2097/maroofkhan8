@@ -46,7 +46,7 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     fetchBannerQuote();
     refreshAllData();
-    _startPeriodicRefresh();
+    // _startPeriodicRefresh(); // Commented out as requested - using RefreshIndicator instead
   }
 
   @override
@@ -63,18 +63,21 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
     }
   }
 
-  void refreshAllData() {
-    pingUser();
-    fetchUserActivity();
+  Future<void> refreshAllData() async {
+    await Future.wait([
+      pingUser(),
+      fetchUserActivity(),
+      //fetchBannerQuote(), // Also refresh banner quote
+    ]);
   }
 
-  void _startPeriodicRefresh() {
-    _refreshTimer?.cancel();
-    // Ping every 30 seconds and refresh activity
-    _refreshTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
-      refreshAllData();
-    });
-  }
+  // void _startPeriodicRefresh() {
+  //   _refreshTimer?.cancel();
+  //   // Ping every 30 seconds and refresh activity
+  //   _refreshTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
+  //     refreshAllData();
+  //   });
+  // }
 
   Future<void> fetchBannerQuote() async {
     isQuoteLoading.value = true;

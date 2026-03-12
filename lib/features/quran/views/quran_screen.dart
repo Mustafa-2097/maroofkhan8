@@ -371,14 +371,49 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      IconButton(
-                        onPressed: () => controller.downloadSurahAudio(surah),
-                        icon: const Icon(
-                          Icons.file_download_outlined,
-                          color: kPrimaryBrown,
-                          size: 24,
-                        ),
-                      ),
+                      Obx(() {
+                        final isDownloaded =
+                            controller.downloadedSurahs.containsKey(surah.id);
+                        final isLoading =
+                            controller.isDownloading[surah.id] ?? false;
+
+                        if (isLoading) {
+                          return const Padding(
+                            padding: EdgeInsets.all(12.0),
+                            child: SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: kPrimaryBrown,
+                              ),
+                            ),
+                          );
+                        }
+
+                        if (isDownloaded) {
+                          return IconButton(
+                            onPressed:
+                                () => controller.deleteDownloadedSurah(
+                                  surah.id,
+                                ),
+                            icon: const Icon(
+                              Icons.delete_outline,
+                              color: Colors.red,
+                              size: 24,
+                            ),
+                          );
+                        }
+
+                        return IconButton(
+                          onPressed: () => controller.downloadSurahAudio(surah),
+                          icon: const Icon(
+                            Icons.file_download_outlined,
+                            color: kPrimaryBrown,
+                            size: 24,
+                          ),
+                        );
+                      }),
                       if (!isLastRead)
                         Obx(() {
                           final isSaved = controller.surahBookmarkIds
@@ -441,7 +476,9 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchSurahVerses(widget.surah.id);
+      final langCode = context.locale.languageCode;
+      controller.fetchSurahVerses(widget.surah.id, langCode: langCode);
+      controller.fetchSurahTafsir(widget.surah.id, langCode: langCode);
       controller.fetchSurahAudio(widget.surah.id);
       controller.updateLastRead(widget.surah.id, 1);
       controller.postChapters(widget.surah.id);
@@ -542,13 +579,16 @@ class _QuranDetailsScreenState extends State<QuranDetailsScreen> {
     return Expanded(
       child: GestureDetector(
         onTap: () {
+          setState(() => _activeDetailTab = index);
           if (index == 1) {
-            controller.fetchSurahTafsir(widget.surah.id);
+            controller.fetchSurahTafsir(
+              widget.surah.id,
+              langCode: context.locale.languageCode,
+            );
           }
           if (index != 0) {
             controller.stopAudio();
           }
-          setState(() => _activeDetailTab = index);
         },
         child: Container(
           // height: 35,

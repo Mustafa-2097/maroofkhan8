@@ -17,6 +17,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class QuranController extends GetxController {
   var surahList = <SurahModel>[].obs;
@@ -41,6 +42,12 @@ class QuranController extends GetxController {
 
   // Search functionality
   var searchQuery = ''.obs;
+
+  // Offline Download tracking
+  // Key: Surah ID, Value: Local File Path
+  var downloadedSurahs = <int, String>{}.obs;
+  var isDownloading = <int, bool>{}.obs;
+  static const String _downloadedSurahsKey = 'downloaded_quran_surahs';
 
   List<SurahModel> get filteredSurahList {
     if (searchQuery.value.isEmpty) return surahList;
@@ -181,6 +188,7 @@ class QuranController extends GetxController {
     fetchJuzs();
     fetchLastRead();
     fetchSavedSurahs();
+    _loadDownloadedSurahs();
 
     audioPlayer.onPlayerStateChanged.listen((state) {
       print("DEBUG: Player State Changed: $state");
@@ -319,16 +327,27 @@ class QuranController extends GetxController {
     }
   }
 
-  Future<void> fetchSurahVerses(int id) async {
+  Future<void> fetchSurahVerses(int id, {String? langCode}) async {
     try {
       isVerseLoading.value = true;
       verseList.clear();
-      final token = await SharedPreferencesHelper.getToken();
 
+      // Try local storage first
+      final localData = await _readLocalJson("surah_${id}_verses_${langCode ?? 'en'}");
+      if (localData != null) {
+        final verseResponse = vm.VerseModel.fromJson(localData);
+        if (verseResponse.data != null) {
+          verseList.value = verseResponse.data!;
+          return;
+        }
+      }
+
+      final token = await SharedPreferencesHelper.getToken();
       final headers = {
         if (token != null) 'Authorization': '$token',
         if (token != null) 'token': '$token',
         if (token != null) 'access_token': '$token',
+        if (langCode != null) 'lang': langCode,
       };
 
       final url = Uri.parse(ApiEndpoints.surahDetails(id.toString()));
@@ -336,18 +355,18 @@ class QuranController extends GetxController {
           .get(url, headers: headers)
           .timeout(const Duration(seconds: 30));
 
-      print("DEBUG: Surah Verses Status Code: ${response.statusCode}");
-
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final decoded = jsonDecode(response.body);
         final verseResponse = vm.VerseModel.fromJson(decoded);
         if (verseResponse.data != null) {
           verseList.value = verseResponse.data!;
+          // Save for offline if audio is already downloaded or being downloaded
+          if (downloadedSurahs.containsKey(id)) {
+            await _writeLocalJson("surah_${id}_verses_${langCode ?? 'en'}", decoded);
+          }
         }
       } else {
-        print(
-          "DEBUG: Surah Details API rejected request with status ${response.statusCode}",
-        );
+        print("DEBUG: Surah Details API rejected request with status ${response.statusCode}");
         verseList.clear();
       }
     } catch (e) {
@@ -358,16 +377,27 @@ class QuranController extends GetxController {
     }
   }
 
-  Future<void> fetchSurahTafsir(int id) async {
+  Future<void> fetchSurahTafsir(int id, {String? langCode}) async {
     try {
       isTafsirLoading.value = true;
       tafsirList.clear();
-      final token = await SharedPreferencesHelper.getToken();
 
+      // Try local storage first
+      final localData = await _readLocalJson("surah_${id}_tafsir_${langCode ?? 'en'}");
+      if (localData != null) {
+        final tafsirResponse = tm.TafsirModel.fromJson(localData);
+        if (tafsirResponse.data != null) {
+          tafsirList.value = tafsirResponse.data!;
+          return;
+        }
+      }
+
+      final token = await SharedPreferencesHelper.getToken();
       final headers = {
         if (token != null) 'Authorization': '$token',
         if (token != null) 'token': '$token',
         if (token != null) 'access_token': '$token',
+        if (langCode != null) 'lang': langCode,
       };
 
       final url = Uri.parse(ApiEndpoints.surahTafsir(id.toString()));
@@ -375,18 +405,18 @@ class QuranController extends GetxController {
           .get(url, headers: headers)
           .timeout(const Duration(seconds: 30));
 
-      print("DEBUG: Surah Tafsir Status Code: ${response.statusCode}");
-
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final decoded = jsonDecode(response.body);
         final tafsirResponse = tm.TafsirModel.fromJson(decoded);
         if (tafsirResponse.data != null) {
           tafsirList.value = tafsirResponse.data!;
+          // Save for offline if audio is already downloaded or being downloaded
+          if (downloadedSurahs.containsKey(id)) {
+            await _writeLocalJson("surah_${id}_tafsir_${langCode ?? 'en'}", decoded);
+          }
         }
       } else {
-        print(
-          "DEBUG: Surah Tafsir API rejected request with status ${response.statusCode}",
-        );
+        print("DEBUG: Surah Tafsir API rejected request with status ${response.statusCode}");
         tafsirList.clear();
       }
     } catch (e) {
@@ -404,9 +434,31 @@ class QuranController extends GetxController {
       currentDuration.value = Duration.zero;
       totalDuration.value = Duration.zero;
       currentSurahId.value = id;
-      print("DEBUG: Fetching audio for Surah $id");
-      final token = await SharedPreferencesHelper.getToken();
 
+      // 1. Check local storage first
+      if (downloadedSurahs.containsKey(id)) {
+        final localPath = downloadedSurahs[id]!;
+        if (await File(localPath).exists()) {
+          print("DEBUG: Loading offline audio for Surah $id");
+          
+          // Try to load saved metadata (segments) for offline verse-by-verse
+          final meta = await _readLocalJson("surah_${id}_audio_meta");
+          if (meta != null) {
+            surahAudio.value = am.Data.fromJson(meta);
+          }
+
+          await audioPlayer.setSource(DeviceFileSource(localPath));
+          isAudioLoading.value = false;
+          return;
+        } else {
+          downloadedSurahs.remove(id);
+          _saveDownloadedSurahs();
+        }
+      }
+
+      // 2. If not offline, fetch from API
+      print("DEBUG: Fetching audio from API for Surah $id");
+      final token = await SharedPreferencesHelper.getToken();
       final headers = {
         if (token != null) 'Authorization': '$token',
         if (token != null) 'token': '$token',
@@ -425,7 +477,7 @@ class QuranController extends GetxController {
         final audioResponse = am.AudioResponse.fromJson(decoded);
         if (audioResponse.data != null) {
           surahAudio.value = audioResponse.data;
-          print("DEBUG: Fetched Audio URL: ${surahAudio.value?.url}");
+          
           // Set source immediately to load duration metadata
           if (surahAudio.value?.url != null) {
             await audioPlayer.setSource(UrlSource(surahAudio.value!.url!));
@@ -449,8 +501,13 @@ class QuranController extends GetxController {
 
   Future<void> playAudio() async {
     try {
-      if (surahAudio.value?.url == null) {
-        print("DEBUG: Cannot play audio, URL is null");
+      // If we have a local file, currentSurahId should tell us
+      final id = currentSurahId.value;
+      final localPath = id != null ? downloadedSurahs[id] : null;
+      final hasLocal = localPath != null && await File(localPath).exists();
+
+      if (!hasLocal && surahAudio.value?.url == null) {
+        print("DEBUG: Cannot play audio, no local file and URL is null");
         return;
       }
 
@@ -469,11 +526,25 @@ class QuranController extends GetxController {
       // New Logic: If the player is completed or stopped, play from source again
       if (playerState.value == PlayerState.completed ||
           playerState.value == PlayerState.stopped) {
-        await audioPlayer.play(UrlSource(surahAudio.value!.url!));
+        Source source;
+        if (currentSurahId.value != null &&
+            downloadedSurahs.containsKey(currentSurahId.value)) {
+          source = DeviceFileSource(downloadedSurahs[currentSurahId.value!]!);
+        } else {
+          source = UrlSource(surahAudio.value!.url!);
+        }
+        await audioPlayer.play(source);
       } else if (playerState.value == PlayerState.paused) {
         await audioPlayer.resume();
       } else if (playerState.value != PlayerState.playing) {
-        await audioPlayer.play(UrlSource(surahAudio.value!.url!));
+        Source source;
+        if (currentSurahId.value != null &&
+            downloadedSurahs.containsKey(currentSurahId.value)) {
+          source = DeviceFileSource(downloadedSurahs[currentSurahId.value!]!);
+        } else {
+          source = UrlSource(surahAudio.value!.url!);
+        }
+        await audioPlayer.play(source);
       }
     } catch (e) {
       print("DEBUG: Error playing audio: $e");
@@ -514,7 +585,10 @@ class QuranController extends GetxController {
   }
 
   Future<void> playVerse(String? verseKey) async {
-    if (verseKey == null || surahAudio.value == null) return;
+    if (verseKey == null) return;
+    
+    // Check if we have audio loaded (either offline or online)
+    if (surahAudio.value == null) return;
 
     final segment = surahAudio.value!.segments?.firstWhereOrNull(
       (s) => s.verseKey == verseKey,
@@ -753,43 +827,47 @@ class QuranController extends GetxController {
         }
       }
 
-      // 4. Get download directory
-      Directory? dir;
-      if (Platform.isAndroid) {
-        // Try Downloads folder for user convenience
-        dir = Directory('/storage/emulated/0/Download');
-        if (!await dir.exists()) {
-          dir = await getExternalStorageDirectory();
-        }
-      } else if (Platform.isIOS) {
-        dir = await getApplicationDocumentsDirectory();
-      } else {
-        // Desktop
-        dir = await getDownloadsDirectory();
+      // 4. Get internal app directory (always)
+      final dir = await getApplicationDocumentsDirectory();
+      final quranDir = Directory("${dir.path}/quran_audio");
+      if (!await quranDir.exists()) {
+        await quranDir.create(recursive: true);
       }
-
-      if (dir == null) throw Exception("Could not find download directory.");
-
-      // Ensure directory exists
-      if (!await dir.exists()) {
-        await dir.create(recursive: true);
-      }
-
-      // Sanitize filename
-      final fileName =
-          "surah_${surah.id}_${surah.name.replaceAll(RegExp(r'[^\w\s]'), '')}.mp3";
-      final filePath = "${dir.path}/$fileName";
-      final file = File(filePath);
 
       // 5. Download the file
+      isDownloading[surah.id] = true;
+
+      // Also Download Verses and Tafsir for offline use (in current language)
+      final langCode = Get.context?.locale.languageCode ?? 'en';
+      await _downloadSurahMetadata(surah.id, langCode);
+
+      // Sanitize filename
+      final fileName = "surah_${surah.id}.mp3";
+      final filePath = "${quranDir.path}/$fileName";
+      final file = File(filePath);
+
       final audioResponse = await http.get(Uri.parse(downloadUrl));
       if (audioResponse.statusCode == 200) {
         await file.writeAsBytes(audioResponse.bodyBytes);
 
+        // Update tracking
+        downloadedSurahs[surah.id] = filePath;
+        await _saveDownloadedSurahs();
+        
+        // Save audio metadata locally for offline segments
+        if (audioData.toJson() != null) {
+           await _writeLocalJson("surah_${surah.id}_audio_meta", audioData.toJson());
+        }
+
+        // Update player source if currently viewing this surah
+        if (currentSurahId.value == surah.id) {
+          await audioPlayer.setSource(DeviceFileSource(filePath));
+        }
+
         // 6. Show "Download complete" snackbar
         SnackbarUtils.showSnackbar(
           tr("download_complete"),
-          "${tr("surah_${surah.id}_name")} ${tr("downloaded_successfully_at")}\n$filePath",
+          "${tr("surah_${surah.id}_name")} ${tr("downloaded_successfully")}",
         );
       } else {
         throw Exception(
@@ -802,6 +880,135 @@ class QuranController extends GetxController {
         tr("error"),
         "${tr("download_failed")}: ${e.toString().replaceAll('Exception: ', '')}",
       );
+    } finally {
+      isDownloading[surah.id] = false;
+    }
+  }
+
+  Future<void> deleteDownloadedSurah(int surahId) async {
+    try {
+      if (downloadedSurahs.containsKey(surahId)) {
+        final path = downloadedSurahs[surahId]!;
+        final file = File(path);
+        if (await file.exists()) {
+          await file.delete();
+        }
+        // Delete metadata files too
+        final dir = await getApplicationDocumentsDirectory();
+        final metadataDir = Directory("${dir.path}/quran_metadata");
+        if (await metadataDir.exists()) {
+          final files = metadataDir.listSync();
+          for (var f in files) {
+            if (f.path.contains("surah_${surahId}_")) {
+              await f.delete();
+            }
+          }
+        }
+
+        downloadedSurahs.remove(surahId);
+        await _saveDownloadedSurahs();
+
+        // If currently playing this surah, stop it or update source to URL
+        if (currentSurahId.value == surahId) {
+          await stopAudio();
+          final langCode = Get.context?.locale.languageCode ?? 'en';
+          fetchSurahVerses(surahId, langCode: langCode);
+          fetchSurahAudio(surahId);
+        }
+
+        SnackbarUtils.showSnackbar(
+          tr("success"),
+          tr("surah_deleted_from_offline"),
+        );
+      }
+    } catch (e) {
+      print("Delete error: $e");
+      SnackbarUtils.showSnackbar(tr("error"), tr("failed_to_delete_surah"));
+    }
+  }
+
+  Future<void> _loadDownloadedSurahs() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String? encoded = prefs.getString(_downloadedSurahsKey);
+      if (encoded != null) {
+        final Map<String, dynamic> decoded = jsonDecode(encoded);
+        downloadedSurahs.value = decoded.map(
+          (key, value) => MapEntry(int.parse(key), value.toString()),
+        );
+      }
+    } catch (e) {
+      print("Error loading downloaded surahs: $e");
+    }
+  }
+
+  Future<void> _saveDownloadedSurahs() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String encoded = jsonEncode(
+        downloadedSurahs.map((key, value) => MapEntry(key.toString(), value)),
+      );
+      await prefs.setString(_downloadedSurahsKey, encoded);
+    } catch (e) {
+      print("Error saving downloaded surahs: $e");
+    }
+  }
+
+  Future<void> _writeLocalJson(String fileName, dynamic data) async {
+    try {
+      final dir = await getApplicationDocumentsDirectory();
+      final metadataDir = Directory("${dir.path}/quran_metadata");
+      if (!await metadataDir.exists()) {
+        await metadataDir.create(recursive: true);
+      }
+      final file = File("${metadataDir.path}/$fileName.json");
+      await file.writeAsString(jsonEncode(data));
+    } catch (e) {
+      print("Error writing local JSON: $e");
+    }
+  }
+
+  Future<dynamic> _readLocalJson(String fileName) async {
+    try {
+      final dir = await getApplicationDocumentsDirectory();
+      final file = File("${dir.path}/quran_metadata/$fileName.json");
+      if (await file.exists()) {
+        final content = await file.readAsString();
+        return jsonDecode(content);
+      }
+    } catch (e) {
+      print("Error reading local JSON: $e");
+    }
+    return null;
+  }
+
+  Future<void> _downloadSurahMetadata(int id, String langCode) async {
+    final token = await SharedPreferencesHelper.getToken();
+    final headers = {
+      if (token != null) 'Authorization': '$token',
+      if (langCode != null) 'lang': langCode,
+    };
+
+    // Download Verses
+    try {
+      final vUrl = Uri.parse(ApiEndpoints.surahDetails(id.toString()));
+      final vRes = await http.get(vUrl, headers: headers);
+      if (vRes.statusCode == 200) {
+        await _writeLocalJson("surah_${id}_verses_$langCode", jsonDecode(vRes.body));
+      }
+    } catch (e) {
+      print("Error downloading verses metadata: $e");
+    }
+
+    // Download Tafsir
+    try {
+      final tUrl = Uri.parse(ApiEndpoints.surahTafsir(id.toString()));
+      final tRes = await http.get(tUrl, headers: headers);
+      if (tRes.statusCode == 200) {
+        await _writeLocalJson("surah_${id}_tafsir_$langCode", jsonDecode(tRes.body));
+      }
+    } catch (e) {
+      print("Error downloading tafsir metadata: $e");
     }
   }
 
