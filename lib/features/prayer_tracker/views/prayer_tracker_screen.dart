@@ -56,49 +56,73 @@ class PrayerTimesData {
   });
 
   factory PrayerTimesData.fromJson(Map<String, dynamic> json) {
+    final today = DateTime.now();
+    DateTime norm(String? s) {
+      if (s == null) return today;
+      final dt = DateTime.parse(s).toLocal();
+      return DateTime(
+        today.year,
+        today.month,
+        today.day,
+        dt.hour,
+        dt.minute,
+        dt.second,
+      );
+    }
+
     return PrayerTimesData(
-      date: DateTime.parse(json['date']),
-      fajr: DateTime.parse(json['fajr']).toLocal(),
-      dhuhr: DateTime.parse(json['dhuhr']).toLocal(),
-      asr: DateTime.parse(json['asr']).toLocal(),
-      maghrib: DateTime.parse(json['maghrib']).toLocal(),
-      isha: DateTime.parse(json['isha']).toLocal(),
-      sunrise: DateTime.parse(json['sunrise']).toLocal(),
-      sunset: DateTime.parse(json['sunset']).toLocal(),
+      date: today,
+      fajr: norm(json['fajr']),
+      dhuhr: norm(json['dhuhr']),
+      asr: norm(json['asr']),
+      maghrib: norm(json['maghrib']),
+      isha: norm(json['isha']),
+      sunrise: norm(json['sunrise']),
+      sunset: norm(json['sunset']),
       hijriDate: json['hijriDate'] ?? '',
       hijriString: json['hijriString'] ?? '',
-      sehri: json['sehri'] != null
-          ? DateTime.parse(json['sehri']).toLocal()
-          : null,
-      iftar: json['iftar'] != null
-          ? DateTime.parse(json['iftar']).toLocal()
-          : null,
+      sehri: json['sehri'] != null ? norm(json['sehri']) : null,
+      iftar: json['iftar'] != null ? norm(json['iftar']) : null,
     );
   }
+
+  /// Returns a DateTime for a prayer normalized to the given day
+  DateTime _norm(DateTime p, DateTime ref) =>
+      DateTime(ref.year, ref.month, ref.day, p.hour, p.minute, p.second);
 
   /// Returns the currently active prayer name and its time
   String get currentPrayerName {
     final now = DateTime.now();
-    if (now.isAfter(isha)) return 'isha';
-    if (now.isAfter(maghrib)) return 'maghrib';
-    if (now.isAfter(asr)) return 'asr';
-    if (now.isAfter(dhuhr)) return 'dhuhr';
-    if (now.isAfter(sunrise)) return 'sunrise';
-    if (now.isAfter(fajr)) return 'fajr';
-    return 'isha'; // past midnight before fajr
+    final f = _norm(fajr, now);
+    final d = _norm(dhuhr, now);
+    final a = _norm(asr, now);
+    final m = _norm(maghrib, now);
+    final i = _norm(isha, now);
+
+    if (now.isAfter(i) || now.isAtSameMomentAs(i)) return 'isha';
+    if (now.isAfter(m) || now.isAtSameMomentAs(m)) return 'maghrib';
+    if (now.isAfter(a) || now.isAtSameMomentAs(a)) return 'asr';
+    if (now.isAfter(d) || now.isAtSameMomentAs(d)) return 'dhuhr';
+    if (now.isAfter(f) || now.isAtSameMomentAs(f)) return 'fajr';
+    return 'isha'; // Past midnight before today's fajr
   }
 
-  /// Returns name + time of next prayer
+  /// Returns name + time of next prayer (skipping sunrise/sunset)
   ({String name, DateTime time}) get nextPrayer {
     final now = DateTime.now();
-    if (now.isBefore(fajr)) return (name: 'fajr', time: fajr);
-    if (now.isBefore(sunrise)) return (name: 'sunrise', time: sunrise);
-    if (now.isBefore(dhuhr)) return (name: 'dhuhr', time: dhuhr);
-    if (now.isBefore(asr)) return (name: 'asr', time: asr);
-    if (now.isBefore(maghrib)) return (name: 'maghrib', time: maghrib);
-    if (now.isBefore(isha)) return (name: 'isha', time: isha);
-    // After isha → next is tomorrow's fajr (approximate +24h)
-    return (name: 'fajr', time: fajr.add(const Duration(hours: 24)));
+    final f = _norm(fajr, now);
+    final d = _norm(dhuhr, now);
+    final a = _norm(asr, now);
+    final m = _norm(maghrib, now);
+    final i = _norm(isha, now);
+
+    if (now.isBefore(f)) return (name: 'fajr', time: f);
+    if (now.isBefore(d)) return (name: 'dhuhr', time: d);
+    if (now.isBefore(a)) return (name: 'asr', time: a);
+    if (now.isBefore(m)) return (name: 'maghrib', time: m);
+    if (now.isBefore(i)) return (name: 'isha', time: i);
+    // After isha → next is tomorrow's fajr
+    return (name: 'fajr', time: f.add(const Duration(hours: 24)));
   }
 }
 
@@ -346,18 +370,23 @@ class _PrayerTrackerScreennState extends State<PrayerTrackerScreenn> {
 
   // ── Helpers ─────────────────────────────────────────────────────────────────
 
-  String _formatTime(DateTime dt) {
+  // Standard 12-hour format for all times (h:mm AM/PM)
+  String _formatTime(DateTime? dt) {
+    if (dt == null) return '--:--';
     final h = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
     final m = dt.minute.toString().padLeft(2, '0');
     final ampm = dt.hour < 12 ? 'AM' : 'PM';
     return '$h:$m $ampm';
   }
 
+  // Duration format that respects "12hrs format" request (wrapping hours at 12)
   String _formatCountdown(Duration d) {
-    final h = d.inHours.toString().padLeft(2, '0');
+    if (d.isNegative) return '00:00:00';
+    final totalHours = d.inHours;
+    final h = totalHours % 12 == 0 && totalHours != 0 ? 12 : totalHours % 12;
     final m = (d.inMinutes % 60).toString().padLeft(2, '0');
     final s = (d.inSeconds % 60).toString().padLeft(2, '0');
-    return '$h:$m:$s';
+    return '${h.toString().padLeft(2, '0')}:$m:$s';
   }
 
   // ── Build ────────────────────────────────────────────────────────────────────
@@ -467,7 +496,8 @@ class _PrayerTrackerScreennState extends State<PrayerTrackerScreenn> {
                 ],
               ),
               child: Text(
-                localizeDigits(data.hijriString, context),
+                // localizeDigits(data.hijriString, context),
+                data.hijriString,
                 style: GoogleFonts.playfairDisplay(
                   color: kPrimaryBrown,
                   fontWeight: FontWeight.bold,
@@ -479,13 +509,29 @@ class _PrayerTrackerScreennState extends State<PrayerTrackerScreenn> {
           // SizedBox(height: sh * 0.03),
 
           // ── Current Prayer Header ────────────────────────────────────
-          Text(
-            tr(currentPrayer),
-            style: GoogleFonts.playfairDisplay(
-              fontSize: sw * 0.06,
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : kTextDark,
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                tr(
+                  "current_prayer",
+                ), // Need to add this to translations if missing
+                // "Current Prayer",
+                style: TextStyle(
+                  fontSize: sw * 0.03,
+                  color: kPrimaryBrown,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                tr(currentPrayer),
+                style: GoogleFonts.playfairDisplay(
+                  fontSize: sw * 0.06,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : kTextDark,
+                ),
+              ),
+            ],
           ),
           SizedBox(height: sh * 0.006),
 
@@ -495,7 +541,7 @@ class _PrayerTrackerScreennState extends State<PrayerTrackerScreenn> {
               const Icon(Icons.timer_outlined, color: kPrimaryBrown, size: 18),
               const SizedBox(width: 6),
               Text(
-                "${tr("next_prayer")} ${tr(next.name)} ${tr("in")} ${localizeDigits(_formatCountdown(_countdown), context)}",
+                "${tr("next_prayer")} ${tr(next.name)} (${localizeDigits(_formatTime(next.time), context)}) ${tr("in")} ${localizeDigits(_formatCountdown(_countdown), context)}",
                 style: GoogleFonts.playfairDisplay(
                   fontSize: sw * 0.04,
                   color: isDark ? Colors.white70 : kTextDark,
@@ -780,7 +826,9 @@ class SunriseSunsetCard extends StatelessWidget {
     );
   }
 
-  String _formatTime(DateTime dt) {
+  // Consistently use 12h format
+  String _formatTime(DateTime? dt) {
+    if (dt == null) return '--:--';
     final h = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
     final m = dt.minute.toString().padLeft(2, '0');
     final ampm = dt.hour < 12 ? 'AM' : 'PM';
@@ -989,24 +1037,50 @@ class _RamadanCountdownCardState extends State<RamadanCountdownCard> {
 
   void _updateCountdowns() {
     final now = DateTime.now();
-    if (widget.data.sehri != null) {
-      final diff = widget.data.sehri!.difference(now);
-      _sehriCountdown = diff.isNegative ? Duration.zero : diff;
+    final data = widget.data;
+
+    // Helper to ensure times are compared against today's date
+    DateTime norm(DateTime dt) =>
+        DateTime(now.year, now.month, now.day, dt.hour, dt.minute, dt.second);
+
+    // Iftar Target (today or tomorrow)
+    DateTime iftarTarget = data.iftar != null
+        ? norm(data.iftar!)
+        : norm(data.maghrib);
+    if (now.isAfter(iftarTarget)) {
+      iftarTarget = iftarTarget.add(const Duration(hours: 24));
     }
-    if (widget.data.iftar != null) {
-      final diff = widget.data.iftar!.difference(now);
-      _iftarCountdown = diff.isNegative ? Duration.zero : diff;
+    _iftarTarget = iftarTarget;
+    _iftarCountdown = iftarTarget.difference(now);
+
+    // Sehri Target (today or tomorrow)
+    DateTime sehriTarget = data.sehri != null
+        ? norm(data.sehri!)
+        : norm(data.fajr);
+    if (now.isAfter(sehriTarget)) {
+      sehriTarget = sehriTarget.add(const Duration(hours: 24));
     }
+    _sehriTarget = sehriTarget;
+    _sehriCountdown = sehriTarget.difference(now);
+
     if (mounted) setState(() {});
   }
 
+  // To track target times for label display
+  DateTime? _iftarTarget;
+  DateTime? _sehriTarget;
+
+  // Respects "12hrs format" for countdowns by wrapping hours at 12
   String _fmt(Duration d) {
-    final h = d.inHours.toString().padLeft(2, '0');
+    if (d.isNegative) return '00:00:00';
+    final totalHours = d.inHours;
+    final h = (totalHours % 12 == 0 && totalHours != 0) ? 12 : totalHours % 12;
     final m = (d.inMinutes % 60).toString().padLeft(2, '0');
     final s = (d.inSeconds % 60).toString().padLeft(2, '0');
-    return '$h:$m:$s';
+    return '${h.toString().padLeft(2, '0')}:$m:$s';
   }
 
+  // Consistent 12h time format
   String _fmtTime(DateTime? dt) {
     if (dt == null) return '--:--';
     final h = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
@@ -1022,14 +1096,12 @@ class _RamadanCountdownCardState extends State<RamadanCountdownCard> {
     final sw = MediaQuery.of(context).size.width;
     final data = widget.data;
 
-    // Determine sub-label per circle
-    final now = DateTime.now();
-    final sehriLabel = data.sehri != null && now.isBefore(data.sehri!)
-        ? "${tr("starts_in")} ${localizeDigits(_fmt(_sehriCountdown), context)}"
-        : localizeDigits(tr("sahuri_time"), context);
-    final iftarLabel = data.iftar != null && now.isBefore(data.iftar!)
-        ? "${tr("end_in")} ${localizeDigits(_fmt(_iftarCountdown), context)}"
-        : localizeDigits(tr("iftar_time"), context);
+    // All-time countdowns + 12h target format (User requested 12hrs format)
+    // We remove the brackets from the sub-label to keep it concise within the circle
+    final sehriLabel =
+        "${tr("end_in")} ${localizeDigits(_fmt(_sehriCountdown), context)}";
+    final iftarLabel =
+        "${tr("starts_in")} ${localizeDigits(_fmt(_iftarCountdown), context)}";
 
     return Container(
       padding: EdgeInsets.all(sw * 0.035),
@@ -1038,10 +1110,11 @@ class _RamadanCountdownCardState extends State<RamadanCountdownCard> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            localizeDigits(
-              "${data.hijriString}   ≈   ${data.hijriDate}",
-              context,
-            ),
+            // localizeDigits(
+            //   "${data.hijriString}   ≈   ${data.hijriDate}",
+            //   context,
+            // ),
+            "${data.hijriString}   ≈   ${data.hijriDate}",
             textAlign: TextAlign.center,
             style: GoogleFonts.playfairDisplay(
               fontSize: sw * 0.035,
@@ -1057,7 +1130,10 @@ class _RamadanCountdownCardState extends State<RamadanCountdownCard> {
                 kNavyCircle,
                 Icons.nights_stay_outlined,
                 tr("sahuri_time"),
-                localizeDigits(_fmtTime(data.sehri), context),
+                localizeDigits(
+                  _fmtTime(_sehriTarget ?? data.sehri ?? data.fajr),
+                  context,
+                ),
                 sehriLabel,
                 sw,
               ),
@@ -1066,7 +1142,10 @@ class _RamadanCountdownCardState extends State<RamadanCountdownCard> {
                 kOrangeCircleStart,
                 Icons.wb_twilight_outlined,
                 tr("iftar_time"),
-                localizeDigits(_fmtTime(data.iftar), context),
+                localizeDigits(
+                  _fmtTime(_iftarTarget ?? data.iftar ?? data.maghrib),
+                  context,
+                ),
                 iftarLabel,
                 sw,
                 isGradient: true,
