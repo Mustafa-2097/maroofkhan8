@@ -40,6 +40,12 @@ class HadithController extends GetxController {
   var isDownloadingChapter = <String, bool>{}.obs;
   static const String _downloadedChaptersKey = 'downloaded_hadith_chapters';
 
+  // Offline Hadith Download tracking
+  // Key: slug_hadithNo, Value: Local File Path
+  var downloadedHadiths = <String, String>{}.obs;
+  var isDownloadingHadith = <String, bool>{}.obs;
+  static const String _downloadedHadithsKey = 'downloaded_hadiths';
+
   var searchQuery = ''.obs; // For Main Hadith Screen
   var chapterSearchQuery = ''.obs; // For Chapters Screen
   var hadithSearchQuery = ''.obs; // For Hadith List Screen
@@ -102,6 +108,7 @@ class HadithController extends GetxController {
     fetchLastReadHadith();
     fetchSavedHadiths();
     _loadDownloadedChapters();
+    _loadDownloadedHadiths();
   }
 
   String _normalize(String? text) {
@@ -478,6 +485,106 @@ class HadithController extends GetxController {
       }
     } catch (e) {
       print("Delete chapter error: $e");
+      SnackbarUtils.showSnackbar(tr("error"), "${tr("error")}: $e", isError: true);
+    }
+  }
+
+  Future<void> _loadDownloadedHadiths() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String? encoded = prefs.getString(_downloadedHadithsKey);
+      if (encoded != null) {
+        final Map<String, dynamic> decoded = jsonDecode(encoded);
+        downloadedHadiths.value = decoded.map(
+          (key, value) => MapEntry(key, value.toString()),
+        );
+      }
+    } catch (e) {
+      print("Error loading downloaded hadiths: $e");
+    }
+  }
+
+  Future<void> _saveDownloadedHadiths() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String encoded = jsonEncode(downloadedHadiths);
+      await prefs.setString(_downloadedHadithsKey, encoded);
+    } catch (e) {
+      print("Error saving downloaded hadiths: $e");
+    }
+  }
+
+  Future<void> downloadHadith({
+    required String hadithText,
+    required String bookSlug,
+    required String bookName,
+    required String chapterNum,
+    required String hadithNumber,
+    String? heading,
+  }) async {
+    final key = "${bookSlug}_$hadithNumber";
+    try {
+      isDownloadingHadith[key] = true;
+
+      final dir = await getApplicationDocumentsDirectory();
+      final hdDir = Directory("${dir.path}/hadith_saves");
+      if (!await hdDir.exists()) {
+        await hdDir.create(recursive: true);
+      }
+
+      final fileName = 'hadith_$key.json';
+      final filePath = '${hdDir.path}/$fileName';
+      final file = File(filePath);
+
+      final fullData = {
+        "hadith": hadithText,
+        "bookSlug": bookSlug,
+        "bookName": bookName,
+        "chapterNum": chapterNum,
+        "hadithNumber": hadithNumber,
+        "heading": heading ?? "",
+      };
+
+      await file.writeAsString(jsonEncode(fullData));
+
+      downloadedHadiths[key] = filePath;
+      await _saveDownloadedHadiths();
+
+      SnackbarUtils.showSnackbar(
+        tr("download_complete"),
+        "$bookName ${tr("hadith")} $hadithNumber ${tr("downloaded_successfully")}",
+      );
+    } catch (e) {
+      SnackbarUtils.showSnackbar(
+        tr("error"),
+        "${tr("download_failed")}: ${e.toString().replaceAll('Exception: ', '')}",
+        isError: true,
+      );
+    } finally {
+      isDownloadingHadith[key] = false;
+    }
+  }
+
+  Future<void> deleteDownloadedHadith(String bookSlug, String hadithNumber) async {
+    final key = "${bookSlug}_$hadithNumber";
+    try {
+      if (downloadedHadiths.containsKey(key)) {
+        final path = downloadedHadiths[key]!;
+        final file = File(path);
+        if (await file.exists()) {
+          await file.delete();
+        }
+        
+        downloadedHadiths.remove(key);
+        await _saveDownloadedHadiths();
+
+        SnackbarUtils.showSnackbar(
+          tr("success"),
+          tr("hadith_deleted_from_offline"), 
+        );
+      }
+    } catch (e) {
+      print("Delete error: $e");
       SnackbarUtils.showSnackbar(tr("error"), "${tr("error")}: $e", isError: true);
     }
   }

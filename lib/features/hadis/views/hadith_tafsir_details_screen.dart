@@ -288,6 +288,56 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
                         Share.share(shareText);
                       },
                     ),
+                    /* Obx(() {
+                      final key = "${widget.bookSlug}_${widget.hadithNumber}";
+                      final isDownloading =
+                          HadithController.instance.isDownloadingHadith[key] ?? false;
+                      final isDownloaded =
+                          HadithController.instance.downloadedHadiths.containsKey(key);
+
+                      if (isDownloading) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10.0),
+                          child: SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Color(0xFF8D3C1F),
+                            ),
+                          ),
+                        );
+                      }
+
+                      if (isDownloaded) {
+                        return _actionIcon(
+                          Icons.delete_outline,
+                          tr("remove"),
+                          color: Colors.red,
+                          onTap: () {
+                            HadithController.instance.deleteDownloadedHadith(
+                              widget.bookSlug,
+                              widget.hadithNumber,
+                            );
+                          },
+                        );
+                      }
+
+                      return _actionIcon(
+                        Icons.download_outlined,
+                        tr("download"),
+                        onTap: () {
+                          HadithController.instance.downloadHadith(
+                            hadithText: widget.hadithText,
+                            bookSlug: widget.bookSlug,
+                            bookName: widget.bookName,
+                            chapterNum: widget.chapterNum,
+                            hadithNumber: widget.hadithNumber,
+                            heading: widget.heading,
+                          );
+                        },
+                      );
+                    }), */
                   ],
                 ),
               ),
@@ -364,18 +414,19 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
     );
   }
 
-  Widget _actionIcon(IconData icon, String label, {VoidCallback? onTap}) {
+  Widget _actionIcon(IconData icon, String label, {VoidCallback? onTap, Color? color}) {
+    final effectiveColor = color ?? primaryBrown;
     return GestureDetector(
       onTap: onTap,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: primaryBrown, size: 22),
+          Icon(icon, color: effectiveColor, size: 22),
           const SizedBox(height: 4),
           Text(
             label,
             style: TextStyle(
-              color: primaryBrown,
+              color: effectiveColor,
               fontSize: 10,
               fontWeight: FontWeight.bold,
             ),
