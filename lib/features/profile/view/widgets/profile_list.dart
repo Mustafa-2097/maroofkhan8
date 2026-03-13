@@ -159,33 +159,33 @@ class _ProfileListState extends State<ProfileList> {
               onChanged: _changeLanguage,
             ),
           ),
-          _DrawerItem(
-            icon: Icons.person_outline,
-            label: 'gender',
-            trailing: Obx(() {
-              final genderValue = Get.find<ProfileController>().gender.value;
-              String? dropdownValue;
-              if (genderValue.isNotEmpty) {
-                dropdownValue = genderValue.toLowerCase();
-              }
-              return DropdownButton<String>(
-                value: dropdownValue,
-                underline: const SizedBox(),
-                hint: Text(tr("choose_gender")),
-                items: ["male", "female"].map((g) {
-                  return DropdownMenuItem<String>(
-                    value: g,
-                    child: Text(tr(g)),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    Get.find<ProfileController>().updateGender(value);
-                  }
-                },
-              );
-            }),
-          ),
+          // _DrawerItem(
+          //   icon: Icons.person_outline,
+          //   label: 'gender',
+          //   trailing: Obx(() {
+          //     final genderValue = Get.find<ProfileController>().gender.value;
+          //     String? dropdownValue;
+          //     if (genderValue.isNotEmpty) {
+          //       dropdownValue = genderValue.toLowerCase();
+          //     }
+          //     return DropdownButton<String>(
+          //       value: dropdownValue,
+          //       underline: const SizedBox(),
+          //       hint: Text(tr("choose_gender")),
+          //       items: ["male", "female"].map((g) {
+          //         return DropdownMenuItem<String>(
+          //           value: g,
+          //           child: Text(tr(g)),
+          //         );
+          //       }).toList(),
+          //       onChanged: (value) {
+          //         if (value != null) {
+          //           Get.find<ProfileController>().updateGender(value);
+          //         }
+          //       },
+          //     );
+          //   }),
+          // ),
 
           // _DrawerItem(
           //   icon: Icons.language_outlined,
