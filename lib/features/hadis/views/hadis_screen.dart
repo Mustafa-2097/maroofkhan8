@@ -368,8 +368,8 @@ class _HadithScreenState extends State<HadithScreen> {
                       ),
                     ),
                     const Spacer(),
-                    _iconLabel(Icons.volume_up_outlined, tr("listen")),
-                    const SizedBox(width: 15),
+                    // _iconLabel(Icons.volume_up_outlined, tr("listen")),
+                    // const SizedBox(width: 15),
                     GestureDetector(
                       onTap: () {
                         Get.to(
