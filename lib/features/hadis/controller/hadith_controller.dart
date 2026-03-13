@@ -220,13 +220,37 @@ class HadithController extends GetxController {
     isChaptersLoading.value = true;
     chapters.clear();
     try {
-      final response = await ApiService.get(ApiEndpoints.hadithChapters(slug));
-      if (response['success'] == true) {
-        final List<dynamic> data = response['data'];
+      final dir = await getApplicationDocumentsDirectory();
+      final cacheDir = Directory("${dir.path}/hadith_chapters_meta");
+      if (!await cacheDir.exists()) {
+        await cacheDir.create(recursive: true);
+      }
+      final file = File('${cacheDir.path}/chapters_$slug.json');
+
+      bool apiSuccess = false;
+      try {
+        final response = await ApiService.get(ApiEndpoints.hadithChapters(slug), showErrorSnackbar: false);
+        if (response['success'] == true) {
+          final List<dynamic> data = response['data'];
+          chapters.value = data
+              .map((json) => HadithChapter.fromJson(json))
+              .toList();
+          await file.writeAsString(jsonEncode(data));
+          apiSuccess = true;
+        }
+      } catch (e) {
+        print("API failed for chapters, trying cache: $e");
+      }
+
+      if (!apiSuccess && await file.exists()) {
+        final content = await file.readAsString();
+        final List<dynamic> data = jsonDecode(content);
         chapters.value = data
             .map((json) => HadithChapter.fromJson(json))
             .toList();
       }
+    } catch (e) {
+      print("Error in fetchHadithChapters: $e");
     } finally {
       isChaptersLoading.value = false;
     }

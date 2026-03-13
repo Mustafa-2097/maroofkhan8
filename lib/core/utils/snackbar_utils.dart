@@ -3,18 +3,29 @@ import 'package:get/get.dart';
 import '../constant/app_colors.dart';
 
 class SnackbarUtils {
+  static String? _lastShownMessage;
+  static DateTime? _lastShownTime;
+
   static void showSnackbar(
     String title,
     String message, {
     bool isError = false,
   }) {
+    final now = DateTime.now();
+    if (_lastShownMessage == message &&
+        _lastShownTime != null &&
+        now.difference(_lastShownTime!) < const Duration(seconds: 3)) {
+      return; // Skip if the same message was shown recently
+    }
+
+    _lastShownMessage = message;
+    _lastShownTime = now;
+
     Get.snackbar(
       title,
       message,
       snackPosition: SnackPosition.TOP,
-      backgroundColor: isError
-          ? AppColors.redColor.withOpacity(0.9)
-          : AppColors.primaryColorLight.withOpacity(0.9),
+      backgroundColor: AppColors.primaryColorLight.withOpacity(0.9),
       colorText: Colors.white,
       margin: const EdgeInsets.all(15),
       borderRadius: 12,
