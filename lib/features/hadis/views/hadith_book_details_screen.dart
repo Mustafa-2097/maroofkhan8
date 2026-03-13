@@ -136,6 +136,49 @@ class _HadithBookDetailsScreenState extends State<HadithBookDetailsScreen> {
                     ],
                   ),
                 ),
+                Obx(() {
+                  final key = "${widget.book.id}_${chapter.number}";
+                  final isDownloaded = controller.downloadedChapters.containsKey(key);
+                  final isDownloading = controller.isDownloadingChapter[key] ?? false;
+
+                  if (isDownloading) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Color(0xFF8D3C1F),
+                        ),
+                      ),
+                    );
+                  }
+
+                  if (isDownloaded) {
+                    return IconButton(
+                      onPressed: () {
+                        controller.deleteDownloadedChapter(widget.book.id, chapter.number);
+                      },
+                      icon: const Icon(
+                        Icons.delete_outline,
+                        color: Colors.red,
+                        size: 24,
+                      ),
+                    );
+                  }
+
+                  return IconButton(
+                    onPressed: () {
+                      controller.downloadChapter(widget.book.id, tr("book_${widget.book.id}_name"), chapter.number);
+                    },
+                    icon: const Icon(
+                      Icons.file_download_outlined,
+                      color: Color(0xFF8D3C1F),
+                      size: 24,
+                    ),
+                  );
+                }),
                 Icon(
                   Icons.chevron_right,
                   color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,

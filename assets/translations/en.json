@@ -799,5 +799,7 @@
   "failed_to_update_profile": "Failed to update profile",
   "downloaded_successfully": "downloaded successfully",
   "surah_deleted_from_offline": "Surah deleted from offline storage",
-  "failed_to_delete_surah": "Failed to delete surah"
+  "failed_to_delete_surah": "Failed to delete surah",
+  "hadith_deleted_from_offline": "Hadith deleted from offline storage",
+  "failed_to_delete_hadith": "Failed to delete hadith"
 }

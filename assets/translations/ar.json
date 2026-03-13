@@ -796,5 +796,10 @@
   "no_changes": "لا توجد تغييرات",
   "data_already_exists": "البيانات موجودة بالفعل",
   "user_data_updated": "تم تحديث بيانات المستخدم",
-  "failed_to_update_profile": "فشل في تحديث الملف الشخصي"
+  "failed_to_update_profile": "فشل في تحديث الملف الشخصي",
+  "downloaded_successfully": "تم التنزيل بنجاح",
+  "surah_deleted_from_offline": "تم حذف السورة من التخزين المؤقت",
+  "failed_to_delete_surah": "فشل في حذف السورة",
+  "hadith_deleted_from_offline": "تم حذف الحديث من التخزين المؤقت",
+  "failed_to_delete_hadith": "فشل في حذف الحديث"
 }
