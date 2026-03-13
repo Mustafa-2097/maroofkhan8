@@ -1,16 +1,12 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:maroofkhan8/features/hadis/controller/hadith_controller.dart';
 import 'package:maroofkhan8/features/hadis/models/last_read_hadith.dart';
 import '../../ai_murshid/views/ai_murshid_screen.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:maroofkhan8/core/utils/localization_utils.dart';
-import 'package:maroofkhan8/core/utils/snackbar_utils.dart';
 
 class HadishTafsirDetailsScreen extends StatefulWidget {
   final String hadithText;
@@ -56,47 +52,7 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
     );
   }
 
-  Future<void> _downloadHadith() async {
-    try {
-      if (Platform.isAndroid) {
-        await Permission.storage.request();
-      }
 
-      Directory? directory;
-      if (Platform.isAndroid) {
-        final dirs = await getExternalStorageDirectories(
-          type: StorageDirectory.downloads,
-        );
-        if (dirs != null && dirs.isNotEmpty) {
-          directory = dirs.first;
-        } else {
-          directory = await getExternalStorageDirectory();
-        }
-      } else {
-        directory = await getApplicationDocumentsDirectory();
-      }
-
-      if (directory != null) {
-        final timestamp = DateTime.now().millisecondsSinceEpoch;
-        final fileName =
-            'Hadith_${widget.bookName}_${widget.hadithNumber}_$timestamp.txt';
-        final filePath = '${directory.path}/$fileName';
-        final file = File(filePath);
-
-        final textToSave =
-            "${widget.heading != null && widget.heading!.isNotEmpty ? '${widget.heading}\n\n' : ''}${widget.hadithText}\n\n(${widget.bookName}, ${tr('chapters')} ${localizeDigits(widget.chapterNum, context)}, ${tr('hadith')} ${localizeDigits(widget.hadithNumber, context)})";
-
-        await file.writeAsString(textToSave);
-
-        SnackbarUtils.showSnackbar(
-          tr("download_complete"),
-          "${widget.bookName} ${localizeDigits(widget.hadithNumber, context)} ${tr("downloaded_successfully_at")}\n$filePath",
-        );
-      }
-    } catch (e) {
-      SnackbarUtils.showSnackbar(tr("error"), "Error: $e", isError: true);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -328,15 +284,60 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
                             "${widget.heading ?? ''}\n\n"
                             "${widget.hadithText}\n\n"
                             "(${widget.bookName}, ${tr('hadith')} ${localizeDigits(widget.hadithNumber, context)})\n\n"
-                            "Shared via Maroof Khan App";
+                            "Shared via Digital Khanqah App";
                         Share.share(shareText);
                       },
                     ),
-                    _actionIcon(
-                      Icons.download_outlined,
-                      tr("download"),
-                      onTap: _downloadHadith,
-                    ),
+                    /* Obx(() {
+                      final key = "${widget.bookSlug}_${widget.hadithNumber}";
+                      final isDownloading =
+                          HadithController.instance.isDownloadingHadith[key] ?? false;
+                      final isDownloaded =
+                          HadithController.instance.downloadedHadiths.containsKey(key);
+
+                      if (isDownloading) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10.0),
+                          child: SizedBox(
+                            width: 22,
+                            height: 22,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Color(0xFF8D3C1F),
+                            ),
+                          ),
+                        );
+                      }
+
+                      if (isDownloaded) {
+                        return _actionIcon(
+                          Icons.delete_outline,
+                          tr("remove"),
+                          color: Colors.red,
+                          onTap: () {
+                            HadithController.instance.deleteDownloadedHadith(
+                              widget.bookSlug,
+                              widget.hadithNumber,
+                            );
+                          },
+                        );
+                      }
+
+                      return _actionIcon(
+                        Icons.download_outlined,
+                        tr("download"),
+                        onTap: () {
+                          HadithController.instance.downloadHadith(
+                            hadithText: widget.hadithText,
+                            bookSlug: widget.bookSlug,
+                            bookName: widget.bookName,
+                            chapterNum: widget.chapterNum,
+                            hadithNumber: widget.hadithNumber,
+                            heading: widget.heading,
+                          );
+                        },
+                      );
+                    }), */
                   ],
                 ),
               ),
@@ -413,18 +414,19 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
     );
   }
 
-  Widget _actionIcon(IconData icon, String label, {VoidCallback? onTap}) {
+  Widget _actionIcon(IconData icon, String label, {VoidCallback? onTap, Color? color}) {
+    final effectiveColor = color ?? primaryBrown;
     return GestureDetector(
       onTap: onTap,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: primaryBrown, size: 22),
+          Icon(icon, color: effectiveColor, size: 22),
           const SizedBox(height: 4),
           Text(
             label,
             style: TextStyle(
-              color: primaryBrown,
+              color: effectiveColor,
               fontSize: 10,
               fontWeight: FontWeight.bold,
             ),

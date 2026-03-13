@@ -16,7 +16,6 @@ import '../../../core/offline_storage/shared_pref.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class QuranController extends GetxController {
@@ -807,25 +806,6 @@ class QuranController extends GetxController {
       }
 
       final downloadUrl = audioData.url!;
-
-      // 3. Permission check for mobile
-      if (Platform.isAndroid || Platform.isIOS) {
-        var status = await Permission.storage.status;
-        if (!status.isGranted) {
-          status = await Permission.storage.request();
-          if (!status.isGranted) {
-            // Check for manageExternalStorage if on Android 11+
-            if (Platform.isAndroid) {
-              status = await Permission.manageExternalStorage.request();
-              if (!status.isGranted) {
-                throw Exception("Storage permission denied");
-              }
-            } else {
-              throw Exception("Storage permission denied");
-            }
-          }
-        }
-      }
 
       // 4. Get internal app directory (always)
       final dir = await getApplicationDocumentsDirectory();

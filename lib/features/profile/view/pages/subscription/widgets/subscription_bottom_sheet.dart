@@ -149,7 +149,7 @@ class SubscriptionBottomSheet extends StatelessWidget {
                     Text(
                       'Under this package, you will be entitled to these features:',
                       style: TextStyle(
-                        color: AppColors.greyColor,
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 18.sp,
                         fontWeight: FontWeight.w600,
                       ),

@@ -1,4 +1,10 @@
 import 'package:get/get.dart';
+import 'dart:io';
+import 'dart:convert';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:maroofkhan8/core/utils/snackbar_utils.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../core/network/api_Service.dart';
 import '../../../core/network/api_endpoints.dart';
 import '../models/hadith_book.dart';
@@ -27,6 +33,18 @@ class HadithController extends GetxController {
 
   var isLastReadLoading = false.obs;
   var lastReadHadiths = <LastReadHadith>[].obs;
+
+  // Offline Chapter Download tracking
+  // Key: slug_chapterNum, Value: Local File Path
+  var downloadedChapters = <String, String>{}.obs;
+  var isDownloadingChapter = <String, bool>{}.obs;
+  static const String _downloadedChaptersKey = 'downloaded_hadith_chapters';
+
+  // Offline Hadith Download tracking
+  // Key: slug_hadithNo, Value: Local File Path
+  var downloadedHadiths = <String, String>{}.obs;
+  var isDownloadingHadith = <String, bool>{}.obs;
+  static const String _downloadedHadithsKey = 'downloaded_hadiths';
 
   var searchQuery = ''.obs; // For Main Hadith Screen
   var chapterSearchQuery = ''.obs; // For Chapters Screen
@@ -89,6 +107,8 @@ class HadithController extends GetxController {
     fetchPopularHadith();
     fetchLastReadHadith();
     fetchSavedHadiths();
+    _loadDownloadedChapters();
+    _loadDownloadedHadiths();
   }
 
   String _normalize(String? text) {
@@ -200,13 +220,37 @@ class HadithController extends GetxController {
     isChaptersLoading.value = true;
     chapters.clear();
     try {
-      final response = await ApiService.get(ApiEndpoints.hadithChapters(slug));
-      if (response['success'] == true) {
-        final List<dynamic> data = response['data'];
+      final dir = await getApplicationDocumentsDirectory();
+      final cacheDir = Directory("${dir.path}/hadith_chapters_meta");
+      if (!await cacheDir.exists()) {
+        await cacheDir.create(recursive: true);
+      }
+      final file = File('${cacheDir.path}/chapters_$slug.json');
+
+      bool apiSuccess = false;
+      try {
+        final response = await ApiService.get(ApiEndpoints.hadithChapters(slug), showErrorSnackbar: false);
+        if (response['success'] == true) {
+          final List<dynamic> data = response['data'];
+          chapters.value = data
+              .map((json) => HadithChapter.fromJson(json))
+              .toList();
+          await file.writeAsString(jsonEncode(data));
+          apiSuccess = true;
+        }
+      } catch (e) {
+        print("API failed for chapters, trying cache: $e");
+      }
+
+      if (!apiSuccess && await file.exists()) {
+        final content = await file.readAsString();
+        final List<dynamic> data = jsonDecode(content);
         chapters.value = data
             .map((json) => HadithChapter.fromJson(json))
             .toList();
       }
+    } catch (e) {
+      print("Error in fetchHadithChapters: $e");
     } finally {
       isChaptersLoading.value = false;
     }
@@ -215,7 +259,29 @@ class HadithController extends GetxController {
   Future<void> fetchHadithList(String slug, String chapterNum) async {
     isHadithLoading.value = true;
     hadithList.clear();
+    final key = "${slug}_$chapterNum";
+    
     try {
+      // 1. Try to load from offline storage first
+      if (downloadedChapters.containsKey(key)) {
+        final path = downloadedChapters[key]!;
+        final file = File(path);
+        if (await file.exists()) {
+          final content = await file.readAsString();
+          final data = jsonDecode(content);
+          if (data is List) {
+            hadithList.value = data.map((json) => Hadith.fromJson(json)).toList();
+            _syncSaveStatus();
+            isHadithLoading.value = false;
+            return;
+          }
+        } else {
+          downloadedChapters.remove(key);
+          await _saveDownloadedChapters();
+        }
+      }
+
+      // 2. Fallback to API if not offline
       final response = await ApiService.get(
         ApiEndpoints.hadithList(slug, chapterNum),
       );
@@ -349,6 +415,201 @@ class HadithController extends GetxController {
       }
     } catch (e) {
       // Error handled in ApiService
+    }
+  }
+
+  Future<void> _loadDownloadedChapters() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String? encoded = prefs.getString(_downloadedChaptersKey);
+      if (encoded != null) {
+        final Map<String, dynamic> decoded = jsonDecode(encoded);
+        downloadedChapters.value = decoded.map(
+          (key, value) => MapEntry(key, value.toString()),
+        );
+      }
+    } catch (e) {
+      print("Error loading downloaded hadith chapters: $e");
+    }
+  }
+
+  Future<void> _saveDownloadedChapters() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String encoded = jsonEncode(downloadedChapters);
+      await prefs.setString(_downloadedChaptersKey, encoded);
+    } catch (e) {
+      print("Error saving downloaded hadith chapters: $e");
+    }
+  }
+
+  Future<void> downloadChapter(String bookSlug, String bookName, String chapterNum) async {
+    final key = "${bookSlug}_$chapterNum";
+    try {
+      isDownloadingChapter[key] = true;
+
+      // Fetch from API directly
+      final response = await ApiService.get(
+        ApiEndpoints.hadithList(bookSlug, chapterNum),
+      );
+
+      if (response['success'] == true && response['data'] != null) {
+        final List<dynamic> data = response['data'];
+
+        final dir = await getApplicationDocumentsDirectory();
+        final hdDir = Directory("${dir.path}/hadith_chapters");
+        if (!await hdDir.exists()) {
+          await hdDir.create(recursive: true);
+        }
+
+        final fileName = 'chapter_$key.json';
+        final filePath = '${hdDir.path}/$fileName';
+        final file = File(filePath);
+
+        await file.writeAsString(jsonEncode(data));
+
+        downloadedChapters[key] = filePath;
+        await _saveDownloadedChapters();
+
+        SnackbarUtils.showSnackbar(
+          tr("download_complete"),
+          "$bookName ${tr("chapters")} ${tr("hadith_chapter")} $chapterNum ${tr("downloaded_successfully")}",
+        );
+      } else {
+        throw Exception("Failed to fetch chapter data");
+      }
+    } catch (e) {
+      SnackbarUtils.showSnackbar(
+        tr("error"),
+        "${tr("download_failed")}: ${e.toString().replaceAll('Exception: ', '')}",
+        isError: true,
+      );
+    } finally {
+      isDownloadingChapter[key] = false;
+    }
+  }
+
+  Future<void> deleteDownloadedChapter(String bookSlug, String chapterNum) async {
+    final key = "${bookSlug}_$chapterNum";
+    try {
+      if (downloadedChapters.containsKey(key)) {
+        final path = downloadedChapters[key]!;
+        final file = File(path);
+        if (await file.exists()) {
+          await file.delete();
+        }
+
+        downloadedChapters.remove(key);
+        await _saveDownloadedChapters();
+
+        SnackbarUtils.showSnackbar(
+          tr("success"),
+          tr("hadith_deleted_from_offline"), 
+        );
+      }
+    } catch (e) {
+      print("Delete chapter error: $e");
+      SnackbarUtils.showSnackbar(tr("error"), "${tr("error")}: $e", isError: true);
+    }
+  }
+
+  Future<void> _loadDownloadedHadiths() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String? encoded = prefs.getString(_downloadedHadithsKey);
+      if (encoded != null) {
+        final Map<String, dynamic> decoded = jsonDecode(encoded);
+        downloadedHadiths.value = decoded.map(
+          (key, value) => MapEntry(key, value.toString()),
+        );
+      }
+    } catch (e) {
+      print("Error loading downloaded hadiths: $e");
+    }
+  }
+
+  Future<void> _saveDownloadedHadiths() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String encoded = jsonEncode(downloadedHadiths);
+      await prefs.setString(_downloadedHadithsKey, encoded);
+    } catch (e) {
+      print("Error saving downloaded hadiths: $e");
+    }
+  }
+
+  Future<void> downloadHadith({
+    required String hadithText,
+    required String bookSlug,
+    required String bookName,
+    required String chapterNum,
+    required String hadithNumber,
+    String? heading,
+  }) async {
+    final key = "${bookSlug}_$hadithNumber";
+    try {
+      isDownloadingHadith[key] = true;
+
+      final dir = await getApplicationDocumentsDirectory();
+      final hdDir = Directory("${dir.path}/hadith_saves");
+      if (!await hdDir.exists()) {
+        await hdDir.create(recursive: true);
+      }
+
+      final fileName = 'hadith_$key.json';
+      final filePath = '${hdDir.path}/$fileName';
+      final file = File(filePath);
+
+      final fullData = {
+        "hadith": hadithText,
+        "bookSlug": bookSlug,
+        "bookName": bookName,
+        "chapterNum": chapterNum,
+        "hadithNumber": hadithNumber,
+        "heading": heading ?? "",
+      };
+
+      await file.writeAsString(jsonEncode(fullData));
+
+      downloadedHadiths[key] = filePath;
+      await _saveDownloadedHadiths();
+
+      SnackbarUtils.showSnackbar(
+        tr("download_complete"),
+        "$bookName ${tr("hadith")} $hadithNumber ${tr("downloaded_successfully")}",
+      );
+    } catch (e) {
+      SnackbarUtils.showSnackbar(
+        tr("error"),
+        "${tr("download_failed")}: ${e.toString().replaceAll('Exception: ', '')}",
+        isError: true,
+      );
+    } finally {
+      isDownloadingHadith[key] = false;
+    }
+  }
+
+  Future<void> deleteDownloadedHadith(String bookSlug, String hadithNumber) async {
+    final key = "${bookSlug}_$hadithNumber";
+    try {
+      if (downloadedHadiths.containsKey(key)) {
+        final path = downloadedHadiths[key]!;
+        final file = File(path);
+        if (await file.exists()) {
+          await file.delete();
+        }
+        
+        downloadedHadiths.remove(key);
+        await _saveDownloadedHadiths();
+
+        SnackbarUtils.showSnackbar(
+          tr("success"),
+          tr("hadith_deleted_from_offline"), 
+        );
+      }
+    } catch (e) {
+      print("Delete error: $e");
+      SnackbarUtils.showSnackbar(tr("error"), "${tr("error")}: $e", isError: true);
     }
   }
 }

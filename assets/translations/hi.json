@@ -796,5 +796,10 @@
   "no_changes": "कोई परिवर्तन नहीं",
   "data_already_exists": "डेटा पहले से मौजूद है",
   "user_data_updated": "उपयोगकर्ता डेटा अपडेट किया गया",
-  "failed_to_update_profile": "प्रोफ़ाइल अपडेट करने में विफल"
+  "failed_to_update_profile": "प्रोफ़ाइल अपडेट करने में विफल",
+  "downloaded_successfully": "सफलतापूर्वक डाउनलोड किया गया",
+  "surah_deleted_from_offline": "सूरह को ऑफ़लाइन से हटा दिया गया",
+  "failed_to_delete_surah": "सूरह को हटाने में विफल",
+  "hadith_deleted_from_offline": "हदीस को ऑफ़लाइन से हटा दिया गया",
+  "failed_to_delete_hadith": "हदीस को हटाने में विफल"
 }
