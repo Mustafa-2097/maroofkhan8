@@ -11,6 +11,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:share_plus/share_plus.dart';
+import '../../../core/network/api_Service.dart';
+import '../../../core/network/api_endpoints.dart';
 
 // --- Common UI Constants ---
 const Color kBrown = Color(0xFF8D4B33);
@@ -270,6 +272,35 @@ class DuaDetailScreen extends StatefulWidget {
 }
 
 class _DuaDetailScreenState extends State<DuaDetailScreen> {
+  late DuaData _currentDua;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentDua = widget.dua;
+    _fetchDuaDetails();
+  }
+
+  Future<void> _fetchDuaDetails() async {
+    if (widget.dua.id == null) return;
+    setState(() => _isLoading = true);
+    try {
+      final response = await ApiService.get(ApiEndpoints.singleDua(widget.dua.id!), showErrorSnackbar: false);
+      if (response['success'] == true && mounted) {
+        setState(() {
+          _currentDua = DuaData.fromJson(response['data']);
+        });
+      }
+    } catch (e) {
+      debugPrint("Failed to fetch dua details: $e");
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
   Future<void> _downloadDua() async {
     try {
       if (Platform.isAndroid) {
@@ -297,12 +328,12 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
 
         final timestamp = DateTime.now().millisecondsSinceEpoch;
         final fileName =
-            'Dua_${widget.dua.title?.replaceAll(' ', '_') ?? 'Unnamed'}_$timestamp.txt';
+            'Dua_${_currentDua.title?.replaceAll(' ', '_') ?? 'Unnamed'}_$timestamp.txt';
         final filePath = '${directory.path}/$fileName';
         final file = File(filePath);
 
         final textToSave =
-            "${widget.dua.title ?? ''}\n\n${tr("arabic_label")}: ${widget.dua.arabic ?? ''}\n\n${tr("pronunciation_label")}: ${widget.dua.pronunciation ?? ''}\n\n${tr("meaning_label")}: ${widget.dua.meaning ?? ''}\n\n${tr("shared_via")}";
+            "${_currentDua.title ?? ''}\n\n${tr("arabic_label")}: ${_currentDua.arabic ?? ''}\n\n${tr("pronunciation_label")}: ${_currentDua.pronunciation ?? ''}\n\n${tr("meaning_label")}: ${_currentDua.meaning ?? ''}\n\n${tr("shared_via")}";
 
         await file.writeAsString(textToSave);
 
@@ -351,7 +382,15 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
             ),
             const SizedBox(height: 25),
             // Dua Content Card
-            Container(
+            if (_isLoading)
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: CircularProgressIndicator(color: kBrown),
+                ),
+              )
+            else
+              Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
@@ -366,7 +405,7 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
               child: Column(
                 children: [
                   Text(
-                    widget.dua.arabic ?? "",
+                    _currentDua.arabic ?? "",
                     textAlign: TextAlign.center,
                     textDirection: ui.TextDirection.rtl,
                     style: GoogleFonts.amiri(
@@ -377,7 +416,7 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
                   ),
                   const SizedBox(height: 15),
                   Text(
-                    widget.dua.pronunciation ?? "",
+                    _currentDua.pronunciation ?? "",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.ebGaramond(
                       fontSize: 14,
@@ -412,10 +451,10 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
                     tr("share"),
                     onTap: () {
                       final shareText =
-                          "${widget.dua.title ?? ''}\n\n"
-                          "${widget.dua.arabic ?? ''}\n\n"
-                          "${widget.dua.arabic ?? ''}\n\n"
-                          "${tr("meaning_colon")} ${widget.dua.meaning ?? ''}\n\n"
+                          "${_currentDua.title ?? ''}\n\n"
+                          "${_currentDua.arabic ?? ''}\n\n"
+                          "${_currentDua.pronunciation ?? ''}\n\n"
+                          "${tr("meaning_colon")} ${_currentDua.meaning ?? ''}\n\n"
                           "${tr("shared_via")}";
                       Share.share(shareText);
                     },
@@ -450,7 +489,7 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    widget.dua.meaning ?? "",
+                    _currentDua.meaning ?? "",
                     style: GoogleFonts.ebGaramond(
                       fontSize: 14,
                       height: 1.4,
