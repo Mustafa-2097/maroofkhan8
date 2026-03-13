@@ -138,7 +138,7 @@ class AudioController extends GetxController {
       return;
     }
     final String shareText =
-        "Listen to '${audio.title ?? 'Audio'}' from Maroof Khan app: ${audio.file}";
+        "Listen to '${audio.title ?? 'Audio'}' from Digital Khanqah App: ${audio.file}";
     await Share.share(shareText);
   }
 

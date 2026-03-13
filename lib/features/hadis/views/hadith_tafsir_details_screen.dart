@@ -284,7 +284,7 @@ class _HadishTafsirDetailsScreenState extends State<HadishTafsirDetailsScreen> {
                             "${widget.heading ?? ''}\n\n"
                             "${widget.hadithText}\n\n"
                             "(${widget.bookName}, ${tr('hadith')} ${localizeDigits(widget.hadithNumber, context)})\n\n"
-                            "Shared via Maroof Khan App";
+                            "Shared via Digital Khanqah App";
                         Share.share(shareText);
                       },
                     ),

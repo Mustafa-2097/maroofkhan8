@@ -147,7 +147,7 @@ class SavedHadithsScreen extends StatelessWidget {
                               "(${hadith.heading.isNotEmpty ? hadith.heading : ''})\n\n"
                               "${hadith.hadith}\n\n"
                               "(${tr('hadith')} ${localizeDigits(hadith.number, context)})\n\n"
-                              "Shared via Maroof Khan App";
+                              "Shared via Digital Khanqah App";
                           Share.share(shareText);
                         },
                         child: const Icon(

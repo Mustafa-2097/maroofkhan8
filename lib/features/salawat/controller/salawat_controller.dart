@@ -234,7 +234,7 @@ class SalawatController extends GetxController {
     if (salawat.transliteration != null) {
       content += "Transliteration: ${salawat.transliteration}\n\n";
     }
-    content += "Shared via Maroof Khan App";
+    content += "Shared via Digital Khanqah App";
 
     Share.share(content);
   }

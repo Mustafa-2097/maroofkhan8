@@ -358,7 +358,7 @@ class _HadithScreenState extends State<HadithScreen> {
                             "${item.book ?? tr('popular_hadith')}\n\n"
                             "${item.hadith}\n\n"
                             "(${item.reference.isNotEmpty ? item.reference : tr('hadith') + ' ' + localizeDigits(item.hadithNo?.toString() ?? 'N/A', context)})\n\n"
-                            "Shared via Maroof Khan App";
+                            "Shared via Digital Khanqah App";
                         Share.share(shareText);
                       },
                       child: const Icon(
@@ -480,7 +480,7 @@ class _HadithScreenState extends State<HadithScreen> {
                             "${item.book}\n\n"
                             "${item.hadith}\n\n"
                             "(${tr('hadith')} ${localizeDigits(item.hadithNo ?? 'N/A', context)})\n\n"
-                            "Shared via Maroof Khan App";
+                            "Shared via Digital Khanqah App";
                         Share.share(shareText);
                       },
                       child: const Icon(
@@ -490,8 +490,8 @@ class _HadithScreenState extends State<HadithScreen> {
                       ),
                     ),
                     const Spacer(),
-                    _iconLabel(Icons.volume_up_outlined, tr("listen")),
-                    const SizedBox(width: 15),
+                    // _iconLabel(Icons.volume_up_outlined, tr("listen")),
+                    // const SizedBox(width: 15),
                     GestureDetector(
                       onTap: () {
                         Get.to(

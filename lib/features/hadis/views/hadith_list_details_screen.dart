@@ -297,7 +297,7 @@ class HadithCard extends StatelessWidget {
                   final shareText =
                       "(${hadith.heading.isNotEmpty ? hadith.heading : ''})\n\n"
                       "($bookName, ${tr('hadith')} ${localizeDigits(hadith.number, context)})\n\n"
-                      "Shared via Maroof Khan App";
+                      "Shared via Digital Khanqah App";
                   Share.share(shareText);
                 },
                 child: const Icon(
