@@ -4,6 +4,7 @@ class DhikrModel {
   final String pronunciation;
   final String meaning;
   final int count;
+  final String file;
 
   DhikrModel({
     required this.id,
@@ -11,6 +12,7 @@ class DhikrModel {
     required this.pronunciation,
     required this.meaning,
     required this.count,
+    required this.file,
   });
 
   factory DhikrModel.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class DhikrModel {
       pronunciation: json['pronunciation'] ?? '',
       meaning: json['meaning'] ?? '',
       count: json['count'] ?? 33,
+      file: json['file'] ?? '',
     );
   }
 }

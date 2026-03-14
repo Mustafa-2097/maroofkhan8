@@ -155,6 +155,7 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
   }
 
   void _nextDhikr() {
+    controller.stopTasbihAudio();
     setState(() {
       currentIndex = (currentIndex + 1) % controller.tasbihList.length;
       count = 0;
@@ -162,12 +163,19 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
   }
 
   void _previousDhikr() {
+    controller.stopTasbihAudio();
     setState(() {
       currentIndex =
           (currentIndex - 1 + controller.tasbihList.length) %
           controller.tasbihList.length;
       count = 0;
     });
+  }
+
+  @override
+  void dispose() {
+    controller.stopTasbihAudio();
+    super.dispose();
   }
 
   @override
@@ -301,7 +309,25 @@ class _DhikrCounterScreenState extends State<DhikrCounterScreen> {
                         () => setState(() => count = 0),
                       ),
                       SizedBox(width: sw * 0.04),
-                      _pillButton(tr("listen"), Icons.volume_up_outlined),
+                      Obx(() {
+                        final bool isLoading = controller.isAudioLoading.value &&
+                            controller.currentPlayingId.value == dhikr.id;
+                        final bool isPlaying =
+                            controller.currentPlayingId.value == dhikr.id &&
+                                controller.isPlaying.value;
+
+                        return _pillButton(
+                          isLoading
+                              ? tr("loading_dots")
+                              : (isPlaying ? tr("pause") : tr("listen")),
+                          isLoading
+                              ? Icons.hourglass_empty
+                              : (isPlaying
+                                  ? Icons.pause_circle_outline
+                                  : Icons.volume_up_outlined),
+                          () => controller.playTasbihAudio(dhikr),
+                        );
+                      }),
                     ],
                   ),
                   SizedBox(height: sh * 0.06),
