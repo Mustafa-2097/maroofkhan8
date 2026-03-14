@@ -10,6 +10,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:maroofkhan8/core/utils/localization_utils.dart';
 import 'hadith_list_details_screen.dart';
 import 'saved_hadiths_screen.dart';
+import '../../profile/controller/profile_controller.dart';
 
 class HadithBookDetailsScreen extends StatefulWidget {
   final HadithBook book;
@@ -138,8 +139,10 @@ class _HadithBookDetailsScreenState extends State<HadithBookDetailsScreen> {
                 ),
                 Obx(() {
                   final key = "${widget.book.id}_${chapter.number}";
-                  final isDownloaded = controller.downloadedChapters.containsKey(key);
-                  final isDownloading = controller.isDownloadingChapter[key] ?? false;
+                  final isDownloaded = controller.downloadedChapters
+                      .containsKey(key);
+                  final isDownloading =
+                      controller.isDownloadingChapter[key] ?? false;
 
                   if (isDownloading) {
                     return const Padding(
@@ -158,7 +161,10 @@ class _HadithBookDetailsScreenState extends State<HadithBookDetailsScreen> {
                   if (isDownloaded) {
                     return IconButton(
                       onPressed: () {
-                        controller.deleteDownloadedChapter(widget.book.id, chapter.number);
+                        controller.deleteDownloadedChapter(
+                          widget.book.id,
+                          chapter.number,
+                        );
                       },
                       icon: const Icon(
                         Icons.delete_outline,
@@ -170,7 +176,13 @@ class _HadithBookDetailsScreenState extends State<HadithBookDetailsScreen> {
 
                   return IconButton(
                     onPressed: () {
-                      controller.downloadChapter(widget.book.id, tr("book_${widget.book.id}_name"), chapter.number);
+                      ProfileController.instance.handleDownloadAction(() {
+                        controller.downloadChapter(
+                          widget.book.id,
+                          tr("book_${widget.book.id}_name"),
+                          chapter.number,
+                        );
+                      });
                     },
                     icon: const Icon(
                       Icons.file_download_outlined,

@@ -26,7 +26,8 @@ void main() async {
       ],
       path: 'assets/translations',
       fallbackLocale: const Locale('en'),
-      child: DevicePreview(enabled: false, builder: (context) => const MyApp()),
+      child: DevicePreview(enabled: false,
+          builder: (context) => const MyApp()),
     ),
   );
 }

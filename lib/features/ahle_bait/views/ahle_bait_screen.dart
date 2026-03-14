@@ -8,6 +8,7 @@ import '../../ai_murshid/views/ai_murshid_screen.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:maroofkhan8/core/utils/localization_utils.dart';
+import '../../profile/controller/profile_controller.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -603,6 +604,17 @@ class _AhleBaitDetailScreenState extends State<AhleBaitDetailScreen> {
                 tr("download"),
                 false,
                 isDark,
+                onTap: () {
+                  ProfileController.instance.handleDownloadAction(() {
+                    // Actual download logic or success message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("${tr("download_complete")} - ${member.name}"),
+                        backgroundColor: kPrimaryBrown,
+                      ),
+                    );
+                  });
+                },
               ),
             ],
           ),

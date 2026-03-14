@@ -324,12 +324,15 @@ class _ProfileListState extends State<ProfileList> {
                         elevation: 0,
                       ),
                       onPressed: () async {
-                        try {
-                          await GoogleSignIn().signOut();
-                        } catch (e) {
-                          debugPrint('Error signing out from Google: $e');
+                        if (Get.isRegistered<ProfileController>()) {
+                          await Get.find<ProfileController>().logout();
+                        } else {
+                           // Fallback if controller not found
+                          try {
+                            await GoogleSignIn().signOut();
+                          } catch (e) {}
+                          await SharedPreferencesHelper.clearToken();
                         }
-                        await SharedPreferencesHelper.clearToken();
                         Get.offAll(() => SignInSignUpPage());
                       },
                       child: Text(

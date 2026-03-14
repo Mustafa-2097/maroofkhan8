@@ -13,6 +13,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/network/api_Service.dart';
 import '../../../core/network/api_endpoints.dart';
+import '../../profile/controller/profile_controller.dart';
 
 // --- Common UI Constants ---
 const Color kBrown = Color(0xFF8D4B33);
@@ -286,7 +287,10 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
     if (widget.dua.id == null) return;
     setState(() => _isLoading = true);
     try {
-      final response = await ApiService.get(ApiEndpoints.singleDua(widget.dua.id!), showErrorSnackbar: false);
+      final response = await ApiService.get(
+        ApiEndpoints.singleDua(widget.dua.id!),
+        showErrorSnackbar: false,
+      );
       if (response['success'] == true && mounted) {
         setState(() {
           _currentDua = DuaData.fromJson(response['data']);
@@ -391,42 +395,44 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
               )
             else
               Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
-                    blurRadius: 10,
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    _currentDua.arabic ?? "",
-                    textAlign: TextAlign.center,
-                    textDirection: ui.TextDirection.rtl,
-                    style: GoogleFonts.amiri(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: isDark ? Colors.white : Colors.black,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(
+                        alpha: isDark ? 0.2 : 0.03,
+                      ),
+                      blurRadius: 10,
                     ),
-                  ),
-                  const SizedBox(height: 15),
-                  Text(
-                    _currentDua.pronunciation ?? "",
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.ebGaramond(
-                      fontSize: 14,
-                      fontStyle: FontStyle.italic,
-                      color: isDark ? Colors.grey.shade400 : Colors.black54,
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      _currentDua.arabic ?? "",
+                      textAlign: TextAlign.center,
+                      textDirection: ui.TextDirection.rtl,
+                      style: GoogleFonts.amiri(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 15),
+                    Text(
+                      _currentDua.pronunciation ?? "",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.ebGaramond(
+                        fontSize: 14,
+                        fontStyle: FontStyle.italic,
+                        color: isDark ? Colors.grey.shade400 : Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
             const SizedBox(height: 20),
             // Actions Row
             Container(
@@ -462,7 +468,11 @@ class _DuaDetailScreenState extends State<DuaDetailScreen> {
                   _actionIcon(
                     Icons.download_outlined,
                     tr("download"),
-                    onTap: _downloadDua,
+                    onTap: () {
+                      ProfileController.instance.handleDownloadAction(
+                        _downloadDua,
+                      );
+                    },
                   ),
                 ],
               ),

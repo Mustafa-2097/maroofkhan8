@@ -5,6 +5,7 @@ import 'package:maroofkhan8/features/audio/views/audio_screen.dart';
 import 'package:get/get.dart';
 import 'package:maroofkhan8/features/audio/controller/audio_controller.dart';
 import 'package:audioplayers/audioplayers.dart';
+import '../../profile/controller/profile_controller.dart';
 
 class AudioListScreen extends StatefulWidget {
   final String category;
@@ -448,9 +449,12 @@ class _AudioListScreenState extends State<AudioListScreen> {
                                             label: 'Download',
                                             // label: 'Download (Premium)',
                                             onPressed: () {
-                                              controller.downloadAudio(
-                                                featuredAudio,
-                                              );
+                                              ProfileController.instance
+                                                  .handleDownloadAction(() {
+                                                    controller.downloadAudio(
+                                                      featuredAudio,
+                                                    );
+                                                  });
                                             },
                                             sw: sw,
                                             sh: sh,
