@@ -17,6 +17,7 @@ import 'package:http/http.dart' as http;
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../../../core/network/api_endpoints.dart';
 import 'saved_suras_screen.dart';
+import '../../profile/controller/profile_controller.dart';
 
 // --- CONSTANTS ---
 const Color kPrimaryBrown = Color(0xFF8D3C1F);
@@ -372,8 +373,8 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Obx(() {
-                        final isDownloaded =
-                            controller.downloadedSurahs.containsKey(surah.id);
+                        final isDownloaded = controller.downloadedSurahs
+                            .containsKey(surah.id);
                         final isLoading =
                             controller.isDownloading[surah.id] ?? false;
 
@@ -393,10 +394,8 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
 
                         if (isDownloaded) {
                           return IconButton(
-                            onPressed:
-                                () => controller.deleteDownloadedSurah(
-                                  surah.id,
-                                ),
+                            onPressed: () =>
+                                controller.deleteDownloadedSurah(surah.id),
                             icon: const Icon(
                               Icons.delete_outline,
                               color: Colors.red,
@@ -406,7 +405,11 @@ class _QuranTabsScreenState extends State<QuranTabsScreen> {
                         }
 
                         return IconButton(
-                          onPressed: () => controller.downloadSurahAudio(surah),
+                          onPressed: () {
+                            ProfileController.instance.handleDownloadAction(() {
+                              controller.downloadSurahAudio(surah);
+                            });
+                          },
                           icon: const Icon(
                             Icons.file_download_outlined,
                             color: kPrimaryBrown,

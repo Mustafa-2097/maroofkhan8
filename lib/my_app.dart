@@ -44,8 +44,7 @@ class MyApp extends StatelessWidget {
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: ThemeService().theme,
-            home:
-                SplashScreen(), // TODO: revert to SplashScreen() after testing
+            home: SplashScreen(), // TODO: revert to SplashScreen() after testing
           ),
         );
       },

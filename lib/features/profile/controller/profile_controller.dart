@@ -1,6 +1,12 @@
 import 'package:get/get.dart';
 import '../../../core/network/api_Service.dart';
 import '../../../core/network/api_endpoints.dart';
+import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import '../../quran/controller/quran_controller.dart';
+import '../../hadis/controller/hadith_controller.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import '../../../core/offline_storage/shared_pref.dart';
 
 class ProfileController extends GetxController {
   static ProfileController get instance => Get.find();
@@ -15,6 +21,25 @@ class ProfileController extends GetxController {
   var subscriptionEndDate = Rxn<DateTime>();
   var subscriptionStartDate = Rxn<DateTime>();
   var gender = "".obs;
+
+  bool get canDownloadFiles {
+    final title = currentPlan.value?.toLowerCase() ?? "";
+    return title.contains('premium') || title.contains('basic');
+  }
+
+  void handleDownloadAction(VoidCallback onDownload) {
+    if (canDownloadFiles) {
+      onDownload();
+    } else {
+      Get.snackbar(
+        tr("subscription_required_title"),
+        tr("subscription_required_download"),
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
+    }
+  }
 
   @override
   void onInit() {
@@ -72,6 +97,8 @@ class ProfileController extends GetxController {
             );
           }
         }
+        
+        _handleOfflineDataSync();
       }
     } catch (e) {
       // Error is handled in ApiService
@@ -125,4 +152,42 @@ class ProfileController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  void _handleOfflineDataSync() {
+    if (canDownloadFiles) {
+      if (Get.isRegistered<QuranController>()) {
+        Get.find<QuranController>().loadOfflineData();
+      }
+      if (Get.isRegistered<HadithController>()) {
+        Get.find<HadithController>().loadOfflineData();
+      }
+    } else {
+      if (Get.isRegistered<QuranController>()) {
+        Get.find<QuranController>().clearOfflineData();
+      }
+      if (Get.isRegistered<HadithController>()) {
+        Get.find<HadithController>().clearOfflineData();
+      }
+    }
+  }
+
+  Future<void> logout() async {
+    try {
+      await GoogleSignIn().signOut();
+    } catch (e) {
+      debugPrint('Error signing out from Google: $e');
+    }
+    
+    // Clear offline trackings on logout
+    if (Get.isRegistered<QuranController>()) {
+      Get.find<QuranController>().clearOfflineData();
+    }
+    if (Get.isRegistered<HadithController>()) {
+      Get.find<HadithController>().clearOfflineData();
+    }
+    
+    await SharedPreferencesHelper.clearToken();
+  }
 }
+
+

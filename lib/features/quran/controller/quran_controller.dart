@@ -17,6 +17,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../profile/controller/profile_controller.dart';
 
 class QuranController extends GetxController {
   var surahList = <SurahModel>[].obs;
@@ -42,11 +43,13 @@ class QuranController extends GetxController {
   // Search functionality
   var searchQuery = ''.obs;
 
-  // Offline Download tracking
   // Key: Surah ID, Value: Local File Path
   var downloadedSurahs = <int, String>{}.obs;
   var isDownloading = <int, bool>{}.obs;
-  static const String _downloadedSurahsKey = 'downloaded_quran_surahs';
+  String get _downloadedSurahsKey {
+    final email = Get.find<ProfileController>().email.value;
+    return 'downloaded_quran_surahs_$email';
+  }
 
   List<SurahModel> get filteredSurahList {
     if (searchQuery.value.isEmpty) return surahList;
@@ -187,7 +190,11 @@ class QuranController extends GetxController {
     fetchJuzs();
     fetchLastRead();
     fetchSavedSurahs();
-    _loadDownloadedSurahs();
+    
+    // Only load offline data if subscribed
+    if (Get.isRegistered<ProfileController>() && Get.find<ProfileController>().canDownloadFiles) {
+      loadOfflineData();
+    }
 
     audioPlayer.onPlayerStateChanged.listen((state) {
       print("DEBUG: Player State Changed: $state");
@@ -907,7 +914,7 @@ class QuranController extends GetxController {
     }
   }
 
-  Future<void> _loadDownloadedSurahs() async {
+  Future<void> loadOfflineData() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final String? encoded = prefs.getString(_downloadedSurahsKey);
@@ -996,5 +1003,10 @@ class QuranController extends GetxController {
     savedSurahs.value = surahList
         .where((s) => surahBookmarkIds.containsKey(s.id))
         .toList();
+  }
+
+  void clearOfflineData() {
+    downloadedSurahs.clear();
+    isDownloading.clear();
   }
 }

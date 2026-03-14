@@ -13,6 +13,7 @@ import '../models/hadith.dart';
 import '../models/popular_hadith.dart';
 import '../models/last_read_hadith.dart';
 import '../data/hadith_data.dart';
+import '../../profile/controller/profile_controller.dart';
 
 class HadithController extends GetxController {
   static HadithController get instance => Get.find();
@@ -34,17 +35,24 @@ class HadithController extends GetxController {
   var isLastReadLoading = false.obs;
   var lastReadHadiths = <LastReadHadith>[].obs;
 
-  // Offline Chapter Download tracking
   // Key: slug_chapterNum, Value: Local File Path
   var downloadedChapters = <String, String>{}.obs;
   var isDownloadingChapter = <String, bool>{}.obs;
-  static const String _downloadedChaptersKey = 'downloaded_hadith_chapters';
+  
+  String get _downloadedChaptersKey {
+    final email = Get.find<ProfileController>().email.value;
+    return 'downloaded_hadith_chapters_$email';
+  }
 
   // Offline Hadith Download tracking
   // Key: slug_hadithNo, Value: Local File Path
   var downloadedHadiths = <String, String>{}.obs;
   var isDownloadingHadith = <String, bool>{}.obs;
-  static const String _downloadedHadithsKey = 'downloaded_hadiths';
+  
+  String get _downloadedHadithsKey {
+    final email = Get.find<ProfileController>().email.value;
+    return 'downloaded_hadiths_$email';
+  }
 
   var searchQuery = ''.obs; // For Main Hadith Screen
   var chapterSearchQuery = ''.obs; // For Chapters Screen
@@ -106,9 +114,13 @@ class HadithController extends GetxController {
     fetchHadithBooks();
     fetchPopularHadith();
     fetchLastReadHadith();
+    fetchLastReadHadith();
     fetchSavedHadiths();
-    _loadDownloadedChapters();
-    _loadDownloadedHadiths();
+    
+    // Only load offline data if subscribed
+    if (Get.isRegistered<ProfileController>() && Get.find<ProfileController>().canDownloadFiles) {
+      loadOfflineData();
+    }
   }
 
   String _normalize(String? text) {
@@ -418,6 +430,11 @@ class HadithController extends GetxController {
     }
   }
 
+  Future<void> loadOfflineData() async {
+    await _loadDownloadedChapters();
+    await _loadDownloadedHadiths();
+  }
+
   Future<void> _loadDownloadedChapters() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -611,5 +628,12 @@ class HadithController extends GetxController {
       print("Delete error: $e");
       SnackbarUtils.showSnackbar(tr("error"), "${tr("error")}: $e", isError: true);
     }
+  }
+
+  void clearOfflineData() {
+    downloadedChapters.clear();
+    downloadedHadiths.clear();
+    isDownloadingChapter.clear();
+    isDownloadingHadith.clear();
   }
 }
