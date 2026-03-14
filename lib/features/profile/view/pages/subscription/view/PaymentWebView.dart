@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:maroofkhan8/core/utils/snackbar_utils.dart';
 
 class PaymentWebView extends StatefulWidget {
   final String url;
@@ -27,7 +25,6 @@ class _PaymentWebViewState extends State<PaymentWebView> {
             setState(() {
               isLoading = true;
             });
-            _checkUrl(url);
           },
           onPageFinished: (String url) {
             setState(() {
@@ -43,28 +40,41 @@ class _PaymentWebViewState extends State<PaymentWebView> {
       ..loadRequest(Uri.parse(widget.url));
   }
 
-  void _checkUrl(String url) {
+  bool? _paymentResult;
+
+  void _checkUrl(String url) async {
     if (_isHandled) return;
 
-    if (url.contains('success')) {
-      _isHandled = true;
-      // Ensure we haven't already moved back
-      if (Navigator.of(context).canPop()) {
-        Navigator.of(context).pop(true);
-        SnackbarUtils.showSnackbar(
-          "Payment Successful",
-          "Your transaction was completed successfully.",
-        );
+    final lowerUrl = url.toLowerCase();
+
+    // Handle immediate exit if the user clicks an internal "Back" or "Return" button in the WebView
+    if (lowerUrl.contains('back') || lowerUrl.contains('return')) {
+      // If it's a back/return button, exit immediately without the status delay
+      // unless it specifically indicates a success state.
+      if (!lowerUrl.contains('success')) {
+        _isHandled = true;
+        if (mounted && Navigator.of(context).canPop()) {
+          Navigator.of(context).pop(false);
+        }
+        return;
       }
-    } else if (url.contains('cancel')) {
+    }
+
+    if (lowerUrl.contains('success')) {
       _isHandled = true;
-      if (Navigator.of(context).canPop()) {
+      _paymentResult = true;
+      // Wait for a few seconds so user can see the success page in WebView
+      await Future.delayed(const Duration(seconds: 3));
+      if (mounted && Navigator.of(context).canPop()) {
+        Navigator.of(context).pop(true);
+      }
+    } else if (lowerUrl.contains('cancel')) {
+      _isHandled = true;
+      _paymentResult = false;
+      // Wait for a few seconds so user can see the cancel page in WebView
+      await Future.delayed(const Duration(seconds: 3));
+      if (mounted && Navigator.of(context).canPop()) {
         Navigator.of(context).pop(false);
-        SnackbarUtils.showSnackbar(
-          "Payment Cancelled",
-          "The payment process was cancelled.",
-          isError: true,
-        );
       }
     }
   }
@@ -76,7 +86,7 @@ class _PaymentWebViewState extends State<PaymentWebView> {
         title: const Text("Payment"),
         leading: IconButton(
           icon: const Icon(Icons.close),
-          onPressed: () => Get.back(),
+          onPressed: () => Navigator.of(context).pop(_paymentResult),
         ),
       ),
       body: Stack(
